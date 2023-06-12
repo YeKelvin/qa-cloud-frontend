@@ -1,0 +1,10 @@
+.idea/
+.DS_Store/
+
+dist/
+node_modules/
+
+*.log
+stats.html
+pnpm-lock.yaml
+package-lock.json

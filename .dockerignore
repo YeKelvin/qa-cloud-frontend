@@ -1,0 +1,8 @@
+.git/
+.idea/
+.husky/
+.vscode/
+node_modules/
+docs/
+mock/
+tests/
