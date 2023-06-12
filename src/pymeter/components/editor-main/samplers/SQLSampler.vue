@@ -1,0 +1,330 @@
+<template>
+  <div class="pymeter-component-container" tabindex="-1">
+    <el-form
+      ref="elformRef"
+      label-position="right"
+      label-width="120px"
+      inline-message
+      :model="elementInfo"
+      :rules="elementFormRules"
+    >
+      <!-- 元素名称 -->
+      <el-form-item label="名称：" prop="elementName">
+        <el-input v-model="elementInfo.elementName" placeholder="元素名称" clearable :readonly="queryMode" />
+      </el-form-item>
+
+      <!-- 元素备注 -->
+      <el-form-item label="备注：" prop="elementRemark">
+        <el-input v-model="elementInfo.elementRemark" placeholder="元素备注" clearable :readonly="queryMode" />
+      </el-form-item>
+
+      <!-- 数据库选择框 -->
+      <el-form-item label="数据库：" prop="attributes.engine_no">
+        <el-select v-model="elementInfo.attributes.engine_no" style="width: 100%" :disabled="queryMode">
+          <!-- 个人空间时显示所有能访问空间下的数据库 -->
+          <template v-if="workspaceStore.workspaceScope === 'PRIVATE'">
+            <el-option
+              v-for="item in engineListInPrivate"
+              :key="item.configNo"
+              :label="item.configName + ' ( ' + item.workspaceName + ' )'"
+              :value="item.configNo"
+            >
+              <span class="database-type-option">
+                <span>{{ item.configName }}</span>
+                <span>
+                  <el-tag type="danger" size="small" disable-transitions>{{ DatabaseType[item.databaseType] }}</el-tag>
+                  <el-tag type="info" size="small" disable-transitions>{{ item.workspaceName }}</el-tag>
+                </span>
+              </span>
+            </el-option>
+          </template>
+          <!-- 非个人空间时仅显示当前空间下的数据库 -->
+          <template v-else>
+            <el-option v-for="item in engineList" :key="item.configNo" :label="item.configName" :value="item.configNo">
+              <span class="database-type-option">
+                <span>{{ item.configName }}</span>
+                <el-tag type="danger" size="small" disable-transitions>{{ DatabaseType[item.databaseType] }}</el-tag>
+              </span>
+            </el-option>
+          </template>
+        </el-select>
+      </el-form-item>
+
+      <!-- 变量名称 -->
+      <el-form-item label="变量名称：" prop="property.SQLSampler__result_name">
+        <el-input
+          v-model="elementInfo.property.SQLSampler__result_name"
+          placeholder="变量名称用于存储查询结果集，默认名称：rows"
+          clearable
+          :readonly="queryMode"
+        />
+      </el-form-item>
+
+      <!-- 标签栏 -->
+      <div style="display: flex; align-items: center; justify-content: space-between">
+        <!-- 标签页头 -->
+        <el-tabs v-model="activeTabName" style="width: 100%">
+          <el-tab-pane name="STATEMENT">
+            <template #label>
+              <el-badge :hidden="hiddenStatementDot" type="success" is-dot>SQL语句</el-badge>
+            </template>
+          </el-tab-pane>
+          <el-tab-pane name="SETTINGS">
+            <template #label>
+              <el-badge :hidden="hiddenSettingsDot" type="success" is-dot>查询设置</el-badge>
+            </template>
+          </el-tab-pane>
+        </el-tabs>
+        <!-- 运行按钮 -->
+        <el-button v-show="queryMode" type="danger" style="margin-left: 10px" @click="executeSampler(elementNo)">
+          <SvgIcon icon-name="pymeter-send" style="margin-right: 5px" />
+          运 行
+        </el-button>
+      </div>
+
+      <div v-show="showSettingsTab">
+        <!-- 结果数限制 -->
+        <el-form-item label="结果数限制：" prop="property.SQLSampler__limit">
+          <el-input
+            v-model="elementInfo.property.SQLSampler__limit"
+            placeholder="查询结果行数限制大小，默认=10"
+            clearable
+            :readonly="queryMode"
+          />
+        </el-form-item>
+
+        <!-- 超时时间 -->
+        <el-form-item label="超时时间：" prop="property.SQLSampler__query_timeout">
+          <el-input
+            v-model="elementInfo.property.SQLSampler__query_timeout"
+            placeholder="查询超时时间，默认=10000"
+            clearable
+            :readonly="queryMode"
+          >
+            <template #append>ms</template>
+          </el-input>
+        </el-form-item>
+      </div>
+
+      <!-- SQL语句 -->
+      <div v-show="showStatementTab">
+        <MonacoEditor
+          ref="codeEditorRef"
+          v-model="elementInfo.property.SQLSampler__statement"
+          language="sql"
+          style="margin-bottom: 20px"
+          :read-only="queryMode"
+        />
+      </div>
+
+      <!-- 操作按钮 -->
+      <el-affix target=".pymeter-component-container" position="bottom" :offset="60">
+        <el-form-item v-if="queryMode">
+          <el-button :icon="Edit" type="primary" @click="editNow()">编 辑</el-button>
+          <el-button :icon="Close" @click="closeTab()">关 闭</el-button>
+        </el-form-item>
+        <el-form-item v-else-if="modifyMode">
+          <el-button :icon="Check" type="danger" @click="modifyElement()">保 存</el-button>
+          <el-button :icon="Check" @click="modifyElement(true)">保存并关闭</el-button>
+          <el-button :icon="Close" @click="closeTab()">关 闭</el-button>
+        </el-form-item>
+        <el-form-item v-else-if="createMode">
+          <el-button :icon="Check" type="primary" @click="createElement()">保 存</el-button>
+          <el-button :icon="Check" @click="createElement(true)">保存并关闭</el-button>
+          <el-button :icon="Close" @click="closeTab()">关 闭</el-button>
+        </el-form-item>
+      </el-affix>
+    </el-form>
+  </div>
+</template>
+
+<script setup>
+import * as ElementService from '@/api/script/element'
+import * as DatabaseService from '@/api/script/database'
+import { DatabaseType } from '@/api/enum'
+import { ElMessage } from 'element-plus'
+import { Check, Close, Edit } from '@element-plus/icons-vue'
+import { useWorkspaceStore } from '@/store/workspace'
+import useRunnableElement from '@/pymeter/composables/useRunnableElement'
+import useEditor from '@/pymeter/composables/useEditor'
+import EditorProps from '@/pymeter/composables/editor.props'
+import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
+
+const props = defineProps(EditorProps)
+const workspaceStore = useWorkspaceStore()
+const { executeSampler } = useRunnableElement()
+const {
+  queryMode,
+  modifyMode,
+  createMode,
+  functions,
+  editNow,
+  setReadonly,
+  updateTab,
+  closeTab,
+  expandParentNode,
+  refreshElementTree
+} = useEditor(props)
+const elformRef = ref()
+const elementNo = ref(props.editorNo)
+const elementInfo = ref({
+  elementNo: '',
+  elementName: 'SQL请求',
+  elementRemark: '',
+  elementType: 'SAMPLER',
+  elementClass: 'SQLSampler',
+  property: {
+    SQLSampler__statement: '',
+    SQLSampler__limit: '',
+    SQLSampler__result_name: '',
+    SQLSampler__query_timeout: ''
+  },
+  attributes: {
+    engine_no: ''
+  }
+})
+const elementFormRules = reactive({
+  elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }],
+  'attributes.engine_no': [{ required: true, message: '数据库引擎编号不能为空', trigger: 'blur' }],
+  'property.SQLSampler__statement': [{ required: true, message: 'SQL不能为空', trigger: 'blur' }]
+})
+const engineList = ref([])
+const engineListInPrivate = ref([])
+const codeEditorRef = ref()
+const activeTabName = ref('STATEMENT')
+const showStatementTab = computed(() => activeTabName.value === 'STATEMENT')
+const showSettingsTab = computed(() => activeTabName.value === 'SETTINGS')
+const hiddenStatementDot = computed(() => elementInfo.value.property.SQLSampler__statement === '')
+const hiddenSettingsDot = computed(() => {
+  const elprop = elementInfo.value.property
+  return elprop.SQLSampler__limit === '' && elprop.SQLSampler__query_timeout === ''
+})
+
+onMounted(() => {
+  // 查询所有数据库引擎
+  if (workspaceStore.workspaceScope === 'PRIVATE') {
+    DatabaseService.queryDatabaseEngineAllInPrivate().then((response) => {
+      engineListInPrivate.value = response.result
+    })
+  } else {
+    DatabaseService.queryDatabaseEngineAll({ workspaceNo: workspaceStore.workspaceNo }).then((response) => {
+      engineList.value = response.result
+    })
+  }
+
+  // 查询或更新模式时，先拉取元素信息
+  if (createMode.value) return
+  ElementService.queryElementInfo({ elementNo: elementNo.value }).then((response) => {
+    elementInfo.value = response.result
+    codeEditorRef.value.setValue(response.result.property.SQLSampler__statement)
+  })
+})
+
+/**
+ * 更新元素编号
+ */
+const updateElementNo = (val) => {
+  elementNo.value = val
+  elementInfo.value.elementNo = val
+}
+
+/**
+ * 修改元素信息
+ */
+const modifyElement = async (close = false) => {
+  // 表单校验
+  const error = await elformRef.value
+    .validate()
+    .then(() => false)
+    .catch(() => true)
+  if (error) {
+    ElMessage({ message: '数据校验失败', type: 'error', duration: 2 * 1000 })
+    return
+  }
+  // 修改元素
+  await ElementService.modifyElement({ elementNo: elementNo.value, ...elementInfo.value })
+  // 无需关闭 tab
+  if (!close) {
+    // 设置为只读模式
+    setReadonly()
+    // 更新 tab 标题
+    updateTab(elementInfo.value.elementName)
+  }
+  // 重新查询侧边栏的元素列表
+  refreshElementTree()
+  // 成功提示
+  ElMessage({ message: '修改元素成功', type: 'info', duration: 2 * 1000 })
+  // 需要关闭 tab
+  if (close) {
+    closeTab()
+  }
+}
+
+/**
+ * 创建元素
+ */
+const createElement = async (close = false) => {
+  // 表单校验
+  const error = await elformRef.value
+    .validate()
+    .then(() => false)
+    .catch(() => true)
+  if (error) {
+    ElMessage({ message: '数据校验失败', type: 'error', duration: 2 * 1000 })
+    return
+  }
+  // 新增元素
+  const response = await ElementService.createElementChildren({
+    rootNo: props.metadata.rootNo,
+    parentNo: props.metadata.parentNo,
+    children: [elementInfo.value]
+  })
+  // 无需关闭 tab
+  if (!close) {
+    // 设置为只读模式
+    setReadonly()
+    // 更新 tab 标题和编号
+    updateTab(elementInfo.value.elementName, response.result[0])
+    // 更新元素编号
+    updateElementNo(response.result[0])
+  }
+  // 展开父节点
+  expandParentNode()
+  // 重新查询侧边栏的元素列表
+  refreshElementTree()
+  // 成功提示
+  ElMessage({ message: '新增元素成功', type: 'info', duration: 2 * 1000 })
+  // 需要关闭 tab
+  if (close) {
+    closeTab()
+  }
+}
+
+// 暂存函数，给 useEditor 使用
+functions.createFn = createElement
+functions.modifyFn = modifyElement
+</script>
+
+<style lang="scss" scoped>
+.database-type-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.el-tag {
+  margin-right: 5px;
+}
+
+:deep(.el-textarea.is-disabled .el-textarea__inner) {
+  cursor: auto;
+}
+
+:deep(.el-badge__content) {
+  top: 10px;
+}
+
+:deep(.el-badge__content.is-fixed.is-dot) {
+  right: -4px;
+}
+</style>

@@ -1,0 +1,54 @@
+.pymeter-component-container {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  height: 100%;
+  padding: 10px;
+  outline: none;
+
+  &.el-divider--horizontal {
+    margin: 10px 0;
+  }
+
+  .el-input__inner {
+    letter-spacing: 0.6px;
+  }
+
+  .el-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .el-tabs__nav-wrap {
+    &:after {
+      height: 1px;
+    }
+  }
+
+  .el-tabs__active-bar {
+    height: 1px;
+  }
+}
+
+.pymeter-footer__main-drawer {
+
+  --el-drawer-padding-primary: none !important;
+
+  .el-drawer__header {
+    margin-bottom: 0 !important;
+    padding: 0 !important;
+
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+
+    .el-divider--horizontal {
+      margin: 0;
+    }
+  }
+
+  .el-drawer__body {
+    overflow: hidden !important;
+  }
+}
