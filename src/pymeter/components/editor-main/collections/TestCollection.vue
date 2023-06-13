@@ -24,6 +24,9 @@
           v-model="elementInfo.property.TestCollection__serialize_workers"
           active-value="true"
           inactive-value="false"
+          inline-prompt
+          :active-icon="Check"
+          :inactive-icon="Close"
           :disabled="true"
         />
       </el-form-item>
@@ -87,6 +90,9 @@
             </template>
             <el-switch
               v-model="elementInfo.attributes.exclude_workspaces"
+              inline-prompt
+              :active-icon="Check"
+              :inactive-icon="Close"
               :active-value="true"
               :inactive-value="false"
               :disabled="queryMode"

@@ -15,7 +15,7 @@
         multiple
         v-bind="$attrs"
       >
-        <el-option-group v-if="!_isEmpty(customDatasetList)" key="custom" label="自定义">
+        <el-option-group v-if="!isEmpty(customDatasetList)" key="custom" label="自定义">
           <el-option
             v-for="item in customDatasetList"
             :key="item.datasetNo"
@@ -23,7 +23,7 @@
             :value="item.datasetNo"
           />
         </el-option-group>
-        <el-option-group v-if="!_isEmpty(environmentDatasetList)" key="environment" label="环境">
+        <el-option-group v-if="!isEmpty(environmentDatasetList)" key="environment" label="环境">
           <el-option
             v-for="item in environmentDatasetList"
             :key="item.datasetNo"
@@ -45,13 +45,14 @@
     </el-form-item>
     <!-- 是否使用当前值 -->
     <el-form-item label="使用当前值：" prop="useCurrentValue" style="margin-bottom: 0">
-      <el-switch v-model="formData.useCurrentValue" />
+      <el-switch v-model="formData.useCurrentValue" inline-prompt :active-icon="Check" :inactive-icon="Close" />
     </el-form-item>
   </el-form>
 </template>
 
 <script setup>
-import { isEmpty as _isEmpty } from 'lodash-es'
+import { isEmpty } from 'lodash-es'
+import { Check, Close } from '@element-plus/icons-vue'
 import * as VariablesService from '@/api/script/variables'
 
 const emit = defineEmits(['change-datasets', 'change-use-current-value'])
@@ -74,7 +75,7 @@ watch(
   () => formData.datasets,
   () => {
     // 没有选中任何变量集时，开放所有环境变量集
-    if (_isEmpty(formData.datasets)) {
+    if (isEmpty(formData.datasets)) {
       environmentDatasetList.value.forEach((env) => (env.disabled = false))
     }
     // 判断当前选中的变量集是否需要禁用

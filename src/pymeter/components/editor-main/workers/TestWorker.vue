@@ -55,11 +55,23 @@
       <div v-if="showHTTPSettings">
         <!-- 是否使用 HTTP 会话 -->
         <el-form-item label="使用会话：">
-          <el-switch v-model="elementInfo.attributes.enable_http_session" :disabled="queryMode" />
+          <el-switch
+            v-model="elementInfo.attributes.enable_http_session"
+            inline-prompt
+            :active-icon="Check"
+            :inactive-icon="Close"
+            :disabled="queryMode"
+          />
         </el-form-item>
         <!-- 是否在每次迭代开始前重新打开一个新的 HTTP 会话 -->
         <el-form-item label="迭代时刷新会话：">
-          <el-switch v-model="elementInfo.attributes.clear_http_session_for_each_iteration" :disabled="queryMode" />
+          <el-switch
+            v-model="elementInfo.attributes.clear_http_session_for_each_iteration"
+            inline-prompt
+            :active-icon="Check"
+            :inactive-icon="Close"
+            :disabled="queryMode"
+          />
         </el-form-item>
       </div>
 

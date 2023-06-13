@@ -30,7 +30,12 @@
             <el-tag style="margin-right: 10px" disable-transitions>result</el-tag>
           </span>
           <!-- 运行按钮 -->
-          <el-button v-show="queryMode" type="danger" style="margin-left: 10px" @click="executeSampler(elementNo)">
+          <el-button
+            v-show="queryMode"
+            type="danger"
+            style="margin-left: 10px; width: 140px; min-width: 140px; max-width: 140px"
+            @click="executeSampler(elementNo)"
+          >
             <SvgIcon icon-name="pymeter-send" style="margin-right: 5px" />
             运 行
           </el-button>

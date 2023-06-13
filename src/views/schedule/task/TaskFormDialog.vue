@@ -91,7 +91,13 @@
           />
         </el-form-item>
         <el-form-item label="使用当前值：" prop="jobArgs.useCurrentValue" style="margin-bottom: 0">
-          <el-switch v-model="jobForm.jobArgs.useCurrentValue" :disabled="queryMode" />
+          <el-switch
+            v-model="jobForm.jobArgs.useCurrentValue"
+            inline-prompt
+            :active-icon="Check"
+            :inactive-icon="Close"
+            :disabled="queryMode"
+          />
         </el-form-item>
       </el-card>
 
@@ -190,6 +196,7 @@ import * as ScheduleService from '@/api/schedule/task'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { isEmpty } from 'lodash-es'
 import { isValidCron } from 'cron-validator'
+import { Check, Close } from '@element-plus/icons-vue'
 import { useWorkspaceStore } from '@/store/workspace'
 import dayjs from 'dayjs'
 import DatasetSelect from './TaskDatasetSelect.vue'

@@ -61,7 +61,13 @@
             <template #header="{}">
               <span class="current-value-header">
                 <span>当前值</span>
-                <el-switch v-model="pymeterStore.useCurrentValue" size="small" active-color="#67C23A" />
+                <el-switch
+                  v-model="pymeterStore.useCurrentValue"
+                  size="small"
+                  inline-prompt
+                  :active-icon="Check"
+                  :inactive-icon="Close"
+                />
               </span>
             </template>
             <!-- 单元格 -->

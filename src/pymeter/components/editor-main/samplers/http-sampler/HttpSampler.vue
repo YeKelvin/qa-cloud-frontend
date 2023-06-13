@@ -154,6 +154,9 @@
               v-model="elementInfo.property.HTTPSampler__follow_redirects"
               active-value="true"
               inactive-value="false"
+              inline-prompt
+              :active-icon="Check"
+              :inactive-icon="Close"
               :disabled="queryMode"
             />
           </el-form-item>
@@ -178,7 +181,7 @@
               clearable
               :readonly="queryMode"
             >
-              <template #append>ms</template>
+              <template #append>毫秒</template>
             </el-input>
           </el-form-item>
 
@@ -191,7 +194,7 @@
               clearable
               :readonly="queryMode"
             >
-              <template #append>ms</template>
+              <template #append>毫秒</template>
             </el-input>
           </el-form-item>
         </el-form>

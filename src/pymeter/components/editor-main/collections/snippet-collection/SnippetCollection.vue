@@ -42,7 +42,13 @@
       <div v-if="showHttpSettingsTab">
         <!-- 是否使用 HTTP 会话 -->
         <el-form-item label="使用会话：">
-          <el-switch v-model="elementInfo.attributes.use_http_session" :disabled="queryMode" />
+          <el-switch
+            v-model="elementInfo.attributes.use_http_session"
+            inline-prompt
+            :active-icon="Check"
+            :inactive-icon="Close"
+            :disabled="queryMode"
+          />
         </el-form-item>
       </div>
 

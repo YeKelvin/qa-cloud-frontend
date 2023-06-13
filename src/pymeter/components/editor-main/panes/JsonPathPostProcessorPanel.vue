@@ -49,6 +49,9 @@
         v-model="elementProperty.JsonPathPostProcessor__list_random"
         active-value="true"
         inactive-value="false"
+        inline-prompt
+        :active-icon="Check"
+        :inactive-icon="Close"
         :disabled="props.readOnly"
       />
     </el-form-item>

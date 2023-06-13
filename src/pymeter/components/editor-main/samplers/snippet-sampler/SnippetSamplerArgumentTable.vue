@@ -16,7 +16,14 @@
           <span>参数值</span>
           <span style="font-size: 12px">
             默认值
-            <el-switch v-model="useDefault" :disabled="queryMode" size="small" />
+            <el-switch
+              v-model="useDefault"
+              size="small"
+              inline-prompt
+              :active-icon="Check"
+              :inactive-icon="Close"
+              :disabled="queryMode"
+            />
           </span>
         </span>
       </template>
@@ -44,6 +51,8 @@
 </template>
 
 <script setup>
+import { Check, Close } from '@element-plus/icons-vue'
+
 const emit = defineEmits(['update:useDefault'])
 const props = defineProps({
   editMode: { type: String, default: 'QUERY' },

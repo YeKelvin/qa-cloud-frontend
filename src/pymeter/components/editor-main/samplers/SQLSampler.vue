@@ -54,7 +54,7 @@
       <el-form-item label="变量名称：" prop="property.SQLSampler__result_name">
         <el-input
           v-model="elementInfo.property.SQLSampler__result_name"
-          placeholder="变量名称用于存储查询结果集，默认名称：rows"
+          placeholder="默认=rows，用于存储查询结果集"
           clearable
           :readonly="queryMode"
         />
@@ -84,24 +84,28 @@
 
       <div v-show="showSettingsTab">
         <!-- 结果数限制 -->
-        <el-form-item label="结果数限制：" prop="property.SQLSampler__limit">
+        <el-form-item label="结果大小限制：" prop="property.SQLSampler__limit">
           <el-input
             v-model="elementInfo.property.SQLSampler__limit"
-            placeholder="查询结果行数限制大小，默认=10"
+            placeholder="默认=10"
+            style="width: 300px"
             clearable
             :readonly="queryMode"
-          />
+          >
+            <template #append>条</template>
+          </el-input>
         </el-form-item>
 
         <!-- 超时时间 -->
         <el-form-item label="超时时间：" prop="property.SQLSampler__query_timeout">
           <el-input
             v-model="elementInfo.property.SQLSampler__query_timeout"
-            placeholder="查询超时时间，默认=10000"
+            placeholder="默认=10000"
+            style="width: 300px"
             clearable
             :readonly="queryMode"
           >
-            <template #append>ms</template>
+            <template #append>毫秒</template>
           </el-input>
         </el-form-item>
       </div>
@@ -314,6 +318,10 @@ functions.modifyFn = modifyElement
 
 .el-tag {
   margin-right: 5px;
+}
+
+:deep(.el-input-group__append) {
+  width: 60px;
 }
 
 :deep(.el-textarea.is-disabled .el-textarea__inner) {

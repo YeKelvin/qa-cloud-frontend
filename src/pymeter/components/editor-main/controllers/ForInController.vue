@@ -34,6 +34,9 @@
           v-model="elementInfo.property.ForInController__use_variable"
           active-value="true"
           inactive-value="false"
+          inline-prompt
+          :active-icon="Check"
+          :inactive-icon="Close"
           :disabled="queryMode"
         />
       </el-form-item>

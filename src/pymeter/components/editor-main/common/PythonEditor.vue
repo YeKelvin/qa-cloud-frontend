@@ -164,9 +164,9 @@ export default defineComponent({
 }
 
 .snippet-code-container {
-  width: 120px;
-  min-width: 120px;
-  max-width: 120px;
+  width: 140px;
+  min-width: 140px;
+  max-width: 140px;
   height: 300px;
   padding-bottom: 20px;
 }

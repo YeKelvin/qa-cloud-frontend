@@ -57,12 +57,24 @@
 
           <!-- 保存结果 -->
           <el-form-item label="保存结果：" prop="save">
-            <el-switch v-model="formData.save" :disabled="queryMode" />
+            <el-switch
+              v-model="formData.save"
+              inline-prompt
+              :active-icon="Check"
+              :inactive-icon="Close"
+              :disabled="queryMode"
+            />
           </el-form-item>
 
           <!-- 仅保存失败结果 -->
           <el-form-item label="仅保存失败结果：" prop="saveOnError">
-            <el-switch v-model="formData.saveOnError" disabled />
+            <el-switch
+              v-model="formData.saveOnError"
+              inline-prompt
+              :active-icon="Check"
+              :inactive-icon="Close"
+              disabled
+            />
           </el-form-item>
 
           <!-- 通知机器人 -->
