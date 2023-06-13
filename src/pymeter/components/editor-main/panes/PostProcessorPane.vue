@@ -91,7 +91,7 @@
     </template>
 
     <!-- 添加按钮 -->
-    <div v-show="!queryMode" style="margin: 10px 0; padding-left: 30px">
+    <div style="margin: 10px 0; padding-left: 30px">
       <el-popover
         v-model:visible="menuVisible"
         trigger="click"
@@ -100,7 +100,7 @@
         :teleported="false"
       >
         <template #reference>
-          <el-button type="primary" link :icon="Plus">添加处理器</el-button>
+          <el-button type="primary" link :icon="Plus" :disabled="queryMode">添加处理器</el-button>
         </template>
         <el-button link @click="addPythonPostProcessor">Python脚本</el-button>
         <el-button link @click="addJsonPathPostProcessor">Json提取器</el-button>
