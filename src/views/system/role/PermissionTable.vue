@@ -9,7 +9,7 @@
     <el-table-column prop="objectName" label="权限对象" width="180" min-width="180" />
     <el-table-column prop="permissionName" label="权限">
       <template #default="{ row }">
-        <el-checkbox-group v-model="checkedNumbers">
+        <el-checkbox-group v-model="checkeds">
           <el-checkbox
             v-for="permission in row.permissionList"
             :key="permission.permissionNo"
@@ -34,7 +34,7 @@ import { has } from 'lodash-es'
 
 const emit = defineEmits(['update:checkedList'])
 const props = defineProps({ checkedList: { type: Array, default: () => [] } })
-const checkedNumbers = computed({
+const checkeds = computed({
   get() {
     return props.checkedList
   },
@@ -123,11 +123,11 @@ const spanMethod = ({ row, column, rowIndex, columnIndex }) => {
 }
 
 const checkAll = (permissionList) => {
-  const checked = checkedNumbers.value
+  const checked = checkeds.value
   permissionList.forEach((item) => {
     checked.push(item.permissionNo)
   })
-  checkedNumbers.value = [...new Set(checked)]
+  checkeds.value = [...new Set(checked)]
 }
 </script>
 

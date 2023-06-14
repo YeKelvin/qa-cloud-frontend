@@ -273,7 +273,7 @@ export const usePyMeterStore = defineStore('pymeter', {
     /**
      * 设置当前选中的变量集列表
      */
-    setSelectedDatasetNumbers(data) {
+    setSelectedDatasets(data) {
       this.selectedDatasets = data
       this.disableOtherEnvironmentDataset()
     },

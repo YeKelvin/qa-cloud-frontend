@@ -51,7 +51,7 @@ const selectedDatasets = computed({
     return pymeterStore.selectedDatasets
   },
   set(val) {
-    if (props.show) pymeterStore.setSelectedDatasetNumbers(val)
+    if (props.show) pymeterStore.setSelectedDatasets(val)
   }
 })
 

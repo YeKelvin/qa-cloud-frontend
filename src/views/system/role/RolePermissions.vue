@@ -7,7 +7,7 @@
 
     <!-- 权限表格 -->
     <div class="permission-table-container">
-      <PermissionTable v-model:checkedList="checkedPermissionNumbers" />
+      <PermissionTable v-model:checkedList="checkedPermissions" />
     </div>
 
     <!-- 操作按钮 -->
@@ -28,7 +28,7 @@ const route = useRoute()
 const router = useRouter()
 
 const roleNo = ref(route.query.roleNo)
-const checkedPermissionNumbers = ref([])
+const checkedPermissions = ref([])
 
 onMounted(() => {
   query()
@@ -39,7 +39,7 @@ onMounted(() => {
  */
 const query = () => {
   RoleService.queryRolePermissions({ roleNo: roleNo.value }).then((response) => {
-    checkedPermissionNumbers.value = response.result.map((item) => item.permissionNo)
+    checkedPermissions.value = response.result.map((item) => item.permissionNo)
   })
 }
 
@@ -49,7 +49,7 @@ const query = () => {
 const save = () => {
   RoleService.setRolePermissions({
     roleNo: roleNo.value,
-    permissionNumbers: checkedPermissionNumbers.value
+    permissions: checkedPermissions.value
   }).then(() => {
     ElMessage({ message: '设置权限成功', type: 'info', duration: 2 * 1000 })
     goBack()

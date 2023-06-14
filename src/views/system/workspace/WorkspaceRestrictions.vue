@@ -8,16 +8,16 @@
     <!-- 限制项 -->
     <div class="permission-table-container">
       <!-- 权限表格 -->
-      <PermissionTable v-model:checkedList="checkedPermissionNumbers" style="margin-bottom: 20px" />
+      <PermissionTable v-model:checkedList="checkedPermissions" style="margin-bottom: 20px" />
       <!-- 豁免成员和分组 -->
       <el-form label-width="90px" label-position="top" style="width: 100%">
         <el-form-item label="豁免成员：">
-          <el-select v-model="exemptionUserNumbers" style="width: 100%" tag-type="danger" filterable multiple>
+          <el-select v-model="exemptionUsers" style="width: 100%" tag-type="danger" filterable multiple>
             <el-option v-for="user in userList" :key="user.userNo" :label="user.userName" :value="user.userNo" />
           </el-select>
         </el-form-item>
         <el-form-item label="豁免分组：">
-          <el-select v-model="exemptionGroupNumbers" style="width: 100%" tag-type="danger" filterable multiple>
+          <el-select v-model="exemptionGroups" style="width: 100%" tag-type="danger" filterable multiple>
             <el-option
               v-for="group in groupList"
               :key="group.groupNo"
@@ -51,9 +51,9 @@ const router = useRouter()
 const workspaceNo = ref(route.query.workspaceNo)
 const userList = ref([])
 const groupList = ref([])
-const checkedPermissionNumbers = ref([])
-const exemptionUserNumbers = ref([])
-const exemptionGroupNumbers = ref([])
+const checkedPermissions = ref([])
+const exemptionUsers = ref([])
+const exemptionGroups = ref([])
 
 onMounted(() => {
   // 查询所有用户
@@ -66,9 +66,9 @@ onMounted(() => {
   })
   // 查询空间限制和豁免成员
   WorkspaceService.queryWorkspaceRestriction({ workspaceNo: workspaceNo.value }).then((response) => {
-    checkedPermissionNumbers.value = response.result.permissionList.map((item) => item.permissionNo)
-    exemptionUserNumbers.value = response.result.userNumbers
-    exemptionGroupNumbers.value = response.result.groupNumbers
+    checkedPermissions.value = response.result.permissionList.map((item) => item.permissionNo)
+    exemptionUsers.value = response.result.users
+    exemptionGroups.value = response.result.groups
   })
 })
 
@@ -78,9 +78,9 @@ onMounted(() => {
 const save = () => {
   WorkspaceService.setWorkspaceRestriction({
     workspaceNo: workspaceNo.value,
-    permissionNumbers: checkedPermissionNumbers.value,
-    userNumbers: exemptionUserNumbers.value,
-    groupNumbers: exemptionGroupNumbers.value
+    permissions: checkedPermissions.value,
+    users: exemptionUsers.value,
+    groups: exemptionGroups.value
   }).then(() => {
     ElMessage({ message: '设置限制成功', type: 'info', duration: 2 * 1000 })
     goBack()
