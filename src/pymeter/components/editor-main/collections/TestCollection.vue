@@ -189,6 +189,7 @@ import { Check, Close, Edit, Warning } from '@element-plus/icons-vue'
 import { usePyMeterStore } from '@/store/pymeter'
 import { useWorkspaceStore } from '@/store/workspace'
 import useEditor from '@/pymeter/composables/useEditor'
+import useElement from '@/pymeter/composables/useElement'
 import useRunnableElement from '@/pymeter/composables/useRunnableElement'
 import EditorProps from '@/pymeter/composables/editor.props'
 import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
@@ -199,6 +200,7 @@ import AssertionPane from '@/pymeter/components/editor-main/panes/AssertionPane.
 const props = defineProps(EditorProps)
 const pymeterStore = usePyMeterStore()
 const workspaceStore = useWorkspaceStore()
+const { assignElement } = useElement()
 const { executeTestCollection } = useRunnableElement()
 const { editMode, queryMode, modifyMode, createMode, functions, editNow, setReadonly, updateTab, closeTab } =
   useEditor(props)
@@ -264,7 +266,7 @@ onMounted(() => {
 const query = (_elementNo_ = elementNo.value) => {
   // 查询元素信息
   ElementService.queryElementInfo({ elementNo: _elementNo_ }).then((response) => {
-    elementInfo.value = response.result
+    assignElement(elementInfo.value, response.result)
     setRunningStrategy()
   })
   // 查询内置元素

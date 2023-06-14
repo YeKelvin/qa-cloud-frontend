@@ -121,6 +121,7 @@ import { ElMessage } from 'element-plus'
 import { Check, Close, Edit } from '@element-plus/icons-vue'
 import { usePyMeterStore } from '@/store/pymeter'
 import useEditor from '@/pymeter/composables/useEditor'
+import useElement from '@/pymeter/composables/useElement'
 import useRunnableElement from '@/pymeter/composables/useRunnableElement'
 import EditorProps from '@/pymeter/composables/editor.props'
 import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
@@ -153,6 +154,7 @@ const elementFormRules = {
 
 const pymeterStore = usePyMeterStore()
 const props = defineProps(EditorProps)
+const { assignElement } = useElement()
 const { executeTestWorker } = useRunnableElement()
 const {
   queryMode,
@@ -222,7 +224,7 @@ onMounted(() => {
   if (createMode.value) return
   // 查询元素
   ElementService.queryElementInfo({ elementNo: elementNo.value }).then((response) => {
-    elementInfo.value = response.result
+    assignElement(elementInfo.value, response.result)
   })
 })
 

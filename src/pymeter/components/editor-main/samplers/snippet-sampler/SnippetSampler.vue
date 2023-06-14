@@ -125,8 +125,9 @@ import { ElMessage } from 'element-plus'
 import { Check, Close, Edit, View } from '@element-plus/icons-vue'
 import { usePyMeterStore } from '@/store/pymeter'
 import { useWorkspaceStore } from '@/store/workspace'
-import useRunnableElement from '@/pymeter/composables/useRunnableElement'
 import useEditor from '@/pymeter/composables/useEditor'
+import useElement from '@/pymeter/composables/useElement'
+import useRunnableElement from '@/pymeter/composables/useRunnableElement'
 import EditorProps from '@/pymeter/composables/editor.props'
 import ArgumentTable from './SnippetSamplerArgumentTable.vue'
 
@@ -138,6 +139,7 @@ const elementFormRules = {
 const props = defineProps(EditorProps)
 const pymeterStore = usePyMeterStore()
 const workspaceStore = useWorkspaceStore()
+const { assignElement } = useElement()
 const { executeSampler } = useRunnableElement()
 const {
   editMode,
@@ -190,10 +192,7 @@ onMounted(() => {
   // 查询或更新模式时，先拉取元素信息
   if (createMode.value) return
   ElementService.queryElementInfo({ elementNo: elementNo.value }).then((response) => {
-    elementInfo.value = response.result
-    if (!elementInfo.value.attributes.arguments) {
-      elementInfo.value.attributes.arguments = []
-    }
+    assignElement(elementInfo.value, response.result)
   })
 })
 

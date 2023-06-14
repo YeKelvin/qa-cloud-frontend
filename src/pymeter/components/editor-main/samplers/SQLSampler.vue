@@ -149,13 +149,15 @@ import { DatabaseType } from '@/api/enum'
 import { ElMessage } from 'element-plus'
 import { Check, Close, Edit } from '@element-plus/icons-vue'
 import { useWorkspaceStore } from '@/store/workspace'
-import useRunnableElement from '@/pymeter/composables/useRunnableElement'
 import useEditor from '@/pymeter/composables/useEditor'
+import useElement from '@/pymeter/composables/useElement'
+import useRunnableElement from '@/pymeter/composables/useRunnableElement'
 import EditorProps from '@/pymeter/composables/editor.props'
 import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
 
 const props = defineProps(EditorProps)
 const workspaceStore = useWorkspaceStore()
+const { assignElement } = useElement()
 const { executeSampler } = useRunnableElement()
 const {
   queryMode,
@@ -219,7 +221,7 @@ onMounted(() => {
   // 查询或更新模式时，先拉取元素信息
   if (createMode.value) return
   ElementService.queryElementInfo({ elementNo: elementNo.value }).then((response) => {
-    elementInfo.value = response.result
+    assignElement(elementInfo.value, response.result)
     codeEditorRef.value.setValue(response.result.property.SQLSampler__statement)
   })
 })

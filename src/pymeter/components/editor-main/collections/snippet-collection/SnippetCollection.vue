@@ -133,6 +133,7 @@ import { isBlank, isBlankAll } from '@/utils/string-util'
 import { usePyMeterStore } from '@/store/pymeter'
 import { useWorkspaceStore } from '@/store/workspace'
 import useEditor from '@/pymeter/composables/useEditor'
+import useElement from '@/pymeter/composables/useElement'
 import useRunnableElement from '@/pymeter/composables/useRunnableElement'
 import EditorProps from '@/pymeter/composables/editor.props'
 import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
@@ -142,6 +143,7 @@ import ParameterTable from './SnippetCollectionParameterTable.vue' // 形参
 const props = defineProps(EditorProps)
 const pymeterStore = usePyMeterStore()
 const workspaceStore = useWorkspaceStore()
+const { assignElement } = useElement()
 const { executeSnippetCollection } = useRunnableElement()
 const { editMode, queryMode, modifyMode, createMode, functions, editNow, setReadonly, updateTab, closeTab } =
   useEditor(props)
@@ -184,7 +186,7 @@ onMounted(() => {
   // 查询或更新模式时，先拉取元素信息
   if (createMode.value) return
   ElementService.queryElementInfo({ elementNo: elementNo.value }).then((response) => {
-    elementInfo.value = response.result
+    assignElement(elementInfo.value, response.result)
     parametersData.value = response.result.attributes.parameters
     argumentsData.value = response.result.attributes.parameters
   })
