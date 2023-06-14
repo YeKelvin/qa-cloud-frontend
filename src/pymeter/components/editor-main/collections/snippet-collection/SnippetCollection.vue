@@ -187,8 +187,9 @@ onMounted(() => {
   if (createMode.value) return
   ElementService.queryElementInfo({ elementNo: elementNo.value }).then((response) => {
     assignElement(elementInfo.value, response.result)
-    parametersData.value = response.result.attributes.parameters
-    argumentsData.value = response.result.attributes.parameters
+    const attributes = elementInfo.value.attributes
+    parametersData.value = attributes.parameters
+    argumentsData.value = attributes.parameters
   })
 })
 
