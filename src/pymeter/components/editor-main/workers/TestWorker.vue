@@ -31,9 +31,12 @@
         </el-select>
       </el-form-item>
 
+      <!-- 并发数 -->
       <el-form-item label="并发数：" prop="property.TestWorker__number_of_threads">
         <el-input v-model="elementInfo.property.TestWorker__number_of_threads" clearable disabled />
       </el-form-item>
+
+      <!-- 循环次数 -->
       <el-form-item label="循环次数：" prop="property.TestWorker__main_controller.property.LoopController__loops">
         <el-input
           v-model="elementInfo.property.TestWorker__main_controller.property.LoopController__loops"

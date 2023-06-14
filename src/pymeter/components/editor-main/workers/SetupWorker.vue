@@ -3,7 +3,7 @@
     <el-form
       ref="elformRef"
       label-position="right"
-      label-width="120px"
+      label-width="140px"
       inline-message
       :model="elementInfo"
       :rules="elementFormRules"
@@ -34,16 +34,39 @@
           <el-option label="立即停止测试" value="stop_now" />
         </el-select>
       </el-form-item>
-      <el-form-item label="并发数：" prop="property.SetupWorker__number_of_threads">
-        <el-input v-model="elementInfo.property.SetupWorker__number_of_threads" clearable disabled />
-      </el-form-item>
-      <el-form-item label="循环次数：" prop="property.SetupWorker__main_controller.property.LoopController__loops">
-        <el-input
-          v-model="elementInfo.property.SetupWorker__main_controller.property.LoopController__loops"
-          clearable
-          disabled
-        />
-      </el-form-item>
+
+      <!-- 设置类 Tabs -->
+      <el-tabs v-model="activeTabName">
+        <el-tab-pane name="HTTP">
+          <template #label>
+            <el-badge :hidden="hiddenConfigDot" type="success" is-dot>HTTP配置</el-badge>
+          </template>
+        </el-tab-pane>
+      </el-tabs>
+
+      <!-- HTTP 设置 -->
+      <div v-if="showHTTPSettings">
+        <!-- 是否使用 HTTP 会话 -->
+        <el-form-item label="使用会话：">
+          <el-switch
+            v-model="elementInfo.attributes.enable_http_session"
+            inline-prompt
+            :active-icon="Check"
+            :inactive-icon="Close"
+            :disabled="queryMode"
+          />
+        </el-form-item>
+        <!-- 是否在每次迭代开始前重新打开一个新的 HTTP 会话 -->
+        <el-form-item label="迭代时刷新会话：">
+          <el-switch
+            v-model="elementInfo.attributes.clear_http_session_for_each_iteration"
+            inline-prompt
+            :active-icon="Check"
+            :inactive-icon="Close"
+            :disabled="queryMode"
+          />
+        </el-form-item>
+      </div>
 
       <!-- 操作按钮 -->
       <el-form-item v-if="queryMode">
@@ -91,12 +114,14 @@ import { ElMessage } from 'element-plus'
 import { Check, Close, Edit } from '@element-plus/icons-vue'
 import { usePyMeterStore } from '@/store/pymeter'
 import useEditor from '@/pymeter/composables/useEditor'
+import useElement from '@/pymeter/composables/useElement'
 import useRunnableElement from '@/pymeter/composables/useRunnableElement'
 import EditorProps from '@/pymeter/composables/editor.props'
 import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
 
 const pymeterStore = usePyMeterStore()
 const props = defineProps(EditorProps)
+const { assignElement } = useElement()
 const { executeTestWorker } = useRunnableElement()
 const {
   queryMode,
@@ -129,6 +154,10 @@ const elementInfo = ref({
         LoopController__continue_forever: false
       }
     }
+  },
+  attributes: {
+    enable_http_session: false,
+    clear_http_session_for_each_iteration: false
   }
 })
 const elementFormRules = reactive({
@@ -139,14 +168,37 @@ const elementFormRules = reactive({
     { required: true, message: '循环次数不能为空', trigger: 'blur' }
   ]
 })
+const activeTabName = ref('HTTP')
+const showHTTPSettings = computed(() => activeTabName.value === 'HTTP')
+const hiddenConfigDot = computed(() => elementInfo.value.attributes.enable_http_session === false)
 const showJsonScriptDialog = ref(false)
 const jsonEditorRef = ref()
+
+watch(
+  () => elementInfo.value.attributes.enable_http_session,
+  (val) => {
+    const clear_each_iteration = elementInfo.value.attributes.clear_http_session_for_each_iteration
+    if (!val && clear_each_iteration === true) {
+      elementInfo.value.attributes.clear_http_session_for_each_iteration = false
+    }
+  }
+)
+
+watch(
+  () => elementInfo.value.attributes.clear_http_session_for_each_iteration,
+  (val) => {
+    const enable_http_session = elementInfo.value.attributes.enable_http_session
+    if (val && enable_http_session === false) {
+      elementInfo.value.attributes.enable_http_session = true
+    }
+  }
+)
 
 onMounted(() => {
   // 查询或更新模式时，先拉取元素信息
   if (createMode.value) return
   ElementService.queryElementInfo({ elementNo: elementNo.value }).then((response) => {
-    elementInfo.value = response.result
+    assignElement(elementInfo.value, response.result)
   })
 })
 
@@ -254,4 +306,12 @@ functions.createFn = createElement
 functions.modifyFn = modifyElement
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+:deep(.el-badge__content) {
+  top: 10px;
+}
+
+:deep(.el-badge__content.is-fixed.is-dot) {
+  right: -4px;
+}
+</style>
