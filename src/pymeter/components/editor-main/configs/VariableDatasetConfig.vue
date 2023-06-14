@@ -58,10 +58,10 @@
           <!-- 查询模式下可用的按钮 -->
           <template v-if="queryMode">
             <template v-if="row.editing">
-              <!-- 单行提交按钮 -->
-              <el-button type="danger" link :icon="Check" @click="submitVariable(row)" />
               <!-- 单行取消按钮 -->
               <el-button type="primary" link :icon="Close" @click="queryVariables()" />
+              <!-- 单行提交按钮 -->
+              <el-button type="danger" link :icon="Check" @click="submitVariable(row)" />
             </template>
             <template v-else>
               <!-- 单行编辑按钮 -->
@@ -73,6 +73,10 @@
         </template>
       </el-table-column>
     </el-table>
+
+    <div v-show="queryMode && !isEmpty(rows)" style="padding: 10px 20px">
+      <el-button type="primary" link :icon="Plus" @click="newEditingRow">添加</el-button>
+    </div>
 
     <!-- 底部操作按钮 -->
     <div style="display: flex; justify-content: center; margin-top: 20px">
@@ -177,6 +181,10 @@ const queryVariables = () => {
  */
 const newRow = () => {
   rows.value.push({ varName: '', varDesc: '', initialValue: '', currentValue: '', enabled: true })
+}
+
+const newEditingRow = () => {
+  rows.value.push({ varName: '', varDesc: '', initialValue: '', currentValue: '', enabled: true, editing: true })
 }
 
 /**
