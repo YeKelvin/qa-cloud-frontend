@@ -47,13 +47,15 @@ onMounted(() => {
     value: props.modelValue,
     ...monacoOptions
   })
-  // 移除有冲突的默认快捷键
-  removeDefaultKeybindings()
+  // 设置行尾符合为\n
+  instance.setEOL(monaco.editor.EndOfLinePreference.LF)
   // 双向绑定
   instance.onDidChangeModelContent(() => {
     const value = instance.getValue()
     emit('update:modelValue', value)
   })
+  // 移除有冲突的默认快捷键
+  removeDefaultKeybindings()
 })
 onUnmounted(() => {
   instance && instance.dispose()
