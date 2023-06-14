@@ -48,7 +48,7 @@ onMounted(() => {
     ...monacoOptions
   })
   // 设置行尾符合为\n
-  instance.setEOL(monaco.editor.EndOfLinePreference.LF)
+  instance.getModel().setEOL(monaco.editor.EndOfLinePreference.LF)
   // 双向绑定
   instance.onDidChangeModelContent(() => {
     const value = instance.getValue()
