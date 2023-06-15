@@ -41,9 +41,20 @@
           <!-- 变量名称 -->
           <el-table-column label="变量名称" width="auto">
             <template #default="{ row }">
-              <div class="variable-name-wrapper" @dblclick="copy(row.varName)">
+              <div
+                class="variable-item-wrapper"
+                @dblclick="copy(row.varName, { close: true })"
+                @mouseenter="row.hoverName = true"
+                @mouseleave="row.hoverName = false"
+              >
                 <span>{{ row.varName }}</span>
-                <el-button type="primary" link :icon="CopyDocument" @click="copy(row.varName)" />
+                <el-button
+                  v-show="row.hoverName"
+                  type="primary"
+                  link
+                  :icon="CopyDocument"
+                  @click="copy(row.varName, { close: true })"
+                />
               </div>
             </template>
           </el-table-column>
@@ -51,7 +62,21 @@
           <!-- 默认值 -->
           <el-table-column label="默认值" width="auto">
             <template #default="{ row }">
-              <span>{{ row.initialValue }}</span>
+              <div
+                class="variable-item-wrapper"
+                @dblclick="copy(row.initialValue)"
+                @mouseenter="row.hoverInitialValue = true"
+                @mouseleave="row.hoverInitialValue = false"
+              >
+                <span>{{ row.initialValue || '-' }}</span>
+                <el-button
+                  v-show="row.hoverInitialValue"
+                  type="primary"
+                  link
+                  :icon="CopyDocument"
+                  @click="copy(row.initialValue)"
+                />
+              </div>
             </template>
           </el-table-column>
 
@@ -72,17 +97,31 @@
             </template>
             <!-- 单元格 -->
             <template #default="{ row }">
-              <span v-if="row.editing" class="current-value__editing">
-                <el-input v-model="row.currentValue" autosize type="textarea" size="small" :rows="1" />
-                <span id="current-value-button" style="display: flex; justify-content: flex-end">
-                  <el-button type="danger" link :icon="Check" @click="updateCurrentValue(row)" />
-                  <el-button type="primary" link :icon="Close" @click="row.editing = false" />
+              <div @mouseenter="row.hoverCurrentValue = true" @mouseleave="row.hoverCurrentValue = false">
+                <span v-if="row.editing" class="current-value__editing">
+                  <el-input
+                    :ref="(el) => (cellInputRef = el)"
+                    v-model="row.currentValue"
+                    type="textarea"
+                    size="small"
+                    autosize
+                    clearable
+                    :rows="1"
+                    @blur="updateCurrentValue(row)"
+                  />
+                  <span id="current-value-button" style="display: flex; justify-content: flex-end">
+                    <el-button type="danger" link :icon="Check" @click="updateCurrentValue(row)" />
+                    <el-button type="primary" link :icon="Close" @click="row.editing = false" />
+                  </span>
                 </span>
-              </span>
-              <span v-else class="current-value-wrapper" @dblclick="row.editing = true">
-                <span>{{ row.currentValue }}</span>
-                <el-button type="primary" link :icon="Edit" @click="row.editing = true" />
-              </span>
+                <span v-else class="current-value-wrapper" @dblclick="row.editing = true">
+                  <span>{{ row.currentValue || '-' }}</span>
+                  <span v-show="row.hoverCurrentValue">
+                    <el-button type="primary" link :icon="Edit" @click="row.editing = true" />
+                    <el-button type="primary" link :icon="CopyDocument" @click="copy(row.currentValue)" />
+                  </span>
+                </span>
+              </div>
             </template>
           </el-table-column>
         </el-table>
@@ -109,6 +148,7 @@ import useClipboard from '@/composables/useClipboard'
 const { toClipboard } = useClipboard()
 const emit = defineEmits(['update:model-value'])
 const pymeterStore = usePyMeterStore()
+const cellInputRef = ref()
 const activeTabNo = ref('')
 const rows = ref([])
 const backtop = reactive({
@@ -133,6 +173,11 @@ const selectedDatasetList = computed(() =>
   pymeterStore.datasetList.filter((item) => pymeterStore.selectedDatasets.indexOf(item.datasetNo) > -1)
 )
 
+watch(cellInputRef, (input) => {
+  if (!input) return
+  input.focus()
+})
+
 watch(activeTabNo, () => {
   queryVariables()
 })
@@ -150,10 +195,10 @@ onMounted(() => {
   })
 })
 
-const copy = async (val) => {
+const copy = async (val, options = { close: false }) => {
   await toClipboard(val)
-  closeDialog()
-  ElMessage({ message: '复制成功', type: 'success', duration: 1 * 1000 })
+  if (options.close) closeDialog()
+  ElMessage({ message: '复制成功', type: 'info', duration: 1 * 1000 })
 }
 
 const closeDialog = () => {
@@ -174,10 +219,6 @@ const queryVariables = () => {
  * 更新变量的当前值
  */
 const updateCurrentValue = (row) => {
-  if (row.currentValue === row.cache.currentValue) {
-    row.editing = false
-    return
-  }
   VariablesService.updateCurrentValue({ varNo: row.varNo, value: row.currentValue }).then(() => {
     queryVariables()
   })
@@ -206,7 +247,7 @@ const openVariableDatasetEditor = () => {
 </script>
 
 <style lang="scss" scoped>
-.variable-name-wrapper {
+.variable-item-wrapper {
   display: flex;
   align-items: center;
   justify-content: space-between;
