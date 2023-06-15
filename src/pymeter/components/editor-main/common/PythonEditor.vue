@@ -6,7 +6,7 @@
       class="python-editor"
       language="python"
       style="margin-bottom: 10px"
-      :read-only="readOnly"
+      :readonly="readonly"
     />
     <div class="snippet-code-container">
       <span class="snippet-title">代码片段</span>
@@ -42,7 +42,7 @@ import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
 export default defineComponent({
   components: { MonacoEditor },
   props: {
-    readOnly: Boolean,
+    readonly: Boolean,
     phase: String, // PRE | SAMPLER | POST | ASSERTION
     type: String // PYTHON | HTTP
   },

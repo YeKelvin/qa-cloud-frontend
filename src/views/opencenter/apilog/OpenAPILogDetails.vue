@@ -14,10 +14,10 @@
         <span>{{ formData.success == true ? '成功' : '失败' }}</span>
       </el-form-item>
       <el-form-item label="请求数据：" prop="request">
-        <MonacoEditor ref="reqRef" v-model="formData.request" language="json" style="height: 300px" :read-only="true" />
+        <MonacoEditor ref="reqRef" v-model="formData.request" language="json" style="height: 300px" :readonly="true" />
       </el-form-item>
       <el-form-item label="响应数据：" prop="response">
-        <MonacoEditor ref="resRef" language="json" style="height: 300px" :read-only="true" />
+        <MonacoEditor ref="resRef" language="json" style="height: 300px" :readonly="true" />
       </el-form-item>
     </el-form>
   </el-dialog>

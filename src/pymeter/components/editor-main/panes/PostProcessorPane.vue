@@ -77,7 +77,7 @@
             <component
               :is="components[element.elementClass]"
               :key="element.elementNo"
-              :read-only="queryMode"
+              :readonly="queryMode"
               :owner-type="ownerType"
               :element-no="element.elementNo"
               :element-name="element.elementName"

@@ -5,7 +5,7 @@
       v-model="scriptContent"
       language="python"
       class="python-editor"
-      :read-only="readOnly"
+      :readonly="readonly"
     />
     <div class="snippet-code-container">
       <span class="snippet-title">代码片段</span>
@@ -45,13 +45,13 @@ import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
 
 const ScriptPropertyNameEmun = {
   PythonSampler: 'PythonSampler__script',
+  PythonAssertion: 'PythonAssertion__script',
   PythonPreProcessor: 'PythonPreProcessor__script',
-  PythonPostProcessor: 'PythonPostProcessor__script',
-  PythonAssertion: 'PythonAssertion__script'
+  PythonPostProcessor: 'PythonPostProcessor__script'
 }
 
 const props = defineProps({
-  readOnly: Boolean,
+  readonly: Boolean,
   ownerType: String,
   elementType: String,
   elementClass: String,

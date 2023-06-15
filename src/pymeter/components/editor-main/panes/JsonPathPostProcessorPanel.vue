@@ -6,8 +6,8 @@
     scroll-to-error
     style="width: 100%; margin-top: 20px"
     :style="{
-      'padding-left': props.readOnly ? '37px' : '69px',
-      'padding-right': props.readOnly ? '71px' : '105px'
+      'padding-left': props.readonly ? '37px' : '69px',
+      'padding-right': props.readonly ? '71px' : '105px'
     }"
     :model="elementProperty"
     :rules="rules"
@@ -18,13 +18,14 @@
         v-model="elementProperty.JsonPathPostProcessor__variable_name"
         placeholder="存储提取值的变量名称"
         clearable
-        :readonly="props.readOnly"
+        :readonly="props.readonly"
       >
         <template #prepend>
           <!-- 变量作用域 -->
           <el-select
             v-model="elementProperty.JsonPathPostProcessor__variable_scope"
             style="min-width: 100px; width: 100px"
+            :disabled="props.readonly"
           >
             <el-option label="局部变量" value="LOCAL" />
             <el-option label="全局变量" value="GLOBAL" />
@@ -39,7 +40,7 @@
         v-model="elementProperty.JsonPathPostProcessor__jsonpath"
         placeholder="$.aa.bb[0].cc"
         clearable
-        :readonly="props.readOnly"
+        :readonly="props.readonly"
       />
     </el-form-item>
 
@@ -52,7 +53,7 @@
         inline-prompt
         :active-icon="Check"
         :inactive-icon="Close"
-        :disabled="props.readOnly"
+        :disabled="props.readonly"
       />
     </el-form-item>
 
@@ -62,20 +63,37 @@
         v-model="elementProperty.JsonPathPostProcessor__default_value"
         placeholder="提取失败时使用默认值"
         clearable
-        :readonly="props.readOnly"
+        :readonly="props.readonly"
       />
     </el-form-item>
   </el-form>
 </template>
 
 <script setup>
+import { Check, Close } from '@element-plus/icons-vue'
+
 const props = defineProps({
-  readOnly: Boolean,
+  readonly: Boolean,
   elementProperty: Object
 })
 const elementProperty = computed(() => props.elementProperty)
+const defaultProperty = {
+  JsonPathPostProcessor__variable_scope: 'LOCAL',
+  JsonPathPostProcessor__variable_name: '',
+  JsonPathPostProcessor__jsonpath: '',
+  JsonPathPostProcessor__list_random: 'false',
+  JsonPathPostProcessor__default_value: ''
+}
 const rules = {
   JsonPathPostProcessor__variable_name: { required: true, message: '变量名称不能为空', trigger: 'blur' },
   JsonPathPostProcessor__jsonpath: { required: true, message: 'JsonPath表达式不能为空', trigger: 'blur' }
 }
+
+onMounted(() => {
+  Object.keys(defaultProperty).forEach((propname) => {
+    if (!(propname in elementProperty.value)) {
+      elementProperty.value[propname] = defaultProperty[propname]
+    }
+  })
+})
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div class="log-view">
     <!-- <div class="view-header"></div> -->
-    <MonacoEditor ref="logEditorRef" language="log" :read-only="true" />
+    <MonacoEditor ref="logEditorRef" language="log" :readonly="true" />
   </div>
 </template>
 

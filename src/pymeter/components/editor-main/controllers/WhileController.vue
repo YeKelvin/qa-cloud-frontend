@@ -55,7 +55,7 @@
           v-model="elementInfo.property.WhileController__condition"
           language="python"
           style="height: 100px"
-          :read-only="queryMode"
+          :readonly="queryMode"
         />
         <el-tag type="danger" style="font-size: 14px" disable-transitions>注意：仅支持单行表达式</el-tag>
       </el-form-item>

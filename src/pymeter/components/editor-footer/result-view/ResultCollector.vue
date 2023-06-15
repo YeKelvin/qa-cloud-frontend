@@ -98,7 +98,7 @@
 
       <!-- 请求体 -->
       <div v-show="showing && showRequestCode" class="tab-pane">
-        <MonacoEditor ref="requestEditorRef" language="json" height="100" :read-only="true" />
+        <MonacoEditor ref="requestEditorRef" language="json" height="100" :readonly="true" />
       </div>
 
       <!-- 请求头部 -->
@@ -134,7 +134,7 @@
           height="100"
           :language="responseDisplayType == 'pretty' ? responseContentType : ''"
           :word-wrap="responseWordWrap"
-          :read-only="true"
+          :readonly="true"
         />
       </div>
 
@@ -150,7 +150,7 @@
 
       <!-- 失败断言 -->
       <div v-show="showing && showAssertionCode" class="tab-pane">
-        <MonacoEditor ref="assertionEditorRef" language="python" :read-only="true" />
+        <MonacoEditor ref="assertionEditorRef" language="python" :readonly="true" />
       </div>
     </el-card>
   </div>

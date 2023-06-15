@@ -117,7 +117,7 @@
           v-model="elementInfo.property.SQLSampler__statement"
           language="sql"
           style="margin-bottom: 20px"
-          :read-only="queryMode"
+          :readonly="queryMode"
         />
       </div>
 

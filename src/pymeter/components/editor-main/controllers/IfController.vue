@@ -25,7 +25,7 @@
           v-model="elementInfo.property.IfController__condition"
           style="height: 100px"
           language="python"
-          :read-only="queryMode"
+          :readonly="queryMode"
         />
         <el-tag type="danger" style="font-size: 14px" disable-transitions>注意：仅支持单行表达式</el-tag>
       </el-form-item>

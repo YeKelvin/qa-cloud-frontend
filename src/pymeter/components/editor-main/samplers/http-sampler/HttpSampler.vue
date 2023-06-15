@@ -126,7 +126,7 @@
           v-model="bodyCode"
           language="json"
           style="margin-bottom: 10px"
-          :read-only="queryMode"
+          :readonly="queryMode"
         />
       </div>
 

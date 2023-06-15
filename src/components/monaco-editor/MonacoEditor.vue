@@ -14,7 +14,7 @@ const props = defineProps({
   height: { type: [String, Number], default: '300px' },
   language: { type: String, required: true },
   fontSize: { type: Number, default: 14 },
-  readOnly: { type: Boolean, default: false },
+  readonly: { type: Boolean, default: false },
   theme: { type: String, default: 'vs' },
   wordWrap: { type: String, default: 'on' }
 })
@@ -28,7 +28,7 @@ watch(
   }
 )
 watch(
-  () => props.readOnly,
+  () => props.readonly,
   (val) => instance.updateOptions({ readOnly: val })
 )
 watch(
@@ -41,7 +41,7 @@ onMounted(() => {
   instance = monaco.editor.create(editorRef.value, {
     fontSize: props.fontSize,
     language: props.language,
-    readOnly: props.readOnly,
+    readOnly: props.readonly,
     wordWrap: props.wordWrap,
     theme: props.theme,
     value: props.modelValue,
@@ -205,13 +205,13 @@ const focus = () => {
  * 格式化代码
  */
 const formatDocument = () => {
-  if (props.readOnly) {
+  if (props.readonly) {
     instance.updateOptions({ readOnly: false })
   }
   instance
     .getAction('editor.action.formatDocument')
     .run()
-    .then(() => instance.updateOptions({ readOnly: props.readOnly }))
+    .then(() => instance.updateOptions({ readOnly: props.readonly }))
 }
 
 /**

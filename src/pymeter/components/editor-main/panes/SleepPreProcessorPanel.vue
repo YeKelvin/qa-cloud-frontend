@@ -6,15 +6,15 @@
     scroll-to-error
     style="width: 100%; margin-top: 20px"
     :style="{
-      'padding-left': props.readOnly ? '35px' : '69px',
-      'padding-right': props.readOnly ? '71px' : '105px'
+      'padding-left': props.readonly ? '35px' : '69px',
+      'padding-right': props.readonly ? '71px' : '105px'
     }"
     :model="elementProperty"
     :rules="rules"
   >
     <!-- 延迟时间 -->
     <el-form-item label="延迟时间：" prop="SleepPreProcessor__delay">
-      <el-input v-model="elementProperty.SleepPreProcessor__delay" clearable :readonly="props.readOnly">
+      <el-input v-model="elementProperty.SleepPreProcessor__delay" clearable :readonly="props.readonly">
         <template #append>ms</template>
       </el-input>
     </el-form-item>
@@ -23,11 +23,22 @@
 
 <script setup>
 const props = defineProps({
-  readOnly: Boolean,
+  readonly: Boolean,
   elementProperty: Object
 })
 const elementProperty = computed(() => props.elementProperty)
+const defaultProperty = {
+  SleepPreProcessor__delay: '0'
+}
 const rules = {
   SleepPreProcessor__delay: { required: true, message: '延迟时间', trigger: 'blur' }
 }
+
+onMounted(() => {
+  Object.keys(defaultProperty).forEach((propname) => {
+    if (!(propname in elementProperty.value)) {
+      elementProperty.value[propname] = defaultProperty[propname]
+    }
+  })
+})
 </script>

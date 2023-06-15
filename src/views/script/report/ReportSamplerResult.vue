@@ -34,7 +34,7 @@
     </div>
     <!-- 请求体 -->
     <div v-show="showRequestData">
-      <MonacoEditor ref="requestEditorRef" language="json" style="height: 300px" :read-only="true" />
+      <MonacoEditor ref="requestEditorRef" language="json" style="height: 300px" :readonly="true" />
     </div>
 
     <!-- 响应部分 -->
@@ -53,11 +53,11 @@
     </div>
     <!-- 响应体 -->
     <div v-show="showResponseData">
-      <MonacoEditor ref="responseEditorRef" language="json" style="height: 300px" :read-only="true" />
+      <MonacoEditor ref="responseEditorRef" language="json" style="height: 300px" :readonly="true" />
     </div>
     <!-- 断言 -->
     <div v-show="showResponseAssertion">
-      <MonacoEditor ref="assertionEditorRef" language="log" style="height: 300px" :read-only="true" />
+      <MonacoEditor ref="assertionEditorRef" language="log" style="height: 300px" :readonly="true" />
     </div>
   </div>
 </template>

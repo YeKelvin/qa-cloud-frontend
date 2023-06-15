@@ -48,7 +48,7 @@
         v-model="elementInfo.property.PythonSampler__script"
         phase="SAMPLER"
         type="PYTHON"
-        :read-only="queryMode"
+        :readonly="queryMode"
       />
 
       <!-- 操作按钮 -->

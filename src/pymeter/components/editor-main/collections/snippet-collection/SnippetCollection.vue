@@ -118,7 +118,7 @@
     </el-dialog>
 
     <el-dialog v-model="showJsonScriptDialog" title="Json脚本" width="80%" center>
-      <MonacoEditor ref="jsonEditorRef" language="json" style="height: 400px" :read-only="true" />
+      <MonacoEditor ref="jsonEditorRef" language="json" style="height: 400px" :readonly="true" />
     </el-dialog>
   </div>
 </template>

@@ -6,8 +6,8 @@
     scroll-to-error
     style="width: 100%; margin-top: 20px"
     :style="{
-      'padding-left': props.readOnly ? '24px' : '56px',
-      'padding-right': props.readOnly ? '71px' : '104px'
+      'padding-left': props.readonly ? '24px' : '56px',
+      'padding-right': props.readonly ? '71px' : '104px'
     }"
     :model="elementProperty"
     :rules="rules"
@@ -18,13 +18,13 @@
         v-model="elementProperty.JsonPathAssertion__jsonpath"
         placeholder="$.aa.bb[0].cc"
         clearable
-        :readonly="props.readOnly"
+        :readonly="props.readonly"
       />
     </el-form-item>
 
     <!-- 判断类型 -->
     <el-form-item label="判断类型：" prop="JsonPathAssertion__operator">
-      <el-select v-model="elementProperty.JsonPathAssertion__operator" :disabled="props.readOnly" style="width: 100%">
+      <el-select v-model="elementProperty.JsonPathAssertion__operator" :disabled="props.readonly" style="width: 100%">
         <el-option label="等于" value="EQUAL" />
         <el-option label="不等于" value="NOT_EQUAL" />
         <el-option label="大于" value="GREATER_THAN" />
@@ -57,7 +57,7 @@
         v-model="elementProperty.JsonPathAssertion__expected_value"
         placeholder="期望值"
         clearable
-        :readonly="props.readOnly"
+        :readonly="props.readonly"
       />
     </el-form-item>
   </el-form>
@@ -65,14 +65,17 @@
 
 <script setup>
 const props = defineProps({
-  readOnly: Boolean,
+  readonly: Boolean,
   elementProperty: Object
 })
 const elementProperty = computed(() => props.elementProperty)
+const defaultProperty = {
+  PythonAssertion__script: ''
+}
 const rules = {
   JsonPathAssertion__jsonpath: { required: true, message: 'JsonPath表达式不能为空', trigger: 'blur' },
-  JsonPathAssertion__expected_value: { required: true, message: '期望值不能为空', trigger: 'blur' },
-  JsonPathAssertion__operator: { required: true, message: '判断类型不能为空', trigger: 'blur' }
+  JsonPathAssertion__operator: { required: true, message: '判断类型不能为空', trigger: 'blur' },
+  JsonPathAssertion__expected_value: { required: true, message: '期望值不能为空', trigger: 'blur' }
 }
 
 watch(
@@ -83,4 +86,12 @@ watch(
     }
   }
 )
+
+onMounted(() => {
+  Object.keys(defaultProperty).forEach((propname) => {
+    if (!(propname in elementProperty.value)) {
+      elementProperty.value[propname] = defaultProperty[propname]
+    }
+  })
+})
 </script>

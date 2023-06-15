@@ -59,7 +59,7 @@
           v-model="elementInfo.property.ForInController__statements"
           language="python"
           style="height: 100px"
-          :read-only="queryMode"
+          :readonly="queryMode"
         />
       </el-form-item>
 

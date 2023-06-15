@@ -77,7 +77,7 @@
             <component
               :is="components[element.elementClass]"
               :key="element.elementNo"
-              :read-only="queryMode"
+              :readonly="queryMode"
               :owner-type="ownerType"
               :element-no="element.elementNo"
               :element-name="element.elementName"
@@ -179,7 +179,9 @@ const addSleepPreProcessor = () => {
     elementType: 'PRE_PROCESSOR',
     elementClass: 'SleepPreProcessor',
     enabled: true,
-    property: { SleepPreProcessor__delay: '0' }
+    property: {
+      SleepPreProcessor__delay: '0'
+    }
   })
   // 关闭菜单
   menuVisible.value = false
