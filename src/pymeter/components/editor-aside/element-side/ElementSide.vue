@@ -6,12 +6,14 @@
     <!-- 脚本集合列表 -->
     <span v-if="!loading" class="collection-list-container">
       <el-select
+        ref="elSelectRef"
         v-model="selectedCollections"
         style="flex-grow: 1"
         tag-type="danger"
         size="large"
-        filterable
         multiple
+        clearable
+        filterable
         :teleported="false"
       >
         <!-- 下拉框顶部的新增脚本按钮 -->
@@ -105,7 +107,10 @@
     </template>
 
     <!-- 没有选择脚本时给出提示 -->
-    <el-empty v-if="!loading && isEmpty(selectedCollections)" description="请选择脚本" />
+    <el-empty
+      v-if="!loading && isEmpty(selectedCollections)"
+      style="height: 100%; padding-top: 0; padding-bottom: 120px"
+    />
   </div>
 </template>
 
@@ -120,6 +125,7 @@ import ElementTree from './ElementTree.vue'
 const pymeterStore = usePyMeterStore()
 const workspaceStore = useWorkspaceStore()
 
+const elSelectRef = ref()
 const loading = ref(false)
 const collectionList = ref([])
 const snippets = ref([])
@@ -151,14 +157,21 @@ watch(
   () => scrollToBottom()
 )
 
-onMounted(() => {
+onMounted(async () => {
   // 没有选择工作空间时，清空已选择的集合列表
   if (!workspaceStore.workspaceNo) {
     selectedCollections.value = []
     return
   }
   // 查询集合列表
-  queryCollections()
+  await queryCollections()
+  // 没有选择脚本时自动弹出下拉框
+  if (selectedCollections.length > 0) return
+  nextTick(() => {
+    setTimeout(() => {
+      elSelectRef.value && elSelectRef.value.focus() // TODO: 不知为啥没有生效
+    }, 1000)
+  })
 })
 
 /**
@@ -288,5 +301,9 @@ const expandAll = (expand) => {
 :deep(.el-select-group__title) {
   font-size: 14px;
   font-weight: bold;
+}
+
+:deep(.el-empty__description) {
+  display: none;
 }
 </style>

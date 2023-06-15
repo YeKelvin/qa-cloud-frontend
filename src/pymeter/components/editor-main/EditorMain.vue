@@ -1,34 +1,42 @@
 <template>
   <el-card shadow="hover">
-    <!-- tabs头 -->
-    <el-tabs
-      v-show="pymeterStore.tabs.length > 0"
-      v-model="pymeterStore.activeTabNo"
-      type="card"
-      closable
-      @tab-remove="handleTabRemove"
-    >
-      <el-tab-pane v-for="tab in pymeterStore.tabs" :key="tab.editorNo" :label="tab.editorName" :name="tab.editorNo" />
-    </el-tabs>
-
-    <!-- 顶栏 -->
-    <Topbar :component="activeTab.editorComponent" />
-
-    <!-- pymeter 组件 -->
-    <el-scrollbar id="editor-main-scrollbar" style="width: 100%; height: 100%" wrap-style="overflow-x:auto;">
-      <keep-alive ref="keepAliveRef">
-        <component
-          :is="editors[activeTab.editorComponent]"
-          :key="activeTab.editorNo"
-          :editor-no="activeTab.editorNo"
-          :editor-mode="activeTab.editorMode"
-          :metadata="activeTab.metadata"
+    <template v-if="pymeterStore.tabs.length > 0">
+      <!-- tabs头 -->
+      <el-tabs v-model="pymeterStore.activeTabNo" type="card" closable @tab-remove="handleTabRemove">
+        <el-tab-pane
+          v-for="tab in pymeterStore.tabs"
+          :key="tab.editorNo"
+          :label="tab.editorName"
+          :name="tab.editorNo"
         />
-      </keep-alive>
-    </el-scrollbar>
+      </el-tabs>
 
-    <!-- 回到顶部按钮 -->
-    <el-backtop target="#editor-main-scrollbar .el-scrollbar__wrap" :right="20" :bottom="60" />
+      <!-- 顶栏 -->
+      <Topbar :component="activeTab.editorComponent" />
+
+      <!-- pymeter 组件 -->
+      <el-scrollbar id="editor-main-scrollbar" style="width: 100%; height: 100%" wrap-style="overflow-x:auto;">
+        <keep-alive ref="keepAliveRef">
+          <component
+            :is="editors[activeTab.editorComponent]"
+            :key="activeTab.editorNo"
+            :editor-no="activeTab.editorNo"
+            :editor-mode="activeTab.editorMode"
+            :metadata="activeTab.metadata"
+          />
+        </keep-alive>
+      </el-scrollbar>
+
+      <!-- 回到顶部按钮 -->
+      <el-backtop target="#editor-main-scrollbar .el-scrollbar__wrap" :right="20" :bottom="60" />
+    </template>
+
+    <!-- 占位图 -->
+    <template v-else>
+      <div style="display: flex;align-items: center; justify-content: center; height: 100%;}">
+        <SvgIcon icon-name="undraw-programming" style="font-size: 400px" />
+      </div>
+    </template>
   </el-card>
 </template>
 
