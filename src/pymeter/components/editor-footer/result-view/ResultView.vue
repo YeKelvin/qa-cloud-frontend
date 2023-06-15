@@ -13,8 +13,8 @@
               <div class="tab-label-wrapper">
                 <SvgIcon v-if="tab.running" icon-name="pymeter-running" class="running-icon" />
                 <span style="display: flex; flex-direction: column">
-                  <span>{{ tab.name }}</span>
                   <span style="font-size: 12px; font-weight: 300">{{ tab.startTime }}</span>
+                  <span>{{ tab.name }}</span>
                 </span>
               </div>
             </template>
