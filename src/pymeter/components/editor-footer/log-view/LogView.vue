@@ -1,6 +1,5 @@
 <template>
   <div class="log-view">
-    <!-- <div class="view-header"></div> -->
     <MonacoEditor ref="logEditorRef" language="log" :readonly="true" />
   </div>
 </template>
@@ -47,15 +46,5 @@ watch(
   height: 100%;
   display: flex;
   flex-direction: column;
-}
-
-.view-header {
-  width: 100%;
-  padding: 10px 15px;
-  padding-left: 25px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 }
 </style>

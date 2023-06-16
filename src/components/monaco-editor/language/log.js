@@ -1,8 +1,8 @@
 const LOG_LANGUAGE_DEFINE = {
   inherit: true,
   ignoreCase: true,
-  logTime: /^(\[[\d-:. ]+?\])?(\s?)/,
-  logLevel: /\[(\w+)\]/,
+  logTime: /(\[[\d-:. ]*\])?\s?/,
+  logLevel: /\[(ERROR|WARNING|INFO|DEBUG)?\]/,
   tokenizer: {
     root: [
       [/@logTime\[DEBUG\]/, { token: 'debug-log', next: '@text.debug' }],
@@ -11,7 +11,7 @@ const LOG_LANGUAGE_DEFINE = {
       [/@logTime\[ERROR\]/, { token: 'error-log', next: '@text.error' }]
     ],
     text: [
-      [/@logLevel/, { token: '@rematch', next: '@pop' }],
+      [/@logTime@logLevel/, { token: '@rematch', next: '@pop' }],
       [/.*/, { token: '$S2-log' }]
     ]
   }
