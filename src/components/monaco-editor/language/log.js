@@ -1,14 +1,18 @@
 const LOG_LANGUAGE_DEFINE = {
-  ignoreCase: true,
   inherit: true,
+  ignoreCase: true,
+  logTime: /^(\[[\d-:. ]+?\])?(\s?)/,
+  logLevel: /\[(\w+)\]/,
   tokenizer: {
     root: [
-      [/^\[[0-9-:. ]+?\]/, { token: 'log-time' }],
-      [/\[DEBUG\].*/, { token: 'debug-log' }],
-      [/\[INFO\].*/, { token: 'info-log' }],
-      [/\[WARNING\].*/, { token: 'warning-log' }],
-      [/\[ERROR\].*/, { token: 'error-log' }],
-      [/\[CRITICAL\].*/, { token: 'critical-log' }]
+      [/@logTime\[DEBUG\]/, { token: 'debug-log', next: '@text.debug' }],
+      [/@logTime\[INFO\]/, { token: 'info-log', next: '@text.info' }],
+      [/@logTime\[WARNING\]/, { token: 'warning-log', next: '@text.warning' }],
+      [/@logTime\[ERROR\]/, { token: 'error-log', next: '@text.error' }]
+    ],
+    text: [
+      [/@logLevel/, { token: '@rematch', next: '@pop' }],
+      [/.*/, { token: '$S2-log' }]
     ]
   }
 }
@@ -18,8 +22,7 @@ const LOG_TOKEN_COLORS = [
   { token: 'debug-log', foreground: '808080' },
   { token: 'info-log', foreground: '606266' },
   { token: 'warning-log', foreground: 'FFA500' },
-  { token: 'error-log', foreground: 'FF0000' },
-  { token: 'critical-log', foreground: 'FF0000' }
+  { token: 'error-log', foreground: 'FF0000' }
 ]
 
 export { LOG_LANGUAGE_DEFINE, LOG_TOKEN_COLORS }

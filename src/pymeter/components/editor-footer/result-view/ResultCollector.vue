@@ -42,7 +42,7 @@
 
     <!-- 结果数据详情 -->
     <el-card class="result-details" shadow="hover">
-      <el-empty v-if="!showing" style="width: 100%" />
+      <el-empty v-if="!showing" style="width: 100%; height: 100%; padding-top: 0" />
       <!-- 标签页 -->
       <div v-else class="result-details-header">
         <!-- 标签页头 -->
