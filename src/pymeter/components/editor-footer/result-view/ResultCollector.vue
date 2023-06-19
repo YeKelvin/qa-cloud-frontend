@@ -361,7 +361,7 @@ const copyAll = async () => {
   if (response && response[response.length - 1] != '\n') {
     response += '\n'
   }
-  const text = `[请求数据]\n${request}\[n响应数据]\n${response}`
+  const text = `[请求数据]\n${request}\n[响应数据]\n${response}`
   await toClipboard(text)
   ElMessage({ message: '复制成功', type: 'info', duration: 1 * 1000 })
 }
