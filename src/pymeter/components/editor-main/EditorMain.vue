@@ -94,9 +94,12 @@ const handleTabRemove = (tabNo) => {
   pymeterStore.removeTab({ editorNo: tabNo })
 }
 
-onMounted(() => {
+watch(keepAliveRef, (val) => {
   // 将 keepalive 实例存储至 store
-  pymeterStore.keepAlive = keepAliveRef.value
+  pymeterStore.keepAlive = val
+})
+
+onMounted(() => {
   // 注册快捷键
   Mousetrap.bind('mod+k', () => {
     pymeterStore.removeTab({ editorNo: pymeterStore.activeTabNo })
