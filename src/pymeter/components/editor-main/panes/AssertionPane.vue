@@ -135,8 +135,6 @@ const activeNames = ref([])
 const menuVisible = ref(false)
 const draggableRef = ref()
 
-watch(activeNames, (val) => console.log('activeNames:', val))
-
 onMounted(() => {
   if (assertionList.value.length == 1) {
     activeNames.value.push(assertionList.value[0].elementNo)
@@ -175,7 +173,6 @@ const addJsonPathAssertion = () => {
   const elementNo = Date.now().toString()
   // 使新组件处于打开状态
   activeNames.value.push(elementNo)
-  console.log('activeNames: ', activeNames.value)
   // 添加新组件
   assertionList.value.push({
     elementNo: elementNo,
