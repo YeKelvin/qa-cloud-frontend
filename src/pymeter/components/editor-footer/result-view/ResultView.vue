@@ -130,8 +130,7 @@ const handleTabRemove = (tabName) => {
 }
 
 .running-icon {
-  width: 1.5em;
-  height: 1.5em;
+  font-size: 24px;
   margin-right: 5px;
 }
 

@@ -19,12 +19,18 @@
               <template v-if="node.level == 1">
                 <span class="worker-name-wrapper">
                   <span style="display: inline-flex; align-items: center">
-                    <SvgIcon icon-name="pymeter-worker" style="width: 1.2em; height: 1.2em" />
+                    <SvgIcon icon-name="pymeter-worker" style="font-size: 18px" />
                     <span class="element-name" style="margin-left: 5px">{{ node.label }}</span>
                   </span>
-                  <SvgIcon v-if="data.running" icon-name="pymeter-running" style="width: 1.5em; height: 1.5em" />
-                  <SvgIcon v-else-if="!data.running && data.success" icon-name="pymeter-successful-sampler" />
-                  <SvgIcon v-else icon-name="pymeter-failure-sampler" />
+                  <template v-if="data.running">
+                    <SvgIcon icon-name="pymeter-running" style="font-size: 24px" />
+                  </template>
+                  <template v-else-if="!data.running && data.success">
+                    <SvgIcon icon-name="pymeter-successful-sampler" />
+                  </template>
+                  <template v-else>
+                    <SvgIcon icon-name="pymeter-failure-sampler" />
+                  </template>
                 </span>
               </template>
               <!-- Sampler 名称 -->
@@ -47,14 +53,63 @@
       <div v-else class="result-details-header">
         <!-- 标签页头 -->
         <el-tabs v-model="activeTabName" style="width: 100%; padding: 0" @tab-click="handleTabClick">
-          <el-tab-pane name="REQUEST" label="请求数据" />
-          <template v-if="requestHeaders.length > 0">
-            <el-tab-pane name="REQUEST_HEADERS" :label="`请求头 (${requestHeaders.length})`" />
-          </template>
-          <el-tab-pane name="RESPONSE" label="响应数据" />
-          <template v-if="responseHeaders.length > 0">
-            <el-tab-pane name="RESPONSE_HEADERS" :label="`响应头 (${responseHeaders.length})`" />
-          </template>
+          <!-- 请求数据 tab -->
+          <el-tab-pane name="REQUEST">
+            <template #label>
+              <span>请求数据</span>
+              <el-button
+                v-show="activeTabName == 'REQUEST'"
+                style="font-size: 16px"
+                type="primary"
+                link
+                :icon="CopyDocument"
+                @click="copyRequest"
+              />
+            </template>
+          </el-tab-pane>
+          <!-- 请求头 tab -->
+          <el-tab-pane v-if="requestHeaders.length > 0" name="REQUEST_HEADERS">
+            <template #label>
+              <span>请求头 ({{ requestHeaders.length }})</span>
+              <el-button
+                v-show="activeTabName == 'REQUEST_HEADERS'"
+                style="font-size: 16px"
+                type="primary"
+                link
+                :icon="CopyDocument"
+                @click="copyReqHeaders"
+              />
+            </template>
+          </el-tab-pane>
+          <!-- 响应数据 tab -->
+          <el-tab-pane name="RESPONSE">
+            <template #label>
+              <span>响应数据</span>
+              <el-button
+                v-show="activeTabName == 'RESPONSE'"
+                style="font-size: 16px"
+                type="primary"
+                link
+                :icon="CopyDocument"
+                @click="copyResponse"
+              />
+            </template>
+          </el-tab-pane>
+          <!-- 响应头 tab -->
+          <el-tab-pane v-if="responseHeaders.length > 0" name="RESPONSE_HEADERS">
+            <template #label>
+              <span>响应头 ({{ responseHeaders.length }})</span>
+              <el-button
+                v-show="activeTabName == 'RESPONSE_HEADERS'"
+                style="font-size: 16px"
+                type="primary"
+                link
+                :icon="CopyDocument"
+                @click="copyResHeaders"
+              />
+            </template>
+          </el-tab-pane>
+          <!-- 断言结果 tab -->
           <template
             v-if="!isEmpty(current.sampler.failedAssertion) && !isEmpty(current.sampler.failedAssertion.message)"
           >
@@ -62,7 +117,9 @@
           </template>
         </el-tabs>
         <!-- 状态、时间等信息 -->
-        <span style="display: flex; padding: 0 10px">
+        <span style="display: flex; justify-content: flex-end; padding: 0 10px; width: 100%">
+          <!-- 复制按钮 -->
+          <el-button style="font-size: 16px" type="primary" link :icon="CopyDocument" @click="copyAll" />
           <!-- 请求状态 -->
           <el-tooltip placement="bottom" effect="light" :show-after="200" :disabled="!current.sampler.responseCode">
             <template #content>
@@ -158,12 +215,15 @@
 
 <script setup>
 import { isEmpty } from 'lodash-es'
+import { ElMessage } from 'element-plus'
+import { CopyDocument } from '@element-plus/icons-vue'
+import useClipboard from '@/composables/useClipboard'
 import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
 
+const { toClipboard } = useClipboard()
 const props = defineProps({
   workers: { type: Array, default: () => [] }
 })
-
 const activeTabName = ref('RESPONSE')
 const current = reactive({ sampler: {} })
 const requestEditorRef = ref()
@@ -257,6 +317,54 @@ const setFailedAssertionCode = (code) => {
 const toggleResponseWordWrap = () => {
   responseWordWrap.value = responseWordWrap.value === 'on' ? 'off' : 'on'
 }
+
+const copyRequest = async () => {
+  const text = current.sampler.request
+  await toClipboard(text)
+  ElMessage({ message: '复制成功', type: 'info', duration: 1 * 1000 })
+}
+
+const copyResponse = async () => {
+  const text = current.sampler.response
+  await toClipboard(text)
+  ElMessage({ message: '复制成功', type: 'info', duration: 1 * 1000 })
+}
+
+const copyReqHeaders = async () => {
+  let text = ''
+  const headers = current.sampler.requestHeaders
+  const keys = Object.keys(headers)
+  for (let i = 0; i < keys.length; i++) {
+    text += `${keys[i]}: ${headers[keys[i]]}\n`
+  }
+  await toClipboard(text)
+  ElMessage({ message: '复制成功', type: 'info', duration: 1 * 1000 })
+}
+
+const copyResHeaders = async () => {
+  let text = ''
+  const headers = current.sampler.responseHeaders
+  const keys = Object.keys(headers)
+  for (let i = 0; i < keys.length; i++) {
+    text += `${keys[i]}: ${headers[keys[i]]}\n`
+  }
+  await toClipboard(text)
+  ElMessage({ message: '复制成功', type: 'info', duration: 1 * 1000 })
+}
+
+const copyAll = async () => {
+  let request = current.sampler.request
+  if (request && request[request.length - 1] != '\n') {
+    request += '\n'
+  }
+  let response = current.sampler.response
+  if (response && response[response.length - 1] != '\n') {
+    response += '\n'
+  }
+  const text = `[请求数据]\n${request}\[n响应数据]\n${response}`
+  await toClipboard(text)
+  ElMessage({ message: '复制成功', type: 'info', duration: 1 * 1000 })
+}
 </script>
 
 <style lang="scss" scoped>
@@ -334,6 +442,10 @@ const toggleResponseWordWrap = () => {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 5px;
+}
+
+.el-tabs__item > span + .el-button {
+  margin-left: 5px;
 }
 
 :deep(.el-tabs__header) {
