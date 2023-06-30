@@ -18,62 +18,42 @@
         <el-input v-model="elementInfo.elementRemark" placeholder="元素备注" clearable :readonly="queryMode" />
       </el-form-item>
 
-      <el-form-item label="变量名称：" prop="property.ForInController__iterating_variables">
+      <!-- 循环延迟时间 -->
+      <el-form-item label="延迟时间：" prop="property.ForeachController__delay">
         <el-input
-          v-model="elementInfo.property.ForInController__iterating_variables"
-          placeholder="定义迭代变量的名称"
+          v-model="elementInfo.property.ForeachController__delay"
+          placeholder="迭代间隔时间"
           clearable
           :readonly="queryMode"
-        >
-          <template #prepend>for</template>
-        </el-input>
-      </el-form-item>
-
-      <el-form-item label="使用对象：" prop="property.ForInController__use_variable">
-        <el-switch
-          v-model="elementInfo.property.ForInController__use_variable"
-          active-value="true"
-          inactive-value="false"
-          inline-prompt
-          :active-icon="Check"
-          :inactive-icon="Close"
-          :disabled="queryMode"
         />
       </el-form-item>
 
-      <el-form-item v-if="useVariable" label="对象名称：" prop="property.ForInController__statements">
+      <!-- for变量 -->
+      <el-form-item prop="property.ForeachController__for_variable">
+        <template #label>
+          <span style="font-size: 16px">for：</span>
+        </template>
         <el-input
-          v-model="elementInfo.property.ForInController__statements"
-          placeholder="遍历的对象名称"
+          v-model="elementInfo.property.ForeachController__for_variable"
+          placeholder="item"
           clearable
           :readonly="queryMode"
-        >
-          <template #prepend>in&nbsp;&nbsp;${</template>
-          <template #append>}</template>
-        </el-input>
+        />
       </el-form-item>
 
-      <el-form-item v-else label="遍历代码：" prop="property.ForInController__statements">
+      <!-- in对象 -->
+      <el-form-item prop="property.ForeachController__in_statement">
+        <template #label>
+          <span style="font-size: 16px">in：</span>
+        </template>
         <MonacoEditor
-          ref="codeEditorRef"
-          v-model="elementInfo.property.ForInController__statements"
+          ref="editorRef"
+          v-model="elementInfo.property.ForeachController__in_statement"
           language="python"
+          line-numbers="off"
           style="height: 100px"
           :readonly="queryMode"
         />
-      </el-form-item>
-
-      <!-- 循环延迟时间 -->
-      <el-form-item label="延迟时间：" prop="property.ForInController__delay">
-        <el-input
-          v-model="elementInfo.property.ForInController__delay"
-          placeholder="延迟下一个迭代的开始时间"
-          clearable
-          :readonly="queryMode"
-        >
-          <template #prepend>delay</template>
-          <template #append>ms</template>
-        </el-input>
       </el-form-item>
 
       <!-- 操作按钮 -->
@@ -97,11 +77,11 @@
 
 <script setup>
 import * as ElementService from '@/api/script/element'
-import { ElMessage } from 'element-plus'
-import { Check, Close, Edit } from '@element-plus/icons-vue'
-import useEditor from '@/pymeter/composables/useEditor'
-import EditorProps from '@/pymeter/composables/editor.props'
 import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
+import EditorProps from '@/pymeter/composables/editor.props'
+import useEditor from '@/pymeter/composables/useEditor'
+import { Check, Close, Edit } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
 
 const props = defineProps(EditorProps)
 const {
@@ -120,38 +100,29 @@ const elformRef = ref()
 const elementNo = ref(props.editorNo)
 const elementInfo = ref({
   elementNo: '',
-  elementName: 'For-In Controller',
+  elementName: '遍历控制器',
   elementRemark: '',
   elementType: 'CONTROLLER',
-  elementClass: 'ForInController',
+  elementClass: 'ForeachController',
   property: {
-    ForInController__iterating_variables: '',
-    ForInController__statements: '',
-    ForInController__use_variable: 'true',
-    ForInController__delay: ''
+    ForeachController__for_variable: '',
+    ForeachController__in_statement: '',
+    ForeachController__delay: ''
   }
 })
 const elementFormRules = reactive({
   elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }],
-  'property.ForInController__iterating_variables': [{ required: true, message: '变量名称不能为空', trigger: 'blur' }],
-  'property.ForInController__statements': [{ required: true, message: '迭代对象或代码不能为空', trigger: 'blur' }],
-  'property.ForInController__use_variable': [{ required: true, message: '是否使用对象不能为空', trigger: 'blur' }]
+  'property.ForeachController__for_variable': [{ required: true, message: 'for变量不能为空', trigger: 'blur' }],
+  'property.ForeachController__in_statement': [{ required: true, message: 'in对象或声明不能为空', trigger: 'blur' }]
 })
-const codeEditorRef = ref()
-const useVariable = computed(() => elementInfo.value.property.ForInController__use_variable.toLowerCase() === 'true')
-watch(useVariable, (val) => {
-  if (!val) {
-    nextTick(() => {
-      codeEditorRef.value && codeEditorRef.value.setValue(elementInfo.value.property.ForInController__statements)
-    })
-  }
-})
+const editorRef = ref()
 
 onMounted(() => {
   // 查询或更新模式时，先拉取元素信息
   if (createMode.value) return
   ElementService.queryElementInfo({ elementNo: elementNo.value }).then((response) => {
     elementInfo.value = response.result
+    editorRef.value.setValue(response.result.property.ForeachController__in_statement)
   })
 })
 

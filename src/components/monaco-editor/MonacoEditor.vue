@@ -9,23 +9,37 @@ import { ref, watch, onMounted, onUnmounted } from 'vue'
 import monaco from './monaco.base'
 import monacoOptions from './monaco.options'
 
+const editorRef = ref()
 const emit = defineEmits(['update:modelValue'])
 const props = defineProps({
+  theme: { type: String, default: 'vs' },
   height: { type: [String, Number], default: '300px' },
   language: { type: String, required: true },
   fontSize: { type: Number, default: 14 },
   readonly: { type: Boolean, default: false },
-  theme: { type: String, default: 'vs' },
-  wordWrap: { type: String, default: 'on' }
+  wordWrap: { type: String, default: 'on' },
+  lineNumbers: { type: String, default: 'on' }
 })
-const editorRef = ref()
 const styleHeight = computed(() => (isNaN(props.height) ? props.height : `${props.height}px`))
+const options = computed(() => {
+  const opts = { ...monacoOptions }
+  if (props.lineNumbers == 'off') {
+    Object.assign(opts, {
+      lineNumbersMinChars: 0,
+      lineDecorationsWidth: 0,
+      overviewRulerLanes: 0,
+      overviewRulerBorder: false,
+      glyphMargin: false,
+      folding: false,
+      links: false
+    })
+  }
+  return opts
+})
 
 watch(
   () => props.language,
-  (val) => {
-    monaco.editor.setModelLanguage(instance.getModel(), val)
-  }
+  (val) => monaco.editor.setModelLanguage(instance.getModel(), val)
 )
 watch(
   () => props.readonly,
@@ -43,9 +57,10 @@ onMounted(() => {
     language: props.language,
     readOnly: props.readonly,
     wordWrap: props.wordWrap,
+    lineNumbers: props.lineNumbers,
     theme: props.theme,
     value: props.modelValue,
-    ...monacoOptions
+    ...options.value
   })
   // 设置行尾符合为\n
   instance.getModel().setEOL(monaco.editor.EndOfLinePreference.LF)
@@ -98,16 +113,6 @@ const removeDefaultKeybindings = () => {
   removeKeybinding('editor.action.deleteLines')
   removeKeybinding('deleteAllRight')
   removeKeybinding('editor.action.moveSelectionToNextFindMatch')
-  // 打印默认快捷键
-  // setTimeout(() => {
-  //   const commands = new Set()
-  //   instance._standaloneKeybindingService._cachedResolver._defaultKeybindings.forEach((item) => {
-  //     if (item.keypressParts.includes('meta+K')) {
-  //       commands.add(item.command)
-  //     }
-  //   })
-  //   console.log(commands)
-  // }, 1000)
 }
 
 /**
@@ -221,6 +226,21 @@ const scrollToBottom = () => {
   instance.revealLine(instance.getModel().getLineCount() + 10)
 }
 
+/**
+ * 打印默认快捷键
+ */
+const outputKeybindings = () => {
+  setTimeout(() => {
+    const commands = new Set()
+    instance._standaloneKeybindingService._cachedResolver._defaultKeybindings.forEach((item) => {
+      if (item.keypressParts.includes('meta+K')) {
+        commands.add(item.command)
+      }
+    })
+    console.log(commands)
+  }, 1000)
+}
+
 defineExpose({
   insert,
   insertSnippet,
@@ -239,6 +259,8 @@ defineExpose({
 
 <style lang="scss" scoped>
 .code-editor-container {
+  padding: 1px;
+
   border: 1px solid #dcdfe6;
   border-radius: 4px;
 

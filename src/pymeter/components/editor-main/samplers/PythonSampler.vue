@@ -46,8 +46,8 @@
       <PythonEditor
         ref="codeEditorRef"
         v-model="elementInfo.property.PythonSampler__script"
-        phase="SAMPLER"
         type="PYTHON"
+        phase="SAMPLER"
         :readonly="queryMode"
       />
 
@@ -74,12 +74,12 @@
 
 <script setup>
 import * as ElementService from '@/api/script/element'
-import { ElMessage } from 'element-plus'
-import { Check, Close, Edit } from '@element-plus/icons-vue'
-import useRunnableElement from '@/pymeter/composables/useRunnableElement'
-import useEditor from '@/pymeter/composables/useEditor'
-import EditorProps from '@/pymeter/composables/editor.props'
 import PythonEditor from '@/pymeter/components/editor-main/common/PythonEditor.vue'
+import EditorProps from '@/pymeter/composables/editor.props'
+import useEditor from '@/pymeter/composables/useEditor'
+import useRunnableElement from '@/pymeter/composables/useRunnableElement'
+import { Check, Close, Edit } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
 
 const props = defineProps(EditorProps)
 const { executeSampler } = useRunnableElement()

@@ -1,6 +1,6 @@
 <template>
-  <div class="pre-processor-pane">
-    <template v-if="!isEmpty(preProcessorList)">
+  <div class="prev-processor-pane">
+    <template v-if="!isEmpty(prevProcessorList)">
       <!-- 操作按钮 -->
       <div style="margin-bottom: 10px; padding-left: 30px">
         <!-- 全部展开按钮 -->
@@ -23,7 +23,7 @@
         handle=".handle"
         item-key="elementNo"
         :disabled="queryMode"
-        :list="preProcessorList"
+        :list="prevProcessorList"
         :component-data="{ modelValue: activeNames, 'onUpdate:modelValue': (val) => (activeNames = val) }"
       >
         <template #item="{ element, index }">
@@ -102,8 +102,8 @@
         <template #reference>
           <el-button type="primary" link :icon="Plus" :disabled="queryMode">添加处理器</el-button>
         </template>
-        <el-button link @click="addPythonPreProcessor">Python脚本</el-button>
-        <el-button link @click="addSleepPreProcessor">固定定时器</el-button>
+        <el-button link @click="addPythonPrevProcessor">Python脚本</el-button>
+        <el-button link @click="addSleepPrevProcessor">固定定时器</el-button>
       </el-popover>
     </div>
   </div>
@@ -116,8 +116,8 @@ import { Delete, Plus, Sort } from '@element-plus/icons-vue'
 import { ElementClass } from '@/api/enum'
 
 const components = {
-  PythonPreProcessor: markRaw(defineAsyncComponent(() => import('./PythonEditorPanel.vue'))),
-  SleepPreProcessor: markRaw(defineAsyncComponent(() => import('./SleepPreProcessorPanel.vue')))
+  PythonPrevProcessor: markRaw(defineAsyncComponent(() => import('./PythonEditorPanel.vue'))),
+  SleepPrevProcessor: markRaw(defineAsyncComponent(() => import('./SleepPrevProcessorPanel.vue')))
 }
 
 const emit = defineEmits(['update:modelValue'])
@@ -128,7 +128,7 @@ const props = defineProps({
 
 const attrs = useAttrs()
 const queryMode = computed(() => props.editMode === 'QUERY')
-const preProcessorList = computed({
+const prevProcessorList = computed({
   get: () => attrs.modelValue,
   set: (val) => emit('update:modelValue', val)
 })
@@ -137,8 +137,8 @@ const menuVisible = ref(false)
 const draggableRef = ref()
 
 onMounted(() => {
-  if (preProcessorList.value.length == 1) {
-    activeNames.value.push(preProcessorList.value[0].elementNo)
+  if (prevProcessorList.value.length == 1) {
+    activeNames.value.push(prevProcessorList.value[0].elementNo)
   }
 })
 
@@ -149,38 +149,40 @@ onBeforeUnmount(() => {
   if (draggable?._sortable) draggable._sortable = undefined
 })
 
-const addPythonPreProcessor = () => {
+const addPythonPrevProcessor = () => {
   // 生成临时元素编号
   const elementNo = Date.now().toString()
   // 使新组件处于打开状态
   activeNames.value.push(elementNo)
   // 添加新组件
-  preProcessorList.value.push({
+  prevProcessorList.value.push({
     elementNo: elementNo,
     elementName: 'Python脚本',
-    elementType: 'PRE_PROCESSOR',
-    elementClass: 'PythonPreProcessor',
+    elementType: 'PREV_PROCESSOR',
+    elementClass: 'PythonPrevProcessor',
     enabled: true,
-    property: { PythonPreProcessor__script: '' }
+    property: {
+      PythonPrevProcessor__script: ''
+    }
   })
   // 关闭菜单
   menuVisible.value = false
 }
 
-const addSleepPreProcessor = () => {
+const addSleepPrevProcessor = () => {
   // 生成临时元素编号
   const elementNo = Date.now().toString()
   // 使新组件处于打开状态
   activeNames.value.push(elementNo)
   // 添加新组件
-  preProcessorList.value.push({
+  prevProcessorList.value.push({
     elementNo: elementNo,
     elementName: '固定定时器',
-    elementType: 'PRE_PROCESSOR',
-    elementClass: 'SleepPreProcessor',
+    elementType: 'PREV_PROCESSOR',
+    elementClass: 'SleepPrevProcessor',
     enabled: true,
     property: {
-      SleepPreProcessor__delay: '0'
+      SleepPrevProcessor__delay: '0'
     }
   })
   // 关闭菜单
@@ -188,11 +190,11 @@ const addSleepPreProcessor = () => {
 }
 
 const remove = (index) => {
-  preProcessorList.value.splice(index, 1)
+  prevProcessorList.value.splice(index, 1)
 }
 
 const expandAll = () => {
-  activeNames.value = preProcessorList.value.map((item) => item.elementNo)
+  activeNames.value = prevProcessorList.value.map((item) => item.elementNo)
 }
 
 const collapseAll = () => {
@@ -201,7 +203,7 @@ const collapseAll = () => {
 </script>
 
 <style lang="scss" scoped>
-.pre-processor-pane {
+.prev-processor-pane {
   margin-bottom: 20px;
 }
 

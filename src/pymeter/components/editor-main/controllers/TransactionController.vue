@@ -61,7 +61,7 @@ const elformRef = ref()
 const elementNo = ref(props.editorNo)
 const elementInfo = ref({
   elementNo: '',
-  elementName: 'Transaction Controller',
+  elementName: '事务控制器',
   elementRemark: '',
   elementType: 'CONTROLLER',
   elementClass: 'TransactionController',

@@ -65,7 +65,7 @@ const editors = reactive({
   // controller
   IfController: markRaw(defineAsyncComponent(() => import('./controllers/IfController.vue'))),
   WhileController: markRaw(defineAsyncComponent(() => import('./controllers/WhileController.vue'))),
-  ForInController: markRaw(defineAsyncComponent(() => import('./controllers/ForInController.vue'))),
+  ForeachController: markRaw(defineAsyncComponent(() => import('./controllers/ForeachController.vue'))),
   LoopController: markRaw(defineAsyncComponent(() => import('./controllers/LoopController.vue'))),
   RetryController: markRaw(defineAsyncComponent(() => import('./controllers/RetryController.vue'))),
   TransactionController: markRaw(defineAsyncComponent(() => import('./controllers/TransactionController.vue'))),

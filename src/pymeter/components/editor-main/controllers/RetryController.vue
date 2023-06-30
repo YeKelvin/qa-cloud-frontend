@@ -89,7 +89,8 @@ const {
 const elformRef = ref()
 const elementNo = ref(props.editorNo)
 const elementInfo = ref({
-  elementName: 'Retry Controller',
+  elementNo: '',
+  elementName: '重试控制器',
   elementRemark: '',
   elementType: 'CONTROLLER',
   elementClass: 'RetryController',

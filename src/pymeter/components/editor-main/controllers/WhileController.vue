@@ -49,11 +49,12 @@
       </el-form-item>
 
       <!-- while条件 -->
-      <el-form-item label="while表达式：" prop="property.WhileController__condition">
+      <el-form-item label="表达式：" prop="property.WhileController__condition">
         <MonacoEditor
           ref="codeEditorRef"
           v-model="elementInfo.property.WhileController__condition"
           language="python"
+          line-numbers="off"
           style="height: 100px"
           :readonly="queryMode"
         />
@@ -104,7 +105,7 @@ const elformRef = ref()
 const elementNo = ref(props.editorNo)
 const elementInfo = ref({
   elementNo: '',
-  elementName: 'While Controller',
+  elementName: 'WHILE控制器',
   elementRemark: '',
   elementType: 'CONTROLLER',
   elementClass: 'WhileController',

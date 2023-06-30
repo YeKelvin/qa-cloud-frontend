@@ -46,7 +46,7 @@ import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
 const ScriptPropertyNameEmun = {
   PythonSampler: 'PythonSampler__script',
   PythonAssertion: 'PythonAssertion__script',
-  PythonPreProcessor: 'PythonPreProcessor__script',
+  PythonPrevProcessor: 'PythonPrevProcessor__script',
   PythonPostProcessor: 'PythonPostProcessor__script'
 }
 

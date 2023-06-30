@@ -255,7 +255,7 @@ const allowDrop = (draggingNode, dropNode, type) => {
     if (dropNode.data.elementType === 'WORKER' && (type === 'prev' || type === 'next')) return false
     // Controller 只允许在以下元素类型的前后放置，不允许在元素里插入
     if (
-      ['SAMPLER', 'CONFIG', 'TIMER', 'PRE_PROCESSOR', 'POST_PROCESSOR', 'ASSERTION', 'LISTENER'].includes(
+      ['SAMPLER', 'CONFIG', 'TIMER', 'PREV_PROCESSOR', 'POST_PROCESSOR', 'ASSERTION', 'LISTENER'].includes(
         dropNode.data.elementType
       ) &&
       type === 'inner'
@@ -276,7 +276,7 @@ const allowDrop = (draggingNode, dropNode, type) => {
       if (dropNode.data.elementType === 'WORKER' && (type === 'prev' || type === 'next')) return false
       // Sampler 只允许在以下元素类型的前后放置，不允许在向里插入
       if (
-        ['SAMPLER', 'CONFIG', 'TIMER', 'PRE_PROCESSOR', 'POST_PROCESSOR', 'ASSERTION', 'LISTENER'].includes(
+        ['SAMPLER', 'CONFIG', 'TIMER', 'PREV_PROCESSOR', 'POST_PROCESSOR', 'ASSERTION', 'LISTENER'].includes(
           dropNode.data.elementType
         ) &&
         type === 'inner'

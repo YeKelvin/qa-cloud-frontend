@@ -133,12 +133,12 @@ export const TaskOperationType = {
 
 export const ElementType = {
   COLLECTION: '测试集合',
-  WORKER: '工作者',
-  SAMPLER: '取样器',
-  CONTROLLER: '逻辑控制器',
   CONFIG: '配置器',
+  WORKER: '工作者',
+  CONTROLLER: '逻辑控制器',
+  SAMPLER: '取样器',
   TIMER: '时间控制器',
-  PRE_PROCESSOR: '前置处理器',
+  PREV_PROCESSOR: '前置处理器',
   POST_PROCESSOR: '后置处理器',
   ASSERTION: '断言器',
   LISTENER: '监听器'
@@ -160,21 +160,21 @@ export const ElementClass = {
   SnippetSampler: '片段取样器',
   SQLSampler: 'SQL取样器',
   // config
-  HTTPHeaderManager: 'HTTP Header 配置器',
-  HTTPCookieManager: 'HTTP Cookie 配置器',
-  HTTPSessionManager: 'HTTP Session 配置器',
+  HTTPHeaderManager: 'HTTP-Header配置器',
+  HTTPCookieManager: 'HTTP-Cookie配置器',
+  HTTPSessionManager: 'HTTP-Session配置器',
   VariableDataset: '变量配置器',
   DatabaseEngine: '数据库配置器',
   // controller
-  ForInController: 'ForIn控制器',
-  LoopController: 'Loop控制器',
-  RetryController: 'Retry控制器',
-  IfController: 'If控制器',
-  WhileController: 'While控制器',
-  TransactionController: 'Transaction控制器',
-  // pre:
-  PythonPreProcessor: 'Python前置处理器',
-  SleepPreProcessor: '固定定时器',
+  IfController: 'IF控制器',
+  LoopController: '循环控制器',
+  WhileController: 'WHILE控制器',
+  RetryController: '重试控制器',
+  ForeachController: '遍历控制器',
+  TransactionController: '事务控制器',
+  // prev:
+  PythonPrevProcessor: 'Python前置处理器',
+  SleepPrevProcessor: '固定定时器',
   // post
   PythonPostProcessor: 'Python后置处理器',
   JsonPathPostProcessor: 'Json提取器',

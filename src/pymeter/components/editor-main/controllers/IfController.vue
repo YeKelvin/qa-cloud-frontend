@@ -19,12 +19,13 @@
       </el-form-item>
 
       <!-- if条件 -->
-      <el-form-item label="if表达式：" prop="property.IfController__condition">
+      <el-form-item label="表达式：" prop="property.IfController__condition">
         <MonacoEditor
           ref="codeEditorRef"
           v-model="elementInfo.property.IfController__condition"
-          style="height: 100px"
           language="python"
+          line-numbers="off"
+          style="height: 100px"
           :readonly="queryMode"
         />
         <el-tag type="danger" style="font-size: 14px" disable-transitions>注意：仅支持单行表达式</el-tag>
@@ -74,7 +75,7 @@ const elformRef = ref()
 const elementNo = ref(props.editorNo)
 const elementInfo = ref({
   elementNo: '',
-  elementName: 'If Controller',
+  elementName: 'IF控制器',
   elementRemark: '',
   elementType: 'CONTROLLER',
   elementClass: 'IfController',

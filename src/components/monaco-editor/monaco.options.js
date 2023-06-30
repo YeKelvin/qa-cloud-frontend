@@ -26,6 +26,7 @@ const DEFAULT_OPTIONS = {
   folding: true,
   foldingHighlight: true,
   fixedOverflowWidgets: true,
+  hideCursorInOverviewRuler: true,
   highlightActiveIndentGuide: true,
   // 显示行号的位数
   lineNumbersMinChars: 4,

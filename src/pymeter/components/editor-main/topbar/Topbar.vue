@@ -29,8 +29,8 @@
 </template>
 
 <script setup>
-import { isEmpty as _isEmpty } from 'lodash-es'
 import { View } from '@element-plus/icons-vue'
+import { isEmpty } from 'lodash-es'
 import DatasetSelect from './DatasetSelect.vue'
 import VariablesDialog from './VariablesDialog.vue'
 
@@ -38,7 +38,7 @@ const props = defineProps({
   component: { type: String, default: '' }
 })
 // 组件名称
-const componentNames = reactive({
+const componentNames = {
   TestCollection: '测试集合',
   SnippetCollection: '测试片段',
   TestWorker: '测试用例',
@@ -46,9 +46,9 @@ const componentNames = reactive({
   TeardownWorker: '后置用例',
   SetupDebuger: '前置调试器',
   TeardownDebuger: '后置调试器',
-  IfController: 'If控制器',
-  WhileController: 'While控制器',
-  ForInController: '遍历控制器',
+  IfController: 'IF控制器',
+  WhileController: 'WHILE控制器',
+  ForeachController: '遍历控制器',
   LoopController: '循环控制器',
   RetryController: '重试控制器',
   TransactionController: '事务控制器',
@@ -56,19 +56,15 @@ const componentNames = reactive({
   PythonSampler: 'Python请求',
   SnippetSampler: 'Snippet请求',
   SQLSampler: 'SQL请求',
-  PythonPreProcessor: 'Python前置脚本',
-  PythonPostProcessor: 'Python后置脚本',
-  PythonAssertion: 'Python断言',
-  ConstantTimer: '固定定时器',
   DatabaseEngine: '数据库配置器',
   WorkspaceComponents: '空间组件'
-})
+}
 // 是否显示变量详情视图
 const showVariablesDialog = ref(false)
 // 组件名称
 const componentName = computed(() => componentNames[props.component])
 // 是否显示操作栏的标识
-const show = computed(() => !_isEmpty(componentName.value))
+const show = computed(() => !isEmpty(componentName.value))
 </script>
 
 <style lang="scss" scoped>

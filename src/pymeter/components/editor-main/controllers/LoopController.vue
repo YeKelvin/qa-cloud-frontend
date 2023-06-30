@@ -66,7 +66,7 @@ const elformRef = ref()
 const elementNo = ref(props.editorNo)
 const elementInfo = ref({
   elementNo: '',
-  elementName: 'Loop Controller',
+  elementName: '循环控制器',
   elementRemark: '',
   elementType: 'CONTROLLER',
   elementClass: 'LoopController',

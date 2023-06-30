@@ -66,3 +66,7 @@ export const queryWorkspaceComponents = (params) =>
   request.get('/script/element/workspace/components', { params: params })
 
 export const setWorkspaceComponents = (data) => request.post('/script/element/workspace/components', data)
+
+export const queryWorkspaceSettings = (params) => request.get('/script/element/workspace/settings', { params: params })
+
+export const setWorkspaceSettings = (data) => request.post('/script/element/workspace/settings', data)

@@ -19,7 +19,7 @@
       </el-form-item>
 
       <!-- 元素属性 -->
-      <el-form-item label="失败时的处理：" prop="property.TestWorker__on_sample_error">
+      <el-form-item label="失败处理：" prop="property.TestWorker__on_sample_error">
         <el-select v-model="elementInfo.property.TestWorker__on_sample_error" :disabled="queryMode" style="width: 100%">
           <el-option label="继续" value="continue" />
           <el-option label="开始下一个主控制器的循环" value="start_next_thread" />
@@ -32,9 +32,9 @@
       </el-form-item>
 
       <!-- 并发数 -->
-      <el-form-item label="并发数：" prop="property.TestWorker__number_of_threads">
+      <!-- <el-form-item label="并发数：" prop="property.TestWorker__number_of_threads">
         <el-input v-model="elementInfo.property.TestWorker__number_of_threads" clearable disabled />
-      </el-form-item>
+      </el-form-item> -->
 
       <!-- 循环次数 -->
       <el-form-item label="循环次数：" prop="property.TestWorker__main_controller.property.LoopController__loops">
@@ -148,7 +148,7 @@ const checkLoops = (_, value, callback) => {
 
 const elementFormRules = {
   elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }],
-  'property.TestWorker__on_sample_error': [{ required: true, message: '失败时的处理不能为空', trigger: 'blur' }],
+  'property.TestWorker__on_sample_error': [{ required: true, message: '失败处理不能为空', trigger: 'blur' }],
   'property.TestWorker__number_of_threads': [{ required: true, message: '并发数不能为空', trigger: 'blur' }],
   'property.TestWorker__main_controller.property.LoopController__loops': [
     { required: true, trigger: 'blur', validator: checkLoops }

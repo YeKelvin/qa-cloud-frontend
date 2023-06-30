@@ -58,9 +58,9 @@
             <el-badge :hidden="hiddenBodyDot" type="success" is-dot>请求体</el-badge>
           </template>
         </el-tab-pane>
-        <el-tab-pane name="PRE_PROCESSOR">
+        <el-tab-pane name="PREV_PROCESSOR">
           <template #label>
-            <el-badge :hidden="isEmpty(preProcessorComponentList)" type="success" is-dot>前置处理器</el-badge>
+            <el-badge :hidden="isEmpty(prevProcessorComponentList)" type="success" is-dot>前置处理器</el-badge>
           </template>
         </el-tab-pane>
         <el-tab-pane name="POST_PROCESSOR">
@@ -68,9 +68,9 @@
             <el-badge :hidden="isEmpty(postProcessorComponentList)" type="success" is-dot>后置处理器</el-badge>
           </template>
         </el-tab-pane>
-        <el-tab-pane name="ASSERTION">
+        <el-tab-pane name="TEST_ASSERTION">
           <template #label>
-            <el-badge :hidden="isEmpty(assertionComponentList)" type="success" is-dot>测试断言器</el-badge>
+            <el-badge :hidden="isEmpty(testAssertionComponentList)" type="success" is-dot>测试断言器</el-badge>
           </template>
         </el-tab-pane>
         <el-tab-pane name="HTTP_CONFIG">
@@ -131,8 +131,8 @@
       </div>
 
       <!-- 前置处理器 -->
-      <div v-if="showPreProcessorTab" class="tab-pane">
-        <PreProcessorPane v-model="preProcessorComponentList" :edit-mode="editMode" owner-type="ALL" />
+      <div v-if="showPrevProcessorTab" class="tab-pane">
+        <PrevProcessorPane v-model="prevProcessorComponentList" :edit-mode="editMode" owner-type="ALL" />
       </div>
 
       <!-- 后置处理器 -->
@@ -141,8 +141,8 @@
       </div>
 
       <!-- 测试断言器 -->
-      <div v-if="showAssertionTab" class="tab-pane">
-        <AssertionPane v-model="assertionComponentList" :edit-mode="editMode" owner-type="ALL" />
+      <div v-if="showTestAssertionTab" class="tab-pane">
+        <AssertionPane v-model="testAssertionComponentList" :edit-mode="editMode" owner-type="ALL" />
       </div>
 
       <!-- HTTP配置 -->
@@ -213,9 +213,9 @@
                 <el-tooltip placement="right" effect="light">
                   <template #content>
                     <div style="font-size: 14px; color: var(--el-text-color-regular)">
-                      <div>- 根据指定的规则筛选组件（仅执行指定的组件）</div>
-                      <div>- 组件包含: 前置处理器、后置处理器、断言器</div>
-                      <div>- 通过筛选以达到仅执行或排除指定组件的目的</div>
+                      <div>- 根据指定的规则筛选组件</div>
+                      <div>- 包含: 前置处理器、后置处理器、断言器</div>
+                      <div>- 目的: 通过筛选以达到仅执行或排除指定的组件</div>
                     </div>
                   </template>
                   <el-button :icon="Warning" style="font-size: 16px" link />
@@ -234,7 +234,8 @@
                 <el-tooltip placement="right" effect="light">
                   <template #content>
                     <div style="font-size: 14px; color: var(--el-text-color-regular)">
-                      <div>- 根据组件的类型指定其运行顺序</div>
+                      <div>- 说明: 根据组件的类型指定其运行顺序</div>
+                      <div>- 包含: 前置处理器、后置处理器、断言器</div>
                       <div>- 正序: 空间 → 集合 → 线程 → 控制器 → 取样器</div>
                       <div>- 倒序: 取样器 → 控制器 → 线程 → 集合 → 空间</div>
                     </div>
@@ -244,7 +245,7 @@
               </div>
             </template>
             <el-select v-model="runningStrategy.reverse" style="width: 300px" multiple clearable :disabled="queryMode">
-              <el-option label="前置" value="PRE" />
+              <el-option label="前置" value="PREV" />
               <el-option label="后置" value="POST" />
               <el-option label="断言" value="ASSERT" />
             </el-select>
@@ -290,7 +291,7 @@ import HTTPHeaderTemplate from './HttpSamplerHeaderTemplate.vue'
 import HTTPHeaderTable from './HttpSamplerHeaderTable.vue'
 import HTTPQueryTable from './HttpSamplerQueryTable.vue'
 import HTTPFormTable from './HttpSamplerFormTable.vue'
-import PreProcessorPane from '@/pymeter/components/editor-main/panes/PreProcessorPane.vue'
+import PrevProcessorPane from '@/pymeter/components/editor-main/panes/PrevProcessorPane.vue'
 import PostProcessorPane from '@/pymeter/components/editor-main/panes/PostProcessorPane.vue'
 import AssertionPane from '@/pymeter/components/editor-main/panes/AssertionPane.vue'
 import ComponentFilter from '@/pymeter/components/editor-main/common/ComponentFilter.vue'
@@ -345,7 +346,7 @@ const conditionData = [
   {
     field: { label: '类型', value: 'TYPE' },
     options: [
-      { label: '前置', value: 'PRE' },
+      { label: '前置', value: 'PREV' },
       { label: '后置', value: 'POST' },
       { label: '断言', value: 'ASSERT' }
     ]
@@ -380,25 +381,25 @@ const { bodyCode, bodyMode, bodyRawType, bodyRawTypeEnum, bodyData, formItems, s
 
 // 内置元素相关属性
 const componentList = ref([])
-const preProcessorComponentList = ref([])
+const prevProcessorComponentList = ref([])
 const postProcessorComponentList = ref([])
-const assertionComponentList = ref([])
+const testAssertionComponentList = ref([])
 const pendingSubmitComponentList = computed(() => {
   // 添加 sortNumber 属性
-  preProcessorComponentList.value.forEach((item, index) => (item.sortNumber = index + 1))
+  prevProcessorComponentList.value.forEach((item, index) => (item.sortNumber = index + 1))
   postProcessorComponentList.value.forEach((item, index) => (item.sortNumber = index + 1))
-  assertionComponentList.value.forEach((item, index) => (item.sortNumber = index + 1))
+  testAssertionComponentList.value.forEach((item, index) => (item.sortNumber = index + 1))
   // 组合成一个数组
-  return [...preProcessorComponentList.value, ...postProcessorComponentList.value, ...assertionComponentList.value]
+  return [...prevProcessorComponentList.value, ...postProcessorComponentList.value, ...testAssertionComponentList.value]
 })
 
 const activeTabName = ref('PARAMS')
 const showHeadersTab = computed(() => activeTabName.value === 'HEADERS')
 const showParameterTab = computed(() => activeTabName.value === 'PARAMS')
 const showBodyTab = computed(() => activeTabName.value === 'BODY')
-const showPreProcessorTab = computed(() => activeTabName.value === 'PRE_PROCESSOR')
+const showPrevProcessorTab = computed(() => activeTabName.value === 'PREV_PROCESSOR')
 const showPostProcessorTab = computed(() => activeTabName.value === 'POST_PROCESSOR')
-const showAssertionTab = computed(() => activeTabName.value === 'ASSERTION')
+const showTestAssertionTab = computed(() => activeTabName.value === 'TEST_ASSERTION')
 const showConfigTab = computed(() => activeTabName.value === 'HTTP_CONFIG')
 const showSettingsTab = computed(() => activeTabName.value === 'SETTINGS')
 
@@ -480,22 +481,19 @@ const query = (_elementNo_ = elementNo.value, focus = true) => {
  */
 const setComponentsByType = () => {
   // 先清空原有列表
-  preProcessorComponentList.value = []
+  prevProcessorComponentList.value = []
   postProcessorComponentList.value = []
-  assertionComponentList.value = []
+  testAssertionComponentList.value = []
   // 根据类型存储至列表
-  componentList.value.forEach((item) => {
-    if (item.elementType === 'PRE_PROCESSOR') {
-      preProcessorComponentList.value.push(item)
-      return true
-    }
-    if (item.elementType === 'POST_PROCESSOR') {
-      postProcessorComponentList.value.push(item)
-      return true
-    }
-    if (item.elementType === 'ASSERTION') {
-      assertionComponentList.value.push(item)
-      return true
+  componentList.value.forEach((component) => {
+    if (component.elementType === 'PREV_PROCESSOR') {
+      prevProcessorComponentList.value.push(component)
+    } else if (component.elementType === 'POST_PROCESSOR') {
+      postProcessorComponentList.value.push(component)
+    } else if (component.elementType === 'ASSERTION') {
+      testAssertionComponentList.value.push(component)
+    } else {
+      return
     }
   })
 }
@@ -504,9 +502,9 @@ const setComponentsByType = () => {
  * 根据 sortNumber 排序
  */
 const sortComponents = () => {
-  preProcessorComponentList.value.sort((a, b) => a.sortNumber - b.sortNumber)
+  prevProcessorComponentList.value.sort((a, b) => a.sortNumber - b.sortNumber)
   postProcessorComponentList.value.sort((a, b) => a.sortNumber - b.sortNumber)
-  assertionComponentList.value.sort((a, b) => a.sortNumber - b.sortNumber)
+  testAssertionComponentList.value.sort((a, b) => a.sortNumber - b.sortNumber)
 }
 
 /**

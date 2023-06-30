@@ -19,7 +19,7 @@
       </el-form-item>
 
       <!-- 元素属性 -->
-      <el-form-item label="失败时的处理：" prop="property.TearDownWorker__on_sample_error">
+      <el-form-item label="失败处理：" prop="property.TearDownWorker__on_sample_error">
         <el-select
           v-model="elementInfo.property.TearDownWorker__on_sample_error"
           :disabled="queryMode"
@@ -97,7 +97,7 @@ const elementInfo = ref({
 })
 const elementFormRules = reactive({
   elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }],
-  'property.TearDownWorker__on_sample_error': [{ required: true, message: '失败时的处理不能为空', trigger: 'blur' }],
+  'property.TearDownWorker__on_sample_error': [{ required: true, message: '失败处理不能为空', trigger: 'blur' }],
   'property.TearDownWorker__number_of_threads': [{ required: true, message: '并发数不能为空', trigger: 'blur' }],
   'property.TearDownWorker__main_controller.property.LoopController__loops': [
     { required: true, message: '循环次数不能为空', trigger: 'blur' }

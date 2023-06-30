@@ -50,9 +50,9 @@
             <el-badge :hidden="hiddenSettingsDot" type="success" is-dot>组件设置</el-badge>
           </template>
         </el-tab-pane>
-        <el-tab-pane name="PRE_PROCESSOR">
+        <el-tab-pane name="PREV_PROCESSOR">
           <template #label>
-            <el-badge :hidden="isEmpty(preProcessorComponentList)" type="success" is-dot>前置处理器</el-badge>
+            <el-badge :hidden="isEmpty(prevProcessorComponentList)" type="success" is-dot>前置处理器</el-badge>
           </template>
         </el-tab-pane>
         <el-tab-pane name="POST_PROCESSOR">
@@ -60,9 +60,9 @@
             <el-badge :hidden="isEmpty(postProcessorComponentList)" type="success" is-dot>后置处理器</el-badge>
           </template>
         </el-tab-pane>
-        <el-tab-pane name="ASSERTION">
+        <el-tab-pane name="TEST_ASSERTION">
           <template #label>
-            <el-badge :hidden="isEmpty(assertionComponentList)" type="success" is-dot>测试断言器</el-badge>
+            <el-badge :hidden="isEmpty(testAssertionComponentList)" type="success" is-dot>测试断言器</el-badge>
           </template>
         </el-tab-pane>
       </el-tabs>
@@ -71,7 +71,7 @@
       <div v-if="showSettingsTab" class="tab-pane">
         <el-form label-position="right" label-width="140px">
           <!-- 是否排除空间组件 -->
-          <el-form-item label="">
+          <el-form-item>
             <!-- label -->
             <template #label>
               <div style="display: flex">
@@ -108,7 +108,8 @@
                 <el-tooltip placement="right" effect="light">
                   <template #content>
                     <div style="font-size: 14px; color: var(--el-text-color-regular)">
-                      <div>- 根据组件类型指定取样器组件的运行顺序</div>
+                      <div>- 说明: 根据组件类型指定取样器组件的运行顺序</div>
+                      <div>- 包含: 前置处理器、后置处理器、断言器</div>
                       <div>- 正序: 空间 → 集合 → 线程 → 控制器 → 取样器</div>
                       <div>- 倒序: 取样器 → 控制器 → 线程 → 集合 → 空间</div>
                     </div>
@@ -118,7 +119,7 @@
               </div>
             </template>
             <el-select v-model="runningStrategy.reverse" style="width: 300px" multiple clearable :disabled="queryMode">
-              <el-option label="前置" value="PRE" />
+              <el-option label="前置" value="PREV" />
               <el-option label="后置" value="POST" />
               <el-option label="断言" value="ASSERT" />
             </el-select>
@@ -127,8 +128,8 @@
       </div>
 
       <!-- 前置处理器 -->
-      <div v-if="showPreProcessorTab" class="tab-pane">
-        <PreProcessorPane v-model="preProcessorComponentList" :edit-mode="editMode" owner-type="HTTP" />
+      <div v-if="showPrevProcessorTab" class="tab-pane">
+        <PrevProcessorPane v-model="prevProcessorComponentList" :edit-mode="editMode" owner-type="HTTP" />
       </div>
 
       <!-- 后置处理器 -->
@@ -137,8 +138,8 @@
       </div>
 
       <!-- 测试断言器 -->
-      <div v-if="showAssertionTab" class="tab-pane">
-        <AssertionPane v-model="assertionComponentList" :edit-mode="editMode" owner-type="HTTP" />
+      <div v-if="showTestAssertionTab" class="tab-pane">
+        <AssertionPane v-model="testAssertionComponentList" :edit-mode="editMode" owner-type="HTTP" />
       </div>
 
       <!-- 操作按钮 -->
@@ -183,19 +184,19 @@
 <script setup>
 import * as ElementService from '@/api/script/element'
 import * as ExecutionService from '@/api/script/execution'
-import { isEmpty } from 'lodash-es'
-import { ElMessage } from 'element-plus'
-import { Check, Close, Edit, Warning } from '@element-plus/icons-vue'
-import { usePyMeterStore } from '@/store/pymeter'
-import { useWorkspaceStore } from '@/store/workspace'
+import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
+import AssertionPane from '@/pymeter/components/editor-main/panes/AssertionPane.vue'
+import PostProcessorPane from '@/pymeter/components/editor-main/panes/PostProcessorPane.vue'
+import PrevProcessorPane from '@/pymeter/components/editor-main/panes/PrevProcessorPane.vue'
+import EditorProps from '@/pymeter/composables/editor.props'
 import useEditor from '@/pymeter/composables/useEditor'
 import useElement from '@/pymeter/composables/useElement'
 import useRunnableElement from '@/pymeter/composables/useRunnableElement'
-import EditorProps from '@/pymeter/composables/editor.props'
-import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
-import PreProcessorPane from '@/pymeter/components/editor-main/panes/PreProcessorPane.vue'
-import PostProcessorPane from '@/pymeter/components/editor-main/panes/PostProcessorPane.vue'
-import AssertionPane from '@/pymeter/components/editor-main/panes/AssertionPane.vue'
+import { usePyMeterStore } from '@/store/pymeter'
+import { useWorkspaceStore } from '@/store/workspace'
+import { Check, Close, Edit, Warning } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { isEmpty } from 'lodash-es'
 
 const props = defineProps(EditorProps)
 const pymeterStore = usePyMeterStore()
@@ -231,24 +232,24 @@ const runningStrategy = ref({
 })
 const activeTabName = ref('SETTINGS')
 const showSettingsTab = computed(() => activeTabName.value === 'SETTINGS')
-const showPreProcessorTab = computed(() => activeTabName.value === 'PRE_PROCESSOR')
+const showPrevProcessorTab = computed(() => activeTabName.value === 'PREV_PROCESSOR')
 const showPostProcessorTab = computed(() => activeTabName.value === 'POST_PROCESSOR')
-const showAssertionTab = computed(() => activeTabName.value === 'ASSERTION')
+const showTestAssertionTab = computed(() => activeTabName.value === 'TEST_ASSERTION')
 const hiddenSettingsDot = computed(() => {
   return !elementInfo.value.attributes.exclude_workspaces && isEmpty(runningStrategy.value.reverse)
 })
 
 const componentList = ref([])
-const preProcessorComponentList = ref([])
+const prevProcessorComponentList = ref([])
 const postProcessorComponentList = ref([])
-const assertionComponentList = ref([])
+const testAssertionComponentList = ref([])
 const pendingSubmitComponentList = computed(() => {
   // 添加 sortNumber 属性
-  preProcessorComponentList.value.forEach((item, index) => (item.sortNumber = index + 1))
+  prevProcessorComponentList.value.forEach((item, index) => (item.sortNumber = index + 1))
   postProcessorComponentList.value.forEach((item, index) => (item.sortNumber = index + 1))
-  assertionComponentList.value.forEach((item, index) => (item.sortNumber = index + 1))
+  testAssertionComponentList.value.forEach((item, index) => (item.sortNumber = index + 1))
   // 组合成一个数组
-  return [...preProcessorComponentList.value, ...postProcessorComponentList.value, ...assertionComponentList.value]
+  return [...prevProcessorComponentList.value, ...postProcessorComponentList.value, ...testAssertionComponentList.value]
 })
 
 const jsonEditorRef = ref()
@@ -282,22 +283,19 @@ const query = (_elementNo_ = elementNo.value) => {
  */
 const setComponentsByType = () => {
   // 先清空原有列表
-  preProcessorComponentList.value = []
+  prevProcessorComponentList.value = []
   postProcessorComponentList.value = []
-  assertionComponentList.value = []
+  testAssertionComponentList.value = []
   // 根据类型存储至列表
   componentList.value.forEach((item) => {
-    if (item.elementType === 'PRE_PROCESSOR') {
-      preProcessorComponentList.value.push(item)
-      return true
-    }
-    if (item.elementType === 'POST_PROCESSOR') {
+    if (item.elementType === 'PREV_PROCESSOR') {
+      prevProcessorComponentList.value.push(item)
+    } else if (item.elementType === 'POST_PROCESSOR') {
       postProcessorComponentList.value.push(item)
-      return true
-    }
-    if (item.elementType === 'ASSERTION') {
-      assertionComponentList.value.push(item)
-      return true
+    } else if (item.elementType === 'ASSERTION') {
+      testAssertionComponentList.value.push(item)
+    } else {
+      return
     }
   })
 }
@@ -315,9 +313,9 @@ const setRunningStrategy = () => {
  * 根据 sortNumber 排序
  */
 const sortComponents = () => {
-  preProcessorComponentList.value.sort((a, b) => a.sortNumber - b.sortNumber)
+  prevProcessorComponentList.value.sort((a, b) => a.sortNumber - b.sortNumber)
   postProcessorComponentList.value.sort((a, b) => a.sortNumber - b.sortNumber)
-  assertionComponentList.value.sort((a, b) => a.sortNumber - b.sortNumber)
+  testAssertionComponentList.value.sort((a, b) => a.sortNumber - b.sortNumber)
 }
 
 /**

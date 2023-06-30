@@ -73,8 +73,8 @@
           </el-button>
         </template>
         <el-button link @click="openNewIfControllerTab">IF控制器</el-button>
-        <el-button link @click="openNewWhileControllerTab">While控制器</el-button>
-        <el-button link @click="openNewForInControllerTab">遍历控制器</el-button>
+        <el-button link @click="openNewWhileControllerTab">WHILE控制器</el-button>
+        <el-button link @click="openNewForeachControllerTab">遍历控制器</el-button>
         <el-button link @click="openNewLoopControllerTab">循环控制器</el-button>
         <el-button link @click="openNewRetryControllerTab">重试控制器</el-button>
         <el-button link @click="openNewTransactionControllerTab">事务控制器</el-button>
@@ -365,14 +365,14 @@ const openNewIfControllerTab = () => {
 }
 
 /**
- * 打开新增 ForinController 的标签页
+ * 打开新增 ForeachController 的标签页
  */
-const openNewForInControllerTab = () => {
+const openNewForeachControllerTab = () => {
   closeMenu()
   pymeterStore.addTab({
     editorNo: Date.now().toString(),
     editorName: '新建控制器',
-    editorComponent: 'ForInController',
+    editorComponent: 'ForeachController',
     editorMode: 'CREATE',
     metadata: {
       rootNo: item.value.rootNo,

@@ -13,8 +13,8 @@
     :rules="rules"
   >
     <!-- 延迟时间 -->
-    <el-form-item label="延迟时间：" prop="SleepPreProcessor__delay">
-      <el-input v-model="elementProperty.SleepPreProcessor__delay" clearable :readonly="props.readonly">
+    <el-form-item label="延迟时间：" prop="SleepPrevProcessor__delay">
+      <el-input v-model="elementProperty.SleepPrevProcessor__delay" clearable :readonly="props.readonly">
         <template #append>ms</template>
       </el-input>
     </el-form-item>
@@ -28,10 +28,10 @@ const props = defineProps({
 })
 const elementProperty = computed(() => props.elementProperty)
 const defaultProperty = {
-  SleepPreProcessor__delay: '0'
+  SleepPrevProcessor__delay: '0'
 }
 const rules = {
-  SleepPreProcessor__delay: { required: true, message: '延迟时间', trigger: 'blur' }
+  SleepPrevProcessor__delay: { required: true, message: '延迟时间', trigger: 'blur' }
 }
 
 onMounted(() => {
