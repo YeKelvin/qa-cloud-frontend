@@ -147,7 +147,12 @@
             </template>
             <el-button link>
               <span>耗时:&nbsp;</span>
-              <span style="color: var(--el-color-success)">{{ current.sampler.elapsedTime }}ms</span>
+              <template v-if="current.sampler.success">
+                <span style="color: var(--el-color-success)">{{ current.sampler.elapsedTime }}ms</span>
+              </template>
+              <template v-else>
+                <span style="color: var(--el-color-error)">{{ current.sampler.elapsedTime }}ms</span>
+              </template>
             </el-button>
           </el-tooltip>
         </span>
