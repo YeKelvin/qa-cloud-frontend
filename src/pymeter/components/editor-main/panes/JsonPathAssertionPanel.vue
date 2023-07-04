@@ -70,7 +70,9 @@ const props = defineProps({
 })
 const elementProperty = computed(() => props.elementProperty)
 const defaultProperty = {
-  PythonAssertion__script: ''
+  JsonPathAssertion__jsonpath: '',
+  JsonPathAssertion__expected_value: '',
+  JsonPathAssertion__operator: 'EQUAL'
 }
 const rules = {
   JsonPathAssertion__jsonpath: { required: true, message: 'JsonPath表达式不能为空', trigger: 'blur' },
