@@ -14,7 +14,9 @@
         multiple
         clearable
         filterable
+        collapse-tags-tooltip
         :teleported="false"
+        :max-collapse-tags="3"
       >
         <!-- 下拉框顶部的新增脚本按钮 -->
         <el-option-group key="new-operation" label="新增">
