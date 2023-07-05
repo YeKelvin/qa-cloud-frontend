@@ -5,7 +5,8 @@
       <div class="conditions-container">
         <ConditionInput v-model="queryConditions.planNo" label="计划编号" />
         <ConditionInput v-model="queryConditions.planName" label="计划名称" />
-        <ConditionInput v-model="queryConditions.productRequirementsVersion" label="版本号" />
+        <ConditionInput v-model="queryConditions.scrumVersion" label="版本" />
+        <ConditionInput v-model="queryConditions.scrumSprint" label="迭代" />
         <ConditionSelect v-model="queryConditions.testPhase" :options="TestPhase" label="测试阶段" />
         <ConditionSelect v-model="queryConditions.state" :options="TestplanState" label="计划状态" />
       </div>
@@ -26,10 +27,12 @@
         <template #empty><el-empty /></template>
         <!-- 列定义 -->
         <el-table-column prop="planNo" label="计划编号" min-width="180" width="180" />
-        <el-table-column prop="planName" label="计划名称" min-width="150" />
-        <el-table-column prop="productRequirementsVersion" label="版本号" min-width="150" />
-        <el-table-column prop="collectionTotal" label="脚本数" min-width="150" />
-        <el-table-column prop="testPhase" label="测试阶段" min-width="150">
+        <el-table-column prop="planName" label="计划名称" min-width="150">
+          <template #default="{ row }">{{ row.planName }} ({{ row.collectionTotal }})</template>
+        </el-table-column>
+        <el-table-column prop="scrumVersion" label="版本" min-width="150" />
+        <el-table-column prop="scrumSprint" label="迭代" min-width="150" />
+        <el-table-column prop="testPhase" label="测试阶段" min-width="150" width="150">
           <template #default="{ row }">
             <span style="display: flex; justify-content: space-between; align-items: center">
               <span>{{ TestPhase[row.testPhase] }}</span>
@@ -68,7 +71,7 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column prop="state" label="计划状态" min-width="150">
+        <el-table-column prop="state" label="计划状态" min-width="150" width="150">
           <template #default="{ row }">
             <span style="display: flex; justify-content: space-between; align-items: center">
               <span>{{ TestplanState[row.state] }}</span>
@@ -99,17 +102,23 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column prop="startTime" label="开始时间" min-width="150">
+        <el-table-column prop="startTime" label="开始时间" min-width="160" width="160">
           <template #default="{ row }">
             {{ row.startTime ? dayjs(row.startTime).format('YYYY-MM-DD HH:mm:ss') : '' }}
           </template>
         </el-table-column>
-        <el-table-column prop="endTime" label="结束时间" min-width="150">
+        <el-table-column prop="endTime" label="结束时间" min-width="160" width="160">
           <template #default="{ row }">
             {{ row.endTime ? dayjs(row.endTime).format('YYYY-MM-DD HH:mm:ss') : '' }}
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" min-width="150">
+        <el-table-column prop="createdTime" label="创建时间" min-width="160" width="160">
+          <template #default="{ row }">
+            {{ dayjs(row.createdTime).format('YYYY-MM-DD HH:mm:ss') }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="createdBy" label="创建人" min-width="150" width="150" />
+        <el-table-column fixed="right" label="操作" min-width="250" width="250">
           <template #default="{ row }">
             <template v-if="row.state != 'COMPLETED'">
               <el-button type="primary" link style="margin-left: 12px" @click="gotoTestplanEditor(row.planNo, 'QUERY')">
@@ -165,7 +174,8 @@ import dayjs from 'dayjs'
 const { queryConditions, resetQueryConditions } = useQueryConditions({
   planNo: '',
   planName: '',
-  productRequirementsVersion: '',
+  scrumSprint: '',
+  scrumVersion: '',
   testPhase: '',
   state: ''
 })

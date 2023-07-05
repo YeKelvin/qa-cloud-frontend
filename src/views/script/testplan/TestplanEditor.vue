@@ -29,20 +29,25 @@
             <el-input v-model="formData.planDesc" clearable :readonly="queryMode" />
           </el-form-item>
 
-          <!-- 版本号 -->
-          <el-form-item label="版本号：" prop="productRequirementsVersion">
-            <el-input v-model="formData.productRequirementsVersion" clearable :readonly="queryMode" />
+          <!-- 版本 -->
+          <el-form-item label="版本：" prop="scrumVersion">
+            <el-input v-model="formData.scrumVersion" clearable :readonly="queryMode" />
+          </el-form-item>
+
+          <!-- 迭代 -->
+          <el-form-item label="迭代：" prop="scrumSprint">
+            <el-input v-model="formData.scrumSprint" clearable :readonly="queryMode" />
           </el-form-item>
 
           <!-- 并发数 -->
-          <el-form-item label="并发数：" prop="concurrency">
+          <el-form-item label="并发数量：" prop="concurrency">
             <el-input v-model="formData.concurrency" clearable disabled>
               <template #append>个</template>
             </el-input>
           </el-form-item>
 
           <!-- 迭代次数 -->
-          <el-form-item label="迭代数：" prop="iterations">
+          <el-form-item label="迭代次数：" prop="iterations">
             <el-input v-model="formData.iterations" clearable :readonly="queryMode">
               <template #append>次</template>
             </el-input>
@@ -80,7 +85,7 @@
           <!-- 通知机器人 -->
           <el-form-item label="结果通知：" prop="property.engineNo">
             <el-select
-              v-model="formData.notificationRobotNos"
+              v-model="formData.notificationRobots"
               filterable
               multiple
               style="width: 100%"
@@ -121,13 +126,13 @@
 </template>
 
 <script setup>
-import * as TestplanService from '@/api/script/testplan'
-import * as MessageService from '@/api/public/message'
-import { assign } from 'lodash-es'
-import { ElMessage } from 'element-plus'
-import { Check, Close, Edit } from '@element-plus/icons-vue'
 import { RobotType } from '@/api/enum'
+import * as MessageService from '@/api/public/message'
+import * as TestplanService from '@/api/script/testplan'
 import { useWorkspaceStore } from '@/store/workspace'
+import { Check, Close, Edit } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { assign } from 'lodash-es'
 import TestplanCollectionTree from './TestplanCollectionTree.vue'
 
 const checkIterations = (_, value, callback) => {
@@ -159,19 +164,20 @@ const noticeRobotList = ref([])
 const formData = reactive({
   planName: '',
   planDesc: '',
-  productRequirementsVersion: '',
+  scrumSprint: '',
+  scrumVersion: '',
   concurrency: '1',
   iterations: '1',
   delay: '0',
   save: true,
   saveOnError: false,
-  stopTestOnErrorCount: '3',
-  notificationRobotNos: []
+  stopOnErrorCount: '3',
+  notificationRobots: []
 })
 const formRules = reactive({
   planName: [{ required: true, message: '计划名称不能为空', trigger: 'blur' }],
-  concurrency: [{ required: true, message: '并发数不能为空', trigger: 'blur' }],
-  iterations: [{ required: true, message: '迭代数不能为空', validator: checkIterations, trigger: 'blur' }]
+  concurrency: [{ required: true, message: '并发数量不能为空', trigger: 'blur' }],
+  iterations: [{ required: true, message: '迭代次数不能为空', validator: checkIterations, trigger: 'blur' }]
 })
 
 const queryMode = computed(() => editorMode.value === 'QUERY')
