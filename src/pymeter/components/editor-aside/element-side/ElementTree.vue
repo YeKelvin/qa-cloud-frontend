@@ -3,6 +3,8 @@
     ref="eltreeRef"
     node-key="elementNo"
     style="padding-bottom: 100px"
+    draggable
+    highlight-current
     :indent="36"
     :data="elementList"
     :expand-on-click-node="false"
@@ -10,8 +12,6 @@
     :props="{ label: 'elementName', children: 'children' }"
     :allow-drag="allowDrag"
     :allow-drop="allowDrop"
-    highlight-current
-    draggable
     @node-click="handleNodeClick"
     @node-expand="handleNodeExpand"
     @node-collapse="handleNodeCollapse"

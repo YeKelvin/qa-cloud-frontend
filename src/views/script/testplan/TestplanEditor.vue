@@ -8,118 +8,121 @@
     <div class="testplan-body">
       <!-- 脚本列表 -->
       <TestplanCollectionTree ref="collectionTreeRef" style="width: 50%" :readonly="queryMode" />
+
       <!-- 设置表单 -->
       <div style="width: 50%" class="settings-container">
-        <el-form
-          ref="elformRef"
-          label-position="right"
-          label-width="140px"
-          style="width: 100%"
-          inline-message
-          :model="formData"
-          :rules="formRules"
-        >
-          <!-- 计划名称 -->
-          <el-form-item label="计划名称：" prop="planName">
-            <el-input v-model="formData.planName" clearable :readonly="queryMode" />
-          </el-form-item>
+        <el-scrollbar class="maxsize" wrap-style="overflow-x:auto;" view-style="padding:10px;">
+          <el-form
+            ref="elformRef"
+            label-position="right"
+            label-width="140px"
+            style="width: 100%"
+            inline-message
+            :model="formData"
+            :rules="formRules"
+          >
+            <!-- 计划名称 -->
+            <el-form-item label="计划名称：" prop="planName">
+              <el-input v-model="formData.planName" clearable :readonly="queryMode" />
+            </el-form-item>
 
-          <!-- 计划描述 -->
-          <el-form-item label="计划描述：" prop="planDesc">
-            <el-input v-model="formData.planDesc" clearable :readonly="queryMode" />
-          </el-form-item>
+            <!-- 计划描述 -->
+            <el-form-item label="计划描述：" prop="planDesc">
+              <el-input v-model="formData.planDesc" clearable :readonly="queryMode" />
+            </el-form-item>
 
-          <!-- 版本 -->
-          <el-form-item label="版本：" prop="scrumVersion">
-            <el-input v-model="formData.scrumVersion" clearable :readonly="queryMode" />
-          </el-form-item>
+            <!-- 版本 -->
+            <el-form-item label="版本：" prop="scrumVersion">
+              <el-input v-model="formData.scrumVersion" clearable :readonly="queryMode" />
+            </el-form-item>
 
-          <!-- 迭代 -->
-          <el-form-item label="迭代：" prop="scrumSprint">
-            <el-input v-model="formData.scrumSprint" clearable :readonly="queryMode" />
-          </el-form-item>
+            <!-- 迭代 -->
+            <el-form-item label="迭代：" prop="scrumSprint">
+              <el-input v-model="formData.scrumSprint" clearable :readonly="queryMode" />
+            </el-form-item>
 
-          <!-- 并发数 -->
-          <el-form-item label="并发数量：" prop="concurrency">
-            <el-input v-model="formData.concurrency" clearable disabled>
-              <template #append>个</template>
-            </el-input>
-          </el-form-item>
+            <!-- 并发数 -->
+            <el-form-item label="并发数量：" prop="concurrency">
+              <el-input v-model="formData.concurrency" clearable disabled>
+                <template #append>个</template>
+              </el-input>
+            </el-form-item>
 
-          <!-- 迭代次数 -->
-          <el-form-item label="迭代次数：" prop="iterations">
-            <el-input v-model="formData.iterations" clearable :readonly="queryMode">
-              <template #append>次</template>
-            </el-input>
-          </el-form-item>
+            <!-- 迭代次数 -->
+            <el-form-item label="迭代次数：" prop="iterations">
+              <el-input v-model="formData.iterations" clearable :readonly="queryMode">
+                <template #append>次</template>
+              </el-input>
+            </el-form-item>
 
-          <!-- 迭代间隔时间 -->
-          <el-form-item label="迭代间隔：" prop="delay">
-            <el-input v-model="formData.delay" clearable :readonly="queryMode">
-              <template #append>ms</template>
-            </el-input>
-          </el-form-item>
+            <!-- 迭代间隔时间 -->
+            <el-form-item label="迭代间隔：" prop="delay">
+              <el-input v-model="formData.delay" clearable :readonly="queryMode">
+                <template #append>ms</template>
+              </el-input>
+            </el-form-item>
 
-          <!-- 保存结果 -->
-          <el-form-item label="保存结果：" prop="save">
-            <el-switch
-              v-model="formData.save"
-              inline-prompt
-              :active-icon="Check"
-              :inactive-icon="Close"
-              :disabled="queryMode"
-            />
-          </el-form-item>
+            <!-- 保存结果 -->
+            <el-form-item label="保存结果：" prop="save">
+              <el-switch
+                v-model="formData.save"
+                inline-prompt
+                :active-icon="Check"
+                :inactive-icon="Close"
+                :disabled="queryMode"
+              />
+            </el-form-item>
 
-          <!-- 仅保存失败结果 -->
-          <el-form-item label="仅保存失败结果：" prop="saveOnError">
-            <el-switch
-              v-model="formData.saveOnError"
-              inline-prompt
-              :active-icon="Check"
-              :inactive-icon="Close"
-              disabled
-            />
-          </el-form-item>
+            <!-- 仅保存失败结果 -->
+            <el-form-item label="仅保存失败结果：" prop="saveOnError">
+              <el-switch
+                v-model="formData.saveOnError"
+                inline-prompt
+                :active-icon="Check"
+                :inactive-icon="Close"
+                disabled
+              />
+            </el-form-item>
 
-          <!-- 通知机器人 -->
-          <el-form-item label="结果通知：" prop="property.engineNo">
-            <el-select
-              v-model="formData.notificationRobots"
-              filterable
-              multiple
-              style="width: 100%"
-              tag-type="danger"
-              :disabled="queryMode"
-            >
-              <el-option
-                v-for="item in noticeRobotList"
-                :key="item.robotNo"
-                :label="item.robotName"
-                :value="item.robotNo"
+            <!-- 通知机器人 -->
+            <el-form-item label="结果通知：" prop="property.engineNo">
+              <el-select
+                v-model="formData.notificationRobots"
+                filterable
+                multiple
+                style="width: 100%"
+                tag-type="danger"
+                :disabled="queryMode"
               >
-                <span class="robot-type-option">
-                  <span>{{ item.robotName }}</span>
-                  <el-tag type="danger" size="small" disable-transitions>{{ RobotType[item.robotType] }}</el-tag>
-                </span>
-              </el-option>
-            </el-select>
-          </el-form-item>
+                <el-option
+                  v-for="item in noticeRobotList"
+                  :key="item.robotNo"
+                  :label="item.robotName"
+                  :value="item.robotNo"
+                >
+                  <span class="robot-type-option">
+                    <span>{{ item.robotName }}</span>
+                    <el-tag type="danger" size="small" disable-transitions>{{ RobotType[item.robotType] }}</el-tag>
+                  </span>
+                </el-option>
+              </el-select>
+            </el-form-item>
 
-          <!-- 操作按钮 -->
-          <el-form-item v-if="queryMode">
-            <el-button :icon="Edit" type="primary" @click="editorMode = 'MODIFY'">编 辑</el-button>
-            <el-button :icon="Close" @click="goBack()">关 闭</el-button>
-          </el-form-item>
-          <el-form-item v-else-if="modifyMode">
-            <el-button :icon="Check" type="danger" @click="modifyTestplan()">保 存</el-button>
-            <el-button :icon="Close" @click="goBack()">关 闭</el-button>
-          </el-form-item>
-          <el-form-item v-else-if="createMode">
-            <el-button :icon="Check" type="primary" @click="createTestplan()">创建计划</el-button>
-            <el-button :icon="Close" @click="goBack()">关 闭</el-button>
-          </el-form-item>
-        </el-form>
+            <!-- 操作按钮 -->
+            <el-form-item v-if="queryMode">
+              <el-button :icon="Edit" type="primary" @click="editorMode = 'MODIFY'">编 辑</el-button>
+              <el-button :icon="Close" @click="goBack()">关 闭</el-button>
+            </el-form-item>
+            <el-form-item v-else-if="modifyMode">
+              <el-button :icon="Check" type="danger" @click="modifyTestplan()">保 存</el-button>
+              <el-button :icon="Close" @click="goBack()">关 闭</el-button>
+            </el-form-item>
+            <el-form-item v-else-if="createMode">
+              <el-button :icon="Check" type="primary" @click="createTestplan()">创建计划</el-button>
+              <el-button :icon="Close" @click="goBack()">关 闭</el-button>
+            </el-form-item>
+          </el-form>
+        </el-scrollbar>
       </div>
     </div>
   </div>
@@ -310,7 +313,6 @@ const goBack = () => {
   height: 100%;
 
   display: flex;
-  flex: 1;
   flex-direction: column;
 }
 
@@ -331,7 +333,7 @@ const goBack = () => {
   display: flex;
   flex: 1;
 
-  height: 100%;
+  height: 0;
   width: 100%;
 
   padding: 20px;

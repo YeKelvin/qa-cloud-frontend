@@ -14,6 +14,7 @@
         multiple
         clearable
         filterable
+        collapse-tags
         collapse-tags-tooltip
         :teleported="false"
         :max-collapse-tags="3"

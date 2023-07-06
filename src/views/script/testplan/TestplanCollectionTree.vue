@@ -1,6 +1,6 @@
 <template>
-  <div class="tree-container">
-    <div v-show="collections.length > 0" style="width: 100%; height: 100%">
+  <div class="tree-container flexbox-column">
+    <template v-if="collections.length > 0">
       <!-- 按钮 -->
       <div style="display: flex; justify-content: flex-end">
         <el-button type="primary" link :disabled="readonly" @click="setAllChecked">全选</el-button>
@@ -10,31 +10,36 @@
       <!-- 搜索 -->
       <el-input v-model="filterText" placeholder="搜索脚本" style="margin-bottom: 10px" clearable />
 
-      <el-tree
-        ref="eltreeRef"
-        node-key="elementNo"
-        draggable
-        show-checkbox
-        highlight-current
-        :data="collections"
-        :allow-drop="allowDrop"
-        :filter-node-method="filterNode"
-        :props="{ label: 'elementName', children: 'children' }"
-        @node-click="handleNodeClick"
-      >
-        <template #default="{ node, data }">
-          <span style="display: inline-flex; align-items: center">
-            <el-tag size="small" style="margin-right: 10px" disable-transitions>
-              {{ node.parent.childNodes.findIndex((item) => item.key == data.elementNo) + 1 }}
-            </el-tag>
-            <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ node.label }}</span>
-          </span>
-        </template>
-      </el-tree>
-    </div>
+      <el-scrollbar class="maxsize" wrap-style="overflow-x:auto;" view-style="padding:10px;">
+        <el-tree
+          ref="eltreeRef"
+          node-key="elementNo"
+          draggable
+          show-checkbox
+          highlight-current
+          style="padding-bottom: 50px"
+          :data="collections"
+          :allow-drop="allowDrop"
+          :filter-node-method="filterNode"
+          :props="{ label: 'elementName', children: 'children' }"
+          @node-click="handleNodeClick"
+        >
+          <template #default="{ node, data }">
+            <span style="display: inline-flex; align-items: center">
+              <el-tag type="info" size="small" style="margin-right: 10px; width: 30px" disable-transitions round>
+                {{ node.parent.childNodes.findIndex((item) => item.key == data.elementNo) + 1 }}
+              </el-tag>
+              <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ node.label }}</span>
+            </span>
+          </template>
+        </el-tree>
+      </el-scrollbar>
+    </template>
 
     <!-- 空提示 -->
-    <el-empty v-show="collections.length == 0" description="工作空间下暂无脚本" />
+    <template v-else>
+      <el-empty description="工作空间下暂无脚本" />
+    </template>
   </div>
 </template>
 
@@ -144,6 +149,7 @@ defineExpose({
 
 <style lang="scss" scoped>
 .tree-container {
+  display: flex;
   height: 100%;
 
   padding: 10px;
@@ -153,5 +159,22 @@ defineExpose({
 
 :deep(.el-tree-node) {
   margin-bottom: 5px;
+  padding: 0 10px;
+}
+
+:deep(.el-tree-node__expand-icon) {
+  display: none;
+}
+
+:deep(.el-checkbox__inner) {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+}
+:deep(.el-checkbox__inner::after) {
+  top: 0;
+  left: 6px;
+  width: 5px;
+  height: 15px;
 }
 </style>
