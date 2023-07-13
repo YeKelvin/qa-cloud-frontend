@@ -50,10 +50,10 @@
           <!-- 查询模式下可用的按钮 -->
           <template v-if="queryMode">
             <template v-if="row.editing">
-              <!-- 单行取消按钮 -->
-              <el-button type="primary" link :icon="Close" @click="queryHeaders()" />
               <!-- 单行提交按钮 -->
               <el-button type="danger" link :icon="Check" @click="submitHeader(row)" />
+              <!-- 单行取消按钮 -->
+              <el-button type="primary" link :icon="Close" @click="queryHeaders()" />
             </template>
             <template v-else>
               <!-- 单行编辑按钮 -->
