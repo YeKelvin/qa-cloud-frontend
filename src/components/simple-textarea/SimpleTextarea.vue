@@ -1,5 +1,5 @@
 <template>
-  <textarea ref="textareaRef" class="simple-textarea" :value="$attrs.modelValue" @input="handleInput" />
+  <textarea ref="textareaRef" class="simple-textarea" :value="attrs.modelValue" @input="handleInput" />
 </template>
 
 <script setup>
@@ -22,7 +22,7 @@ const handleInput = (event) => {
 
 const resizeTextarea = () => {
   const textarea = textareaRef.value
-  textarea.style.height = '0'
+  textarea.style.height = '32px'
 
   if (textarea.scrollHeight) {
     textarea.style.height = `${textarea.scrollHeight}px`

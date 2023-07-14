@@ -1,7 +1,5 @@
 // 入口是 monaco-editor/esm/vs/editor/edcore.main.js
 
-// import * as monaco from 'monaco-editor'
-
 import 'monaco-editor/esm/vs/editor/editor.all.js'
 
 import 'monaco-editor/esm/vs/language/css/monaco.contribution.js'
@@ -11,7 +9,6 @@ import 'monaco-editor/esm/vs/language/typescript/monaco.contribution.js'
 import 'monaco-editor/esm/vs/basic-languages/python/python.contribution.js'
 import 'monaco-editor/esm/vs/basic-languages/sql/sql.contribution.js'
 
-import 'monaco-editor/esm/vs/editor/standalone/browser/accessibilityHelp/accessibilityHelp.js'
 // import 'monaco-editor/esm/vs/editor/standalone/browser/iPadShowKeyboard/iPadShowKeyboard.js'
 // import 'monaco-editor/esm/vs/editor/standalone/browser/inspectTokens/inspectTokens.js'
 import 'monaco-editor/esm/vs/editor/standalone/browser/quickAccess/standaloneHelpQuickAccess.js'
@@ -25,9 +22,7 @@ import * as monaco from 'monaco-editor/esm/vs/editor/editor.api.js'
 
 import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
 import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
-// import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
 import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
-// import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
 
 import { LOG_LANGUAGE_DEFINE, LOG_TOKEN_COLORS } from './language/log'
 import { PYMETER_COMPLETION_ITEMS, PYMETER_FUNCTION_COMPLETION_ITEMS } from './language/pymeter'
