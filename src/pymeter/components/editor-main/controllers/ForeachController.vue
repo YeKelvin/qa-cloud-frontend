@@ -46,7 +46,11 @@
         <template #label>
           <span style="font-size: 16px">in：</span>
         </template>
-        <el-radio-group v-model="elementInfo.property.ForeachController__type" :disabled="queryMode">
+        <el-radio-group
+          v-model="elementInfo.property.ForeachController__type"
+          style="margin-bottom: 10px"
+          :disabled="queryMode"
+        >
           <el-radio label="OBJECT">可迭代对象</el-radio>
           <el-radio label="CUSTOM">自定义声明</el-radio>
         </el-radio-group>
@@ -56,7 +60,10 @@
           placeholder="可迭代对象名称"
           clearable
           :readonly="queryMode"
-        />
+        >
+          <template #prepend>${</template>
+          <template #append>}</template>
+        </el-input>
         <MonacoEditor
           v-else
           ref="editorRef"
