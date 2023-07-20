@@ -78,12 +78,11 @@ export default ({ mode }) =>
           entryFileNames: 'static/js/[name].[hash].js',
           assetFileNames: 'static/[ext]/[name].[hash].[ext]',
           manualChunks: {
+            vue: ['vue', 'vue-router'],
             echarts: ['echarts'],
+            editorWorker: ['monaco-editor/esm/vs/editor/editor.worker'],
             jsonWorker: ['monaco-editor/esm/vs/language/json/json.worker'],
-            // cssWorker: ['monaco-editor/esm/vs/language/css/css.worker'],
-            htmlWorker: ['monaco-editor/esm/vs/language/html/html.worker'],
-            // tsWorker: ['monaco-editor/esm/vs/language/typescript/ts.worker'],
-            editorWorker: ['monaco-editor/esm/vs/editor/editor.worker']
+            htmlWorker: ['monaco-editor/esm/vs/language/html/html.worker']
           }
         }
       }
@@ -99,17 +98,14 @@ export default ({ mode }) =>
       preprocessorOptions: {
         scss: {
           additionalData: `@import "@/styles/variables.scss";`
-          // additionalData: `@use "@/styles/variables.scss" as *;`
         }
       }
     },
     optimizeDeps: {
       include: [
+        'monaco-editor/esm/vs/editor/editor.worker',
         'monaco-editor/esm/vs/language/json/json.worker',
-        // 'monaco-editor/esm/vs/language/css/css.worker',
-        'monaco-editor/esm/vs/language/html/html.worker',
-        // 'monaco-editor/esm/vs/language/typescript/ts.worker',
-        'monaco-editor/esm/vs/editor/editor.worker'
+        'monaco-editor/esm/vs/language/html/html.worker'
       ]
     }
   })

@@ -19,36 +19,48 @@
       </el-form-item>
 
       <!-- 循环延迟时间 -->
-      <el-form-item label="延迟时间：" prop="property.ForeachController__delay">
+      <el-form-item label="间隔时间：" prop="property.ForeachController__delay">
         <el-input
           v-model="elementInfo.property.ForeachController__delay"
-          placeholder="迭代间隔时间"
+          placeholder="间隔时间(ms)"
           clearable
           :readonly="queryMode"
         />
       </el-form-item>
 
       <!-- for变量 -->
-      <el-form-item prop="property.ForeachController__for_variable">
+      <el-form-item prop="property.ForeachController__target">
         <template #label>
           <span style="font-size: 16px">for：</span>
         </template>
         <el-input
-          v-model="elementInfo.property.ForeachController__for_variable"
-          placeholder="item"
+          v-model="elementInfo.property.ForeachController__target"
+          placeholder="目标变量名称"
           clearable
           :readonly="queryMode"
         />
       </el-form-item>
 
       <!-- in对象 -->
-      <el-form-item prop="property.ForeachController__in_statement">
+      <el-form-item prop="property.ForeachController__iter">
         <template #label>
           <span style="font-size: 16px">in：</span>
         </template>
+        <el-radio-group v-model="elementInfo.property.ForeachController__type" :disabled="queryMode">
+          <el-radio label="OBJECT">可迭代对象</el-radio>
+          <el-radio label="CUSTOM">自定义声明</el-radio>
+        </el-radio-group>
+        <el-input
+          v-if="elementInfo.property.ForeachController__type == 'OBJECT'"
+          v-model="elementInfo.property.ForeachController__iter"
+          placeholder="可迭代对象名称"
+          clearable
+          :readonly="queryMode"
+        />
         <MonacoEditor
+          v-else
           ref="editorRef"
-          v-model="elementInfo.property.ForeachController__in_statement"
+          v-model="elementInfo.property.ForeachController__iter"
           language="python"
           line-numbers="off"
           style="height: 100px"
@@ -105,15 +117,16 @@ const elementInfo = ref({
   elementType: 'CONTROLLER',
   elementClass: 'ForeachController',
   property: {
-    ForeachController__for_variable: '',
-    ForeachController__in_statement: '',
+    ForeachController__target: '',
+    ForeachController__iter: '',
+    ForeachController__type: 'OBJECT',
     ForeachController__delay: ''
   }
 })
 const elementFormRules = reactive({
   elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }],
-  'property.ForeachController__for_variable': [{ required: true, message: 'for变量不能为空', trigger: 'blur' }],
-  'property.ForeachController__in_statement': [{ required: true, message: 'in对象或声明不能为空', trigger: 'blur' }]
+  'property.ForeachController__target': [{ required: true, message: '目标变量不能为空', trigger: 'blur' }],
+  'property.ForeachController__iter': [{ required: true, message: '迭代对象或声明不能为空', trigger: 'blur' }]
 })
 const editorRef = ref()
 
@@ -122,9 +135,21 @@ onMounted(() => {
   if (createMode.value) return
   ElementService.queryElementInfo({ elementNo: elementNo.value }).then((response) => {
     elementInfo.value = response.result
-    editorRef.value.setValue(response.result.property.ForeachController__in_statement)
+    if (response.result.property.ForeachController__type == 'CUSTOM') {
+      editorRef.value.setValue(response.result.property.ForeachController__iter)
+    }
   })
 })
+
+watch(
+  () => elementInfo.value.property.ForeachController__type,
+  (val) => {
+    if (val == 'OBJECT') return
+    nextTick(() => {
+      editorRef.value.setValue(elementInfo.value.property.ForeachController__iter)
+    })
+  }
+)
 
 /**
  * 更新元素编号

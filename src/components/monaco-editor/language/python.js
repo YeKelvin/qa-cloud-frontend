@@ -1,9 +1,9 @@
-import monaco from '../monaco.base.js'
 import { language } from 'monaco-editor/esm/vs/basic-languages/python/python.js'
+import monaco from '../monaco.base.js'
 
-const PYTHON_LANGUAGE_DEFINE = { ...language }
-PYTHON_LANGUAGE_DEFINE.tokenizer.root.push([/\$\{\w+\}/, { token: 'pymeter-function' }])
-PYTHON_LANGUAGE_DEFINE.tokenizer.root.push([/(\$\{__\w+\()[\w\s,${}_\(\)]+(\)\})/, { token: 'pymeter-function' }])
+const PYTHON_LANG_DEFINE = { ...language }
+PYTHON_LANG_DEFINE.tokenizer.root.push([/\$\{\w+\}/, { token: 'pymeter-function' }])
+PYTHON_LANG_DEFINE.tokenizer.root.push([/(\$\{__\w+\()[\w\s,${}_\(\)]+(\)\})/, { token: 'pymeter-function' }])
 
 const PYTHON_TOKEN_COLORS = [{ token: 'pymeter-function', foreground: 'FF0000' }]
 
@@ -139,4 +139,4 @@ const PYTHON_KEYWORDS_COMPLETION_ITEMS = (range) => {
   return keywords
 }
 
-export { PYTHON_LANGUAGE_DEFINE, PYTHON_TOKEN_COLORS, PYTHON_KEYWORDS_COMPLETION_ITEMS }
+export { PYTHON_KEYWORDS_COMPLETION_ITEMS, PYTHON_LANG_DEFINE, PYTHON_TOKEN_COLORS }

@@ -32,17 +32,17 @@
       <el-form-item label="超时时间：" prop="property.WhileController__timeout">
         <el-input
           v-model="elementInfo.property.WhileController__timeout"
-          placeholder="循环超时时间（ms）"
+          placeholder="超时时间（ms）"
           clearable
           :readonly="queryMode"
         />
       </el-form-item>
 
-      <!-- 循环延迟时间 -->
-      <el-form-item label="延迟时间：" prop="property.WhileController__delay">
+      <!-- 间隔时间 -->
+      <el-form-item label="间隔时间：" prop="property.WhileController__delay">
         <el-input
           v-model="elementInfo.property.WhileController__delay"
-          placeholder="循环的间隔时间（ms）"
+          placeholder="间隔时间（ms）"
           clearable
           :readonly="queryMode"
         />
