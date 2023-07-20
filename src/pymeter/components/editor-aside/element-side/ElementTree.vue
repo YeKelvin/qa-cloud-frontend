@@ -66,6 +66,7 @@ const {
   menuVisible,
   menuPlacement,
   menuTriggerButtonRef,
+  currentKey,
   operatingNode,
   treeNodeMouseenter,
   treeNodeMouseleave,
@@ -128,6 +129,7 @@ onBeforeUnmount(() => {
  * 查询脚本列表
  */
 const queryElementsTree = (expandtop = false) => {
+  // 无勾选脚本时无需查询
   if (isEmpty(props.collections)) {
     elementList.value = []
     return
@@ -136,10 +138,16 @@ const queryElementsTree = (expandtop = false) => {
   ElementService.queryElementsChildren({ elements: props.collections }).then((response) => {
     // 存储列表
     elementList.value = response.result
-    // 自动展开顶级节点
-    expandtop && elementList.value.forEach((item) => expandedList.value.push(item.elementNo))
-    // 顶级节点添加 padding-bottom: 10px
-    nextTick(() => elementList.value.forEach((item) => addTreeNodePaddingBottom(item.elementNo)))
+    nextTick(() => {
+      // 选中的节点保持高亮
+      currentKey.value && eltreeRef.value && eltreeRef.value.setCurrentKey(currentKey.value)
+      elementList.value.forEach((item) => {
+        // 自动展开顶级节点
+        expandtop && expandedList.value.push(item.elementNo)
+        // 顶级节点添加 padding-bottom: 10px
+        addTreeNodePaddingBottom(item.elementNo)
+      })
+    })
   })
 }
 
@@ -154,6 +162,8 @@ const addTreeNodePaddingBottom = (collectionNo) => {
  * el-tree handler
  */
 const handleNodeClick = (data) => {
+  // 存储当前节点，用于刷新时保持高亮
+  currentKey.value = data.elementNo
   clearTimeout(clickTimer) //清除计时器
   clickTimer = setTimeout(() => {
     pymeterStore.addTab({

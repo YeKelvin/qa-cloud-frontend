@@ -12,6 +12,7 @@ export default function useElTree() {
   const menuPlacement = ref('bottom')
   const menuTriggerButtonRef = ref()
 
+  const currentKey = ref(null)
   const operatingNode = ref(null)
 
   /**
@@ -136,6 +137,7 @@ export default function useElTree() {
     menuVisible,
     menuPlacement,
     menuTriggerButtonRef,
+    currentKey,
     operatingNode,
     treeNodeMouseenter,
     treeNodeMouseleave,
