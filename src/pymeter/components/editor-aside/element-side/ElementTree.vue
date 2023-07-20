@@ -271,8 +271,6 @@ const allowDrop = (draggingNode, dropNode, type) => {
       type === 'inner'
     )
       return false
-    // Controller 只允许在父级类型为 WORKER 或 CONTROLLER 前后放置
-    if (['WORKER', 'CONTROLLER'].includes(dropNode.parent.data.elementType) && type === 'inner') return false
   }
 
   // TestCollection
