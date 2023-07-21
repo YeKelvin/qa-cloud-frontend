@@ -20,7 +20,7 @@
         ref="draggableRef"
         class="list-group"
         tag="el-collapse"
-        handle=".handle"
+        handle=".move-handle"
         item-key="elementNo"
         :disabled="queryMode"
         :list="assertionList"
@@ -30,14 +30,9 @@
           <el-collapse-item :key="element.elementNo" :name="element.elementNo" class="list-group-item">
             <template #title>
               <!-- 排序图标 -->
-              <el-button
-                v-show="!queryMode"
-                style="margin-right: 10px; font-size: 16px"
-                class="handle"
-                type="primary"
-                link
-                :icon="Sort"
-              />
+              <el-button v-show="!queryMode" class="move-handle" link @click.stop>
+                <SvgIcon icon-name="pymeter-move" />
+              </el-button>
               <!-- 组件序号 -->
               <el-tag style="margin-right: 10px" type="info" size="large" disable-transitions>
                 {{ index + 1 }}
@@ -73,7 +68,7 @@
               />
             </template>
 
-            <!-- 动态逐渐 -->
+            <!-- 动态组件 -->
             <component
               :is="components[element.elementClass]"
               :key="element.elementNo"
@@ -91,7 +86,7 @@
     </template>
 
     <!-- 添加按钮 -->
-    <div style="margin: 10px 0; padding-left: 30px">
+    <div style="margin: 15px 0; padding-left: 30px">
       <el-popover
         v-model:visible="menuVisible"
         trigger="click"
@@ -112,7 +107,7 @@
 <script setup>
 import draggable from 'vuedraggable'
 import { isEmpty } from 'lodash-es'
-import { Delete, Plus, Sort } from '@element-plus/icons-vue'
+import { Delete, Plus } from '@element-plus/icons-vue'
 import { ElementClass } from '@/api/enum'
 
 const components = {
@@ -208,8 +203,10 @@ const collapseAll = () => {
   margin-bottom: 20px;
 }
 
-.handle {
-  cursor: move;
+.move-handle {
+  cursor: grab;
+  font-size: 16px;
+  margin-right: 10px;
 }
 
 :deep(.el-popper) {
