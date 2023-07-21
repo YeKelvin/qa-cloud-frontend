@@ -50,7 +50,7 @@
         </el-tab-pane>
         <el-tab-pane name="PARAMS">
           <template #label>
-            <el-badge :hidden="isEmpty(queryItems)" type="success" is-dot>查询参数</el-badge>
+            <el-badge :hidden="hiddenQuerysDot" type="success" is-dot>查询参数</el-badge>
           </template>
         </el-tab-pane>
         <el-tab-pane name="BODY">
@@ -276,26 +276,26 @@
 
 <script setup>
 import * as ElementService from '@/api/script/element'
-import { isBlankAll } from '@/utils/string-util'
-import { isEmpty, assign } from 'lodash-es'
-import { ElMessage } from 'element-plus'
-import { Check, Close, Edit, Warning } from '@element-plus/icons-vue'
-import useRunnableElement from '@/pymeter/composables/useRunnableElement'
+import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
+import ComponentFilter from '@/pymeter/components/editor-main/common/ComponentFilter.vue'
+import AssertionPane from '@/pymeter/components/editor-main/panes/AssertionPane.vue'
+import PostProcessorPane from '@/pymeter/components/editor-main/panes/PostProcessorPane.vue'
+import PrevProcessorPane from '@/pymeter/components/editor-main/panes/PrevProcessorPane.vue'
+import EditorProps from '@/pymeter/composables/editor.props'
 import useEditor from '@/pymeter/composables/useEditor'
+import useRunnableElement from '@/pymeter/composables/useRunnableElement'
+import { isBlankAll } from '@/utils/string-util'
+import { Check, Close, Edit, Warning } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { assign, isEmpty } from 'lodash-es'
+import HTTPFormTable from './HttpSamplerFormTable.vue'
+import HTTPHeaderTable from './HttpSamplerHeaderTable.vue'
+import HTTPHeaderTemplate from './HttpSamplerHeaderTemplate.vue'
+import HTTPMethodSelect from './HttpSamplerMethodSelect.vue'
+import HTTPQueryTable from './HttpSamplerQueryTable.vue'
 import useHTTPBody from './useHTTPBody'
 import useHTTPHeader from './useHTTPHeader'
 import useHTTPQuery from './useHTTPQuery'
-import EditorProps from '@/pymeter/composables/editor.props'
-import HTTPMethodSelect from './HttpSamplerMethodSelect.vue'
-import HTTPHeaderTemplate from './HttpSamplerHeaderTemplate.vue'
-import HTTPHeaderTable from './HttpSamplerHeaderTable.vue'
-import HTTPQueryTable from './HttpSamplerQueryTable.vue'
-import HTTPFormTable from './HttpSamplerFormTable.vue'
-import PrevProcessorPane from '@/pymeter/components/editor-main/panes/PrevProcessorPane.vue'
-import PostProcessorPane from '@/pymeter/components/editor-main/panes/PostProcessorPane.vue'
-import AssertionPane from '@/pymeter/components/editor-main/panes/AssertionPane.vue'
-import ComponentFilter from '@/pymeter/components/editor-main/common/ComponentFilter.vue'
-import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
 
 const props = defineProps(EditorProps)
 const { executeSampler } = useRunnableElement()
@@ -403,12 +403,41 @@ const showTestAssertionTab = computed(() => activeTabName.value === 'TEST_ASSERT
 const showConfigTab = computed(() => activeTabName.value === 'HTTP_CONFIG')
 const showSettingsTab = computed(() => activeTabName.value === 'SETTINGS')
 
-const hiddenHeadersDot = computed(() => isEmpty(headerItems.value) && isEmpty(selectedHeaderTemplates.value))
+const hiddenHeadersDot = computed(() => {
+  const headers = headerItems.value
+  if (headers.length == 0) {
+    return isEmpty(selectedHeaderTemplates.value)
+  }
+  if (headers.length == 1) {
+    const item = headers[0]
+    if (isEmpty(item.name) && isEmpty(item.value)) return isEmpty(selectedHeaderTemplates.value)
+  }
+  return false
+})
+const hiddenQuerysDot = computed(() => {
+  const querys = queryItems.value
+  if (querys.length == 0) {
+    return true
+  }
+  if (querys.length == 1) {
+    const item = querys[0]
+    if (isEmpty(item.name) && isEmpty(item.value) && isEmpty(item.desc)) return true
+  }
+  return false
+})
 const hiddenBodyDot = computed(() => {
-  if (bodyMode.value === 'raw' || bodyMode.value === 'custom') {
+  const mode = bodyMode.value
+  if (mode === 'raw' || mode === 'custom') {
     if (bodyCode.value === '') return true
   } else {
-    if (isEmpty(formItems.value)) return true
+    const forms = formItems.value
+    if (forms.length == 0) {
+      return true
+    }
+    if (forms.length == 1) {
+      const item = forms[0]
+      if (isEmpty(item.name) && isEmpty(item.value) && isEmpty(item.desc)) return true
+    }
   }
   return false
 })

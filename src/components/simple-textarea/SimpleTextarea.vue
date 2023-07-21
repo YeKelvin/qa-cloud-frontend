@@ -22,9 +22,10 @@ const handleInput = (event) => {
 
 const resizeTextarea = () => {
   const textarea = textareaRef.value
-  textarea.style.height = '32px'
-
-  if (textarea.scrollHeight) {
+  if (textarea) {
+    textarea.style.height = '32px'
+  }
+  if (textarea && textarea.scrollHeight) {
     textarea.style.height = `${textarea.scrollHeight}px`
   }
 }
