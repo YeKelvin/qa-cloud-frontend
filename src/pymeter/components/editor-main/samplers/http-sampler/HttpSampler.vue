@@ -479,7 +479,6 @@ watch(bodyMode, () => {
   }
   if (bodyMode.value === 'form-data') {
     setContentType('multipart/form-data')
-    
     return
   }
   if (bodyMode.value === 'x-www-form-urlencoded') {
