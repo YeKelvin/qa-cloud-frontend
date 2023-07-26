@@ -159,7 +159,13 @@
       </div>
 
       <!-- 请求体 -->
-      <div v-show="showing && showRequestCode" class="tab-pane">
+      <div v-show="showing && showRequestCode" class="tab-pane" style="display: flex; flex-direction: column">
+        <span style="display: flex; padding: 5px">
+          <el-radio-group v-show="hasRequestDecoded" v-model="requestDataType" size="small">
+            <el-radio-button label="source">Source</el-radio-button>
+            <el-radio-button label="decode">Decode</el-radio-button>
+          </el-radio-group>
+        </span>
         <MonacoEditor ref="requestEditorRef" language="json" height="100" :readonly="true" />
       </div>
 
@@ -265,20 +271,56 @@ const responseHeaders = computed(() => {
   })
   return data
 })
+const requestDataType = ref('source')
+const responseDataType = ref('source')
 const responseDisplayType = ref('pretty')
 const responseContentType = ref('json')
 const responseWordWrap = ref('on')
 
+watch(requestDataType, (val) => {
+  if (val == 'source') {
+    setRequestCode(current.sampler.requestData)
+  } else {
+    setRequestCode(current.sampler.requestDecoded)
+  }
+})
+
+watch(responseDataType, (val) => {
+  if (val == 'source') {
+    setRequestCode(current.sampler.responseData)
+  } else {
+    setRequestCode(current.sampler.responseDecoded)
+  }
+})
+
+const hasRequestDecoded = () => {
+  return !isEmpty(current.sampler.requestDecoded)
+}
+
+const hasResponseDecoded = () => {
+  return !isEmpty(current.sampler.responseDecoded)
+}
+
 const handleNodeClick = (data, node) => {
   if (node.level === 1) return
   current.sampler = data
+  if (isEmpty(data.requestDecoded)) {
+    requestDataType.value = 'source'
+  }
+  if (isEmpty(data.responseDecoded)) {
+    responseDataType.value = 'source'
+  }
 
   if (activeTabName.value === 'REQUEST') {
-    setRequestCode(data.request)
+    if (requestDataType.value == 'source') {
+      setRequestCode(data.requestData)
+    } else {
+      setRequestCode(data.requestDecoded)
+    }
     return
   }
   if (activeTabName.value === 'RESPONSE') {
-    setResponseCode(data.response)
+    setResponseCode(data.responseData)
     return
   }
   if (activeTabName.value === 'ASSERTION') {
@@ -287,16 +329,21 @@ const handleNodeClick = (data, node) => {
   }
 }
 const handleTabClick = (tab) => {
+  const sampler = current.sampler
   if (tab.paneName === 'REQUEST') {
-    setRequestCode(current.sampler.request)
+    if (requestDataType.value == 'source') {
+      setRequestCode(sampler.requestData)
+    } else {
+      setRequestCode(sampler.requestDecoded)
+    }
     return
   }
   if (tab.paneName === 'RESPONSE') {
-    setResponseCode(current.sampler.response)
+    setResponseCode(sampler.responseData)
     return
   }
   if (tab.paneName === 'ASSERTION') {
-    setFailedAssertionCode(current.sampler.failedAssertion?.message)
+    setFailedAssertionCode(sampler.failedAssertion?.message)
     return
   }
 }
@@ -324,13 +371,13 @@ const toggleResponseWordWrap = () => {
 }
 
 const copyRequest = async () => {
-  const text = current.sampler.request
+  const text = requestDataType.value == 'source' ? current.sampler.requestData : current.sampler.requestDecoded
   await toClipboard(text)
   ElMessage({ message: '复制成功', type: 'info', duration: 1 * 1000 })
 }
 
 const copyResponse = async () => {
-  const text = current.sampler.response
+  const text = responseDataType.value == 'source' ? current.sampler.responseData : current.sampler.responseDecoded
   await toClipboard(text)
   ElMessage({ message: '复制成功', type: 'info', duration: 1 * 1000 })
 }
@@ -358,11 +405,11 @@ const copyResHeaders = async () => {
 }
 
 const copyAll = async () => {
-  let request = current.sampler.request
+  let request = hasRequestDecoded() ? current.sampler.requestData : current.sampler.requestDecoded
   if (request && request[request.length - 1] != '\n') {
     request += '\n'
   }
-  let response = current.sampler.response
+  let response = hasResponseDecoded() ? current.sampler.responseData : current.sampler.responseDecoded
   if (response && response[response.length - 1] != '\n') {
     response += '\n'
   }

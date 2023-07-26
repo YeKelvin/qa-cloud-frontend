@@ -104,9 +104,10 @@
         <span class="body-mode-options-wrapper">
           <el-radio-group v-model="bodyMode" :disabled="queryMode">
             <el-radio label="none">none</el-radio>
+            <el-radio label="form-data">form-data</el-radio>
             <el-radio label="x-www-form-urlencoded">x-www-form-urlencoded</el-radio>
             <el-radio label="raw">raw</el-radio>
-            <el-radio label="custom">custom</el-radio>
+            <el-radio label="custom">自定义</el-radio>
           </el-radio-group>
           <!-- raw data type -->
           <el-select v-if="bodyMode == 'raw'" v-model="bodyRawType" class="raw-type" :disabled="queryMode">
@@ -115,6 +116,9 @@
             <el-option key="text" label="TEXT" value="text" />
           </el-select>
         </span>
+
+        <!-- 表单 -->
+        <HTTPFileTable v-if="bodyMode == 'form-data'" v-model:data="fileItems" />
 
         <!-- 表单 -->
         <HTTPFormTable v-if="bodyMode == 'x-www-form-urlencoded'" v-model:data="formItems" :edit-mode="editMode" />
@@ -288,6 +292,7 @@ import { isBlankAll } from '@/utils/string-util'
 import { Check, Close, Edit, Warning } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { assign, isEmpty } from 'lodash-es'
+import HTTPFileTable from './HttpSamplerFileTable.vue'
 import HTTPFormTable from './HttpSamplerFormTable.vue'
 import HTTPHeaderTable from './HttpSamplerHeaderTable.vue'
 import HTTPHeaderTemplate from './HttpSamplerHeaderTemplate.vue'
@@ -331,7 +336,6 @@ const elementInfo = ref({
     HTTPSampler__headers: '',
     HTTPSampler__params: '',
     HTTPSampler__data: '',
-    HTTPSampler__files: '',
     HTTPSampler__encoding: '',
     HTTPSampler__follow_redirects: 'false',
     HTTPSampler__connect_timeout: '',
@@ -377,7 +381,7 @@ const { queryItems, queryData } = useHTTPQuery()
 
 // body相关属性
 const bodyCodeEditorRef = ref()
-const { bodyCode, bodyMode, bodyRawType, bodyRawTypeEnum, bodyData, formItems, setBodyMode } = useHTTPBody()
+const { bodyCode, bodyMode, bodyRawType, bodyRawTypeEnum, bodyData, formItems, fileItems, setBodyMode } = useHTTPBody()
 
 // 内置元素相关属性
 const componentList = ref([])
@@ -429,7 +433,18 @@ const hiddenBodyDot = computed(() => {
   const mode = bodyMode.value
   if (mode === 'raw' || mode === 'custom') {
     if (bodyCode.value === '') return true
-  } else {
+  }
+  if (mode === 'form-data') {
+    const files = fileItems.value
+    if (files.length == 0) {
+      return true
+    }
+    if (files.length == 1) {
+      const item = files[0]
+      if (isEmpty(item.name) && isEmpty(item.value) && isEmpty(item.desc)) return true
+    }
+  }
+  if (mode === 'x-www-form-urlencoded') {
     const forms = formItems.value
     if (forms.length == 0) {
       return true
@@ -460,6 +475,11 @@ watch(bodyMode, () => {
   }
   if (bodyMode.value === 'none' || bodyMode.value === 'custom') {
     removeContentType()
+    return
+  }
+  if (bodyMode.value === 'form-data') {
+    setContentType('multipart/form-data')
+    
     return
   }
   if (bodyMode.value === 'x-www-form-urlencoded') {
@@ -574,20 +594,40 @@ const setQueryItems = () => {
 }
 
 /**
- * 初始化 form
+ * 初始化 forms
  */
 const setFormItems = () => {
-  // TODO: 优先读取 HTTPSampler__form 是为了兼容旧版本，后期干掉
-  const form = elementInfo.value.property.HTTPSampler__form || elementInfo.value.property.HTTPSampler__data
+  const forms = elementInfo.value.property.HTTPSampler__data
   if (!isEmpty(formItems.value)) {
     formItems.value = [] // 表格不为空时，清空数组
   }
-  if (!form) return
-  form.property.Arguments__arguments.forEach((item) => {
+  if (!forms) return
+  forms.property.Arguments__arguments.forEach((item) => {
     formItems.value.push({
       enabled: item.enabled,
       name: item.property.Argument__name,
       value: item.property.Argument__value,
+      desc: item.property.Argument__desc
+    })
+  })
+}
+
+/**
+ * 初始化 files
+ */
+const setFileItems = () => {
+  const files = elementInfo.value.property.HTTPSampler__data
+  if (!isEmpty(fileItems.value)) {
+    fileItems.value = [] // 表格不为空时，清空数组
+  }
+  if (!files) return
+  files.property.Arguments__arguments.forEach((item) => {
+    fileItems.value.push({
+      enabled: item.enabled,
+      name: item.property.Argument__name,
+      value: item.property.Argument__value,
+      argtype: item.property.Argument__argtype,
+      mimetype: item.property.Argument__mimetype,
       desc: item.property.Argument__desc
     })
   })
@@ -599,7 +639,9 @@ const setFormItems = () => {
 const setAboutBody = () => {
   setBodyMode(getContentType())
   // 初始化 BodyData
-  if (bodyMode.value === 'x-www-form-urlencoded') {
+  if (bodyMode.value === 'form-data') {
+    setFileItems()
+  } else if (bodyMode.value === 'x-www-form-urlencoded') {
     setFormItems()
   } else {
     nextTick(() => setBodyData())

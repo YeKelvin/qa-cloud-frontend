@@ -124,14 +124,14 @@
               <el-button type="primary" link style="margin-left: 12px" @click="gotoTestplanEditor(row.planNo, 'QUERY')">
                 查看详情
               </el-button>
-              <el-button type="primary" link @click="openExecutionRecordDialog(row)">执行记录</el-button>
+              <el-button type="primary" link @click="openExecutionRecordDialog(row)">历史记录</el-button>
               <el-button type="primary" link style="color: #f56c6c; font-weight: bold" @click="executeTestplan(row)">
                 立即执行
               </el-button>
             </template>
             <template v-else>
               <el-button type="primary" link style="margin-left: 12px" @click="openExecutionRecordDialog(row)">
-                执行记录
+                历史记录
               </el-button>
             </template>
           </template>

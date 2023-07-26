@@ -14,11 +14,42 @@ export default function useHTTPBody() {
     if (bodyMode.value === 'raw' || bodyMode.value === 'custom') {
       return bodyCode.value
     }
+    if (bodyMode.value === 'form-data') {
+      return fileParameters.value
+    }
     if (bodyMode.value === 'x-www-form-urlencoded') {
       return formParameters.value
     }
     return ''
   })
+
+  const fileItems = ref([])
+  const fileParameters = computed(() => {
+    if (_isEmpty(fileItems.value) || bodyMode.value !== 'form-data') return null
+    const parameters = []
+    fileItems.value.forEach((item) => {
+      if (isBlank(item.name)) return
+      parameters.push({
+        class: 'HTTPFileArgument',
+        enabled: item.enabled,
+        property: {
+          Argument__name: item.name,
+          Argument__value: item.value,
+          Argument__argtype: item.argtype,
+          Argument__mimetype: item.mimetype,
+          Argument__desc: item.desc
+        }
+      })
+    })
+    if (_isEmpty(parameters)) return null
+    return {
+      class: 'Arguments',
+      property: {
+        Arguments__arguments: parameters
+      }
+    }
+  })
+
   const formItems = ref([])
   const formParameters = computed(() => {
     if (_isEmpty(formItems.value) || bodyMode.value !== 'x-www-form-urlencoded') return null
@@ -52,6 +83,10 @@ export default function useHTTPBody() {
       bodyMode.value = 'none'
       return
     }
+    if (contentType.indexOf('multipart/form-data') > -1) {
+      bodyMode.value = 'form-data'
+      return
+    }
     if (contentType.indexOf('application/x-www-form-urlencoded') > -1) {
       bodyMode.value = 'x-www-form-urlencoded'
       return
@@ -82,6 +117,8 @@ export default function useHTTPBody() {
     bodyData,
     formItems,
     formParameters,
+    fileItems,
+    fileParameters,
     setBodyMode
   }
 }

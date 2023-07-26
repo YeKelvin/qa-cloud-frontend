@@ -1,5 +1,5 @@
 <template>
-  <textarea ref="textareaRef" class="simple-textarea" :value="attrs.modelValue" @input="handleInput" />
+  <textarea ref="textareaRef" class="autosize-textarea" :value="attrs.modelValue" @input="handleInput" />
 </template>
 
 <script setup>
@@ -32,12 +32,12 @@ const resizeTextarea = () => {
 </script>
 
 <style lang="scss" scoped>
-.simple-textarea {
+.autosize-textarea {
   display: table-cell;
   vertical-align: middle;
   position: relative;
   overflow: hidden;
-  resize: vertical;
+  resize: None;
   padding: 0 10px;
   outline: 0;
   box-sizing: border-box;
