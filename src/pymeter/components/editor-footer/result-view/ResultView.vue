@@ -23,7 +23,7 @@
       </div>
 
       <div class="view-body">
-        <ResultCollector v-if="!activeTabLoading" :workers="activeTabDetails" />
+        <ResultCollector v-if="!activeTabLoading" ref="collectorRef" :workers="activeTabDetails" />
         <el-skeleton v-else :rows="6" style="padding: 40px" animated />
       </div>
     </template>
@@ -43,6 +43,7 @@ const tabs = computed({
   set: (val) => emit('update:data', val)
 })
 
+const collectorRef = ref()
 const activeTabNo = ref(null)
 const activeTabData = ref(null)
 const activeTabDetails = computed(() => (!isEmpty(activeTabData.value) ? activeTabData.value.details : []))
@@ -59,6 +60,7 @@ watch(
     const tab = !isEmpty(tabs.value) ? tabs.value[length - 1] : null
     activeTabNo.value = tab ? tab.id : ''
     activeTabData.value = tab
+    collectorRef.value && collectorRef.value.clear()
   },
   {
     immediate: true

@@ -53,20 +53,6 @@
       <div v-else class="result-details-header">
         <!-- 标签页头 -->
         <el-tabs v-model="activeTabName" style="width: 100%; padding: 0" @tab-click="handleTabClick">
-          <!-- 请求数据 tab -->
-          <el-tab-pane name="REQUEST">
-            <template #label>
-              <span>请求数据</span>
-              <el-button
-                v-show="activeTabName == 'REQUEST'"
-                style="font-size: 16px"
-                type="primary"
-                link
-                :icon="CopyDocument"
-                @click="copyRequest"
-              />
-            </template>
-          </el-tab-pane>
           <!-- 请求头 tab -->
           <el-tab-pane v-if="requestHeaders.length > 0" name="REQUEST_HEADERS">
             <template #label>
@@ -81,17 +67,17 @@
               />
             </template>
           </el-tab-pane>
-          <!-- 响应数据 tab -->
-          <el-tab-pane name="RESPONSE">
+          <!-- 请求数据 tab -->
+          <el-tab-pane name="REQUEST_DATA">
             <template #label>
-              <span>响应数据</span>
+              <span>请求数据</span>
               <el-button
-                v-show="activeTabName == 'RESPONSE'"
+                v-show="activeTabName == 'REQUEST_DATA'"
                 style="font-size: 16px"
                 type="primary"
                 link
                 :icon="CopyDocument"
-                @click="copyResponse"
+                @click="copyRequest"
               />
             </template>
           </el-tab-pane>
@@ -106,6 +92,20 @@
                 link
                 :icon="CopyDocument"
                 @click="copyResHeaders"
+              />
+            </template>
+          </el-tab-pane>
+          <!-- 响应数据 tab -->
+          <el-tab-pane name="RESPONSE_DATA">
+            <template #label>
+              <span>响应数据</span>
+              <el-button
+                v-show="activeTabName == 'RESPONSE_DATA'"
+                style="font-size: 16px"
+                type="primary"
+                link
+                :icon="CopyDocument"
+                @click="copyResponse"
               />
             </template>
           </el-tab-pane>
@@ -158,17 +158,6 @@
         </span>
       </div>
 
-      <!-- 请求体 -->
-      <div v-show="showing && showRequestCode" class="tab-pane" style="display: flex; flex-direction: column">
-        <span style="display: flex; padding: 5px">
-          <el-radio-group v-show="hasRequestDecoded" v-model="requestDataType" size="small">
-            <el-radio-button label="source">Source</el-radio-button>
-            <el-radio-button label="decode">Decode</el-radio-button>
-          </el-radio-group>
-        </span>
-        <MonacoEditor ref="requestEditorRef" language="json" height="100" :readonly="true" />
-      </div>
-
       <!-- 请求头部 -->
       <div v-show="showing && showRequestHeaders" class="tab-pane">
         <el-scrollbar wrap-style="overflow-x:auto;" view-style="padding:10px; height:0;">
@@ -179,10 +168,40 @@
         </el-scrollbar>
       </div>
 
+      <!-- 请求体 -->
+      <div v-show="showing && showRequestCode" class="tab-pane" style="display: flex; flex-direction: column">
+        <span style="display: flex; padding: 5px">
+          <el-radio-group v-show="hasRequestDecoded()" v-model="requestDataType" size="small">
+            <el-radio-button label="source">Source</el-radio-button>
+            <el-radio-button label="decode">Decode</el-radio-button>
+          </el-radio-group>
+        </span>
+        <MonacoEditor ref="requestEditorRef" language="json" height="100" :readonly="true" />
+      </div>
+
+      <!-- 响应头部 -->
+      <div v-show="showing && showResponseHeaders" class="tab-pane">
+        <el-scrollbar wrap-style="overflow-x:auto;" view-style="padding:10px; height:0;">
+          <el-table :data="responseHeaders" :show-header="false" style="width: 100%; padding-bottom: 50px">
+            <el-table-column prop="name" width="250" min-width="200" />
+            <el-table-column prop="value" />
+          </el-table>
+        </el-scrollbar>
+      </div>
+
       <!-- 响应体 -->
       <div v-show="showing && showResponseCode" class="tab-pane">
         <!-- 按钮组 -->
         <span style="display: flex; align-items: center; padding: 5px">
+          <el-radio-group
+            v-show="hasResponseDecoded()"
+            v-model="responseDataType"
+            style="margin-right: 20px"
+            size="small"
+          >
+            <el-radio-button label="source">Source</el-radio-button>
+            <el-radio-button label="decode">Decode</el-radio-button>
+          </el-radio-group>
           <el-radio-group v-model="responseDisplayType" style="margin-right: 20px" size="small">
             <el-radio-button label="pretty">Pretty</el-radio-button>
             <el-radio-button label="raw">Raw</el-radio-button>
@@ -206,16 +225,6 @@
         />
       </div>
 
-      <!-- 响应头部 -->
-      <div v-show="showing && showResponseHeaders" class="tab-pane">
-        <el-scrollbar wrap-style="overflow-x:auto;" view-style="padding:10px; height:0;">
-          <el-table :data="responseHeaders" :show-header="false" style="width: 100%; padding-bottom: 50px">
-            <el-table-column prop="name" width="250" min-width="200" />
-            <el-table-column prop="value" />
-          </el-table>
-        </el-scrollbar>
-      </div>
-
       <!-- 失败断言 -->
       <div v-show="showing && showAssertionCode" class="tab-pane">
         <MonacoEditor ref="assertionEditorRef" language="python" :readonly="true" />
@@ -235,16 +244,33 @@ const { toClipboard } = useClipboard()
 const props = defineProps({
   workers: { type: Array, default: () => [] }
 })
-const activeTabName = ref('RESPONSE')
-const current = reactive({ sampler: {} })
+const activeTabName = ref('RESPONSE_DATA')
 const requestEditorRef = ref()
 const responseEditorRef = ref()
 const assertionEditorRef = ref()
+const current = reactive({ sampler: {} })
+const currentRequestData = computed(() => {
+  if (requestDataType.value == 'source') {
+    return current.sampler.requestData
+  } else {
+    return current.sampler.requestDecoded
+  }
+})
+const currentResponseData = computed(() => {
+  if (responseDataType.value == 'source') {
+    return current.sampler.responseData
+  } else {
+    return current.sampler.responseDecoded
+  }
+})
+const currentAssertion = computed(() => {
+  return current.sampler.failedAssertion?.message
+})
 
 const showing = computed(() => !isEmpty(props.workers) && !isEmpty(Object.keys(current.sampler)))
-const showRequestCode = computed(() => activeTabName.value === 'REQUEST')
+const showRequestCode = computed(() => activeTabName.value === 'REQUEST_DATA')
 const showRequestHeaders = computed(() => activeTabName.value === 'REQUEST_HEADERS')
-const showResponseCode = computed(() => activeTabName.value === 'RESPONSE')
+const showResponseCode = computed(() => activeTabName.value === 'RESPONSE_DATA')
 const showResponseHeaders = computed(() => activeTabName.value === 'RESPONSE_HEADERS')
 const showAssertionCode = computed(() => activeTabName.value === 'ASSERTION')
 const requestHeaders = computed(() => {
@@ -303,55 +329,49 @@ const hasResponseDecoded = () => {
 
 const handleNodeClick = (data, node) => {
   if (node.level === 1) return
-  current.sampler = data
-  if (isEmpty(data.requestDecoded)) {
-    requestDataType.value = 'source'
-  }
-  if (isEmpty(data.responseDecoded)) {
-    responseDataType.value = 'source'
-  }
 
-  if (activeTabName.value === 'REQUEST') {
-    if (requestDataType.value == 'source') {
-      setRequestCode(data.requestData)
-    } else {
-      setRequestCode(data.requestDecoded)
-    }
+  // 缓存当前取样器数据
+  current.sampler = data
+  // 重置源码/解码按钮
+  requestDataType.value = isEmpty(data.requestDecoded) ? 'source' : 'decode'
+  responseDataType.value = isEmpty(data.responseDecoded) ? 'source' : 'decode'
+
+  // 设置显示数据
+  if (activeTabName.value === 'REQUEST_DATA') {
+    setRequestCode(currentRequestData.value)
     return
   }
-  if (activeTabName.value === 'RESPONSE') {
-    setResponseCode(data.responseData)
+  if (activeTabName.value === 'RESPONSE_DATA') {
+    setResponseCode(currentResponseData.value)
     return
   }
   if (activeTabName.value === 'ASSERTION') {
-    setFailedAssertionCode(data.failedAssertion?.message)
+    setFailedAssertionCode(currentAssertion.value)
     return
   }
 }
+
 const handleTabClick = (tab) => {
-  const sampler = current.sampler
-  if (tab.paneName === 'REQUEST') {
-    if (requestDataType.value == 'source') {
-      setRequestCode(sampler.requestData)
-    } else {
-      setRequestCode(sampler.requestDecoded)
-    }
+  if (tab.paneName === 'REQUEST_DATA') {
+    setRequestCode(currentRequestData.value)
     return
   }
-  if (tab.paneName === 'RESPONSE') {
-    setResponseCode(sampler.responseData)
+  if (tab.paneName === 'RESPONSE_DATA') {
+    setResponseCode(currentResponseData.value)
     return
   }
   if (tab.paneName === 'ASSERTION') {
-    setFailedAssertionCode(sampler.failedAssertion?.message)
+    setFailedAssertionCode(currentAssertion.value)
     return
   }
 }
+
 const setRequestCode = (code) => {
   nextTick(() => {
     requestEditorRef.value && requestEditorRef.value.setValue(code)
   })
 }
+
 const setResponseCode = (code) => {
   nextTick(() => {
     if (!responseEditorRef.value) return
@@ -359,6 +379,7 @@ const setResponseCode = (code) => {
     responseEditorRef.value.formatDocument()
   })
 }
+
 const setFailedAssertionCode = (code) => {
   nextTick(() => {
     if (isEmpty(code)) return
@@ -405,11 +426,11 @@ const copyResHeaders = async () => {
 }
 
 const copyAll = async () => {
-  let request = hasRequestDecoded() ? current.sampler.requestData : current.sampler.requestDecoded
+  let request = hasRequestDecoded() ? current.sampler.requestDecoded : current.sampler.requestData
   if (request && request[request.length - 1] != '\n') {
     request += '\n'
   }
-  let response = hasResponseDecoded() ? current.sampler.responseData : current.sampler.responseDecoded
+  let response = hasResponseDecoded() ? current.sampler.responseDecoded : current.sampler.responseData
   if (response && response[response.length - 1] != '\n') {
     response += '\n'
   }
@@ -417,6 +438,14 @@ const copyAll = async () => {
   await toClipboard(text)
   ElMessage({ message: '复制成功', type: 'info', duration: 1 * 1000 })
 }
+
+const clear = () => {
+  current.sampler = {}
+}
+
+defineExpose({
+  clear
+})
 </script>
 
 <style lang="scss" scoped>
@@ -515,9 +544,13 @@ const copyAll = async () => {
 }
 
 :deep(.el-tabs__item) {
-  height: 100%;
-  padding: 5px !important;
-  padding-right: 10px !important;
+  font-size: 16px;
+  height: 32px;
+  padding: 5px 10px !important;
+
+  &:nth-child(3) {
+    margin-right: 15px;
+  }
 }
 
 :deep(.el-table) {
