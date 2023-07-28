@@ -14,7 +14,7 @@
       <!-- collection-card 列表 -->
       <el-card shadow="hover" class="collection-container">
         <!-- 卡片头部 -->
-        <template #header><span style="font-size: 16px">集合</span></template>
+        <template #header><span style="font-size: 16px">测试脚本</span></template>
         <!-- 过滤input -->
         <el-input
           v-model="collectionsFilterText"
@@ -35,7 +35,7 @@
       <!-- element-tree -->
       <el-card v-show="showTree" shadow="hover" class="result-tree-container">
         <!-- 卡片头部 -->
-        <template #header><span style="font-size: 16px">脚本</span></template>
+        <template #header><span style="font-size: 16px">测试用例</span></template>
         <!-- 过滤input -->
         <el-input
           v-model="resultTreeFilterText"
@@ -56,7 +56,19 @@
       <!-- ResultDetails -->
       <el-card shadow="hover" class="result-details-container">
         <!-- 卡片头部 -->
-        <template #header><span style="font-size: 16px">详情</span></template>
+        <template #header>
+          <div class="flexbox-between">
+            <span style="font-size: 16px">请求详情</span>
+            <el-button
+              v-show="showSamplerResult"
+              style="font-size: 16px"
+              type="primary"
+              link
+              :icon="CopyDocument"
+              @click="samplerResultRef && samplerResultRef.copyAll()"
+            />
+          </div>
+        </template>
         <el-scrollbar
           style="width: 100%; height: 100%; padding-bottom: 50px"
           wrap-style="overflow-x: auto;"
@@ -65,7 +77,7 @@
           <ReportOverview v-if="showOverview" :overview="overview" />
           <ReportCollectionResult v-if="showCollectionResult" :details="collectionDetails" />
           <ReportWorkerResult v-if="showWorkerResult" :worker-id="workerId" />
-          <ReportSamplerResult v-if="showSamplerResult" :sampler-id="samplerId" />
+          <ReportSamplerResult v-if="showSamplerResult" ref="samplerResultRef" :sampler-id="samplerId" />
         </el-scrollbar>
       </el-card>
     </div>
@@ -73,16 +85,16 @@
 </template>
 
 <script setup>
-import { isEmpty as _isEmpty } from 'lodash-es'
-import { isBlank } from '@/utils/string-util'
-import { ArrowLeft, DataAnalysis } from '@element-plus/icons-vue'
 import * as ReportService from '@/api/script/report'
-import ReportOverview from './ReportOverview.vue'
-import ReportCollectionResult from './ReportCollectionResult.vue'
-import ReportWorkerResult from './ReportWorkerResult.vue'
-import ReportSamplerResult from './ReportSamplerResult.vue'
+import { isBlank } from '@/utils/string-util'
+import { ArrowLeft, CopyDocument, DataAnalysis } from '@element-plus/icons-vue'
+import { isEmpty } from 'lodash-es'
 import ReportCollectionCard from './ReportCollectionCard.vue'
+import ReportCollectionResult from './ReportCollectionResult.vue'
+import ReportOverview from './ReportOverview.vue'
 import ReportResultTree from './ReportResultTree'
+import ReportSamplerResult from './ReportSamplerResult.vue'
+import ReportWorkerResult from './ReportWorkerResult.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -100,7 +112,8 @@ const showOverview = ref(true)
 const showCollectionResult = ref(false)
 const showWorkerResult = ref(false)
 const showSamplerResult = ref(false)
-const showTree = computed(() => !_isEmpty(workers.value))
+const showTree = computed(() => !isEmpty(workers.value))
+const samplerResultRef = ref()
 const filteredCollections = computed(() => {
   if (isBlank(collectionsFilterText.value)) {
     return collections.value
@@ -216,7 +229,6 @@ const goBack = () => {
   margin: 5px 0;
 
   .el-button {
-    -webkit-appearance: button;
     padding: 5px;
     font-size: 16px;
   }

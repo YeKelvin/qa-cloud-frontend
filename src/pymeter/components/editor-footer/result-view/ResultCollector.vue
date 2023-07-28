@@ -77,7 +77,7 @@
                 type="primary"
                 link
                 :icon="CopyDocument"
-                @click="copyRequest"
+                @click="copyRequestData"
               />
             </template>
           </el-tab-pane>
@@ -105,7 +105,7 @@
                 type="primary"
                 link
                 :icon="CopyDocument"
-                @click="copyResponse"
+                @click="copyResponseData"
               />
             </template>
           </el-tab-pane>
@@ -305,17 +305,17 @@ const responseWordWrap = ref('on')
 
 watch(requestDataType, (val) => {
   if (val == 'source') {
-    setRequestCode(current.sampler.requestData)
+    setRequestContent(current.sampler.requestData)
   } else {
-    setRequestCode(current.sampler.requestDecoded)
+    setRequestContent(current.sampler.requestDecoded)
   }
 })
 
 watch(responseDataType, (val) => {
   if (val == 'source') {
-    setRequestCode(current.sampler.responseData)
+    setRequestContent(current.sampler.responseData)
   } else {
-    setRequestCode(current.sampler.responseDecoded)
+    setRequestContent(current.sampler.responseDecoded)
   }
 })
 
@@ -338,41 +338,41 @@ const handleNodeClick = (data, node) => {
 
   // 设置显示数据
   if (activeTabName.value === 'REQUEST_DATA') {
-    setRequestCode(currentRequestData.value)
+    setRequestContent(currentRequestData.value)
     return
   }
   if (activeTabName.value === 'RESPONSE_DATA') {
-    setResponseCode(currentResponseData.value)
+    setResponseContent(currentResponseData.value)
     return
   }
   if (activeTabName.value === 'ASSERTION') {
-    setFailedAssertionCode(currentAssertion.value)
+    setAssertionContent(currentAssertion.value)
     return
   }
 }
 
 const handleTabClick = (tab) => {
   if (tab.paneName === 'REQUEST_DATA') {
-    setRequestCode(currentRequestData.value)
+    setRequestContent(currentRequestData.value)
     return
   }
   if (tab.paneName === 'RESPONSE_DATA') {
-    setResponseCode(currentResponseData.value)
+    setResponseContent(currentResponseData.value)
     return
   }
   if (tab.paneName === 'ASSERTION') {
-    setFailedAssertionCode(currentAssertion.value)
+    setAssertionContent(currentAssertion.value)
     return
   }
 }
 
-const setRequestCode = (code) => {
+const setRequestContent = (code) => {
   nextTick(() => {
     requestEditorRef.value && requestEditorRef.value.setValue(code)
   })
 }
 
-const setResponseCode = (code) => {
+const setResponseContent = (code) => {
   nextTick(() => {
     if (!responseEditorRef.value) return
     responseEditorRef.value.setValue(code)
@@ -380,7 +380,7 @@ const setResponseCode = (code) => {
   })
 }
 
-const setFailedAssertionCode = (code) => {
+const setAssertionContent = (code) => {
   nextTick(() => {
     if (isEmpty(code)) return
     assertionEditorRef.value && assertionEditorRef.value.setValue(code)
@@ -391,14 +391,8 @@ const toggleResponseWordWrap = () => {
   responseWordWrap.value = responseWordWrap.value === 'on' ? 'off' : 'on'
 }
 
-const copyRequest = async () => {
+const copyRequestData = async () => {
   const text = requestDataType.value == 'source' ? current.sampler.requestData : current.sampler.requestDecoded
-  await toClipboard(text)
-  ElMessage({ message: '复制成功', type: 'info', duration: 1 * 1000 })
-}
-
-const copyResponse = async () => {
-  const text = responseDataType.value == 'source' ? current.sampler.responseData : current.sampler.responseDecoded
   await toClipboard(text)
   ElMessage({ message: '复制成功', type: 'info', duration: 1 * 1000 })
 }
@@ -410,6 +404,12 @@ const copyReqHeaders = async () => {
   for (let i = 0; i < keys.length; i++) {
     text += `${keys[i]}: ${headers[keys[i]]}\n`
   }
+  await toClipboard(text)
+  ElMessage({ message: '复制成功', type: 'info', duration: 1 * 1000 })
+}
+
+const copyResponseData = async () => {
+  const text = responseDataType.value == 'source' ? current.sampler.responseData : current.sampler.responseDecoded
   await toClipboard(text)
   ElMessage({ message: '复制成功', type: 'info', duration: 1 * 1000 })
 }

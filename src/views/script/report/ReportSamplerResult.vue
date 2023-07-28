@@ -1,33 +1,52 @@
 <template>
-  <div class="details-container">
+  <div class="sampler-result-container">
     <el-descriptions :column="1">
-      <el-descriptions-item label="请求名称：">{{ details.samplerName }}</el-descriptions-item>
-      <el-descriptions-item v-if="details.samplerRemark" label="请求描述：">
-        {{ details.samplerRemark }}
+      <el-descriptions-item label="请求名称：">{{ sampler.samplerName }}</el-descriptions-item>
+      <el-descriptions-item v-if="sampler.samplerRemark" label="请求描述：">
+        {{ sampler.samplerRemark }}
       </el-descriptions-item>
     </el-descriptions>
 
     <el-descriptions :column="3">
       <el-descriptions-item label="开始时间：">
-        <el-tag type="warning" disable-transitions>{{ details.startTime }}</el-tag>
+        <el-tag type="warning" disable-transitions>{{ sampler.startTime }}</el-tag>
       </el-descriptions-item>
       <el-descriptions-item label="结束时间：">
-        <el-tag type="warning" disable-transitions>{{ details.endTime }}</el-tag>
+        <el-tag type="warning" disable-transitions>{{ sampler.endTime }}</el-tag>
       </el-descriptions-item>
       <el-descriptions-item label="耗时：">
-        <el-tag type="danger" disable-transitions>{{ details.elapsedTime }}</el-tag>
+        <el-tag type="danger" disable-transitions>{{ sampler.elapsedTime }}</el-tag>
       </el-descriptions-item>
     </el-descriptions>
 
     <!-- 请求部分 tabs -->
-    <el-tabs v-model="requestActiveTabName" @tab-click="handleRequestTabClick">
-      <el-tab-pane key="HEADERS" label="请求头" name="HEADERS" />
-      <el-tab-pane key="DATA" label="请求数据" name="DATA" />
-    </el-tabs>
+    <div class="flexbox-between">
+      <el-tabs v-model="requestActiveTabName" @tab-click="handleRequestTabClick">
+        <el-tab-pane v-if="!isEmpty(requestHeaders)" name="REQUEST_HEADERS">
+          <template #label>
+            <span>请求头 ({{ requestHeaders.length }})</span>
+          </template>
+        </el-tab-pane>
+        <el-tab-pane label="请求数据" name="REQUEST_DATA" />
+      </el-tabs>
+      <div style="display: flex">
+        <el-button
+          style="font-size: 16px; margin-right: 10px"
+          type="primary"
+          link
+          :icon="CopyDocument"
+          @click="copyRequest"
+        />
+        <el-radio-group v-show="hasRequestDecoded()" v-model="requestDataType" size="small">
+          <el-radio-button label="source">Source</el-radio-button>
+          <el-radio-button label="decode">Decode</el-radio-button>
+        </el-radio-group>
+      </div>
+    </div>
 
     <!-- 请求头 -->
     <div v-show="showRequestHeaders">
-      <el-table :data="requestHeadersData" :show-header="false" max-height="300" style="width: 100%">
+      <el-table :data="requestHeaders" :show-header="false" max-height="300" style="width: 100%">
         <el-table-column prop="name" />
         <el-table-column prop="value" />
       </el-table>
@@ -38,15 +57,34 @@
     </div>
 
     <!-- 响应部分 -->
-    <el-tabs v-model="responseActiveTabName" @tab-click="handleResponseTabClick">
-      <el-tab-pane key="HEADERS" label="响应头" name="HEADERS" />
-      <el-tab-pane key="DATA" label="响应数据" name="DATA" />
-      <el-tab-pane v-if="details.failedAssertion" key="ASSERTION" label="断言" name="ASSERTION" />
-    </el-tabs>
+    <div class="flexbox-between">
+      <el-tabs v-model="responseActiveTabName" @tab-click="handleResponseTabClick">
+        <el-tab-pane v-if="!isEmpty(responseHeaders)" label="响应头" name="RESPONSE_HEADERS">
+          <template #label>
+            <span>响应头 ({{ responseHeaders.length }})</span>
+          </template>
+        </el-tab-pane>
+        <el-tab-pane label="响应数据" name="RESPONSE_DATA" />
+        <el-tab-pane v-if="sampler.failedAssertion" key="ASSERTION" label="断言" name="ASSERTION" />
+      </el-tabs>
+      <div style="display: flex">
+        <el-button
+          style="font-size: 16px; margin-right: 10px"
+          type="primary"
+          link
+          :icon="CopyDocument"
+          @click="copyResponse"
+        />
+        <el-radio-group v-show="hasResponseDecoded()" v-model="responseDataType" size="small">
+          <el-radio-button label="source">Source</el-radio-button>
+          <el-radio-button label="decode">Decode</el-radio-button>
+        </el-radio-group>
+      </div>
+    </div>
 
     <!-- 响应头 -->
     <div v-show="showResponseHeaders">
-      <el-table :data="responseHeadersData" :show-header="false" max-height="300" style="width: 100%">
+      <el-table :data="responseHeaders" :show-header="false" max-height="300" style="width: 100%">
         <el-table-column prop="name" />
         <el-table-column prop="value" />
       </el-table>
@@ -65,29 +103,37 @@
 <script setup>
 import * as ReportService from '@/api/script/report'
 import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
+import useClipboard from '@/composables/useClipboard'
+import { CopyDocument } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { isEmpty } from 'lodash-es'
 
 const props = defineProps({
   samplerId: { type: String, default: '' }
 })
-const details = ref({})
-const requestActiveTabName = ref('DATA')
-const responseActiveTabName = ref('DATA')
-const showRequestHeaders = computed(() => requestActiveTabName.value == 'HEADERS')
-const showRequestData = computed(() => requestActiveTabName.value == 'DATA')
-const showResponseHeaders = computed(() => responseActiveTabName.value == 'HEADERS')
-const showResponseData = computed(() => responseActiveTabName.value == 'DATA')
+const { toClipboard } = useClipboard()
+const sampler = ref({})
+const requestActiveTabName = ref('REQUEST_DATA')
+const responseActiveTabName = ref('RESPONSE_DATA')
+const showRequestHeaders = computed(() => requestActiveTabName.value == 'REQUEST_HEADERS')
+const showRequestData = computed(() => requestActiveTabName.value == 'REQUEST_DATA')
+const showResponseHeaders = computed(() => responseActiveTabName.value == 'RESPONSE_HEADERS')
+const showResponseData = computed(() => responseActiveTabName.value == 'RESPONSE_DATA')
 const showResponseAssertion = computed(() => responseActiveTabName.value == 'ASSERTION')
-const requestHeadersData = computed(() => {
-  if (!details.value.requestHeaders) return []
-  return getHeadersFromJson(details.value.requestHeaders)
+const requestHeaders = computed(() => {
+  if (!sampler.value.requestHeaders) return []
+  return getHeadersFromJson(sampler.value.requestHeaders)
 })
-const responseHeadersData = computed(() => {
-  if (!details.value.responseHeaders) return []
-  return getHeadersFromJson(details.value.responseHeaders)
+const responseHeaders = computed(() => {
+  if (!sampler.value.responseHeaders) return []
+  return getHeadersFromJson(sampler.value.responseHeaders)
 })
 const requestEditorRef = ref()
 const responseEditorRef = ref()
 const assertionEditorRef = ref()
+const requestDataType = ref('source')
+const responseDataType = ref('source')
+
 watch(
   () => props.samplerId,
   (val) => {
@@ -96,19 +142,60 @@ watch(
   }
 )
 
+watch(requestDataType, (val) => {
+  if (val == 'source') {
+    setRequestContent(sampler.value.requestData)
+  } else {
+    setRequestContent(sampler.value.requestDecoded)
+  }
+})
+
+watch(responseDataType, (val) => {
+  if (val == 'source') {
+    setResponseContent(sampler.value.responseData)
+  } else {
+    setResponseContent(sampler.value.responseDecoded)
+  }
+})
+
 onMounted(() => {
   if (!props.samplerId) return
   querySamplerResult()
 })
+
+const hasRequestDecoded = () => {
+  return !isEmpty(sampler.value.requestDecoded)
+}
+
+const hasResponseDecoded = () => {
+  return !isEmpty(sampler.value.responseDecoded)
+}
+
+const setRequestContent = (code) => {
+  nextTick(() => {
+    requestEditorRef.value && requestEditorRef.value.setValue(code)
+  })
+}
+
+const setResponseContent = (code) => {
+  nextTick(() => {
+    if (!responseEditorRef.value) return
+    responseEditorRef.value.setValue(code)
+    responseEditorRef.value.formatDocument()
+  })
+}
 
 /**
  * 查询取样器结果
  */
 const querySamplerResult = () => {
   ReportService.querySamplerResult({ samplerId: props.samplerId }).then((response) => {
-    details.value = response.result
+    sampler.value = response.result
     handleRequestTabClick({ paneName: requestActiveTabName.value })
     handleResponseTabClick({ paneName: responseActiveTabName.value })
+    // 重置源码/解码按钮
+    requestDataType.value = isEmpty(sampler.value.requestDecoded) ? 'source' : 'decode'
+    responseDataType.value = isEmpty(sampler.value.responseDecoded) ? 'source' : 'decode'
   })
 }
 
@@ -116,8 +203,8 @@ const querySamplerResult = () => {
  * el-tab handler
  */
 const handleRequestTabClick = (tab) => {
-  if (tab.paneName === 'DATA') {
-    requestEditorRef.value.setValue(details.value.requestData)
+  if (tab.paneName === 'REQUEST_DATA') {
+    setRequestContent(sampler.value.requestData)
   }
 }
 
@@ -125,13 +212,13 @@ const handleRequestTabClick = (tab) => {
  * el-tab handler
  */
 const handleResponseTabClick = (tab) => {
-  if (tab.paneName === 'DATA') {
-    responseEditorRef.value.setValue(details.value.responseData)
+  if (tab.paneName === 'RESPONSE_DATA') {
+    responseEditorRef.value.setValue(sampler.value.responseData)
     responseEditorRef.value.formatDocument()
     return
   }
   if (tab.paneName === 'ASSERTION') {
-    assertionEditorRef.value.setValue(details.value.failedAssertion)
+    assertionEditorRef.value.setValue(sampler.value.failedAssertion)
     return
   }
 }
@@ -152,10 +239,74 @@ const getHeadersFromJson = (val) => {
   }
   return data
 }
+
+const copyRequest = async () => {
+  if (requestActiveTabName.value == 'REQUEST_DATA') {
+    await copyRequestData()
+  } else {
+    await copyRequestHeaders()
+  }
+}
+
+const copyRequestData = async () => {
+  const text = requestDataType.value == 'source' ? sampler.value.requestData : sampler.value.requestDecoded
+  console.log('text: ', text)
+  await toClipboard(text)
+  ElMessage({ message: '复制成功', type: 'info', duration: 1 * 1000 })
+}
+
+const copyRequestHeaders = async () => {
+  let text = ''
+  requestHeaders.value.forEach((item) => {
+    text += `${item.name}: ${item.value}\n`
+  })
+  await toClipboard(text)
+  ElMessage({ message: '复制成功', type: 'info', duration: 1 * 1000 })
+}
+
+const copyResponse = async () => {
+  if (responseActiveTabName.value == 'RESPONSE_DATA') {
+    await copyResponseData()
+  } else {
+    await copyResponseHeaders()
+  }
+}
+const copyResponseData = async () => {
+  const text = responseDataType.value == 'source' ? sampler.value.responseData : sampler.value.responseDecoded
+  await toClipboard(text)
+  ElMessage({ message: '复制成功', type: 'info', duration: 1 * 1000 })
+}
+
+const copyResponseHeaders = async () => {
+  let text = ''
+  responseHeaders.value.forEach((item) => {
+    text += `${item.name}: ${item.value}\n`
+  })
+  await toClipboard(text)
+  ElMessage({ message: '复制成功', type: 'info', duration: 1 * 1000 })
+}
+
+const copyAll = async () => {
+  let request = hasRequestDecoded() ? sampler.value.requestDecoded : sampler.value.requestData
+  if (request && request[request.length - 1] != '\n') {
+    request += '\n'
+  }
+  let response = hasResponseDecoded() ? sampler.value.responseDecoded : sampler.value.responseData
+  if (response && response[response.length - 1] != '\n') {
+    response += '\n'
+  }
+  const text = `[请求数据]\n${request}\n[响应数据]\n${response}`
+  await toClipboard(text)
+  ElMessage({ message: '复制成功', type: 'info', duration: 1 * 1000 })
+}
+
+defineExpose({
+  copyAll
+})
 </script>
 
 <style lang="scss" scoped>
-.details-container {
+.sampler-result-container {
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -184,6 +335,11 @@ const getHeadersFromJson = (val) => {
   .el-descriptions-item__label {
     margin-right: 5px;
   }
+}
+
+:deep(.el-tabs__item) {
+  height: 32px;
+  padding: 5px 10px !important;
 }
 
 :deep(.el-tabs__header) {
