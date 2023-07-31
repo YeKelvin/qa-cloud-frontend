@@ -40,65 +40,81 @@ const PYMETER_COMPLETION_ITEMS = (range) => {
 const PYMETER_FUNCTION_COMPLETION_ITEMS = (range) => {
   return [
     {
-      label: '${__Eval()}',
-      detail: 'Eval',
-      insertText: '${__Eval(${1:name})}',
+      label: '${__fake()}',
+      detail: 'fake',
+      insertText: '${__fake(${1:provider})}',
       insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
       kind: monaco.languages.CompletionItemKind.Function,
       range: range
     },
     {
-      label: '${__GoogleAuth()}',
-      detail: 'GoogleAuth',
+      label: '${__ulid()}',
+      detail: 'ulid',
+      insertText: '${__ulid()}',
+      insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+      kind: monaco.languages.CompletionItemKind.Function,
+      range: range
+    },
+    {
+      label: '${__eval()}',
+      detail: 'eval',
+      insertText: '${__eval(${1:name})}',
+      insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+      kind: monaco.languages.CompletionItemKind.Function,
+      range: range
+    },
+    {
+      label: '${__google_auth()}',
+      detail: 'google_auth',
       insertText: '${__GoogleAuth(${1:secretKey})}',
       insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
       kind: monaco.languages.CompletionItemKind.Function,
       range: range
     },
     {
-      label: '${__MD5()}',
-      detail: 'MD5',
-      insertText: '${__MD5(${1:plaintext})}',
+      label: '${__md5()}',
+      detail: 'md5',
+      insertText: '${__md5(${1:plaintext})}',
       insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
       kind: monaco.languages.CompletionItemKind.Function,
       range: range
     },
     {
-      label: '${__RandomChoice()}',
-      detail: 'RandomChoice',
-      insertText: '${__RandomChoice(${1:str})}',
+      label: '${__random_choice()}',
+      detail: 'random_choice',
+      insertText: '${__random_choice(${1:str})}',
       insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
       kind: monaco.languages.CompletionItemKind.Function,
       range: range
     },
     {
-      label: '${__RandomInt()}',
-      detail: 'RandomInt',
-      insertText: '${__RandomInt(${1:minimum}, ${2:maximum})}',
+      label: '${__random_int()}',
+      detail: 'random_int',
+      insertText: '${__random_int(${1:minimum}, ${2:maximum})}',
       insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
       kind: monaco.languages.CompletionItemKind.Function,
       range: range
     },
     {
-      label: '${__Random()}',
-      detail: 'Random',
-      insertText: '${__Random(${1:length})}',
+      label: '${__random()}',
+      detail: 'random',
+      insertText: '${__random(${1:length})}',
       insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
       kind: monaco.languages.CompletionItemKind.Function,
       range: range
     },
     {
-      label: '${__RSA()}',
-      detail: 'RSA',
-      insertText: '${__RSA(${1:plaintext}, ${2:publicKey})}',
+      label: '${__rsa()}',
+      detail: 'rsa',
+      insertText: '${__rsa(${1:plaintext}, ${2:publicKey})}',
       insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
       kind: monaco.languages.CompletionItemKind.Function,
       range: range
     },
     {
-      label: '${__Time()}',
-      detail: 'Time',
-      insertText: '${__Time(${1:format})}',
+      label: '${__time()}',
+      detail: 'time',
+      insertText: '${__time(${1:format})}',
       insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
       kind: monaco.languages.CompletionItemKind.Function,
       range: range
