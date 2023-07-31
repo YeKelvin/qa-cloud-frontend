@@ -119,6 +119,10 @@ const removeDefaultKeybindings = () => {
  * 插入内容
  */
 const insert = (val) => {
+  if (!val) {
+    val = String(val)
+  }
+
   const selection = instance.getSelection()
   instance.executeEdits('', [
     {
@@ -153,6 +157,9 @@ const insertSnippet = (val) => {
  * 设置编辑器内容
  */
 const setValue = (val) => {
+  if (!val) {
+    val = String(val)
+  }
   instance.setValue(val)
 }
 
