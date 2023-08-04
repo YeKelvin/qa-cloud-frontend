@@ -431,14 +431,10 @@ const hiddenQuerysDot = computed(() => {
 })
 const hiddenBodyDot = computed(() => {
   const mode = bodyMode.value
-  if (mode === 'raw' || mode === 'custom') {
-    if (bodyCode.value === '') return true
-  }
+  if ((mode === 'raw' || mode === 'custom') && isEmpty(bodyCode.value)) return true
   if (mode === 'form-data') {
     const files = fileItems.value
-    if (files.length == 0) {
-      return true
-    }
+    if (files.length == 0) return true
     if (files.length == 1) {
       const item = files[0]
       if (isEmpty(item.name) && isEmpty(item.value) && isEmpty(item.desc)) return true
@@ -446,14 +442,13 @@ const hiddenBodyDot = computed(() => {
   }
   if (mode === 'x-www-form-urlencoded') {
     const forms = formItems.value
-    if (forms.length == 0) {
-      return true
-    }
+    if (forms.length == 0) return true
     if (forms.length == 1) {
       const item = forms[0]
       if (isEmpty(item.name) && isEmpty(item.value) && isEmpty(item.desc)) return true
     }
   }
+  if (mode === 'none') return true
   return false
 })
 const hiddenConfigDot = computed(() => {

@@ -20,6 +20,9 @@ export default function useHTTPBody() {
     if (bodyMode.value === 'x-www-form-urlencoded') {
       return formParameters.value
     }
+    if (bodyMode.value === 'none') {
+      return null
+    }
     return ''
   })
 
