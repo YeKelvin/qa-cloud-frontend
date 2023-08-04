@@ -36,8 +36,8 @@
   --el-drawer-padding-primary: none !important;
 
   .el-drawer__header {
-    margin-bottom: 0 !important;
     padding: 0 !important;
+    margin-bottom: 0 !important;
 
     flex-direction: column;
     align-items: flex-start;
@@ -49,6 +49,7 @@
   }
 
   .el-drawer__body {
+    display: flex;
     overflow: hidden !important;
   }
 }

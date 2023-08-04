@@ -65,10 +65,7 @@ onMounted(() => {
   // 设置行尾符合为\n
   instance.getModel().setEOL(monaco.editor.EndOfLinePreference.LF)
   // 双向绑定
-  instance.onDidChangeModelContent(() => {
-    const value = instance.getValue()
-    emit('update:modelValue', value)
-  })
+  instance.onDidChangeModelContent(() => emit('update:modelValue', instance.getValue()))
   // 移除有冲突的默认快捷键
   removeDefaultKeybindings()
 })
@@ -84,6 +81,7 @@ const removeDefaultKeybindings = () => {
   // 移除 CtrlCmd + E 快捷键
   removeKeybinding('actions.findWithSelection')
   // 移除 CtrlCmd + K 快捷键
+  removeKeybinding('deleteAllRight')
   removeKeybinding('editor.action.setSelectionAnchor')
   removeKeybinding('editor.action.selectFromAnchorToCursor')
   removeKeybinding('editor.action.addCommentLine')
@@ -107,12 +105,11 @@ const removeDefaultKeybindings = () => {
   removeKeybinding('editor.toggleFold')
   removeKeybinding('editor.action.formatSelection')
   removeKeybinding('editor.action.revealDefinitionAside')
-  removeKeybinding('togglePeekWidgetFocus')
   removeKeybinding('editor.action.showHover')
   removeKeybinding('editor.action.trimTrailingWhitespace')
   removeKeybinding('editor.action.deleteLines')
-  removeKeybinding('deleteAllRight')
   removeKeybinding('editor.action.moveSelectionToNextFindMatch')
+  removeKeybinding('togglePeekWidgetFocus')
 }
 
 /**

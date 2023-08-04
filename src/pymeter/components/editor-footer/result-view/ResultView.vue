@@ -106,9 +106,11 @@ const handleTabRemove = (tabName) => {
 }
 
 .result-view {
-  overflow: hidden;
+  width: 100%;
   height: 100%;
+  overflow: hidden;
   display: flex;
+  flex: 1;
   flex-direction: column;
 }
 
@@ -120,8 +122,9 @@ const handleTabRemove = (tabName) => {
 
 .view-body {
   width: 100%;
-  height: 100%;
+  height: 0;
   display: flex;
+  flex: 1;
 }
 
 .tab-label-wrapper {

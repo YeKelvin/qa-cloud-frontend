@@ -3,11 +3,11 @@
     <!-- 结果列表 -->
     <el-card shadow="hover" class="result-tree">
       <el-empty v-if="isEmpty(workers)" style="width: 100%" />
-      <el-scrollbar v-else style="width: 100%; height: 100%" wrap-style="overflow-x: auto" view-style="padding: 10px">
+      <el-scrollbar v-else style="width: 100%" wrap-style="overflow-x: auto" view-style="padding: 10px">
         <el-tree
           default-expand-all
           highlight-current
-          style="padding-bottom: 50px"
+          style="padding-bottom: 100px"
           :data="workers"
           :expand-on-click-node="false"
           :props="{ label: 'name', children: 'children' }"
@@ -459,44 +459,46 @@ defineExpose({
 }
 
 .result-tree {
+  display: flex;
+  overflow: hidden;
   min-width: 400px;
   max-width: 400px;
   width: 400px;
   height: 100%;
-  overflow: hidden;
 
   :deep(.el-card__body) {
+    display: flex;
+    align-items: flex-start;
     padding: 0;
     width: 100%;
     height: 100%;
-    align-items: flex-start;
   }
 }
 
 .tree-item {
+  width: 100%;
   display: inline-flex;
   align-items: center;
-  width: 100%;
 }
 
 .worker-name-wrapper {
+  width: 100%;
+  padding-right: 10px;
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
-  padding-right: 10px;
 }
 
 .element-name {
+  overflow: hidden;
   user-select: none;
   white-space: normal;
-  overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .result-details {
-  margin-left: 10px;
   width: 100%;
+  margin-left: 10px;
 
   :deep(.el-card__body) {
     display: flex;
