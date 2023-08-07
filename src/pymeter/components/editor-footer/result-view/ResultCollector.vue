@@ -8,6 +8,7 @@
           default-expand-all
           highlight-current
           style="padding-bottom: 100px"
+          :indent="24"
           :data="workers"
           :expand-on-click-node="false"
           :props="{ label: 'name', children: 'children' }"
@@ -22,7 +23,7 @@
                     <SvgIcon icon-name="pymeter-worker" style="font-size: 18px" />
                     <span class="element-name" style="margin-left: 5px">{{ node.label }}</span>
                   </span>
-                  <template v-if="data.running">
+                  <template v-if="props.running && data.running">
                     <SvgIcon icon-name="pymeter-running" style="font-size: 24px" />
                   </template>
                   <template v-else-if="!data.running && data.success">
@@ -242,7 +243,8 @@ import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
 
 const { toClipboard } = useClipboard()
 const props = defineProps({
-  workers: { type: Array, default: () => [] }
+  running: { type: Boolean, required: true },
+  workers: { type: Array, required: true }
 })
 const activeTabName = ref('RESPONSE_DATA')
 const requestEditorRef = ref()

@@ -1,9 +1,11 @@
 import { useUserStore } from '@/store/user'
+import { usePymeterSocketStore } from '@/store/pymeter-socket'
 import useSocket from './useSocket'
 
 export default function useSocketIO() {
   const socket = useSocket()
   const userStore = useUserStore()
+  const pymeterSocketStore = usePymeterSocketStore()
 
   /**
    * 设置请求头
@@ -23,14 +25,20 @@ export default function useSocketIO() {
    */
   const connect = () => {
     setAccessToken()
-    if (socket.disconnected) socket.open()
+    if (socket.disconnected) {
+      socket.open()
+      pymeterSocketStore.instance = socket
+    }
   }
 
   /**
    * 断开连接
    */
   const disconnect = () => {
-    if (socket.connected) socket.close()
+    if (socket.connected) {
+      socket.close()
+      pymeterSocketStore.instance = null
+    }
   }
 
   /**

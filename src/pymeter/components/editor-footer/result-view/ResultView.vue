@@ -7,15 +7,25 @@
     </template>
     <template v-else>
       <div class="view-header">
-        <el-tabs v-model="activeTabNo" closable @tab-click="handleTabClick" @tab-remove="handleTabRemove">
-          <el-tab-pane v-for="tab in tabs" :key="tab.id" :name="tab.id">
+        <el-tabs v-model="activeTabNo" @tab-click="handleTabClick" @tab-remove="handleTabRemove">
+          <el-tab-pane v-for="tab in tabs" :key="tab.id" :name="tab.id" :closable="!tab.running">
             <template #label>
               <div class="tab-label-wrapper">
                 <SvgIcon v-if="tab.running" icon-name="pymeter-running" class="running-icon" />
-                <span style="display: flex; flex-direction: column">
+                <span style="display: flex; flex-direction: column; margin-right: 10px">
                   <span style="font-size: 12px; font-weight: 300">{{ tab.startTime }}</span>
                   <span>{{ tab.name }}</span>
                 </span>
+                <el-button
+                  v-if="tab.running"
+                  type="danger"
+                  size="small"
+                  plain
+                  round
+                  @click="pymeterSocketStore.cancelExecuting()"
+                >
+                  取消
+                </el-button>
               </div>
             </template>
           </el-tab-pane>
@@ -23,7 +33,10 @@
       </div>
 
       <div class="view-body">
-        <ResultCollector v-if="!activeTabLoading" ref="collectorRef" :workers="activeTabDetails" />
+        <div v-if="!activeTabLoading" class="flexbox-column-center">
+          <LinearLoading v-show="activeTabRunning" />
+          <ResultCollector ref="collectorRef" :running="activeTabRunning" :workers="activeTabDetails" />
+        </div>
         <el-skeleton v-else :rows="6" style="padding: 40px" animated />
       </div>
     </template>
@@ -31,10 +44,13 @@
 </template>
 
 <script setup>
+import LinearLoading from '@/components/linear-loading/LinearLoading.vue'
+import { usePymeterSocketStore } from '@/store/pymeter-socket'
 import { isEmpty } from 'lodash-es'
 import ResultCollector from './ResultCollector.vue'
 
 const emit = defineEmits(['update:data'])
+const pymeterSocketStore = usePymeterSocketStore()
 const props = defineProps({
   data: Array
 })
@@ -48,6 +64,7 @@ const activeTabNo = ref(null)
 const activeTabData = ref(null)
 const activeTabDetails = computed(() => (!isEmpty(activeTabData.value) ? activeTabData.value.details : []))
 const activeTabLoading = computed(() => (!isEmpty(activeTabData.value) ? activeTabData.value.loading : false))
+const activeTabRunning = computed(() => (!isEmpty(activeTabData.value) ? activeTabData.value.running : false))
 
 watch(
   () => tabs.value.length,

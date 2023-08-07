@@ -51,11 +51,11 @@ provide('results', results)
 provide('logs', logs)
 
 onBeforeMount(() => {
-  socket.on('pymeter_start', (data) => {
+  socket.on('pymeter:start', (data) => {
     ElNotification.success({ message: '开始执行脚本', duration: 2 * 1000 })
     results.value.push(data)
   })
-  socket.on('pymeter_result_summary', (data) => {
+  socket.on('pymeter:result_summary', (data) => {
     const result = results.value.find((result) => result.id === data.resultId)
     if (result) {
       assign(result, data.result)
@@ -63,7 +63,7 @@ onBeforeMount(() => {
       results.value.push(data.result)
     }
   })
-  socket.on('pymeter_worker_result', (data) => {
+  socket.on('pymeter:worker_result', (data) => {
     const result = results.value.find((result) => result.id === data.resultId)
     if (!result) return
 
@@ -74,7 +74,7 @@ onBeforeMount(() => {
       result.details.push(data.worker)
     }
   })
-  socket.on('pymeter_sampler_result', (data) => {
+  socket.on('pymeter:sampler_result', (data) => {
     const result = results.value.find((result) => result.id === data.resultId)
     if (!result) return
 
@@ -83,31 +83,40 @@ onBeforeMount(() => {
 
     worker.children.push(data.sampler)
   })
-  socket.on('pymeter_message', (data) => {
+  socket.on('pymeter:message', (data) => {
     ElNotification.info({ message: data, duration: 2 * 1000 })
   })
-  socket.on('pymeter_log', (data) => {
+  socket.on('pymeter:log', (data) => {
     logs.value.push(data)
   })
-  socket.on('pymeter_completed', () => {
+  socket.on('pymeter:completed', () => {
+    socketio.disconnect()
     ElNotification.success({ message: '脚本执行完成', duration: 2 * 1000 })
-    socketio.disconnect()
   })
-  socket.on('pymeter_error', (data) => {
-    ElNotification.error({ message: data, duration: 2 * 1000 })
+  socket.on('pymeter:error', (data) => {
     socketio.disconnect()
+    ElNotification.error({ message: data, duration: 2 * 1000 })
+  })
+  socket.on('pymeter:user_interrupted', (data) => {
+    const result = results.value.find((result) => result.id === data.resultId)
+    if (result) {
+      assign(result, data.result)
+    }
+    socketio.disconnect()
+    ElNotification.info({ message: '取消执行成功', duration: 2 * 1000 })
   })
 })
 
 onBeforeUnmount(() => {
-  socket.off('pymeter_start')
-  socket.off('pymeter_result_summary')
-  socket.off('pymeter_worker_result')
-  socket.off('pymeter_sampler_result')
-  socket.off('pymeter_message')
-  socket.off('pymeter_log')
-  socket.off('pymeter_completed')
-  socket.off('pymeter_error')
+  socket.off('pymeter:start')
+  socket.off('pymeter:result_summary')
+  socket.off('pymeter:worker_result')
+  socket.off('pymeter:sampler_result')
+  socket.off('pymeter:message')
+  socket.off('pymeter:log')
+  socket.off('pymeter:completed')
+  socket.off('pymeter:error')
+  socket.off('pymeter:user_interrupted')
   socketio.disconnect()
 })
 
