@@ -169,10 +169,10 @@ onMounted(async () => {
   // 查询集合列表
   await queryCollections()
   // 没有选择脚本时自动弹出下拉框
-  if (selectedCollections.length > 0) return
+  if (selectedCollections.value.length > 0) return
   nextTick(() => {
     setTimeout(() => {
-      elSelectRef.value && elSelectRef.value.focus() // TODO: 不知为啥没有生效
+      elSelectRef.value && elSelectRef.value.focus()
     }, 1000)
   })
 })

@@ -48,8 +48,8 @@
     "vuedraggable": "4.1.0"
   },
   "devDependencies": {
-    "@babel/core": "7.22.9",
-    "@babel/eslint-parser": "7.22.9",
+    "@babel/core": "7.22.10",
+    "@babel/eslint-parser": "7.22.10",
     "@types/echarts": "4.9.18",
     "@types/lodash-es": "4.17.8",
     "@types/mousetrap": "1.6.11",
@@ -74,8 +74,8 @@
     "unplugin-element-plus": "0.8.0",
     "unplugin-icons": "0.16.5",
     "unplugin-vue-components": "0.25.1",
-    "unplugin-vue-define-options": "1.3.14",
-    "vite": "4.4.8",
+    "unplugin-vue-define-options": "1.3.15",
+    "vite": "4.4.9",
     "vite-plugin-style-import": "2.0.0",
     "vite-plugin-svg-icons": "2.0.1",
     "vite-plugin-vue-devtools": "0.5.1"
