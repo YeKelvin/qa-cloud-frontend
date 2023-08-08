@@ -9,7 +9,7 @@ export const usePymeterSocketStore = defineStore('pymeter-socketio', {
   getters: {},
   actions: {
     cancelExecuting() {
-      this.instance.emit('pymeter:cancel_execution')
+      this.instance && this.instance.emit('pymeter:cancel_execution')
     }
   }
 })

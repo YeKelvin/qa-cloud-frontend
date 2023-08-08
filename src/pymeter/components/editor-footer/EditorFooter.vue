@@ -33,16 +33,18 @@
 </template>
 
 <script setup>
-import { assign } from 'lodash-es'
-import { ElMessage, ElNotification } from 'element-plus'
-import { usePyMeterStore } from '@/store/pymeter'
 import useSocket from '@/composables/useSocket'
 import useSocketIO from '@/composables/useSocketIO'
+import { usePyMeterStore } from '@/store/pymeter'
+import { usePymeterSocketStore } from '@/store/pymeter-socket'
+import { ElMessage, ElNotification } from 'element-plus'
+import { assign } from 'lodash-es'
 import MainDrawer from './MainDrawer.vue'
 
 const socket = useSocket()
 const socketio = useSocketIO()
 const pymeterStore = usePyMeterStore()
+const pymeterSocketStore = usePymeterSocketStore()
 
 const results = ref([])
 const logs = ref([])
@@ -105,6 +107,9 @@ onBeforeMount(() => {
     socketio.disconnect()
     ElNotification.info({ message: '取消执行成功', duration: 2 * 1000 })
   })
+  socket.on('disconnect', () => {
+    pymeterSocketStore.instance = null
+  })
 })
 
 onBeforeUnmount(() => {
@@ -117,6 +122,7 @@ onBeforeUnmount(() => {
   socket.off('pymeter:completed')
   socket.off('pymeter:error')
   socket.off('pymeter:user_interrupted')
+  socket.off('disconnect')
   socketio.disconnect()
 })
 
@@ -124,6 +130,9 @@ onBeforeUnmount(() => {
  * 清空所有记录
  */
 const clearAll = () => {
+  if (results.value.length > 0) {
+    pymeterSocketStore.cancelExecuting()
+  }
   results.value = []
   logs.value = []
   ElMessage({ message: '已清空所有记录', type: 'info', duration: 1 * 1000 })

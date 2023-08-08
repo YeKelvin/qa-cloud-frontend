@@ -54,12 +54,14 @@
 </template>
 
 <script setup>
-import { ElMessage } from 'element-plus'
 import { usePyMeterStore } from '@/store/pymeter'
-import ResultView from './result-view/ResultView.vue'
+import { usePymeterSocketStore } from '@/store/pymeter-socket'
+import { ElMessage } from 'element-plus'
 import LogView from './log-view/LogView.vue'
+import ResultView from './result-view/ResultView.vue'
 
 const pymeterStore = usePyMeterStore()
+const pymeterSocketStore = usePymeterSocketStore()
 const drawerSize = ref('65%')
 const isMaxSize = computed(() => drawerSize.value === '100%')
 const results = inject('results', null)
@@ -71,6 +73,9 @@ const showlogView = computed(() => pymeterStore.activeFooterViewName === 'LOG')
  */
 const clearAll = () => {
   pymeterStore.closeFooterDrawer()
+  if (results.value.length > 0) {
+    pymeterSocketStore.cancelExecuting()
+  }
   results.value = []
   logs.value = []
   ElMessage({ message: '已清空所有记录', type: 'info', duration: 1 * 1000 })
@@ -78,6 +83,9 @@ const clearAll = () => {
 
 const clearCurrent = () => {
   if (showResultView.value) {
+    if (results.value.length > 0) {
+      pymeterSocketStore.cancelExecuting()
+    }
     results.value = []
     return
   }
