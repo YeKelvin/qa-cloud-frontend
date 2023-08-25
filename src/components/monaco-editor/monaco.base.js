@@ -24,10 +24,10 @@ import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
 import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
 import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
 
-import { JSON5_LANG_DEFINE } from './language/json5'
-import { LOG_LANG_DEFINE, LOG_TOKEN_COLORS } from './language/log'
-import { PYMETER_COMPLETION_ITEMS, PYMETER_FUNCTION_COMPLETION_ITEMS } from './language/pymeter'
-import { PYTHON_LANG_DEFINE, PYTHON_TOKEN_COLORS, PYTHON_KEYWORDS_COMPLETION_ITEMS } from './language/python'
+import { LOG_LANG_DEFINE, LOG_LANG_COLORS } from './language/log'
+import { JSON5_LANG_DEFINE, JSON5_LANG_CONFIG } from './language/json5'
+import { PYMETER_COMPLETIONS, PYMETER_FUNCTION_COMPLETIONS } from './language/pymeter'
+import { PYTHON_LANG_DEFINE, PYTHON_LANG_COLORS, PYTHON_KEYWORDS_COMPLETIONS } from './language/python'
 
 self.MonacoEnvironment = {
   getWorker(_, label) {
@@ -70,6 +70,7 @@ const registerCompletion = (language, provider, triggerCharacters = null) => {
 // *************************************************************************
 monaco.languages.register({ id: 'json5' })
 monaco.languages.setMonarchTokensProvider('json5', JSON5_LANG_DEFINE)
+monaco.languages.setLanguageConfiguration('json5', JSON5_LANG_CONFIG)
 
 // *************************************************************************
 // * log
@@ -81,9 +82,9 @@ monaco.languages.setMonarchTokensProvider('log', LOG_LANG_DEFINE)
 // * python
 // *************************************************************************
 monaco.languages.setMonarchTokensProvider('python', PYTHON_LANG_DEFINE)
-registerCompletion('python', PYTHON_KEYWORDS_COMPLETION_ITEMS)
-registerCompletion('python', PYMETER_COMPLETION_ITEMS)
-registerCompletion('python', PYMETER_FUNCTION_COMPLETION_ITEMS)
+registerCompletion('python', PYTHON_KEYWORDS_COMPLETIONS)
+registerCompletion('python', PYMETER_COMPLETIONS)
+registerCompletion('python', PYMETER_FUNCTION_COMPLETIONS)
 
 // *************************************************************************
 // * theme
@@ -100,8 +101,8 @@ monaco.editor.defineTheme('vs', {
       fontStyle: 'bold',
       token: 'delimiter.bracket.js'
     },
-    ...LOG_TOKEN_COLORS,
-    ...PYTHON_TOKEN_COLORS
+    ...LOG_LANG_COLORS,
+    ...PYTHON_LANG_COLORS
   ],
   colors: {
     'editorBracketHighlight.foreground1': '#FF0000', // 红

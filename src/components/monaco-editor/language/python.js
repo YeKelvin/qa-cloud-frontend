@@ -5,7 +5,7 @@ const PYTHON_LANG_DEFINE = { ...language }
 PYTHON_LANG_DEFINE.tokenizer.root.push([/\$\{\w+\}/, { token: 'pymeter-function' }])
 PYTHON_LANG_DEFINE.tokenizer.root.push([/(\$\{__\w+\()[\w\s,${}_\(\)]+(\)\})/, { token: 'pymeter-function' }])
 
-const PYTHON_TOKEN_COLORS = [{ token: 'pymeter-function', foreground: 'FF0000' }]
+const PYTHON_LANG_COLORS = [{ token: 'pymeter-function', foreground: 'FF0000' }]
 
 const PYTHON_KEYWORDS = [
   'and',
@@ -126,7 +126,7 @@ const PYTHON_KEYWORDS = [
   'False'
 ]
 
-const PYTHON_KEYWORDS_COMPLETION_ITEMS = (range) => {
+const PYTHON_KEYWORDS_COMPLETIONS = (range) => {
   const keywords = []
   PYTHON_KEYWORDS.forEach((item) => {
     keywords.push({
@@ -139,4 +139,4 @@ const PYTHON_KEYWORDS_COMPLETION_ITEMS = (range) => {
   return keywords
 }
 
-export { PYTHON_KEYWORDS_COMPLETION_ITEMS, PYTHON_LANG_DEFINE, PYTHON_TOKEN_COLORS }
+export { PYTHON_KEYWORDS_COMPLETIONS, PYTHON_LANG_DEFINE, PYTHON_LANG_COLORS }

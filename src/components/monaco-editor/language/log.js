@@ -17,7 +17,7 @@ const LOG_LANG_DEFINE = {
   }
 }
 
-const LOG_TOKEN_COLORS = [
+const LOG_LANG_COLORS = [
   { token: 'log-time', foreground: '409EFF' },
   { token: 'debug-log', foreground: '808080' },
   { token: 'info-log', foreground: '606266' },
@@ -25,4 +25,4 @@ const LOG_TOKEN_COLORS = [
   { token: 'error-log', foreground: 'FF0000' }
 ]
 
-export { LOG_LANG_DEFINE, LOG_TOKEN_COLORS }
+export { LOG_LANG_DEFINE, LOG_LANG_COLORS }
