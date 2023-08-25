@@ -1,4 +1,4 @@
-const LOG_LANGUAGE_DEFINE = {
+const LOG_LANG_DEFINE = {
   inherit: true,
   ignoreCase: true,
   logTime: /(\[[\d-:. ]*\])?\s?/,
@@ -25,4 +25,4 @@ const LOG_TOKEN_COLORS = [
   { token: 'error-log', foreground: 'FF0000' }
 ]
 
-export { LOG_LANGUAGE_DEFINE, LOG_TOKEN_COLORS }
+export { LOG_LANG_DEFINE, LOG_TOKEN_COLORS }

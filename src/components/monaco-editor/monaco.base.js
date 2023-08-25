@@ -24,7 +24,8 @@ import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
 import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
 import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
 
-import { LOG_LANGUAGE_DEFINE, LOG_TOKEN_COLORS } from './language/log'
+import { JSON5_LANG_DEFINE } from './language/json5'
+import { LOG_LANG_DEFINE, LOG_TOKEN_COLORS } from './language/log'
 import { PYMETER_COMPLETION_ITEMS, PYMETER_FUNCTION_COMPLETION_ITEMS } from './language/pymeter'
 import { PYTHON_LANG_DEFINE, PYTHON_TOKEN_COLORS, PYTHON_KEYWORDS_COMPLETION_ITEMS } from './language/python'
 
@@ -64,24 +65,29 @@ const registerCompletion = (language, provider, triggerCharacters = null) => {
     }
   })
 }
+// *************************************************************************
+// * json5
+// *************************************************************************
+monaco.languages.register({ id: 'json5' })
+monaco.languages.setMonarchTokensProvider('json5', JSON5_LANG_DEFINE)
 
-// ********************************************************************************************************************
+// *************************************************************************
 // * log
-// ********************************************************************************************************************
+// *************************************************************************
 monaco.languages.register({ id: 'log' })
-monaco.languages.setMonarchTokensProvider('log', LOG_LANGUAGE_DEFINE)
+monaco.languages.setMonarchTokensProvider('log', LOG_LANG_DEFINE)
 
-// ********************************************************************************************************************
+// *************************************************************************
 // * python
-// ********************************************************************************************************************
+// *************************************************************************
 monaco.languages.setMonarchTokensProvider('python', PYTHON_LANG_DEFINE)
 registerCompletion('python', PYTHON_KEYWORDS_COMPLETION_ITEMS)
 registerCompletion('python', PYMETER_COMPLETION_ITEMS)
 registerCompletion('python', PYMETER_FUNCTION_COMPLETION_ITEMS)
 
-// ********************************************************************************************************************
+// *************************************************************************
 // * theme
-// ********************************************************************************************************************
+// *************************************************************************
 monaco.editor.defineTheme('vs', {
   base: 'vs',
   inherit: true,
