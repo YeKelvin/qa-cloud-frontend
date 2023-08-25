@@ -73,6 +73,7 @@ const {
   triggerButtonMouseenter,
   handleMenuHide,
   getRootNode,
+  addExpandedList,
   handleNodeExpand,
   handleNodeCollapse,
   expandAll,
@@ -90,7 +91,7 @@ watch(
     const node = eltreeRef.value.getNode(val)
     if (!node) return
     node.expanded = true
-    expandedList.value.push(val)
+    addExpandedList(val)
   }
 )
 watch(
@@ -132,6 +133,7 @@ const queryElementsTree = (expandtop = false) => {
   // 无勾选脚本时无需查询
   if (isEmpty(props.collections)) {
     elementList.value = []
+    expandedList.value = []
     return
   }
   // 根据列表查询元素及其子代
@@ -143,7 +145,7 @@ const queryElementsTree = (expandtop = false) => {
       currentKey.value && eltreeRef.value && eltreeRef.value.setCurrentKey(currentKey.value)
       elementList.value.forEach((item) => {
         // 自动展开顶级节点
-        expandtop && expandedList.value.push(item.elementNo)
+        expandtop && addExpandedList(item.elementNo)
         // 顶级节点添加 padding-bottom: 10px
         addTreeNodePaddingBottom(item.elementNo)
       })

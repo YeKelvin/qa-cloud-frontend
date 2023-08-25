@@ -72,19 +72,28 @@ export default function useElTree() {
     return null
   }
 
+  const addExpandedList = (elementNo) => {
+    if (expandedList.value.includes(elementNo)) return
+    expandedList.value.push(elementNo)
+  }
+
+  const removeExpandedList = (elementNo) => {
+    if (!expandedList.value.includes(elementNo)) return
+    expandedList.value.splice(expandedList.value.indexOf(elementNo), 1)
+  }
+
   /**
    * el-tree展开节点的回调
    */
   const handleNodeExpand = (data) => {
-    if (expandedList.value.includes(data.elementNo)) return
-    expandedList.value.push(data.elementNo)
+    addExpandedList(data.elementNo)
   }
 
   /**
    * el-tree收起节点的回调
    */
   const handleNodeCollapse = (data) => {
-    expandedList.value.splice(expandedList.value.indexOf(data.elementNo), 1)
+    removeExpandedList(data.elementNo)
   }
 
   /**
@@ -144,6 +153,8 @@ export default function useElTree() {
     triggerButtonMouseenter,
     handleMenuHide,
     getRootNode,
+    addExpandedList,
+    removeExpandedList,
     handleNodeExpand,
     handleNodeCollapse,
     expandAll,
