@@ -7,6 +7,7 @@
     highlight-current
     :indent="36"
     :data="elementList"
+    :auto-expand-parent="false"
     :expand-on-click-node="false"
     :default-expanded-keys="expandedList"
     :props="{ label: 'elementName', children: 'children' }"

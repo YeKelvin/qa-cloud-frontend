@@ -100,13 +100,13 @@ export default function useElTree() {
    * 展开或收起所有节点
    */
   const expandAll = (expand) => {
-    expandNode(eltreeRef.value.store.root, expand)
+    expandNode(eltreeRef.value.store.root, expand, { depth: true })
   }
 
   /**
    * 展开或收起节点
    */
-  const expandNode = (node, expand) => {
+  const expandNode = (node, expand, opt = { depth: false }) => {
     node.expanded = expand
     for (let i = 0; i < node.childNodes.length; i++) {
       // 改变节点的自身expanded状态
@@ -114,14 +114,14 @@ export default function useElTree() {
 
       // 更新已展开节点列表
       if (expand) {
-        handleNodeExpand(node.childNodes[i].data)
+        addExpandedList(node.childNodes[i].data.elementNo)
       } else {
-        handleNodeCollapse(node.childNodes[i].data)
+        removeExpandedList(node.childNodes[i].data.elementNo)
       }
 
       // 遍历子节点
-      if (node.childNodes[i].childNodes.length > 0) {
-        expandNode(node.childNodes[i], expand)
+      if (opt.depth && node.childNodes[i].childNodes.length > 0) {
+        expandNode(node.childNodes[i], expand, opt)
       }
     }
   }
