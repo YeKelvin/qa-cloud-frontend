@@ -144,10 +144,13 @@ const queryElementsTree = (expandtop = false) => {
       // 选中的节点保持高亮
       currentKey.value && eltreeRef.value && eltreeRef.value.setCurrentKey(currentKey.value)
       elementList.value.forEach((item) => {
-        // 自动展开顶级节点
-        expandtop && addExpandedList(item.elementNo)
         // 顶级节点添加 padding-bottom: 10px
         addTreeNodePaddingBottom(item.elementNo)
+        // 自动展开顶级节点
+        if (expandtop && eltreeRef.value) {
+          eltreeRef.value.getNode(item.elementNo).expanded = true
+          addExpandedList(item.elementNo)
+        }
       })
     })
   })

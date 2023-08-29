@@ -12,19 +12,19 @@
 
     <!-- 变量集列表 -->
     <el-scrollbar style="width: 100%; height: 100%" wrap-style="overflow-x:auto;" view-style="padding:10px;">
-      <HttpheaderTemplateTree ref="templateTreeRef" />
+      <HttpheaderTree ref="templateTreeRef" />
     </el-scrollbar>
   </div>
 </template>
 
 <script lang="jsx" setup>
 import * as HeadersService from '@/api/script/headers'
-import { Plus } from '@element-plus/icons-vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import NameInput from '@/pymeter/components/editor-aside/common/NameInput.vue'
 import { usePyMeterStore } from '@/store/pymeter'
 import { useWorkspaceStore } from '@/store/workspace'
-import NameInput from '@/pymeter/components/editor-aside/common/NameInput.vue'
-import HttpheaderTemplateTree from './HttpheaderTemplateTree.vue'
+import { Plus } from '@element-plus/icons-vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import HttpheaderTree from './HttpheaderTree.vue'
 
 const pymeterStore = usePyMeterStore()
 const workspaceStore = useWorkspaceStore()

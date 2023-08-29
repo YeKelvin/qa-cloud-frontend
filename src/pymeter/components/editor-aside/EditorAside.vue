@@ -3,8 +3,8 @@
     <template #header>
       <el-select v-model="asideName" size="large" style="flex-grow: 1">
         <el-option label="脚本" value="ELEMENT" />
-        <el-option label="环境 / 变量" value="DATASET" />
-        <el-option label="HTTP请求头" value="HTTP_HEADER_TEMPLATE" />
+        <el-option label="环境/变量" value="DATASET" />
+        <el-option label="HTTP请求头" value="HTTPHEADER" />
         <el-option label="数据库" value="DATABASE" />
       </el-select>
     </template>
@@ -18,9 +18,7 @@ const asideName = ref('ELEMENT')
 const asideComponents = reactive({
   ELEMENT: markRaw(defineAsyncComponent(() => import('./element-side/ElementSide.vue'))),
   DATASET: markRaw(defineAsyncComponent(() => import('./dataset-side/DatasetSide.vue'))),
-  HTTP_HEADER_TEMPLATE: markRaw(
-    defineAsyncComponent(() => import('./httpheader-template-side/HttpheaderTemplateSide.vue'))
-  ),
+  HTTPHEADER: markRaw(defineAsyncComponent(() => import('./httpheader-side/HttpheaderSide.vue'))),
   DATABASE: markRaw(defineAsyncComponent(() => import('./database-side/DatabaseSide.vue')))
 })
 </script>
