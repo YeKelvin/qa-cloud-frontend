@@ -15,7 +15,7 @@ module.exports = {
     defineExpose: true,
     defineOptions: true
   },
-  plugins: ['prettier', 'import'],
+  plugins: ['prettier', 'import', 'prettier-plugin-organize-imports'],
   extends: [
     'eslint:recommended',
     'plugin:vue/vue3-recommended',

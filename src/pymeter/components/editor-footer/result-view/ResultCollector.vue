@@ -455,7 +455,7 @@ defineExpose({
   display: flex;
   flex: 1;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 2px);
   padding: 10px;
   padding-top: 0;
 }
