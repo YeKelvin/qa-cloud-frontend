@@ -23,24 +23,35 @@ export const useUserStore = defineStore('user', {
       number: '',
       name: '',
       avatar: '',
+      sso: false,
       roles: [],
       settings: {}
     }
   },
   getters: {},
   actions: {
-    async login(userInfo) {
-      const { loginName, password } = userInfo
+    async login({ loginName, password, accountType }) {
       // rsa公钥加密
       const factor = await getPublicKey()
       const encryptor = new JSEncrypt()
       encryptor.setPublicKey(factor.publicKey)
       // 登录
-      const response = await UserService.login({
-        loginName: loginName.trim(),
-        password: encryptor.encrypt(password),
-        index: factor.index
-      })
+      let response = null
+      if (accountType == 'enterprise') {
+        // 企业账号登录
+        response = await UserService.loginByEnterprise({
+          email: loginName.trim(),
+          password: encryptor.encrypt(password),
+          index: factor.index
+        })
+      } else {
+        // 平台账号登录
+        response = await UserService.login({
+          loginName: loginName.trim(),
+          password: encryptor.encrypt(password),
+          index: factor.index
+        })
+      }
       setToken(response.result.accessToken)
       this.token = response.result.accessToken
     },
@@ -61,6 +72,7 @@ export const useUserStore = defineStore('user', {
             this.avatar = userDefaultAvatar
             this.number = response.result.userNo
             this.name = response.result.userName
+            this.sso = response.result.sso
             this.roles = response.result.roles
             this.settings = response.result.settings
             resolve(response.result)

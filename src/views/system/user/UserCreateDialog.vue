@@ -17,8 +17,8 @@
       <el-form-item label="登录密码：" prop="password">
         <el-input v-model="formData.password" clearable />
       </el-form-item>
-      <el-form-item label="手机号：" prop="mobileNo">
-        <el-input v-model="formData.mobileNo" clearable />
+      <el-form-item label="手机号：" prop="mobile">
+        <el-input v-model="formData.mobile" clearable />
       </el-form-item>
       <el-form-item label="邮箱：" prop="email">
         <el-input v-model="formData.email" clearable />
@@ -53,7 +53,7 @@ const formData = ref({
   userName: '',
   loginName: '',
   password: '',
-  mobileNo: '',
+  mobile: '',
   email: '',
   roles: [],
   groups: []

@@ -2,6 +2,8 @@ import request from '@/utils/request'
 
 export const login = (data) => request.post('/usercenter/user/login', data)
 
+export const loginByEnterprise = (data) => request.post('/usercenter/user/login/by/enterprise', data)
+
 export const logout = (data) => request.post('/usercenter/user/logout', data)
 
 export const queryInfo = () => request.get('/usercenter/user/info')

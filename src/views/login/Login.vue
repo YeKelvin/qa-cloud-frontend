@@ -9,18 +9,23 @@
       :rules="loginRules"
     >
       <div class="title-container">
-        <h3 class="title">QA Cloud</h3>
+        <h3 class="title">Quality Assurance Cloud</h3>
       </div>
+
+      <el-tabs v-model="accountType" class="account-type-tabs">
+        <el-tab-pane label="平台账号登录" name="default" />
+        <el-tab-pane label="企业账号登录" name="enterprise" />
+      </el-tabs>
 
       <el-form-item prop="loginName">
         <el-input
           ref="loginNameRef"
           v-model="loginForm.loginName"
+          clearable
           type="text"
           tabindex="1"
-          name="loginName"
-          placeholder="账号"
           auto-complete="on"
+          :placeholder="loginNamePlaceholder"
         >
           <template #prefix>
             <SvgIcon icon-name="login-user" />
@@ -32,13 +37,13 @@
         <el-input
           ref="passwordRef"
           v-model="loginForm.password"
-          type="password"
+          clearable
+          show-password
           tabindex="2"
-          name="password"
+          type="password"
           placeholder="密码"
           auto-complete="on"
-          show-password
-          @keyup.enter="handleLogin"
+          @keyup.enter="loginHandler"
         >
           <template #prefix>
             <SvgIcon icon-name="login-password" />
@@ -51,7 +56,7 @@
         type="primary"
         size="large"
         style="width: 100%; margin-bottom: 30px"
-        @click.prevent="handleLogin"
+        @click.prevent="loginHandler"
       >
         登 录
       </el-button>
@@ -90,11 +95,20 @@ const loginForm = ref({
   loginName: '',
   password: ''
 })
+const accountType = ref('default')
 const loading = ref(false)
 const redirect = ref(undefined)
 const loginFormRef = ref()
 const loginNameRef = ref()
 const passwordRef = ref()
+
+const loginNamePlaceholder = computed(() => {
+  if (accountType.value == 'enterprise') {
+    return '企业邮箱'
+  } else {
+    return '账号 / 邮箱 / 手机号'
+  }
+})
 
 watch(
   route,
@@ -104,7 +118,7 @@ watch(
   { immediate: true }
 )
 
-const handleLogin = async () => {
+const loginHandler = async () => {
   // 表单校验
   const error = await loginFormRef.value
     .validate()
@@ -117,7 +131,10 @@ const handleLogin = async () => {
   // 登录
   try {
     loading.value = true
-    await userStore.login(loginForm.value)
+    await userStore.login({
+      ...loginForm.value,
+      accountType: accountType.value
+    })
     router.push({ path: redirect.value || '/' }, () => {})
     loading.value = false
   } catch (error) {
@@ -148,13 +165,27 @@ $light_gray: #eee;
   .title-container {
     position: relative;
     .title {
-      font-size: 26px;
+      font-size: 28px;
       color: $light_gray;
       margin: 0px auto 40px auto;
       text-align: center;
       font-weight: bold;
     }
   }
+}
+
+:deep(.el-tabs) {
+  padding: 0 10px;
+}
+
+:deep(.el-tabs__item) {
+  font-size: 18px;
+  font-weight: 400;
+  color: $light_gray;
+}
+
+:deep(.el-tabs__nav-wrap::after) {
+  background-color: $bg;
 }
 </style>
 

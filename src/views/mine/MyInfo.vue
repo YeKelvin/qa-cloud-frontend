@@ -11,13 +11,13 @@
       <el-image :src="userStore.avatar" fit="fill" class="user-avatar" />
     </el-form-item>
     <el-form-item label="用户名称：" prop="userName">
-      <el-input v-model="formData.userName" clearable />
+      <el-input v-model="formData.userName" clearable :disabled="userStore.sso" />
     </el-form-item>
-    <el-form-item label="手机号：" prop="mobileNo">
-      <el-input v-model="formData.mobileNo" clearable />
+    <el-form-item label="手机号：" prop="mobile">
+      <el-input v-model="formData.mobile" clearable :disabled="userStore.sso" />
     </el-form-item>
     <el-form-item label="邮箱地址：" prop="email">
-      <el-input v-model="formData.email" clearable />
+      <el-input v-model="formData.email" clearable :disabled="userStore.sso" />
     </el-form-item>
 
     <el-form-item style="margin-top: 40px">
@@ -35,7 +35,7 @@ const userStore = useUserStore()
 const elformRef = ref()
 const formData = ref({
   userName: '',
-  mobileNo: '',
+  mobile: '',
   email: ''
 })
 const formRules = {
@@ -45,10 +45,10 @@ const formRules = {
 onMounted(() => {
   // 查询用户信息
   UserService.queryInfo().then((response) => {
-    const userInfo = response.result
-    formData.value.userName = userInfo.userName
-    formData.value.mobileNo = userInfo.mobileNo
-    formData.value.email = userInfo.email
+    const user = response.result
+    formData.value.userName = user.userName
+    formData.value.mobile = user.mobile
+    formData.value.email = user.email
   })
 })
 

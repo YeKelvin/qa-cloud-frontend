@@ -37,7 +37,7 @@ export const usePermissionStore = defineStore('permission', {
     generateRoutes(roles) {
       return new Promise((resolve) => {
         let accessedRoutes
-        if (roles.includes('SUPER_ADMIN')) {
+        if (roles.includes('ADMIN')) {
           accessedRoutes = asyncRoutes || []
         } else {
           accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)

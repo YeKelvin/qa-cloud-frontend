@@ -3,7 +3,7 @@
     <div class="tabs-container">
       <el-tabs v-model="activeName" tab-position="left">
         <el-tab-pane name="INFO" label="个人信息" />
-        <el-tab-pane name="SECURITY" label="安全设置" />
+        <el-tab-pane v-if="!userStore.sso" name="SECURITY" label="安全设置" />
         <el-tab-pane name="SETTINGS" label="个人设置" />
       </el-tabs>
     </div>
@@ -16,10 +16,12 @@
 </template>
 
 <script setup>
+import { useUserStore } from '@/store/user'
 import MyInfo from './MyInfo.vue'
 import MySecurity from './MySecurity.vue'
 import MySettings from './MySettings.vue'
 
+const userStore = useUserStore()
 const activeName = ref('INFO')
 const showUserInfo = computed(() => activeName.value === 'INFO')
 const showSecurity = computed(() => activeName.value === 'SECURITY')
