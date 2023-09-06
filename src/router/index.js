@@ -139,43 +139,43 @@ export const asyncRoutes = [
     alwaysShow: true,
     component: Layout,
     redirect: 'noRedirect',
-    meta: { title: '系统管理', icon: 'sidebar-setting' },
+    meta: { title: '系统管理', icon: 'sidebar-setting', roles: ['SYSTEM'] },
     children: [
       {
         component: () => import('@/views/system/user/User.vue'),
         path: 'user',
         name: 'User',
-        meta: { title: '用户管理', icon: 'sidebar-user', roles: ['SYSTEM'] }
+        meta: { title: '用户管理', icon: 'sidebar-user' }
       },
       {
         component: () => import('@/views/system/group/Group.vue'),
         path: 'group',
         name: 'Group',
-        meta: { title: '分组管理', icon: 'sidebar-group', roles: ['SYSTEM'] }
+        meta: { title: '分组管理', icon: 'sidebar-group' }
       },
       {
         component: () => import('@/views/system/role/Role.vue'),
         path: 'role',
         name: 'Role',
-        meta: { title: '角色管理', icon: 'sidebar-role', roles: ['SYSTEM'] }
+        meta: { title: '角色管理', icon: 'sidebar-role' }
       },
       {
         component: () => import('@/views/system/role/RolePermissions.vue'),
         path: 'role/permissions',
         name: 'RolePermissions',
-        meta: { title: '角色权限', activeMenu: '/system/role', roles: ['SYSTEM'] },
+        meta: { title: '角色权限', activeMenu: '/system/role' },
         hidden: true
       },
       {
         path: 'workspace',
         name: 'Workspace',
-        meta: { title: '空间管理', icon: 'sidebar-workspace', roles: ['SYSTEM'] },
+        meta: { title: '空间管理', icon: 'sidebar-workspace' },
         component: () => import('@/views/system/workspace/Workspace.vue')
       },
       {
         path: 'workspace/restrictions',
         name: 'WorkspaceRestrictions',
-        meta: { title: '空间管理', activeMenu: '/system/workspace', roles: ['SYSTEM'] },
+        meta: { title: '空间管理', activeMenu: '/system/workspace' },
         component: () => import('@/views/system/workspace/WorkspaceRestrictions.vue'),
         hidden: true
       },
@@ -201,6 +201,12 @@ export const asyncRoutes = [
         path: 'restapi',
         name: 'RestAPILog',
         meta: { title: '请求日志', icon: 'sidebar-api' }
+      },
+      {
+        component: () => import('@/views/log/login/LoginLog.vue'),
+        path: 'login',
+        name: 'LoginLog',
+        meta: { title: '登录日志', icon: 'sidebar-user' }
       }
     ]
   },
@@ -211,8 +217,7 @@ export const asyncRoutes = [
     alwaysShow: true,
     component: Layout,
     redirect: 'noRedirect',
-    roles: ['SYSTEM'],
-    meta: { title: '开放平台', icon: 'sidebar-opencenter' },
+    meta: { title: '开放平台', icon: 'sidebar-opencenter', roles: ['SYSTEM'] },
     children: [
       {
         component: () => import('@/views/opencenter/application/Application.vue'),
