@@ -17,6 +17,7 @@ module.exports = {
   },
   plugins: ['prettier', 'import'],
   extends: [
+    'standard',
     'eslint:recommended',
     'plugin:vue/vue3-recommended',
     'plugin:prettier/recommended',
@@ -52,6 +53,7 @@ module.exports = {
     'no-plusplus': 'off',
     'no-param-reassign': ['off'],
     'no-useless-escape': 'off',
+    'no-useless-return': 'off',
     'no-unused-vars': ['error', { varsIgnorePattern: '.*', args: 'none' }],
     'no-constant-condition': ['error', { checkLoops: false }],
     'prefer-template': 'error',

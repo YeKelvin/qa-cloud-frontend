@@ -409,10 +409,10 @@ const showSettingsTab = computed(() => activeTabName.value === 'SETTINGS')
 
 const hiddenHeadersDot = computed(() => {
   const headers = headerItems.value
-  if (headers.length == 0) {
+  if (headers.length === 0) {
     return isEmpty(selectedHeaderTemplates.value)
   }
-  if (headers.length == 1) {
+  if (headers.length === 1) {
     const item = headers[0]
     if (isEmpty(item.name) && isEmpty(item.value)) return isEmpty(selectedHeaderTemplates.value)
   }
@@ -420,10 +420,10 @@ const hiddenHeadersDot = computed(() => {
 })
 const hiddenQuerysDot = computed(() => {
   const querys = queryItems.value
-  if (querys.length == 0) {
+  if (querys.length === 0) {
     return true
   }
-  if (querys.length == 1) {
+  if (querys.length === 1) {
     const item = querys[0]
     if (isEmpty(item.name) && isEmpty(item.value) && isEmpty(item.desc)) return true
   }
@@ -434,16 +434,16 @@ const hiddenBodyDot = computed(() => {
   if ((mode === 'raw' || mode === 'custom') && isEmpty(bodyCode.value)) return true
   if (mode === 'form-data') {
     const files = fileItems.value
-    if (files.length == 0) return true
-    if (files.length == 1) {
+    if (files.length === 0) return true
+    if (files.length === 1) {
       const item = files[0]
       if (isEmpty(item.name) && isEmpty(item.value) && isEmpty(item.desc)) return true
     }
   }
   if (mode === 'x-www-form-urlencoded') {
     const forms = formItems.value
-    if (forms.length == 0) return true
-    if (forms.length == 1) {
+    if (forms.length === 0) return true
+    if (forms.length === 1) {
       const item = forms[0]
       if (isEmpty(item.name) && isEmpty(item.value) && isEmpty(item.desc)) return true
     }

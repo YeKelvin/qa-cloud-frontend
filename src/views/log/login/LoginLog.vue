@@ -56,9 +56,6 @@
         @current-change="handleCurrentChange"
       />
     </div>
-
-    <!-- 日志详情 -->
-    <LogDetails v-if="showLogDetails" v-model="showLogDetails" />
   </div>
 </template>
 
@@ -108,8 +105,8 @@ const query = () => {
     page: page.value,
     pageSize: pageSize.value
   }).then((response) => {
-    tableData.value = response.result['data']
-    total.value = response.result['total']
+    tableData.value = response.result.data
+    total.value = response.result.total
   })
 }
 
