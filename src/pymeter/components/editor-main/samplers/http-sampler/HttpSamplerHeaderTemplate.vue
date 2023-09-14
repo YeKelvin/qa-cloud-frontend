@@ -17,29 +17,12 @@
       :disabled="queryMode"
       @change="handleChange"
     >
-      <!-- 个人空间时显示所有能访问空间下的模板 -->
-      <template v-if="workspaceStore.workspaceScope === 'PRIVATE'">
-        <el-option
-          v-for="item in pymeterStore.httpheaderTemplateListInPrivate"
-          :key="item.templateNo"
-          :label="item.templateName + ' ( ' + item.workspaceName + ' )'"
-          :value="item.templateNo"
-        >
-          <span style="display: flex; justify-content: space-between; align-items: center">
-            <span>{{ item.templateName }}</span>
-            <el-tag type="info" size="small" disable-transitions>{{ item.workspaceName }}</el-tag>
-          </span>
-        </el-option>
-      </template>
-      <!-- 非个人空间时仅显示当前空间下的模板 -->
-      <template v-else>
-        <el-option
-          v-for="item in pymeterStore.httpheaderTemplateList"
-          :key="item.templateNo"
-          :label="item.templateName"
-          :value="item.templateNo"
-        />
-      </template>
+      <el-option
+        v-for="item in pymeterStore.httpheaderTemplateList"
+        :key="item.templateNo"
+        :label="item.templateName"
+        :value="item.templateNo"
+      />
     </el-select>
 
     <!-- 查看详情按钮 -->

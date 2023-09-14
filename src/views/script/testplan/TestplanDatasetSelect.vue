@@ -15,6 +15,7 @@
         multiple
         v-bind="$attrs"
       >
+        <!-- 自定义变量 -->
         <el-option-group v-if="!isEmpty(customDatasetList)" key="custom" label="自定义">
           <el-option
             v-for="item in customDatasetList"
@@ -23,6 +24,7 @@
             :value="item.datasetNo"
           />
         </el-option-group>
+        <!-- 环境变量 -->
         <el-option-group v-if="!isEmpty(environmentDatasetList)" key="environment" label="环境">
           <el-option
             v-for="item in environmentDatasetList"
@@ -32,7 +34,17 @@
             :disabled="item.disabled"
           />
         </el-option-group>
-
+        <!-- 空间变量 -->
+        <el-option-group v-if="!isEmpty(workspaceDatasetList)" key="workspace" label="空间">
+          <el-option
+            v-for="item in workspaceDatasetList"
+            :key="item.datasetNo"
+            :label="item.datasetName"
+            :value="item.datasetNo"
+            :disabled="item.disabled"
+          />
+        </el-option-group>
+        <!-- 全局变量 -->
         <el-option-group key="global" label="全局">
           <el-option
             v-for="item in globalDatasetList"
@@ -51,9 +63,9 @@
 </template>
 
 <script setup>
-import { isEmpty } from 'lodash-es'
-import { Check, Close } from '@element-plus/icons-vue'
 import * as VariablesService from '@/api/script/variables'
+import { Check, Close } from '@element-plus/icons-vue'
+import { isEmpty } from 'lodash-es'
 
 const emit = defineEmits(['change-datasets', 'change-use-current-value'])
 const props = defineProps({
@@ -61,6 +73,7 @@ const props = defineProps({
   planName: { type: String, required: true }
 })
 const globalDatasetList = ref([])
+const workspaceDatasetList = ref([])
 const environmentDatasetList = ref([])
 const customDatasetList = ref([])
 const formData = reactive({
@@ -81,7 +94,7 @@ watch(
     // 判断当前选中的变量集是否需要禁用
     let environmentCount = 0
     formData.datasets.forEach((datasetNo) => {
-      if (isGlobal(datasetNo) || isCustom(datasetNo)) return
+      if (isGlobal(datasetNo) || isWorkspace(datasetNo) || isCustom(datasetNo)) return
       // 已经选择了环境变量集，禁用其余环境变量集
       if (isEnvironment(datasetNo)) {
         environmentCount += 1
@@ -108,6 +121,10 @@ const isGlobal = (datasetNo) => {
   const index = globalDatasetList.value.findIndex((item) => item.datasetNo === datasetNo)
   return index > -1
 }
+const isWorkspace = (datasetNo) => {
+  const index = workspaceDatasetList.value.findIndex((item) => item.datasetNo === datasetNo)
+  return index > -1
+}
 const isEnvironment = (datasetNo) => {
   const index = environmentDatasetList.value.findIndex((item) => item.datasetNo === datasetNo)
   return index > -1
@@ -125,6 +142,7 @@ const queryDatasetALL = async () => {
   const response = await VariablesService.queryVariableDatasetAll({ workspaceNo: props.workspaceNo })
 
   globalDatasetList.value = response.result.filter((item) => item.datasetType === 'GLOBAL')
+  workspaceDatasetList.value = response.result.filter((item) => item.datasetType === 'WORKSPACE')
   environmentDatasetList.value = response.result.filter((item) => item.datasetType === 'ENVIRONMENT')
   customDatasetList.value = response.result.filter((item) => item.datasetType === 'CUSTOM')
 }

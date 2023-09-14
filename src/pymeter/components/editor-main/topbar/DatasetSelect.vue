@@ -9,6 +9,7 @@
     collapse-tags-tooltip
     clearable
   >
+    <!-- 自定义变量 -->
     <el-option-group v-if="!isEmpty(pymeterStore.customDatasetList)" key="custom" label="自定义">
       <el-option
         v-for="item in pymeterStore.customDatasetList"
@@ -17,6 +18,7 @@
         :value="item.datasetNo"
       />
     </el-option-group>
+    <!-- 环境变量 -->
     <el-option-group v-if="!isEmpty(pymeterStore.environmentDatasetList)" key="environment" label="环境">
       <el-option
         v-for="item in pymeterStore.environmentDatasetList"
@@ -26,7 +28,17 @@
         :disabled="item.disabled"
       />
     </el-option-group>
-
+    <!-- 空间变量 -->
+    <el-option-group v-if="!isEmpty(pymeterStore.workspaceDatasetList)" key="workspace" label="空间">
+      <el-option
+        v-for="item in pymeterStore.workspaceDatasetList"
+        :key="item.datasetNo"
+        :label="item.datasetName"
+        :value="item.datasetNo"
+        :disabled="item.disabled"
+      />
+    </el-option-group>
+    <!-- 全局变量 -->
     <el-option-group key="global" label="全局">
       <el-option
         v-for="item in pymeterStore.globalDatasetList"

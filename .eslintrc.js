@@ -58,6 +58,7 @@ module.exports = {
     'no-constant-condition': ['error', { checkLoops: false }],
     'prefer-template': 'error',
     'prefer-const': ['warn', { destructuring: 'all', ignoreReadBeforeAssign: true }],
+    'space-before-function-paren': 0,
 
     // vue
     'vue/require-default-prop': 'off',

@@ -57,9 +57,6 @@ const openHttpheaderTemplate = (templateNo, templateName) => {
  */
 const queryHttpheaderTemplateAll = () => {
   pymeterStore.queryHttpheaderTemplateAll()
-  if (workspaceStore.workspaceScope === 'PRIVATE') {
-    pymeterStore.queryHttpheaderTemplateAllInPrivate()
-  }
 }
 
 /**
@@ -84,7 +81,7 @@ const createTemplate = async () => {
   // 修改请求头模板
   const response = await HeadersService.createHttpheaderTemplate({
     workspaceNo: workspaceStore.workspaceNo,
-    templateName: templateName
+    templateName
   })
   // 重新查询列表
   queryHttpheaderTemplateAll()

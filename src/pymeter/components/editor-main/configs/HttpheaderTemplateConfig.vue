@@ -341,7 +341,6 @@ const saveHeaders = async () => {
   setReadonly()
   // 重新查询列表
   pymeterStore.queryHttpheaderTemplateAll()
-  pymeterStore.queryHttpheaderTemplateAllInPrivate()
 }
 
 // 暂存函数，给 useEditor 使用

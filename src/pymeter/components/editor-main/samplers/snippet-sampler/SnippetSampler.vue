@@ -26,29 +26,12 @@
           style="width: 100%"
           :disabled="queryMode"
         >
-          <!-- 个人空间时显示所有能访问空间下的片段 -->
-          <template v-if="workspaceStore.workspaceScope === 'PRIVATE'">
-            <el-option
-              v-for="snippet in snippetListInPrivate"
-              :key="snippet.elementNo"
-              :label="snippet.elementName + ' ( ' + snippet.workspaceName + ' )'"
-              :value="snippet.elementNo"
-            >
-              <span style="display: flex; justify-content: space-between; align-items: center">
-                <span>{{ snippet.elementName }}</span>
-                <el-tag type="info" size="small" disable-transitions>{{ snippet.workspaceName }}</el-tag>
-              </span>
-            </el-option>
-          </template>
-          <!-- 非个人空间时仅显示当前空间下的片段 -->
-          <template v-else>
-            <el-option
-              v-for="snippet in snippetList"
-              :key="snippet.elementNo"
-              :label="snippet.elementName"
-              :value="snippet.elementNo"
-            />
-          </template>
+          <el-option
+            v-for="snippet in snippetList"
+            :key="snippet.elementNo"
+            :label="snippet.elementName"
+            :value="snippet.elementNo"
+          />
         </el-select>
         <el-button
           v-show="!isBlank(elementInfo.attributes.snippet_no)"
@@ -171,7 +154,6 @@ const elementInfo = ref({
 })
 const activeTabName = ref('PARAMS')
 const snippetList = ref([])
-const snippetListInPrivate = ref([])
 const argumentsData = ref([])
 const showWarning = ref(false)
 const showParams = computed(() => activeTabName.value === 'PARAMS')
@@ -200,22 +182,13 @@ onMounted(() => {
  * 根据工作空间编号查询所有片段
  */
 const querySnippets = () => {
-  if (workspaceStore.workspaceScope === 'PRIVATE') {
-    ElementService.queryElementAllInPrivate({
-      elementType: 'COLLECTION',
-      elementClass: 'SnippetCollection'
-    }).then((response) => {
-      snippetListInPrivate.value = response.result
-    })
-  } else {
-    ElementService.queryElementAll({
-      workspaceNo: props.metadata.workspaceNo,
-      elementType: 'COLLECTION',
-      elementClass: 'SnippetCollection'
-    }).then((response) => {
-      snippetList.value = response.result
-    })
-  }
+  ElementService.queryElementAll({
+    workspaceNo: props.metadata.workspaceNo,
+    elementType: 'COLLECTION',
+    elementClass: 'SnippetCollection'
+  }).then((response) => {
+    snippetList.value = response.result
+  })
 }
 
 /**
@@ -260,9 +233,7 @@ const querySnippet = (snippetNo) => {
  * 在侧边栏打开指定的片段集合
  */
 const openSnippetCollection = () => {
-  const snippet = snippetListInPrivate.value.filter(
-    (item) => item.elementNo === elementInfo.value.attributes.snippet_no
-  )
+  const snippet = snippetList.value.filter((item) => item.elementNo === elementInfo.value.attributes.snippet_no)
   // 判断所选片段是否属于当前空间
   if (snippet.workspaceNo && snippet.workspaceNo !== workspaceStore.workspaceNo) {
     ElMessage({ message: '片段不属于当前空间下，请前往所属空间下查看', type: 'warning', duration: 2 * 1000 })

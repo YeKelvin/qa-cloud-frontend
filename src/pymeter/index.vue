@@ -23,18 +23,12 @@ import EditorAside from './components/editor-aside/EditorAside.vue'
 import EditorMain from './components/editor-main/EditorMain.vue'
 import EditorFooter from './components/editor-footer/EditorFooter.vue'
 import { usePyMeterStore } from '@/store/pymeter'
-import { useWorkspaceStore } from '@/store/workspace'
 
 const pymeterStore = usePyMeterStore()
-const workspaceStore = useWorkspaceStore()
 
 onMounted(() => {
-  if (workspaceStore.workspaceScope === 'PRIVATE') {
-    pymeterStore.queryHttpheaderTemplateAllInPrivate()
-  } else {
-    pymeterStore.queryDatasetAll()
-    pymeterStore.queryHttpheaderTemplateAll()
-  }
+  pymeterStore.queryDatasetAll()
+  pymeterStore.queryHttpheaderTemplateAll()
 })
 </script>
 

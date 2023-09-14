@@ -1,21 +1,18 @@
 import request from '@/utils/request'
 
-export const queryElementList = (params) => request.get('/script/element/list', { params: params })
+export const queryElementList = (params) => request.get('/script/element/list', { params })
 
-export const queryElementAll = (params) => request.get('/script/element/all', { params: params })
+export const queryElementAll = (params) => request.get('/script/element/all', { params })
 
-export const queryElementAllInPrivate = (params) => request.get('/script/element/all/in/private', { params: params })
+export const queryElementAllWithChildren = (params) => request.get('/script/element/all/with/children', { params })
 
-export const queryElementAllWithChildren = (params) =>
-  request.get('/script/element/all/with/children', { params: params })
+export const queryElementInfo = (params) => request.get('/script/element/info', { params })
 
-export const queryElementInfo = (params) => request.get('/script/element/info', { params: params })
-
-export const queryElementChildren = (params) => request.get('/script/element/children', { params: params })
+export const queryElementChildren = (params) => request.get('/script/element/children', { params })
 
 export const queryElementsChildren = (params) =>
   request.get('/script/elements/children', {
-    params: params,
+    params,
     paramsSerializer: { indexes: null }
   })
 
@@ -31,7 +28,7 @@ export const modifyElement = (data) => request.put('/script/element', data)
 
 export const modifyHttpSampler = (data) => request.put('/script/element/http/sampler', data)
 
-export const removeElement = (data) => request.delete('/script/element', { data: data })
+export const removeElement = (data) => request.delete('/script/element', { data })
 
 export const enableElement = (data) => request.put('/script/element/enable', data)
 
@@ -44,13 +41,13 @@ export const moveElement = (data) => request.post('/script/element/move', data)
 export const duplicateElement = (data) => request.post('/script/element/duplicate', data)
 
 export const queryHttpheaderTemplateRefs = (params) =>
-  request.get('/script/element/httpheader/template/refs', { params: params })
+  request.get('/script/element/httpheader/template/refs', { params })
 
 export const createHttpheaderTemplateByRefs = (data) => request.post('/script/element/httpheader/template/refs', data)
 
 export const modifyHttpheaderTemplateByRefs = (data) => request.put('/script/element/httpheader/template/refs', data)
 
-export const queryElementComponents = (params) => request.get('/script/element/components', { params: params })
+export const queryElementComponents = (params) => request.get('/script/element/components', { params })
 
 export const createElementComponents = (data) => request.post('/script/element/components', data)
 
@@ -62,11 +59,10 @@ export const copyElementToWorkspace = (data) => request.post('/script/element/co
 
 export const moveElementToWorkspace = (data) => request.post('/script/element/collection/move/to/workspace', data)
 
-export const queryWorkspaceComponents = (params) =>
-  request.get('/script/element/workspace/components', { params: params })
+export const queryWorkspaceComponents = (params) => request.get('/script/element/workspace/components', { params })
 
 export const setWorkspaceComponents = (data) => request.post('/script/element/workspace/components', data)
 
-export const queryWorkspaceSettings = (params) => request.get('/script/element/workspace/settings', { params: params })
+export const queryWorkspaceSettings = (params) => request.get('/script/element/workspace/settings', { params })
 
 export const setWorkspaceSettings = (data) => request.post('/script/element/workspace/settings', data)

@@ -45,7 +45,6 @@ export const useWorkspaceStore = defineStore('workspace', {
       pymeterStore.clearSelectedDataset()
       // 重新查询 http 请求头模板列表
       pymeterStore.queryHttpheaderTemplateAll()
-      pymeterStore.queryHttpheaderTemplateAllInPrivate()
     },
 
     /**
@@ -70,7 +69,7 @@ export const useWorkspaceStore = defineStore('workspace', {
           }
         } else {
           // 如果当前未选择工作空间，清空已选择的脚本列表
-          localStorage.removeItem('selectedCollections')
+          window.localStorage.removeItem('selectedCollections')
         }
       })
     }

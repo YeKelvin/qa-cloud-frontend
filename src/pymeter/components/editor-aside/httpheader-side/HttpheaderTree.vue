@@ -78,9 +78,6 @@ const workspaceStore = useWorkspaceStore()
  */
 const queryHttpheaderTemplateAll = () => {
   pymeterStore.queryHttpheaderTemplateAll()
-  if (workspaceStore.workspaceScope === 'PRIVATE') {
-    pymeterStore.queryHttpheaderTemplateAllInPrivate()
-  }
 }
 
 /**
@@ -170,7 +167,7 @@ const copyTemplateToWorkspace = async () => {
     .catch(() => true)
   if (cancelled) return
   // 复制请求头模板到指定空间
-  await HeadersService.copyHttpheaderTemplateToWorkspace({ templateNo: data.templateNo, workspaceNo: workspaceNo })
+  await HeadersService.copyHttpheaderTemplateToWorkspace({ templateNo: data.templateNo, workspaceNo })
   //  成功提示
   ElMessage({ message: '复制成功', type: 'info', duration: 1 * 1000 })
 }
@@ -199,7 +196,7 @@ const moveTemplateToWorkspace = async () => {
     .catch(() => true)
   if (cancelled) return
   // 移动请求头模板到指定空间
-  await HeadersService.moveHttpheaderTemplateToWorkspace({ templateNo: data.templateNo, workspaceNo: workspaceNo })
+  await HeadersService.moveHttpheaderTemplateToWorkspace({ templateNo: data.templateNo, workspaceNo })
   // 重新查询列表
   queryHttpheaderTemplateAll()
   // 成功提示

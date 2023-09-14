@@ -32,6 +32,8 @@ export const usePyMeterStore = defineStore('pymeter', {
 
       // 全局变量集列表
       globalDatasetList: [],
+      // 空间变量集列表
+      workspaceDatasetList: [],
       // 环境变量集列表
       environmentDatasetList: [],
       // 自定义变量集列表
@@ -52,11 +54,9 @@ export const usePyMeterStore = defineStore('pymeter', {
 
       // 请求头模板列表
       httpheaderTemplateList: [],
-      httpheaderTemplateListInPrivate: [],
 
       // 数据库配置列表
-      databaseEngineList: [],
-      databaseEngineListInPrivate: []
+      databaseEngineList: []
     }
   },
   persist: {
@@ -88,11 +88,11 @@ export const usePyMeterStore = defineStore('pymeter', {
         metadata = metadata || {}
         metadata.realNo = editorNo
         this.tabs.push({
-          editorNo: editorNo,
-          editorName: editorName,
-          editorComponent: editorComponent,
-          editorMode: editorMode,
-          metadata: metadata
+          editorNo,
+          editorName,
+          editorComponent,
+          editorMode,
+          metadata
         })
         this.activeTabNo = editorNo
       }
@@ -193,7 +193,7 @@ export const usePyMeterStore = defineStore('pymeter', {
      * 打开结果视图窗口
      */
     openResultDrawer() {
-      this.activeFooterViewName == 'RESULT'
+      this.activeFooterViewName = 'RESULT'
       this.showingFooterDrawer = true
     },
 
@@ -201,7 +201,7 @@ export const usePyMeterStore = defineStore('pymeter', {
      * 打开日志视图窗口
      */
     openLogDrawer() {
-      this.activeFooterViewName == 'LOG'
+      this.activeFooterViewName = 'LOG'
       this.showingFooterDrawer = true
     },
 
@@ -252,6 +252,8 @@ export const usePyMeterStore = defineStore('pymeter', {
 
       // 全局变量
       this.globalDatasetList = response.result.filter((item) => item.datasetType === 'GLOBAL')
+      // 空间变量
+      this.workspaceDatasetList = response.result.filter((item) => item.datasetType === 'WORKSPACE')
       // 环境变量
       this.environmentDatasetList = response.result.filter((item) => item.datasetType === 'ENVIRONMENT')
       // 自定义变量
@@ -289,7 +291,9 @@ export const usePyMeterStore = defineStore('pymeter', {
       // 判断当前选中的变量集是否需要禁用
       let environmentCount = 0
       this.selectedDatasets.forEach((datasetNo) => {
-        if (this.isGlobalDataset(datasetNo) || this.isCustomDataset(datasetNo)) return
+        if (this.isGlobalDataset(datasetNo) || this.isWorkspaceDataset(datasetNo) || this.isCustomDataset(datasetNo)) {
+          return
+        }
         // 已经选择了环境变量集，禁用其余环境变量集
         if (this.isEnvironmentDataset(datasetNo)) {
           environmentCount += 1
@@ -304,6 +308,11 @@ export const usePyMeterStore = defineStore('pymeter', {
 
     isGlobalDataset(datasetNo) {
       const index = this.globalDatasetList.findIndex((item) => item.datasetNo === datasetNo)
+      return index > -1
+    },
+
+    isWorkspaceDataset(datasetNo) {
+      const index = this.workspaceDatasetList.findIndex((item) => item.datasetNo === datasetNo)
       return index > -1
     },
 
@@ -329,28 +338,10 @@ export const usePyMeterStore = defineStore('pymeter', {
     },
 
     /**
-     * 查询用户所有空间下的所有请求头模板（用于个人空间）
-     */
-    queryHttpheaderTemplateAllInPrivate() {
-      HttpHeadersService.queryHttpheaderTemplateAllInPrivate().then((response) => {
-        this.httpheaderTemplateListInPrivate = response.result
-      })
-    },
-
-    /**
      * 查询所有数据库配置
      */
     queryDatabaseEngineAll() {
       DatabaseService.queryDatabaseEngineAll({ workspaceNo: useWorkspaceStore().workspaceNo }).then((response) => {
-        this.databaseEngineList = response.result
-      })
-    },
-
-    /**
-     * 查询用户所有空间下的所有数据库配置（用于个人空间）
-     */
-    queryDatabaseEngineAllInPrivate() {
-      DatabaseService.queryDatabaseEngineAllInPrivate().then((response) => {
         this.databaseEngineList = response.result
       })
     }

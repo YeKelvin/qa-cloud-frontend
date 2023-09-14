@@ -21,32 +21,12 @@
       <!-- 数据库选择框 -->
       <el-form-item label="数据库：" prop="attributes.engine_no">
         <el-select v-model="elementInfo.attributes.engine_no" style="width: 100%" :disabled="queryMode">
-          <!-- 个人空间时显示所有能访问空间下的数据库 -->
-          <template v-if="workspaceStore.workspaceScope === 'PRIVATE'">
-            <el-option
-              v-for="item in engineListInPrivate"
-              :key="item.dbNo"
-              :label="item.dbName + ' ( ' + item.workspaceName + ' )'"
-              :value="item.dbNo"
-            >
-              <span class="database-type-option">
-                <span>{{ item.dbName }}</span>
-                <span>
-                  <el-tag type="danger" size="small" disable-transitions>{{ DatabaseType[item.dbType] }}</el-tag>
-                  <el-tag type="info" size="small" disable-transitions>{{ item.workspaceName }}</el-tag>
-                </span>
-              </span>
-            </el-option>
-          </template>
-          <!-- 非个人空间时仅显示当前空间下的数据库 -->
-          <template v-else>
-            <el-option v-for="item in engineList" :key="item.dbNo" :label="item.dbName" :value="item.dbNo">
-              <span class="database-type-option">
-                <span>{{ item.dbName }}</span>
-                <el-tag type="danger" size="small" disable-transitions>{{ DatabaseType[item.dbType] }}</el-tag>
-              </span>
-            </el-option>
-          </template>
+          <el-option v-for="item in engineList" :key="item.dbNo" :label="item.dbName" :value="item.dbNo">
+            <span class="database-type-option">
+              <span>{{ item.dbName }}</span>
+              <el-tag type="danger" size="small" disable-transitions>{{ DatabaseType[item.dbType] }}</el-tag>
+            </span>
+          </el-option>
         </el-select>
       </el-form-item>
 
@@ -195,7 +175,6 @@ const elementFormRules = reactive({
   'property.SQLSampler__statement': [{ required: true, message: 'SQL不能为空', trigger: 'blur' }]
 })
 const engineList = ref([])
-const engineListInPrivate = ref([])
 const codeEditorRef = ref()
 const activeTabName = ref('STATEMENT')
 const showStatementTab = computed(() => activeTabName.value === 'STATEMENT')
@@ -208,15 +187,9 @@ const hiddenSettingsDot = computed(() => {
 
 onMounted(() => {
   // 查询所有数据库
-  if (workspaceStore.workspaceScope === 'PRIVATE') {
-    DatabaseService.queryDatabaseEngineAllInPrivate().then((response) => {
-      engineListInPrivate.value = response.result
-    })
-  } else {
-    DatabaseService.queryDatabaseEngineAll({ workspaceNo: workspaceStore.workspaceNo }).then((response) => {
-      engineList.value = response.result
-    })
-  }
+  DatabaseService.queryDatabaseEngineAll({ workspaceNo: workspaceStore.workspaceNo }).then((response) => {
+    engineList.value = response.result
+  })
 
   // 查询或更新模式时，先拉取元素信息
   if (createMode.value) return
