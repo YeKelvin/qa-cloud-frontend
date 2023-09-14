@@ -36,11 +36,26 @@
 </template>
 
 <script setup>
-import { omit as _omit } from 'lodash-es'
+import { omit } from 'lodash-es'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import * as GroupService from '@/api/usercenter/group'
 import * as RoleService from '@/api/usercenter/role'
 import * as UserService from '@/api/usercenter/user'
+
+const validateMobile = (_, value, callback) => {
+  if (value && !/^\d+$/.test(value)) {
+    callback(new Error('手机号格式错误'))
+  } else {
+    callback()
+  }
+}
+const validateEmail = (_, value, callback) => {
+  if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+    callback(new Error('邮箱格式错误'))
+  } else {
+    callback()
+  }
+}
 
 const emit = defineEmits(['update:model-value', 're-query'])
 const currentRow = inject('currentRow', null)
@@ -55,7 +70,9 @@ const formData = ref({
   groups: []
 })
 const formRules = reactive({
-  userName: [{ required: true, message: '用户昵称不能为空', trigger: 'blur' }]
+  userName: [{ required: true, message: '用户昵称不能为空', trigger: 'blur' }],
+  mobile: [{ validator: validateMobile }],
+  email: [{ validator: validateEmail }]
 })
 const groupList = ref([])
 const roleList = ref([])
@@ -63,7 +80,7 @@ const roleList = ref([])
 onMounted(() => {
   const rowData = currentRow.value
   // 除 roles, groups 属性外其余赋值给 form
-  formData.value = _omit(rowData, ['roles', 'groups'])
+  formData.value = omit(rowData, ['roles', 'groups'])
   // 提取 roleNo
   formData.value.roles = rowData.roles ? rowData.roles.map((item) => item.roleNo) : []
   // 提取 groupNo

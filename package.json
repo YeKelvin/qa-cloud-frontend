@@ -34,7 +34,7 @@
     "lodash-es": "4.17.21",
     "monaco-editor": "0.43.0",
     "mousetrap": "1.6.5",
-    "nanoid": "4.0.2",
+    "nanoid": "5.0.1",
     "nprogress": "0.2.0",
     "path": "0.12.7",
     "path-to-regexp": "6.2.1",
@@ -51,7 +51,7 @@
     "vuedraggable": "4.1.0"
   },
   "devDependencies": {
-    "@babel/core": "7.22.15",
+    "@babel/core": "7.22.17",
     "@babel/eslint-parser": "7.22.15",
     "@types/echarts": "4.9.18",
     "@types/lodash-es": "4.17.9",
@@ -73,7 +73,7 @@
     "lint-staged": "14.0.1",
     "prettier": "3.0.3",
     "rollup-plugin-visualizer": "5.9.2",
-    "sass": "1.66.1",
+    "sass": "1.67.0",
     "standard": "17.1.0",
     "stylelint": "15.10.3",
     "stylelint-config-prettier": "9.0.5",

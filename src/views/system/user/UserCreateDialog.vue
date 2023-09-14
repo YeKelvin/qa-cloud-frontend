@@ -47,6 +47,21 @@ import * as GroupService from '@/api/usercenter/group'
 import * as RoleService from '@/api/usercenter/role'
 import * as UserService from '@/api/usercenter/user'
 
+const validateMobile = (_, value, callback) => {
+  if (value && !/^\d+$/.test(value)) {
+    callback(new Error('手机号格式错误'))
+  } else {
+    callback()
+  }
+}
+const validateEmail = (_, value, callback) => {
+  if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+    callback(new Error('邮箱格式错误'))
+  } else {
+    callback()
+  }
+}
+
 const emit = defineEmits(['update:model-value', 're-query'])
 const elformRef = ref()
 const formData = ref({
@@ -64,7 +79,9 @@ const formRules = reactive({
   password: [
     { required: true, message: '密码不能为空', trigger: 'blur' },
     { min: 6, max: 16, message: '长度在 6 到 16 个字符', trigger: 'blur' }
-  ]
+  ],
+  mobile: [{ validator: validateMobile }],
+  email: [{ validator: validateEmail }]
 })
 const groupList = ref([])
 const roleList = ref([])
@@ -94,7 +111,7 @@ const submitForm = async () => {
     return
   }
   // 新增用户
-  await UserService.register(formData.value)
+  await UserService.createUser(formData.value)
   // 成功提示
   ElMessage({ message: '注册成功', type: 'info', duration: 2 * 1000 })
   // 关闭dialog
