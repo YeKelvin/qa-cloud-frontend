@@ -9,23 +9,18 @@
       :rules="engineFormRules"
     >
       <!-- 名称 -->
-      <el-form-item label="配置名称：" prop="configName">
-        <el-input v-model="engineInfo.configName" placeholder="配置名称" clearable :readonly="queryMode" />
+      <el-form-item label="数据库名称：" prop="dbName">
+        <el-input v-model="engineInfo.dbName" placeholder="数据库名称" clearable :readonly="queryMode" />
       </el-form-item>
 
       <!-- 备注 -->
-      <el-form-item label="配置备注：" prop="configDesc">
-        <el-input v-model="engineInfo.configDesc" placeholder="配置备注" clearable :readonly="queryMode" />
-      </el-form-item>
-
-      <!-- 变量名称 -->
-      <el-form-item label="变量名称：" prop="variableName">
-        <el-input v-model="engineInfo.variableName" placeholder="变量名称" clearable :readonly="queryMode" />
+      <el-form-item label="数据库备注：" prop="dbDesc">
+        <el-input v-model="engineInfo.dbDesc" placeholder="数据库备注" clearable :readonly="queryMode" />
       </el-form-item>
 
       <!-- 数据库类型 -->
-      <el-form-item label="数据库类型：" prop="databaseType">
-        <el-select v-model="engineInfo.databaseType" :disabled="queryMode" style="width: 100%">
+      <el-form-item label="数据库类型：" prop="dbType">
+        <el-select v-model="engineInfo.dbType" :disabled="queryMode" style="width: 100%">
           <el-option label="Oracle" value="ORACLE" />
           <el-option label="MySQL" value="MYSQL" />
           <el-option label="PostgreSQL" value="POSTGRESQL" />
@@ -63,6 +58,11 @@
         <el-input v-model="engineInfo.database" placeholder="库名" clearable :readonly="queryMode" />
       </el-form-item>
 
+      <!-- 变量名称 -->
+      <el-form-item label="变量名称：" prop="variableName">
+        <el-input v-model="engineInfo.variableName" placeholder="变量名称" clearable :readonly="queryMode" />
+      </el-form-item>
+
       <!-- 超时时间 -->
       <el-form-item label="超时时间：" prop="connectTimeout">
         <el-input
@@ -96,13 +96,13 @@
 
 <script setup>
 import * as DatabaseService from '@/api/script/database'
-import { isEmpty } from 'lodash-es'
-import { ElMessage } from 'element-plus'
-import { Check, Close, Edit } from '@element-plus/icons-vue'
+import EditorProps from '@/pymeter/composables/editor.props'
+import useEditor from '@/pymeter/composables/useEditor'
 import { usePyMeterStore } from '@/store/pymeter'
 import { useWorkspaceStore } from '@/store/workspace'
-import useEditor from '@/pymeter/composables/useEditor'
-import EditorProps from '@/pymeter/composables/editor.props'
+import { Check, Close, Edit } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { isEmpty } from 'lodash-es'
 
 const props = defineProps(EditorProps)
 const pymeterStore = usePyMeterStore()
@@ -110,34 +110,34 @@ const workspaceStore = useWorkspaceStore()
 
 const { queryMode, modifyMode, createMode, functions, editNow, setReadonly, updateTab, closeTab } = useEditor(props)
 const elformRef = ref()
-const configNo = ref(props.editorNo)
+const dbNo = ref(props.editorNo)
 const engineInfo = ref({
-  configNo: '',
-  configName: 'DatabaseEngine',
-  configDesc: '',
-  databaseType: '',
+  dbNo: '',
+  dbName: '数据库配置器',
+  dbDesc: '',
+  dbType: '',
   username: '',
   password: '',
   host: '',
   port: '',
   query: '',
   database: '',
-  connectTimeout: '',
-  variableName: ''
+  variableName: '',
+  connectTimeout: ''
 })
 const engineFormRules = reactive({
-  configName: [{ required: true, message: '配置名称不能为空', trigger: 'blur' }],
-  variableName: [{ required: true, message: '变量名称不能为空', trigger: 'blur' }],
-  databaseType: [{ required: true, message: '数据库类型不能为空', trigger: 'blur' }],
+  dbName: [{ required: true, message: '配置名称不能为空', trigger: 'blur' }],
+  dbType: [{ required: true, message: '数据库类型不能为空', trigger: 'blur' }],
   username: [{ required: true, message: '用户名称不能为空', trigger: 'blur' }],
   password: [{ required: true, message: '用户密码不能为空', trigger: 'blur' }],
   host: [{ required: true, message: '主机不能为空', trigger: 'blur' }],
   port: [{ required: true, message: '端口不能为空', trigger: 'blur' }],
-  database: [{ required: true, message: '库名不能为空', trigger: 'blur' }]
+  database: [{ required: true, message: '库名不能为空', trigger: 'blur' }],
+  variableName: [{ required: true, message: '变量名称不能为空', trigger: 'blur' }]
 })
 
 watch(
-  () => engineInfo.value.databaseType,
+  () => engineInfo.value.dbType,
   (val) => {
     if (val === 'ORACLE') {
       engineInfo.value.port = '1521'
@@ -161,7 +161,7 @@ watch(
 onMounted(() => {
   // 查询或更新模式时，先拉取元素信息
   if (createMode.value) return
-  DatabaseService.queryDatabaseEngineInfo({ configNo: configNo.value }).then((response) => {
+  DatabaseService.queryDatabaseEngineInfo({ dbNo: dbNo.value }).then((response) => {
     engineInfo.value = response.result
   })
 })
@@ -170,8 +170,8 @@ onMounted(() => {
  * 更新配置器编号
  */
 const updateConfigNo = (val) => {
-  configNo.value = val
-  engineInfo.value.configNo = val
+  dbNo.value = val
+  engineInfo.value.dbNo = val
 }
 
 /**
@@ -188,15 +188,15 @@ const modifyConfigurator = async (close = false) => {
     return
   }
   // 修改元素
-  await DatabaseService.modifyDatabaseEngine({ configNo: configNo.value, ...engineInfo.value })
+  await DatabaseService.modifyDatabaseEngine({ dbNo: dbNo.value, ...engineInfo.value })
   // 无需关闭 tab
   if (!close) {
     // 设置为只读模式
     setReadonly()
     // 更新 tab 标题
-    updateTab(engineInfo.value.configName)
+    updateTab(engineInfo.value.dbName)
   }
-  // 重新查询数据库引擎列表
+  // 重新查询数据库列表
   pymeterStore.queryDatabaseEngineAll()
   // 成功提示
   ElMessage({ message: '修改元素成功', type: 'info', duration: 2 * 1000 })
@@ -234,11 +234,11 @@ const createConfigurator = async (close = false) => {
     // 设置为只读模式
     setReadonly()
     // 更新 tab 标题和编号
-    updateTab(engineInfo.value.configName, response.result.configNo)
+    updateTab(engineInfo.value.dbName, response.result.dbNo)
     // 更新配置器编号
-    updateConfigNo(response.result.configNo)
+    updateConfigNo(response.result.dbNo)
   }
-  // 重新查询数据库引擎列表
+  // 重新查询数据库列表
   pymeterStore.queryDatabaseEngineAll()
   // 成功提示
   ElMessage({ message: '新增元素成功', type: 'info', duration: 2 * 1000 })

@@ -54,7 +54,7 @@ export const usePyMeterStore = defineStore('pymeter', {
       httpheaderTemplateList: [],
       httpheaderTemplateListInPrivate: [],
 
-      // 数据库引擎配置列表
+      // 数据库配置列表
       databaseEngineList: [],
       databaseEngineListInPrivate: []
     }

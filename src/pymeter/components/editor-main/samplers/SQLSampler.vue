@@ -25,14 +25,14 @@
           <template v-if="workspaceStore.workspaceScope === 'PRIVATE'">
             <el-option
               v-for="item in engineListInPrivate"
-              :key="item.configNo"
-              :label="item.configName + ' ( ' + item.workspaceName + ' )'"
-              :value="item.configNo"
+              :key="item.dbNo"
+              :label="item.dbName + ' ( ' + item.workspaceName + ' )'"
+              :value="item.dbNo"
             >
               <span class="database-type-option">
-                <span>{{ item.configName }}</span>
+                <span>{{ item.dbName }}</span>
                 <span>
-                  <el-tag type="danger" size="small" disable-transitions>{{ DatabaseType[item.databaseType] }}</el-tag>
+                  <el-tag type="danger" size="small" disable-transitions>{{ DatabaseType[item.dbType] }}</el-tag>
                   <el-tag type="info" size="small" disable-transitions>{{ item.workspaceName }}</el-tag>
                 </span>
               </span>
@@ -40,10 +40,10 @@
           </template>
           <!-- 非个人空间时仅显示当前空间下的数据库 -->
           <template v-else>
-            <el-option v-for="item in engineList" :key="item.configNo" :label="item.configName" :value="item.configNo">
+            <el-option v-for="item in engineList" :key="item.dbNo" :label="item.dbName" :value="item.dbNo">
               <span class="database-type-option">
-                <span>{{ item.configName }}</span>
-                <el-tag type="danger" size="small" disable-transitions>{{ DatabaseType[item.databaseType] }}</el-tag>
+                <span>{{ item.dbName }}</span>
+                <el-tag type="danger" size="small" disable-transitions>{{ DatabaseType[item.dbType] }}</el-tag>
               </span>
             </el-option>
           </template>
@@ -54,7 +54,7 @@
       <el-form-item label="变量名称：" prop="property.SQLSampler__result_name">
         <el-input
           v-model="elementInfo.property.SQLSampler__result_name"
-          placeholder="默认=rows，用于存储查询结果集"
+          placeholder="用于存储查询结果集，默认=rows"
           clearable
           :readonly="queryMode"
         />
@@ -191,7 +191,7 @@ const elementInfo = ref({
 })
 const elementFormRules = reactive({
   elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }],
-  'attributes.engine_no': [{ required: true, message: '数据库引擎编号不能为空', trigger: 'blur' }],
+  'attributes.engine_no': [{ required: true, message: '数据库编号不能为空', trigger: 'blur' }],
   'property.SQLSampler__statement': [{ required: true, message: 'SQL不能为空', trigger: 'blur' }]
 })
 const engineList = ref([])
@@ -207,7 +207,7 @@ const hiddenSettingsDot = computed(() => {
 })
 
 onMounted(() => {
-  // 查询所有数据库引擎
+  // 查询所有数据库
   if (workspaceStore.workspaceScope === 'PRIVATE') {
     DatabaseService.queryDatabaseEngineAllInPrivate().then((response) => {
       engineListInPrivate.value = response.result

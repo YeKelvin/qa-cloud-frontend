@@ -1,8 +1,8 @@
 <template>
   <el-tree
     ref="eltreeRef"
-    node-key="configNo"
-    :props="{ label: 'configName' }"
+    node-key="dbNo"
+    :props="{ label: 'dbName' }"
     :data="pymeterStore.databaseEngineList"
     :filter-node-method="filterNode"
     @node-click="handleNodeClick"
@@ -10,19 +10,15 @@
     <template #default="{ node, data }">
       <span class="tree-item" @mouseenter="treeNodeMouseenter(node)" @mouseleave="treeNodeMouseleave()">
         <span class="tree-item-name-wrapper">
-          <!-- 数据库引擎图标 -->
+          <!-- 数据库图标 -->
           <SvgIcon icon-name="pymeter-database" class-name="tree-item-icon" />
-          <!-- 数据库引擎名称 -->
+          <!-- 数据库名称 -->
           <span class="tree-item-name">{{ node.label }}</span>
           <!-- 类型标签 -->
-          <el-tag v-if="data.databaseType == 'MYSQL'" type="info" size="small" disable-transitions>MySQL</el-tag>
-          <el-tag v-if="data.databaseType == 'ORACLE'" type="info" size="small" disable-transitions>Oracle</el-tag>
-          <el-tag v-if="data.databaseType == 'POSTGRESQL'" type="info" size="small" disable-transitions>
-            PostgreSQL
-          </el-tag>
-          <el-tag v-if="data.databaseType == 'SQL_SERVER'" type="info" size="small" disable-transitions>
-            SQL Server
-          </el-tag>
+          <el-tag v-if="data.dbType == 'MYSQL'" type="info" size="small" disable-transitions>MySQL</el-tag>
+          <el-tag v-if="data.dbType == 'ORACLE'" type="info" size="small" disable-transitions>Oracle</el-tag>
+          <el-tag v-if="data.dbType == 'POSTGRESQL'" type="info" size="small" disable-transitions>PostgreSQL</el-tag>
+          <el-tag v-if="data.dbType == 'SQL_SERVER'" type="info" size="small" disable-transitions>SQL Server</el-tag>
         </span>
 
         <!-- 操作菜单按钮 -->
@@ -58,12 +54,12 @@
 
 <script lang="jsx" setup>
 import * as DatabaseService from '@/api/script/database'
-import { More } from '@element-plus/icons-vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
-import { usePyMeterStore } from '@/store/pymeter'
-import { useWorkspaceStore } from '@/store/workspace'
 import useElTree from '@/composables/useElTree'
 import WorkspaceTree from '@/pymeter/components/editor-aside/common/WorkspaceTree.vue'
+import { usePyMeterStore } from '@/store/pymeter'
+import { useWorkspaceStore } from '@/store/workspace'
+import { More } from '@element-plus/icons-vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 const {
   eltreeRef,
@@ -92,7 +88,7 @@ const closeMenu = () => {
 }
 
 /**
- * 复制数据库引擎
+ * 复制数据库
  */
 const duplicateDatabaseEngine = async () => {
   const data = operatingNode.value.data
@@ -104,14 +100,14 @@ const duplicateDatabaseEngine = async () => {
     cancelButtonText: '取消',
     title: '警告',
     message: (
-      <span style="white-space:normal; overflow:hidden; text-overflow:ellipsis;">确认复制 {data.configName} 吗？</span>
+      <span style="white-space:normal; overflow:hidden; text-overflow:ellipsis;">确认复制 {data.dbName} 吗？</span>
     )
   })
     .then(() => false)
     .catch(() => true)
   if (cancelled) return
-  // 复制数据库引擎
-  await DatabaseService.duplicateDatabaseEngine({ configNo: data.configNo })
+  // 复制数据库
+  await DatabaseService.duplicateDatabaseEngine({ dbNo: data.dbNo })
   // 重新查询列表
   pymeterStore.queryDatabaseEngineAll()
   // 成功提示
@@ -119,7 +115,7 @@ const duplicateDatabaseEngine = async () => {
 }
 
 /**
- * 复制数据库引擎至指定空间
+ * 复制数据库至指定空间
  */
 const copyDatabaseEngineToWorkspace = async () => {
   const data = operatingNode.value.data
@@ -130,7 +126,7 @@ const copyDatabaseEngineToWorkspace = async () => {
     title: '请选择复制的工作空间',
     message: (
       <WorkspaceTree
-        key={data.configNo}
+        key={data.dbNo}
         data={workspaceStore.workspaceList}
         onNodeClick={(data) => (workspaceNo = data.workspaceNo)}
       />
@@ -141,14 +137,14 @@ const copyDatabaseEngineToWorkspace = async () => {
     .then(() => false)
     .catch(() => true)
   if (cancelled) return
-  // 复制数据库引擎到指定的空间
-  await DatabaseService.copyDatabaseEngineToWorkspace({ configNo: data.configNo, workspaceNo: workspaceNo })
+  // 复制数据库到指定的空间
+  await DatabaseService.copyDatabaseEngineToWorkspace({ dbNo: data.dbNo, workspaceNo })
   // 成功提示
   ElMessage({ message: '复制成功', type: 'info', duration: 2 * 1000 })
 }
 
 /**
- * 移动数据库引擎至指定空间
+ * 移动数据库至指定空间
  */
 const moveDatabaseEngineToWorkspace = async () => {
   const data = operatingNode.value.data
@@ -159,7 +155,7 @@ const moveDatabaseEngineToWorkspace = async () => {
     title: '请选择移动的工作空间',
     message: (
       <WorkspaceTree
-        key={data.configNo}
+        key={data.dbNo}
         data={workspaceStore.workspaceList}
         onNodeClick={(data) => (workspaceNo = data.workspaceNo)}
       />
@@ -170,8 +166,8 @@ const moveDatabaseEngineToWorkspace = async () => {
     .then(() => false)
     .catch(() => true)
   if (cancelled) return
-  // 移动数据库引擎到指定的空间
-  await DatabaseService.moveDatabaseEngineToWorkspace({ configNo: data.configNo, workspaceNo: workspaceNo })
+  // 移动数据库到指定的空间
+  await DatabaseService.moveDatabaseEngineToWorkspace({ dbNo: data.dbNo, workspaceNo })
   // 重新查询列表
   pymeterStore.queryDatabaseEngineAll()
   // 成功提示
@@ -179,7 +175,7 @@ const moveDatabaseEngineToWorkspace = async () => {
 }
 
 /**
- * 删除数据库引擎
+ * 删除数据库
  */
 const deleteDatabaseEngine = async () => {
   const data = operatingNode.value.data
@@ -191,14 +187,14 @@ const deleteDatabaseEngine = async () => {
     cancelButtonText: '取消',
     title: '警告',
     message: (
-      <span style="white-space:normal; overflow:hidden; text-overflow:ellipsis;">确认删除 {data.configName} 吗？</span>
+      <span style="white-space:normal; overflow:hidden; text-overflow:ellipsis;">确认删除 {data.dbName} 吗？</span>
     )
   })
     .then(() => false)
     .catch(() => true)
   if (cancelled) return
-  // 删除数据库引擎
-  await DatabaseService.deleteDatabaseEngine({ configNo: data.configNo })
+  // 删除数据库
+  await DatabaseService.deleteDatabaseEngine({ dbNo: data.dbNo })
   // 重新查询列表
   pymeterStore.queryDatabaseEngineAll()
   // 成功提示
@@ -210,8 +206,8 @@ const deleteDatabaseEngine = async () => {
  */
 const handleNodeClick = (data) => {
   pymeterStore.addTab({
-    editorNo: data.configNo,
-    editorName: data.configName,
+    editorNo: data.dbNo,
+    editorName: data.dbName,
     editorComponent: 'DatabaseEngine',
     editorMode: 'QUERY'
   })
@@ -222,7 +218,7 @@ const handleNodeClick = (data) => {
  */
 const filterNode = (value, data) => {
   if (!value) return true
-  return data.configName.indexOf(value) !== -1
+  return data.dbName.indexOf(value) !== -1
 }
 
 /**
