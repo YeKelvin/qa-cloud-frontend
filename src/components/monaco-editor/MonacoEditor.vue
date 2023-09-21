@@ -23,7 +23,7 @@ const props = defineProps({
 const styleHeight = computed(() => (isNaN(props.height) ? props.height : `${props.height}px`))
 const options = computed(() => {
   const opts = { ...monacoOptions }
-  if (props.lineNumbers == 'off') {
+  if (props.lineNumbers === 'off') {
     Object.assign(opts, {
       lineNumbersMinChars: 0,
       lineDecorationsWidth: 0,

@@ -2,7 +2,7 @@
   <div class="post-processor-pane">
     <template v-if="!isEmpty(postProcessorList)">
       <!-- 操作按钮 -->
-      <div style="margin-bottom: 10px; padding-left: 30px">
+      <div style="padding-left: 30px; margin-bottom: 10px">
         <!-- 全部展开按钮 -->
         <el-button type="primary" link @click="expandAll">
           <SvgIcon icon-name="pymeter-expand-all" style="margin-right: 5px" />
@@ -86,7 +86,7 @@
     </template>
 
     <!-- 添加按钮 -->
-    <div style="margin: 15px 0; padding-left: 30px">
+    <div style="padding-left: 30px; margin: 15px 0">
       <el-popover
         v-model:visible="menuVisible"
         trigger="click"
@@ -134,7 +134,7 @@ const menuVisible = ref(false)
 const draggableRef = ref()
 
 onMounted(() => {
-  if (postProcessorList.value.length == 1) {
+  if (postProcessorList.value.length === 1) {
     activeNames.value.push(postProcessorList.value[0].elementNo)
   }
 })
@@ -229,9 +229,9 @@ const collapseAll = () => {
 }
 
 .move-handle {
-  cursor: grab;
-  font-size: 16px;
   margin-right: 10px;
+  font-size: 16px;
+  cursor: grab;
 }
 
 :deep(.el-popper) {
@@ -241,11 +241,12 @@ const collapseAll = () => {
     justify-content: flex-start;
     width: 100%;
     padding: 5px 16px;
+    font-family: inherit;
+    font-size: var(--el-font-size-base);
+    font-weight: inherit;
     line-height: 22px;
     color: var(--el-text-color-regular);
-    font-size: var(--el-font-size-base);
-    font-family: inherit;
-    font-weight: inherit;
+
     &:hover {
       color: var(--el-color-primary);
       background-color: var(--el-color-primary-light-9) !important;

@@ -10,12 +10,21 @@
     <template #default="{ node, data }">
       <span class="tree-item" @mouseenter="treeNodeMouseenter(node)" @mouseleave="treeNodeMouseleave()">
         <span class="tree-item-name-wrapper">
-          <!-- 变量集类型标签 -->
-          <el-tag v-if="data.datasetType == 'GLOBAL'" type="danger" disable-transitions>全局</el-tag>
-          <el-tag v-if="data.datasetType == 'ENVIRONMENT'" disable-transitions>环境</el-tag>
-          <el-tag v-if="data.datasetType == 'CUSTOM'" type="warning" disable-transitions>自定义</el-tag>
-          <!-- 变量集名称 -->
-          <span class="tree-item-name">{{ node.label }}</span>
+          <span>
+            <!-- 变量集类型标签 -->
+            <span class="dataset-tag">
+              <el-tag v-if="data.datasetType == 'GLOBAL'" type="danger" disable-transitions>全 局</el-tag>
+              <el-tag v-if="data.datasetType == 'ENVIRONMENT'" disable-transitions>环 境</el-tag>
+              <el-tag v-if="data.datasetType == 'CUSTOM'" type="warning" disable-transitions>自定义</el-tag>
+            </span>
+            <!-- 变量集名称 -->
+            <span class="tree-item-name">{{ node.label }}</span>
+          </span>
+          <span>
+            <el-tag v-if="data.datasetBinding" style="margin-right: 5px" type="info" disable-transitions>
+              {{ getBoundDatasetName(data.datasetBinding) }}
+            </el-tag>
+          </span>
         </span>
 
         <!-- 操作菜单按钮 -->
@@ -41,7 +50,7 @@
     @hide="handleMenuHide"
   >
     <div style="display: flex; flex-direction: column">
-      <el-button link :disabled="operatingDatasetType === 'GLOBAL'" @click="renameDataset">重命名</el-button>
+      <el-button link :disabled="operatingDatasetType === 'GLOBAL'" @click="modifyDataset">编辑</el-button>
       <el-button link :disabled="operatingDatasetType === 'GLOBAL'" @click="duplicateDataset">复制</el-button>
       <el-button link :disabled="operatingDatasetType === 'GLOBAL'" @click="copyDatasetToWorkspace">
         复制到空间
@@ -56,13 +65,14 @@
 
 <script lang="jsx" setup>
 import * as VariablesService from '@/api/script/variables'
-import { More } from '@element-plus/icons-vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
-import { usePyMeterStore } from '@/store/pymeter'
-import { useWorkspaceStore } from '@/store/workspace'
 import useElTree from '@/composables/useElTree'
+import EnvDatasetSelect from '@/pymeter/components/editor-aside/common/EnvDatasetSelect.vue'
 import NameInput from '@/pymeter/components/editor-aside/common/NameInput.vue'
 import WorkspaceTree from '@/pymeter/components/editor-aside/common/WorkspaceTree.vue'
+import { usePyMeterStore } from '@/store/pymeter'
+import { useWorkspaceStore } from '@/store/workspace'
+import { More } from '@element-plus/icons-vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 const {
   eltreeRef,
@@ -78,7 +88,6 @@ const {
 } = useElTree()
 const pymeterStore = usePyMeterStore()
 const workspaceStore = useWorkspaceStore()
-
 const operatingDatasetType = computed(() => operatingNode.value?.data?.datasetType)
 
 /**
@@ -88,17 +97,28 @@ const closeMenu = () => {
   menuVisible.value = false
 }
 
+const getBoundDatasetName = (datasetNo) => {
+  const results = pymeterStore.environmentDatasetList.filter((item) => item.datasetNo === datasetNo)
+  return results ? results[0].datasetName : ''
+}
+
 /**
  * 重命名变量集
  */
-const renameDataset = async () => {
+const modifyDataset = async () => {
   const data = operatingNode.value.data
   closeMenu()
   let newName = data.datasetName
+  let newBinding = data.datasetBinding.datasetNo
   // 弹出名称对话框
   const cancelled = await ElMessageBox.confirm(null, {
     title: '重命名变量集',
-    message: <NameInput initial={newName} onUpdate:modelValue={(val) => (newName = val)} />,
+    message: (
+      <div>
+        <NameInput modelValue={newName} onUpdate:modelValue={(val) => (newName = val)} />
+        <EnvDatasetSelect modelValue={newBinding} onUpdate:modelValue={(val) => (newBinding = val)} />
+      </div>
+    ),
     confirmButtonText: '确定',
     cancelButtonText: '取消'
   })
@@ -106,7 +126,11 @@ const renameDataset = async () => {
     .catch(() => true)
   if (cancelled) return
   // 修改变量集
-  await VariablesService.modifyVariableDataset({ datasetNo: data.datasetNo, datasetName: newName })
+  await VariablesService.modifyVariableDataset({
+    datasetNo: data.datasetNo,
+    datasetName: newName,
+    datasetBinding: newBinding
+  })
   // 重新查询列表
   pymeterStore.queryDatasetAll()
   // 重命名tab
@@ -128,7 +152,9 @@ const duplicateDataset = async () => {
     cancelButtonText: '取消',
     title: '警告',
     message: (
-      <span style="white-space:normal; overflow:hidden; text-overflow:ellipsis;">确认复制 {data.datasetName} 吗？</span>
+      <span style="white-space:normal; overflow:hidden; text-overflow:ellipsis;">
+        是否确定复制 {data.datasetName} ？
+      </span>
     )
   })
     .then(() => false)
@@ -166,7 +192,7 @@ const copyDatasetToWorkspace = async () => {
     .catch(() => true)
   if (cancelled) return
   // 复制变量集到指定的空间
-  await VariablesService.copyVariableDatasetToWorkspace({ datasetNo: data.datasetNo, workspaceNo: workspaceNo })
+  await VariablesService.copyVariableDatasetToWorkspace({ datasetNo: data.datasetNo, workspaceNo })
   // 成功提示
   ElMessage({ message: '复制成功', type: 'info', duration: 2 * 1000 })
 }
@@ -195,7 +221,7 @@ const moveDatasetToWorkspace = async () => {
     .catch(() => true)
   if (cancelled) return
   // 移动变量集到指定的空间
-  await VariablesService.moveVariableDatasetToWorkspace({ datasetNo: data.datasetNo, workspaceNo: workspaceNo })
+  await VariablesService.moveVariableDatasetToWorkspace({ datasetNo: data.datasetNo, workspaceNo })
   // 重新查询列表
   pymeterStore.queryDatasetAll()
   // 成功提示
@@ -269,11 +295,12 @@ defineExpose({
     justify-content: flex-start;
     width: 100%;
     padding: 5px 16px;
+    font-family: inherit;
+    font-size: var(--el-font-size-base);
+    font-weight: inherit;
     line-height: 22px;
     color: var(--el-text-color-regular);
-    font-size: var(--el-font-size-base);
-    font-family: inherit;
-    font-weight: inherit;
+
     &:hover {
       color: var(--el-color-primary);
       background-color: var(--el-color-primary-light-9) !important;
@@ -286,20 +313,20 @@ defineExpose({
 }
 
 .dataset-menu--top-option > span {
-  width: 100%;
   justify-content: space-between;
+  width: 100%;
 }
 
 .dataset-menu--shortcut-option > span {
-  width: 100%;
   justify-content: space-between;
+  width: 100%;
 }
 </style>
 
 <style lang="scss" scoped>
 .tree-item {
-  flex: 1;
   display: flex;
+  flex: 1;
   align-items: center;
   justify-content: space-between;
   padding-right: 8px;
@@ -308,20 +335,28 @@ defineExpose({
 .tree-item-name-wrapper {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  width: 100%;
   user-select: none;
 }
 
 .tree-item-icon {
-  height: 1.6em !important;
   width: 1.6em !important;
+  height: 1.6em !important;
   padding-right: 5px;
 }
 
 .tree-item-name {
-  white-space: nowrap;
+  margin-left: 10px;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-left: 10px;
+  white-space: nowrap;
+}
+
+.dataset-tag {
+  .el-tag {
+    width: 56px;
+  }
 }
 
 :deep(.el-tree-node__content) {

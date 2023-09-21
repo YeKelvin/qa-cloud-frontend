@@ -1,26 +1,15 @@
 <template>
   <div>
-    <el-input v-model="local" clearable />
+    <span style="font-weight: 400">名称：</span>
+    <el-input v-model="localvalue" clearable />
   </div>
 </template>
 
-<script>
-import { ElInput } from 'element-plus'
+<script setup>
+const props = defineProps({ modelValue: { type: String } })
+const emit = defineEmits(['update:modelValue'])
 
-export default {
-  props: {
-    initial: { type: String, default: '' }
-  },
-  emits: ['update:modelValue'],
-  data() {
-    return {
-      local: this.initial
-    }
-  },
-  watch: {
-    local(val) {
-      this.$emit('update:modelValue', val)
-    }
-  }
-}
+const localvalue = ref(props.modelValue)
+
+watch(localvalue, (val) => emit('update:modelValue', val))
 </script>

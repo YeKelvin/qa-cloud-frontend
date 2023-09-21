@@ -137,10 +137,10 @@ const enableDrop = () => {
     handle: '.sorted-handle',
     onEnd: ({ newIndex, oldIndex }) => {
       const data = rows.value
-      if (newIndex + 1 == data.length) {
+      if (newIndex + 1 === data.length) {
         newIndex -= 1
       }
-      if (newIndex != oldIndex) {
+      if (newIndex !== oldIndex) {
         const row = data.splice(oldIndex, 1)[0]
         data.splice(newIndex, 0, row)
       }
@@ -155,9 +155,9 @@ const enableDrop = () => {
 
 <style lang="scss" scoped>
 span {
-  white-space: pre-wrap;
-  letter-spacing: 0.6px;
   text-overflow: ellipsis;
+  letter-spacing: 0.6px;
+  white-space: pre-wrap;
 }
 
 .operation-header {

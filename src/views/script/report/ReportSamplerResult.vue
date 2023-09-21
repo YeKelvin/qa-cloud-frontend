@@ -31,7 +31,7 @@
       </el-tabs>
       <div style="display: flex">
         <el-button
-          style="font-size: 16px; margin-right: 10px"
+          style="margin-right: 10px; font-size: 16px"
           type="primary"
           link
           :icon="CopyDocument"
@@ -69,7 +69,7 @@
       </el-tabs>
       <div style="display: flex">
         <el-button
-          style="font-size: 16px; margin-right: 10px"
+          style="margin-right: 10px; font-size: 16px"
           type="primary"
           link
           :icon="CopyDocument"
@@ -115,11 +115,11 @@ const { toClipboard } = useClipboard()
 const sampler = ref({})
 const requestActiveTabName = ref('REQUEST_DATA')
 const responseActiveTabName = ref('RESPONSE_DATA')
-const showRequestHeaders = computed(() => requestActiveTabName.value == 'REQUEST_HEADERS')
-const showRequestData = computed(() => requestActiveTabName.value == 'REQUEST_DATA')
-const showResponseHeaders = computed(() => responseActiveTabName.value == 'RESPONSE_HEADERS')
-const showResponseData = computed(() => responseActiveTabName.value == 'RESPONSE_DATA')
-const showResponseAssertion = computed(() => responseActiveTabName.value == 'ASSERTION')
+const showRequestHeaders = computed(() => requestActiveTabName.value === 'REQUEST_HEADERS')
+const showRequestData = computed(() => requestActiveTabName.value === 'REQUEST_DATA')
+const showResponseHeaders = computed(() => responseActiveTabName.value === 'RESPONSE_HEADERS')
+const showResponseData = computed(() => responseActiveTabName.value === 'RESPONSE_DATA')
+const showResponseAssertion = computed(() => responseActiveTabName.value === 'ASSERTION')
 const requestHeaders = computed(() => {
   if (!sampler.value.requestHeaders) return []
   return getHeadersFromJson(sampler.value.requestHeaders)
@@ -143,7 +143,7 @@ watch(
 )
 
 watch(requestDataType, (val) => {
-  if (val == 'source') {
+  if (val === 'source') {
     setRequestContent(sampler.value.requestData)
   } else {
     setRequestContent(sampler.value.requestDecoded)
@@ -151,7 +151,7 @@ watch(requestDataType, (val) => {
 })
 
 watch(responseDataType, (val) => {
-  if (val == 'source') {
+  if (val === 'source') {
     setResponseContent(sampler.value.responseData)
   } else {
     setResponseContent(sampler.value.responseDecoded)
@@ -241,7 +241,7 @@ const getHeadersFromJson = (val) => {
 }
 
 const copyRequest = async () => {
-  if (requestActiveTabName.value == 'REQUEST_DATA') {
+  if (requestActiveTabName.value === 'REQUEST_DATA') {
     await copyRequestData()
   } else {
     await copyRequestHeaders()
@@ -249,7 +249,7 @@ const copyRequest = async () => {
 }
 
 const copyRequestData = async () => {
-  const text = requestDataType.value == 'source' ? sampler.value.requestData : sampler.value.requestDecoded
+  const text = requestDataType.value === 'source' ? sampler.value.requestData : sampler.value.requestDecoded
   console.log('text: ', text)
   await toClipboard(text)
   ElMessage({ message: '复制成功', type: 'info', duration: 1 * 1000 })
@@ -265,14 +265,14 @@ const copyRequestHeaders = async () => {
 }
 
 const copyResponse = async () => {
-  if (responseActiveTabName.value == 'RESPONSE_DATA') {
+  if (responseActiveTabName.value === 'RESPONSE_DATA') {
     await copyResponseData()
   } else {
     await copyResponseHeaders()
   }
 }
 const copyResponseData = async () => {
-  const text = responseDataType.value == 'source' ? sampler.value.responseData : sampler.value.responseDecoded
+  const text = responseDataType.value === 'source' ? sampler.value.responseData : sampler.value.responseDecoded
   await toClipboard(text)
   ElMessage({ message: '复制成功', type: 'info', duration: 1 * 1000 })
 }
@@ -288,11 +288,11 @@ const copyResponseHeaders = async () => {
 
 const copyAll = async () => {
   let request = hasRequestDecoded() ? sampler.value.requestDecoded : sampler.value.requestData
-  if (request && request[request.length - 1] != '\n') {
+  if (request && request[request.length - 1] !== '\n') {
     request += '\n'
   }
   let response = hasResponseDecoded() ? sampler.value.responseDecoded : sampler.value.responseData
-  if (response && response[response.length - 1] != '\n') {
+  if (response && response[response.length - 1] !== '\n') {
     response += '\n'
   }
   const text = `[请求数据]\n${request}\n[响应数据]\n${response}`
@@ -314,10 +314,11 @@ defineExpose({
 
 .el-descriptions {
   :deep(.el-descriptions__label) {
-    color: #606266;
-    font-weight: bold;
     margin-right: 0;
+    font-weight: bold;
+    color: #606266;
   }
+
   :deep(.el-descriptions-item__container) {
     display: inline-flex;
     align-items: center;
@@ -351,7 +352,7 @@ defineExpose({
 }
 
 :deep(.el-tabs__nav-wrap) {
-  &:after {
+  &::after {
     height: 0;
   }
 }

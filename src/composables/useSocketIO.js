@@ -11,7 +11,7 @@ export default function useSocketIO() {
    * 设置请求头
    */
   const setAccessToken = () => {
-    socket.io.opts['transportOptions'] = {
+    socket.io.opts.transportOptions = {
       polling: {
         extraHeaders: {
           'access-token': userStore.token

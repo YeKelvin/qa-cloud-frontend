@@ -1,14 +1,14 @@
 html {
-  height: 100%;
   box-sizing: border-box;
+  height: 100%;
 }
 
 body {
   height: 100%;
-  margin: 0;
   padding: 0;
+  margin: 0;
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
   font-size: 14px;
-  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
 }
 
 * {
@@ -28,9 +28,9 @@ a:active {
 a,
 a:focus,
 a:hover {
-  cursor: pointer;
   color: inherit;
   text-decoration: none;
+  cursor: pointer;
 }
 
 h1,
@@ -39,10 +39,10 @@ h3,
 h4,
 h5,
 h6 {
-  line-height: 1;
-  font-weight: 400;
-  margin: 0;
   padding: 0;
+  margin: 0;
+  font-weight: 400;
+  line-height: 1;
 }
 
 span,
@@ -63,16 +63,16 @@ div:focus {
 }
 
 aside {
-  background: #eef1f6;
+  display: block;
   padding: 8px 24px;
   margin-bottom: 20px;
-  border-radius: 2px;
-  display: block;
-  line-height: 32px;
-  font-size: 16px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans",
     "Droid Sans", "Helvetica Neue", sans-serif;
+  font-size: 16px;
+  line-height: 32px;
   color: #2c3e50;
+  background: #eef1f6;
+  border-radius: 2px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
@@ -81,19 +81,19 @@ aside {
     cursor: pointer;
 
     &:hover {
-      color: rgb(32, 160, 255);
+      color: rgb(32 160 255);
     }
   }
 }
 
-//main-container全局样式
+// main-container全局样式
 .app-container {
   padding: 20px;
 }
 
 .components-container {
-  margin: 30px 50px;
   position: relative;
+  margin: 30px 50px;
 }
 
 .text-center {
@@ -101,20 +101,20 @@ aside {
 }
 
 .sub-navbar {
-  height: 50px;
-  line-height: 50px;
   position: relative;
   width: 100%;
-  text-align: right;
+  height: 50px;
   padding-right: 20px;
-  transition: 600ms ease position;
+  line-height: 50px;
+  text-align: right;
   background: linear-gradient(
     90deg,
-    rgba(32, 182, 249, 1) 0%,
-    rgba(32, 182, 249, 1) 0%,
-    rgba(33, 120, 241, 1) 100%,
-    rgba(33, 120, 241, 1) 100%
+    rgb(32 182 249 / 100%) 0%,
+    rgb(32 182 249 / 100%) 0%,
+    rgb(33 120 241 / 100%) 100%,
+    rgb(33 120 241 / 100%) 100%
   );
+  transition: 600ms ease position;
 
   .subtitle {
     font-size: 20px;
@@ -136,7 +136,7 @@ aside {
   cursor: pointer;
 
   &:hover {
-    color: rgb(32, 160, 255);
+    color: rgb(32 160 255);
   }
 }
 
@@ -145,12 +145,12 @@ aside {
 
   .filter-item {
     display: inline-block;
-    vertical-align: middle;
     margin-bottom: 10px;
+    vertical-align: middle;
   }
 }
 
-//refine vue-multiselect plugin
+// refine vue-multiselect plugin
 .multiselect {
   line-height: 16px;
 }

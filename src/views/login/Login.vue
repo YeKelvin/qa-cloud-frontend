@@ -103,7 +103,7 @@ const loginNameRef = ref()
 const passwordRef = ref()
 
 const loginNamePlaceholder = computed(() => {
-  if (accountType.value == 'enterprise') {
+  if (accountType.value === 'enterprise') {
     return '企业邮箱'
   } else {
     return '账号 / 邮箱 / 手机号'
@@ -150,10 +150,10 @@ $dark_gray: #889aa4;
 $light_gray: #eee;
 
 .login-container {
-  min-height: 100%;
   width: 100%;
-  background-color: $bg;
+  min-height: 100%;
   overflow: hidden;
+  background-color: $bg;
 
   .login-form {
     width: 520px;
@@ -162,14 +162,16 @@ $light_gray: #eee;
     margin: 0 auto;
     overflow: hidden;
   }
+
   .title-container {
     position: relative;
+
     .title {
+      margin: 0 auto 40px;
       font-size: 28px;
-      color: $light_gray;
-      margin: 0px auto 40px auto;
-      text-align: center;
       font-weight: bold;
+      color: $light_gray;
+      text-align: center;
     }
   }
 }
@@ -196,32 +198,35 @@ $cursor: #fff;
 
 .login-container {
   .el-form-item {
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
     color: #454545;
+    background: rgb(0 0 0 / 10%);
+    border: 1px solid rgb(255 255 255 / 10%);
+    border-radius: 5px;
   }
+
   .el-input {
     width: 100%;
 
     input {
-      background: transparent;
-      border: 0px;
-      border-radius: 0px;
+      height: 47px;
       padding: 12px 5px 12px 15px;
       color: $light_gray;
-      height: 47px;
       caret-color: $cursor;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
 
       &:-webkit-autofill {
-        box-shadow: 0 0 0px 1000px $bg inset !important;
+        box-shadow: 0 0 0 1000px $bg inset !important;
         -webkit-text-fill-color: $cursor !important;
       }
     }
   }
+
   .el-input__inner {
     box-shadow: none !important;
   }
+
   .el-input__wrapper {
     background-color: inherit;
     box-shadow: none;

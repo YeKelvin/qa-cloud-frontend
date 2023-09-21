@@ -111,8 +111,8 @@ onMounted(() => {
  */
 const query = () => {
   RoleService.queryRoleList({ ...queryConditions, page: page.value, pageSize: pageSize.value }).then((response) => {
-    tableData.value = response.result['data']
-    total.value = response.result['total']
+    tableData.value = response.result.data
+    total.value = response.result.total
   })
 }
 
@@ -206,15 +206,15 @@ const handleCurrentChange = (val) => {
 }
 
 .pagination-container {
-  flex-shrink: 0;
   display: flex;
+  flex-shrink: 0;
   justify-content: flex-end;
   padding: 10px 0;
   padding-right: 10px;
 }
 
 :deep(.el-card__header) {
-  padding: 10px 10px;
+  padding: 10px;
 }
 
 :deep(.el-card__body) {

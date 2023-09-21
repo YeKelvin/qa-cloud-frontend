@@ -118,7 +118,7 @@
           </template>
         </el-tabs>
         <!-- 状态、时间等信息 -->
-        <span style="display: flex; justify-content: flex-end; padding: 0 10px; width: 100%">
+        <span style="display: flex; justify-content: flex-end; width: 100%; padding: 0 10px">
           <!-- 复制按钮 -->
           <el-button style="font-size: 16px" type="primary" link :icon="CopyDocument" @click="copyAll" />
           <!-- 请求状态 -->
@@ -252,14 +252,14 @@ const responseEditorRef = ref()
 const assertionEditorRef = ref()
 const current = reactive({ sampler: {} })
 const currentRequestData = computed(() => {
-  if (requestDataType.value == 'source') {
+  if (requestDataType.value === 'source') {
     return current.sampler.requestData
   } else {
     return current.sampler.requestDecoded
   }
 })
 const currentResponseData = computed(() => {
-  if (responseDataType.value == 'source') {
+  if (responseDataType.value === 'source') {
     return current.sampler.responseData
   } else {
     return current.sampler.responseDecoded
@@ -306,7 +306,7 @@ const responseContentType = ref('json')
 const responseWordWrap = ref('on')
 
 watch(requestDataType, (val) => {
-  if (val == 'source') {
+  if (val === 'source') {
     setRequestContent(current.sampler.requestData)
   } else {
     setRequestContent(current.sampler.requestDecoded)
@@ -314,7 +314,7 @@ watch(requestDataType, (val) => {
 })
 
 watch(responseDataType, (val) => {
-  if (val == 'source') {
+  if (val === 'source') {
     setRequestContent(current.sampler.responseData)
   } else {
     setRequestContent(current.sampler.responseDecoded)
@@ -394,7 +394,7 @@ const toggleResponseWordWrap = () => {
 }
 
 const copyRequestData = async () => {
-  const text = requestDataType.value == 'source' ? current.sampler.requestData : current.sampler.requestDecoded
+  const text = requestDataType.value === 'source' ? current.sampler.requestData : current.sampler.requestDecoded
   await toClipboard(text)
   ElMessage({ message: '复制成功', type: 'info', duration: 1 * 1000 })
 }
@@ -411,7 +411,7 @@ const copyReqHeaders = async () => {
 }
 
 const copyResponseData = async () => {
-  const text = responseDataType.value == 'source' ? current.sampler.responseData : current.sampler.responseDecoded
+  const text = responseDataType.value === 'source' ? current.sampler.responseData : current.sampler.responseDecoded
   await toClipboard(text)
   ElMessage({ message: '复制成功', type: 'info', duration: 1 * 1000 })
 }
@@ -429,11 +429,11 @@ const copyResHeaders = async () => {
 
 const copyAll = async () => {
   let request = hasRequestDecoded() ? current.sampler.requestDecoded : current.sampler.requestData
-  if (request && request[request.length - 1] != '\n') {
+  if (request && request[request.length - 1] !== '\n') {
     request += '\n'
   }
   let response = hasResponseDecoded() ? current.sampler.responseDecoded : current.sampler.responseData
-  if (response && response[response.length - 1] != '\n') {
+  if (response && response[response.length - 1] !== '\n') {
     response += '\n'
   }
   const text = `[请求数据]\n${request}\n[响应数据]\n${response}`
@@ -462,40 +462,40 @@ defineExpose({
 
 .result-tree {
   display: flex;
-  overflow: hidden;
+  width: 400px;
   min-width: 400px;
   max-width: 400px;
-  width: 400px;
   height: 100%;
+  overflow: hidden;
 
   :deep(.el-card__body) {
     display: flex;
     align-items: flex-start;
-    padding: 0;
     width: 100%;
     height: 100%;
+    padding: 0;
   }
 }
 
 .tree-item {
-  width: 100%;
   display: inline-flex;
   align-items: center;
+  width: 100%;
 }
 
 .worker-name-wrapper {
-  width: 100%;
-  padding-right: 10px;
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
+  padding-right: 10px;
 }
 
 .element-name {
   overflow: hidden;
-  user-select: none;
-  white-space: normal;
   text-overflow: ellipsis;
+  white-space: normal;
+  user-select: none;
 }
 
 .result-details {
@@ -508,10 +508,8 @@ defineExpose({
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
-
     width: 100%;
     height: 100%;
-
     padding: 0;
 
     .tab-pane {
@@ -522,10 +520,10 @@ defineExpose({
 }
 
 .result-details-header {
-  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
   margin-bottom: 5px;
 }
 
@@ -542,15 +540,15 @@ defineExpose({
 }
 
 :deep(.el-tabs__nav-wrap) {
-  &:after {
+  &::after {
     height: 0 !important;
   }
 }
 
 :deep(.el-tabs__item) {
-  font-size: 16px;
   height: 32px;
   padding: 5px 10px !important;
+  font-size: 16px;
 
   &:nth-child(3) {
     margin-right: 15px;

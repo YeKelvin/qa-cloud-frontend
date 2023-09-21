@@ -10,13 +10,22 @@
     clearable
   >
     <!-- 自定义变量 -->
-    <el-option-group v-if="!isEmpty(pymeterStore.customDatasetList)" key="custom" label="自定义">
+    <el-option-group v-if="!isEmpty(filteredCustomDatasetList)" key="custom" label="自定义">
       <el-option
-        v-for="item in pymeterStore.customDatasetList"
+        v-for="item in filteredCustomDatasetList"
         :key="item.datasetNo"
         :label="item.datasetName"
         :value="item.datasetNo"
-      />
+      >
+        <span style="display: flex; align-items: center; justify-content: space-between">
+          <span>{{ item.datasetName }}</span>
+          <span>
+            <el-tag v-if="item.datasetBinding" type="info" disable-transitions>
+              {{ getBoundDatasetName(item.datasetBinding) }}
+            </el-tag>
+          </span>
+        </span>
+      </el-option>
     </el-option-group>
     <!-- 环境变量 -->
     <el-option-group v-if="!isEmpty(pymeterStore.environmentDatasetList)" key="environment" label="环境">
@@ -51,13 +60,13 @@
 </template>
 
 <script setup>
-import { isEmpty } from 'lodash-es'
 import { usePyMeterStore } from '@/store/pymeter'
+import { isEmpty } from 'lodash-es'
 
+const pymeterStore = usePyMeterStore()
 const props = defineProps({
   show: { type: Boolean, default: () => false }
 })
-const pymeterStore = usePyMeterStore()
 const selectedDatasets = computed({
   get() {
     return pymeterStore.selectedDatasets
@@ -66,10 +75,23 @@ const selectedDatasets = computed({
     if (props.show) pymeterStore.setSelectedDatasets(val)
   }
 })
+const filteredCustomDatasetList = computed(() => {
+  if (!pymeterStore.selectedEnvironmentNo) {
+    return pymeterStore.customDatasetList
+  }
+  return pymeterStore.customDatasetList.filter(
+    (item) => !item.datasetBinding || item.datasetBinding === pymeterStore.selectedEnvironmentNo
+  )
+})
 
 onMounted(() => {
   pymeterStore.queryDatasetAll()
 })
+
+const getBoundDatasetName = (datasetNo) => {
+  const results = pymeterStore.environmentDatasetList.filter((item) => item.datasetNo === datasetNo)
+  return results ? results[0].datasetName : ''
+}
 </script>
 
 <style lang="scss">
@@ -87,8 +109,8 @@ onMounted(() => {
     display: inline-block;
     max-width: 100px;
     overflow: hidden;
-    white-space: nowrap;
     text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   :deep(.el-select-dropdown__item span) {

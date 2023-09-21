@@ -45,9 +45,8 @@ const createDatabaseEngine = () => {
   display: flex;
   flex: 1;
   flex-direction: column;
-
-  height: 100%;
   width: 100%;
+  height: 100%;
 
   .el-divider--horizontal {
     width: 95%;
@@ -56,9 +55,9 @@ const createDatabaseEngine = () => {
 }
 
 :deep(.el-input-group__prepend button.el-button) {
-  border-color: transparent;
-  background-color: transparent;
   color: #409eff;
+  background-color: transparent;
+  border-color: transparent;
   border-top: 0;
   border-bottom: 0;
 }

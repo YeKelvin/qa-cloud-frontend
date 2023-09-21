@@ -64,7 +64,7 @@ export default function useEditor(props) {
    */
   const editNowByShortcut = async (e) => {
     if (e.repeat) return
-    if (e.key == 'e' && (isMacOS ? e.metaKey : e.ctrlKey)) {
+    if (e.key === 'e' && (isMacOS ? e.metaKey : e.ctrlKey)) {
       e.preventDefault()
       if (!queryMode.value) return
       editNow()
@@ -76,7 +76,7 @@ export default function useEditor(props) {
    */
   const submitByShortcut = async (e) => {
     if (e.repeat) return
-    if (e.key == 's' && (isMacOS ? e.metaKey : e.ctrlKey)) {
+    if (e.key === 's' && (isMacOS ? e.metaKey : e.ctrlKey)) {
       e.preventDefault()
       if (queryMode.value) return
       if (createMode.value) {
@@ -92,7 +92,7 @@ export default function useEditor(props) {
    */
   const closeByShortcut = async (e) => {
     if (e.repeat) return
-    if (e.key == 'k' && (isMacOS ? e.metaKey : e.ctrlKey)) {
+    if (e.key === 'k' && (isMacOS ? e.metaKey : e.ctrlKey)) {
       e.preventDefault()
       closeTab()
     }

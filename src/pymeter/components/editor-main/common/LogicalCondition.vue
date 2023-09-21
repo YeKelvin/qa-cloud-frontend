@@ -48,7 +48,7 @@ const field = computed(() => props.rule.field)
 const multiple = computed(() => ['IN', 'NOT_IN'].includes(rule.value.operator))
 const options = computed(() => {
   if (!field.value) return null
-  return conditionData.filter((item) => item.field.value == field.value)[0].options
+  return conditionData.filter((item) => item.field.value === field.value)[0].options
 })
 
 watch(field, () => {

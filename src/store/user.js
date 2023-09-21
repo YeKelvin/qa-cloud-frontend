@@ -1,9 +1,9 @@
-import { defineStore } from 'pinia'
-import { JSEncrypt } from 'jsencrypt'
-import { getToken, removeToken, setToken } from '@/utils/auth'
-import userDefaultAvatar from '@/assets/images/layout/user_avatar.gif'
-import * as UserService from '@/api/usercenter/user'
 import * as AuthService from '@/api/usercenter/auth'
+import * as UserService from '@/api/usercenter/user'
+import userDefaultAvatar from '@/assets/images/layout/user_avatar.gif'
+import { getToken, removeToken, setToken } from '@/utils/auth'
+import { JSEncrypt } from 'jsencrypt'
+import { defineStore } from 'pinia'
 
 /**
  * 获取加密公钥
@@ -37,7 +37,7 @@ export const useUserStore = defineStore('user', {
       encryptor.setPublicKey(factor.publicKey)
       // 登录
       let response = null
-      if (accountType == 'enterprise') {
+      if (accountType === 'enterprise') {
         // 企业账号登录
         response = await UserService.loginByEnterprise({
           email: loginName.trim(),

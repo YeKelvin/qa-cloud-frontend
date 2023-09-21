@@ -1,10 +1,10 @@
-import { defineStore } from 'pinia'
+import * as DatabaseService from '@/api/script/database'
+import * as HttpHeadersService from '@/api/script/headers'
+import * as VariablesService from '@/api/script/variables'
 import { useWorkspaceStore } from '@/store/workspace'
 import { isEmpty } from 'lodash-es'
+import { defineStore } from 'pinia'
 import { removeCache } from './pymeter-tools'
-import * as VariablesService from '@/api/script/variables'
-import * as HttpHeadersService from '@/api/script/headers'
-import * as DatabaseService from '@/api/script/database'
 
 export const usePyMeterStore = defineStore('pymeter', {
   state: () => {
@@ -30,6 +30,8 @@ export const usePyMeterStore = defineStore('pymeter', {
       // 待展开节点的元素编号
       pendingExpandedElementNo: 0,
 
+      // 变量集列表
+      datasetList: [],
       // 全局变量集列表
       globalDatasetList: [],
       // 空间变量集列表
@@ -38,9 +40,10 @@ export const usePyMeterStore = defineStore('pymeter', {
       environmentDatasetList: [],
       // 自定义变量集列表
       customDatasetList: [],
-
       // 当前选中的变量集列表（缓存）
       selectedDatasets: [],
+      // 当前选择的环境变量集编号
+      selectedEnvironmentNo: '',
 
       // 是否使用当前值（缓存）
       useCurrentValue: true,
@@ -62,11 +65,7 @@ export const usePyMeterStore = defineStore('pymeter', {
   persist: {
     paths: ['selectedDatasets', 'useCurrentValue', 'selectedCollections']
   },
-  getters: {
-    datasetList() {
-      return [...this.globalDatasetList, ...this.environmentDatasetList, ...this.customDatasetList]
-    }
-  },
+  getters: {},
   actions: {
     /**
      * 添加 tab
@@ -216,7 +215,7 @@ export const usePyMeterStore = defineStore('pymeter', {
      * 切换窗口打开状态
      */
     toggleResultView() {
-      if (this.activeFooterViewName == 'RESULT') {
+      if (this.activeFooterViewName === 'RESULT') {
         this.showingFooterDrawer = !this.showingFooterDrawer
       } else {
         this.activeFooterViewName = 'RESULT'
@@ -228,7 +227,7 @@ export const usePyMeterStore = defineStore('pymeter', {
      * 切换窗口打开状态
      */
     toggleLogView() {
-      if (this.activeFooterViewName == 'LOG') {
+      if (this.activeFooterViewName === 'LOG') {
         this.showingFooterDrawer = !this.showingFooterDrawer
       } else {
         this.activeFooterViewName = 'LOG'
@@ -250,6 +249,8 @@ export const usePyMeterStore = defineStore('pymeter', {
       // 查询变量集列表
       const response = await VariablesService.queryVariableDatasetAll({ workspaceNo: useWorkspaceStore().workspaceNo })
 
+      // 全部变量集
+      this.datasetList = response.result
       // 全局变量
       this.globalDatasetList = response.result.filter((item) => item.datasetType === 'GLOBAL')
       // 空间变量
@@ -263,13 +264,14 @@ export const usePyMeterStore = defineStore('pymeter', {
       // 当前选择的变量集不为空且不在变量集列表中时（表示该变量集已无效），删除该变量集编号
       const datasets = response.result.map((item) => item.datasetNo)
       for (let i = this.selectedDatasets.length - 1; i >= 0; i--) {
+        // 删除无效数据
         if (!datasets.includes(this.selectedDatasets[i])) {
-          // 删除无效数据
           this.selectedDatasets.splice(i, 1)
         }
       }
 
-      this.disableOtherEnvironmentDataset()
+      // 禁用其余未选择的环境变量集
+      this.disableOtherEnvDataset()
     },
 
     /**
@@ -277,53 +279,32 @@ export const usePyMeterStore = defineStore('pymeter', {
      */
     setSelectedDatasets(data) {
       this.selectedDatasets = data
-      this.disableOtherEnvironmentDataset()
+      this.disableOtherEnvDataset()
     },
 
     /**
      * 禁用未选择的环境变量集（已选择了一个环境变量集的情况下）
      */
-    disableOtherEnvironmentDataset() {
+    disableOtherEnvDataset() {
       // 没有选中任何变量集时，开放所有环境变量集
       if (isEmpty(this.selectedDatasets)) {
-        this.environmentDatasetList.forEach((env) => (env.disabled = false))
+        this.environmentDatasetList.forEach((item) => (item.disabled = false))
       }
-      // 判断当前选中的变量集是否需要禁用
-      let environmentCount = 0
-      this.selectedDatasets.forEach((datasetNo) => {
-        if (this.isGlobalDataset(datasetNo) || this.isWorkspaceDataset(datasetNo) || this.isCustomDataset(datasetNo)) {
-          return
-        }
+      // 从已选择的变量集中过滤出环境变量集
+      const envs = this.datasetList.filter(
+        (item) => item.datasetType === 'ENVIRONMENT' && this.selectedDatasets.includes(item.datasetNo)
+      )
+
+      if (envs.length > 0) {
+        // 存储当前环境编号
+        this.selectedEnvironmentNo = envs[0].datasetNo
         // 已经选择了环境变量集，禁用其余环境变量集
-        if (this.isEnvironmentDataset(datasetNo)) {
-          environmentCount += 1
-          this.environmentDatasetList.forEach((env) => (env.disabled = env.datasetNo !== datasetNo))
-        }
-      })
-      // 没有选择环境变量集时，开放所有环境变量集
-      if (environmentCount === 0) {
-        this.environmentDatasetList.forEach((env) => (env.disabled = false))
+        this.environmentDatasetList.forEach((item) => (item.disabled = item.datasetNo !== envs[0].datasetNo))
+      } else {
+        this.selectedEnvironmentNo = ''
+        // 没有选择环境变量集时，开放所有环境变量集
+        this.environmentDatasetList.forEach((item) => (item.disabled = false))
       }
-    },
-
-    isGlobalDataset(datasetNo) {
-      const index = this.globalDatasetList.findIndex((item) => item.datasetNo === datasetNo)
-      return index > -1
-    },
-
-    isWorkspaceDataset(datasetNo) {
-      const index = this.workspaceDatasetList.findIndex((item) => item.datasetNo === datasetNo)
-      return index > -1
-    },
-
-    isEnvironmentDataset(datasetNo) {
-      const index = this.environmentDatasetList.findIndex((item) => item.datasetNo === datasetNo)
-      return index > -1
-    },
-
-    isCustomDataset(datasetNo) {
-      const index = this.customDatasetList.findIndex((item) => item.datasetNo === datasetNo)
-      return index > -1
     },
 
     /**

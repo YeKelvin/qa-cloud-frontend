@@ -42,27 +42,30 @@ module.exports = {
   ],
   rules: {
     // js
-    'block-scoped-var': 'error',
-    'linebreak-style': ['error', 'unix'],
-    'no-async-promise-executor': 'off',
+    'no-var': 'error', // 要求使用 let 或 const 而不是 var
+    'no-void': 'error',
+    'no-empty': ['error', { allowEmptyCatch: true }],
     'no-bitwise': 'off',
     'no-console': 'off',
-    'no-var': 'error',
-    'no-empty': ['error', { allowEmptyCatch: true }],
-    'no-void': 'error',
+    'no-constant-condition': ['error', { checkLoops: false }],
     'no-plusplus': 'off',
     'no-param-reassign': ['off'],
-    'no-useless-escape': 'off',
-    'no-useless-return': 'off',
     'no-unused-vars': ['error', { varsIgnorePattern: '.*', args: 'none' }],
-    'no-constant-condition': ['error', { checkLoops: false }],
-    'prefer-template': 'error',
+    'no-unexpected-multiline': 'error', // 禁止空余的多行
+    'no-useless-escape': 'off', // 禁止不必要的转义字符
+    'no-useless-return': 'off',
+    'no-multiple-empty-lines': ['warn', { max: 2 }], // 不允许多个空行
+    'no-async-promise-executor': 'off',
     'prefer-const': ['warn', { destructuring: 'all', ignoreReadBeforeAssign: true }],
+    'prefer-template': 'error',
+    'block-scoped-var': 'error',
+    'linebreak-style': ['error', 'unix'],
+    'object-shorthand': 'off',
     'space-before-function-paren': 0,
 
     // vue
     'vue/require-default-prop': 'off',
-    'vue/multi-word-component-names': 'off',
+    'vue/multi-word-component-names': 'off', // 要求组件名称始终为 “-” 链接的单词
 
     // prettier
     'prettier/prettier': 'error',

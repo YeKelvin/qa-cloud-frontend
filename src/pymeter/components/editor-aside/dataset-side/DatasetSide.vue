@@ -30,11 +30,12 @@
 
 <script lang="jsx" setup>
 import * as VariablesService from '@/api/script/variables'
-import { Plus } from '@element-plus/icons-vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import EnvDatasetSelect from '@/pymeter/components/editor-aside/common/EnvDatasetSelect.vue'
+import NameInput from '@/pymeter/components/editor-aside/common/NameInput.vue'
 import { usePyMeterStore } from '@/store/pymeter'
 import { useWorkspaceStore } from '@/store/workspace'
-import NameInput from '@/pymeter/components/editor-aside/common/NameInput.vue'
+import { Plus } from '@element-plus/icons-vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import DatasetTree from './DatasetTree.vue'
 
 const pymeterStore = usePyMeterStore()
@@ -108,10 +109,16 @@ const createEnvironmentDataset = async () => {
  */
 const createCustomDataset = async () => {
   let datasetName = ''
+  let datasetBinding = ''
   // 弹出名称对话框
   const cancelled = await ElMessageBox.confirm(null, {
     title: '新增自定义变量集',
-    message: <NameInput onUpdate:modelValue={(val) => (datasetName = val)} />,
+    message: (
+      <div>
+        <NameInput onUpdate:modelValue={(val) => (datasetName = val)} />
+        <EnvDatasetSelect onUpdate:modelValue={(val) => (datasetBinding = val)} />
+      </div>
+    ),
     confirmButtonText: '确定',
     cancelButtonText: '取消'
   })
@@ -126,7 +133,8 @@ const createCustomDataset = async () => {
   const response = await VariablesService.createVariableDataset({
     workspaceNo: workspaceStore.workspaceNo,
     datasetName: datasetName,
-    datasetType: 'CUSTOM'
+    datasetType: 'CUSTOM',
+    datasetBinding: datasetBinding
   })
   // 重新查询列表
   queryDatasetAll()

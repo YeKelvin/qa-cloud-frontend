@@ -241,11 +241,12 @@ defineExpose({
     justify-content: flex-start;
     width: 100%;
     padding: 5px 16px;
+    font-family: inherit;
+    font-size: var(--el-font-size-base);
+    font-weight: inherit;
     line-height: 22px;
     color: var(--el-text-color-regular);
-    font-size: var(--el-font-size-base);
-    font-family: inherit;
-    font-weight: inherit;
+
     &:hover {
       color: var(--el-color-primary);
       background-color: var(--el-color-primary-light-9) !important;
@@ -258,20 +259,20 @@ defineExpose({
 }
 
 .database-menu--top-option > span {
-  width: 100%;
   justify-content: space-between;
+  width: 100%;
 }
 
 .database-menu--shortcut-option > span {
-  width: 100%;
   justify-content: space-between;
+  width: 100%;
 }
 </style>
 
 <style lang="scss" scoped>
 .tree-item {
-  flex: 1;
   display: flex;
+  flex: 1;
   align-items: center;
   justify-content: space-between;
   padding-right: 8px;
@@ -284,16 +285,16 @@ defineExpose({
 }
 
 .tree-item-icon {
-  height: 1.6em !important;
   width: 1.6em !important;
+  height: 1.6em !important;
   padding-right: 5px;
 }
 
 .tree-item-name {
-  white-space: nowrap;
+  padding-right: 10px;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding-right: 10px;
+  white-space: nowrap;
 }
 
 :deep(.el-tree-node__content) {

@@ -171,17 +171,17 @@ const debugerVisible = ref(false)
 const showSamplers = computed(() => {
   if (!item.value) return
   return (
-    item.value.elementType == 'WORKER' ||
-    item.value.elementType == 'CONTROLLER' ||
-    item.value.elementClass == 'SnippetCollection'
+    item.value.elementType === 'WORKER' ||
+    item.value.elementType === 'CONTROLLER' ||
+    item.value.elementClass === 'SnippetCollection'
   )
 })
 const showControllers = computed(() => {
   if (!item.value) return
   return (
-    item.value.elementType == 'WORKER' ||
-    item.value.elementType == 'CONTROLLER' ||
-    item.value.elementClass == 'SnippetCollection'
+    item.value.elementType === 'WORKER' ||
+    item.value.elementType === 'CONTROLLER' ||
+    item.value.elementClass === 'SnippetCollection'
   )
 })
 const isMacOS = computed(() => /macintosh|mac os x/i.test(navigator.userAgent))
@@ -616,13 +616,13 @@ const removeElement = async () => {
 }
 
 .element-menu--top-option > span {
-  width: 100%;
   justify-content: space-between;
+  width: 100%;
 }
 
 .element-menu--shortcut-option > span {
-  width: 100%;
   justify-content: space-between;
+  width: 100%;
 }
 </style>
 
@@ -631,11 +631,12 @@ const removeElement = async () => {
   justify-content: flex-start;
   width: 100%;
   padding: 5px 16px !important;
+  font-family: inherit;
+  font-size: var(--el-font-size-base);
+  font-weight: inherit;
   line-height: 22px;
   color: var(--el-text-color-regular) !important;
-  font-size: var(--el-font-size-base);
-  font-family: inherit;
-  font-weight: inherit;
+
   &:hover {
     color: var(--el-color-primary) !important;
     background-color: var(--el-color-primary-light-9) !important;

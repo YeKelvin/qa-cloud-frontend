@@ -170,7 +170,7 @@ const addTreeNodePaddingBottom = (collectionNo) => {
 const handleNodeClick = (data) => {
   // 存储当前节点，用于刷新时保持高亮
   currentKey.value = data.elementNo
-  clearTimeout(clickTimer) //清除计时器
+  clearTimeout(clickTimer) // 清除计时器
   clickTimer = setTimeout(() => {
     pymeterStore.addTab({
       editorNo: data.elementNo,
@@ -189,7 +189,7 @@ const handleNodeClick = (data) => {
  * el-tree handler
  */
 const handleNodeDBClick = (node) => {
-  clearTimeout(clickTimer) //清除计时器
+  clearTimeout(clickTimer) // 清除计时器
   toggleNodeExpanded(node)
 }
 
@@ -310,7 +310,7 @@ const allowDrop = (draggingNode, dropNode, type) => {
  */
 const cutByShortcut = (e) => {
   if (e.repeat) return
-  if (e.key == 'x' && (isMacOS ? e.metaKey : e.ctrlKey)) {
+  if (e.key === 'x' && (isMacOS ? e.metaKey : e.ctrlKey)) {
     e.preventDefault() // 阻止浏览器默认快捷键
     // 获取当前节点数据
     const data = eltreeRef.value.getCurrentNode()
@@ -325,7 +325,7 @@ const cutByShortcut = (e) => {
  */
 const copyByShortcut = (e) => {
   if (e.repeat) return
-  if (e.key == 'c' && (isMacOS ? e.metaKey : e.ctrlKey)) {
+  if (e.key === 'c' && (isMacOS ? e.metaKey : e.ctrlKey)) {
     e.preventDefault() // 阻止浏览器默认快捷键
     // 获取当前节点数据
     const data = eltreeRef.value.getCurrentNode()
@@ -371,7 +371,7 @@ const debouncedPasteElement = debounce(
  */
 const pasteByShortcut = (e) => {
   if (e.repeat) return
-  if (e.key == 'v' && (isMacOS ? e.metaKey : e.ctrlKey)) {
+  if (e.key === 'v' && (isMacOS ? e.metaKey : e.ctrlKey)) {
     e.preventDefault()
     debouncedPasteElement()
   }
@@ -427,7 +427,7 @@ const debouncedDuplicateElement = debounce(
  */
 const duplicateByShortcut = async (e) => {
   if (e.repeat) return
-  if (e.key == 'd' && (isMacOS ? e.metaKey : e.ctrlKey)) {
+  if (e.key === 'd' && (isMacOS ? e.metaKey : e.ctrlKey)) {
     e.preventDefault()
     debouncedDuplicateElement()
   }
@@ -456,7 +456,7 @@ const debouncedToggleElementState = debounce(
  */
 const toggleStateByShortcut = (e) => {
   if (e.repeat) return
-  if (e.key == '/' && (isMacOS ? e.metaKey : e.ctrlKey)) {
+  if (e.key === '/' && (isMacOS ? e.metaKey : e.ctrlKey)) {
     e.preventDefault()
     debouncedToggleElementState()
   }
@@ -507,7 +507,7 @@ const deleteElement = debounce(
  */
 const deleteByShortcut = async (e) => {
   if (e.repeat) return
-  if (e.key == 'Delete') {
+  if (e.key === 'Delete') {
     e.preventDefault()
     deleteElement()
   }
@@ -523,9 +523,9 @@ defineExpose({
 <style lang="scss" scoped>
 .tree-item {
   display: flex;
+  flex: 1;
   align-items: center;
   justify-content: space-between;
-  flex: 1;
   padding-right: 8px;
 }
 

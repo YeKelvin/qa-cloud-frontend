@@ -83,7 +83,7 @@ const interrupt = (executionNo) => {
  * 判断是否展示中断按钮
  */
 const isShowInterruptBtn = (row) => {
-  return row.runningState == 'WAITING' || row.runningState == 'RUNNING' || row.runningState == 'ITERATING'
+  return row.runningState === 'WAITING' || row.runningState === 'RUNNING' || row.runningState === 'ITERATING'
 }
 
 /**

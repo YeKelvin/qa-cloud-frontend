@@ -142,7 +142,7 @@ onMounted(() => {
   if (createMode.value) return
   ElementService.queryElementInfo({ elementNo: elementNo.value }).then((response) => {
     elementInfo.value = response.result
-    if (response.result.property.ForeachController__type == 'CUSTOM') {
+    if (response.result.property.ForeachController__type === 'CUSTOM') {
       editorRef.value.setValue(response.result.property.ForeachController__iter)
     }
   })
@@ -151,7 +151,7 @@ onMounted(() => {
 watch(
   () => elementInfo.value.property.ForeachController__type,
   (val) => {
-    if (val == 'OBJECT') return
+    if (val === 'OBJECT') return
     nextTick(() => {
       editorRef.value.setValue(elementInfo.value.property.ForeachController__iter)
     })

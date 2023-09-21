@@ -15,13 +15,13 @@
   }
 
   .el-form {
-    width: 100%;
     display: flex;
     flex-direction: column;
+    width: 100%;
   }
 
   .el-tabs__nav-wrap {
-    &:after {
+    &::after {
       height: 1px;
     }
   }
@@ -32,16 +32,14 @@
 }
 
 .pymeter-footer__main-drawer {
-
   --el-drawer-padding-primary: none !important;
 
   .el-drawer__header {
-    padding: 0 !important;
-    margin-bottom: 0 !important;
-
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
+    padding: 0 !important;
+    margin-bottom: 0 !important;
 
     .el-divider--horizontal {
       margin: 0;

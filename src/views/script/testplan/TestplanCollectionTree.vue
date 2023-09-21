@@ -26,10 +26,10 @@
         >
           <template #default="{ node, data }">
             <span style="display: inline-flex; align-items: center">
-              <el-tag type="info" size="small" style="margin-right: 10px; width: 30px" disable-transitions round>
+              <el-tag type="info" size="small" style="width: 30px; margin-right: 10px" disable-transitions round>
                 {{ node.parent.childNodes.findIndex((item) => item.key == data.elementNo) + 1 }}
               </el-tag>
-              <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ node.label }}</span>
+              <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ node.label }}</span>
             </span>
           </template>
         </el-tree>
@@ -151,15 +151,16 @@ defineExpose({
 .tree-container {
   display: flex;
   height: 100%;
-
   padding: 10px;
   border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
+  box-shadow:
+    0 2px 4px rgb(0 0 0 / 12%),
+    0 0 6px rgb(0 0 0 / 4%);
 }
 
 :deep(.el-tree-node) {
-  margin-bottom: 5px;
   padding: 0 10px;
+  margin-bottom: 5px;
 }
 
 :deep(.el-tree-node__expand-icon) {
@@ -171,6 +172,7 @@ defineExpose({
   height: 20px;
   border-radius: 6px;
 }
+
 :deep(.el-checkbox__inner::after) {
   top: 0;
   left: 6px;
