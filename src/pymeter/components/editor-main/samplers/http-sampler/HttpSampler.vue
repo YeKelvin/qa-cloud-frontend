@@ -851,13 +851,13 @@ functions.modifyFn = modifyElement
   display: inline-flex;
   align-items: center;
   height: 30px;
-  line-height: 30px;
   margin-bottom: 5px;
+  line-height: 30px;
 }
 
 .raw-type {
-  margin-left: 40px;
   width: 90px;
+  margin-left: 40px;
 
   &.el-select {
     --el-select-disabled-border: none;
@@ -866,13 +866,13 @@ functions.modifyFn = modifyElement
   }
 
   :deep(.el-input__inner) {
-    background-color: #ffffff;
-    box-shadow: none;
     color: #409eff;
+    background-color: #fff;
+    box-shadow: none;
   }
 
   :deep(.el-input__wrapper) {
-    background-color: #ffffff;
+    background-color: #fff;
     box-shadow: none;
   }
 

@@ -1,4 +1,3 @@
-import { defineComponent, onBeforeMount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 export default defineComponent({

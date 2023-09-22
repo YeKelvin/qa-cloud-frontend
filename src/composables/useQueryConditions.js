@@ -1,5 +1,3 @@
-import { reactive } from 'vue'
-
 export default function useTablePagination(conditions) {
   const queryConditions = reactive(conditions)
 

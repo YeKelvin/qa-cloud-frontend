@@ -28,7 +28,7 @@
     </div>
 
     <!-- 主抽屉窗口 -->
-    <MainDrawer v-model="pymeterStore.showingFooterDrawer"></MainDrawer>
+    <MainDrawer v-model="pymeterStore.showingFooterDrawer" />
   </el-card>
 </template>
 
@@ -142,12 +142,11 @@ const clearAll = () => {
 <style lang="scss" scoped>
 :deep(.el-card__body) {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-
-  padding: 5px 20px;
+  justify-content: space-between;
   width: 100%;
   min-height: 30px;
+  padding: 5px 20px;
 }
 
 .l-container .el-button {

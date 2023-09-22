@@ -1,15 +1,15 @@
 import { defineConfig, loadEnv } from 'vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
-import { visualizer as Visualizer } from 'rollup-plugin-visualizer'
-import { createSvgIconsPlugin as SvgIconsPlugin } from 'vite-plugin-svg-icons'
+import { visualizer } from 'rollup-plugin-visualizer'
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 import path from 'path'
 import vue from '@vitejs/plugin-vue'
 import jsx from '@vitejs/plugin-vue-jsx'
 import AutoImport from 'unplugin-auto-import/vite'
-import Components from 'unplugin-vue-components/vite'
-import DefineOptions from 'unplugin-vue-define-options/vite'
 import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
+import VueComponents from 'unplugin-vue-components/vite'
+import VueDefineOptions from 'unplugin-vue-define-options/vite'
 import VueDevTools from 'vite-plugin-vue-devtools'
 
 export default ({ mode }) =>
@@ -40,7 +40,7 @@ export default ({ mode }) =>
           globalsPropValue: true
         }
       }),
-      Components({
+      VueComponents({
         resolvers: [
           // 自动注册图标组件
           IconsResolver({
@@ -50,15 +50,15 @@ export default ({ mode }) =>
           // ElementPlusResolver()
         ]
       }),
-      DefineOptions(),
+      VueDefineOptions(),
       Icons({
         autoInstall: true
       }),
-      SvgIconsPlugin({
+      createSvgIconsPlugin({
         iconDirs: [path.resolve(process.cwd(), 'src/assets/icons')],
         symbolId: 'icon-[dir]-[name]'
       }),
-      Visualizer()
+      visualizer()
     ],
     server: {
       // host: '0.0.0.0', // 设置外网访问

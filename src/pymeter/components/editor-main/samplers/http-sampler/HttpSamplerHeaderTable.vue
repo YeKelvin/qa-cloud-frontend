@@ -53,7 +53,7 @@ import SimpleTextarea from '@/components/simple-textarea/SimpleTextarea.vue'
 import { isBlankAll } from '@/utils/string-util'
 import { Delete } from '@element-plus/icons-vue'
 import { isEmpty } from 'lodash-es'
-import Sortable from 'sortablejs'
+import sortablejs from 'sortablejs'
 
 let sortable = null
 const emit = defineEmits(['update:data'])
@@ -107,14 +107,14 @@ const isBlankRow = (row) => {
 const enableDrop = () => {
   const el = eltableRef.value.$el.querySelector('.el-table__body tbody')
 
-  sortable = Sortable.create(el, {
+  sortable = sortablejs.create(el, {
     handle: '.sorted-handle',
     onEnd: ({ newIndex, oldIndex }) => {
       const data = rows.value
-      if (newIndex + 1 == data.length) {
+      if (newIndex + 1 === data.length) {
         newIndex -= 1
       }
-      if (newIndex != oldIndex) {
+      if (newIndex !== oldIndex) {
         const row = data.splice(oldIndex, 1)[0]
         data.splice(newIndex, 0, row)
       }
@@ -146,14 +146,14 @@ export default {
 }
 
 span {
-  white-space: pre-wrap;
   text-overflow: ellipsis;
   letter-spacing: 0.6px;
+  white-space: pre-wrap;
 }
 
 :deep(.el-card__header) {
-  user-select: none;
   padding: 5px 10px;
+  user-select: none;
 }
 
 :deep(.el-table__inner-wrapper::before) {

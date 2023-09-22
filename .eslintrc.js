@@ -15,12 +15,14 @@ module.exports = {
     defineExpose: true,
     defineOptions: true
   },
-  plugins: ['prettier', 'import'],
+  plugins: ['prettier', 'import', 'promise'],
   extends: [
     'standard',
+    'prettier',
     'eslint:recommended',
-    'plugin:vue/vue3-recommended',
+    'plugin:import/recommended',
     'plugin:prettier/recommended',
+    'plugin:vue/vue3-recommended',
     './.eslintrc-auto-import.json'
   ],
   parser: 'vue-eslint-parser',
@@ -30,7 +32,8 @@ module.exports = {
     ecmaFeatures: {
       jsx: true,
       tsx: true
-    }
+    },
+    vueFeatures: {}
   },
   overrides: [
     {
@@ -64,8 +67,33 @@ module.exports = {
     'space-before-function-paren': 0,
 
     // vue
+    'vue/no-v-html': 'off',
     'vue/require-default-prop': 'off',
-    'vue/multi-word-component-names': 'off', // 要求组件名称始终为 “-” 链接的单词
+    'vue/require-explicit-emits': 'off',
+    'vue/prefer-import-from-vue': 'off',
+    'vue/no-v-text-v-html-on-component': 'off',
+    'vue/singleline-html-element-content-newline': 'off',
+    'vue/multi-word-component-names': 'off',
+    'vue/max-attributes-per-line': [
+      'error',
+      {
+        singleline: {
+          max: 10
+        }
+      }
+    ],
+    'vue/html-self-closing': [
+      'error',
+      {
+        html: {
+          void: 'always',
+          normal: 'always',
+          component: 'always'
+        },
+        svg: 'always',
+        math: 'always'
+      }
+    ],
 
     // prettier
     'prettier/prettier': 'error',
@@ -76,6 +104,7 @@ module.exports = {
     'import/no-duplicates': 'error',
     'import/no-unresolved': [0],
     'import/no-absolute-path': 'off',
+    'import/no-named-as-default': 'off',
     'import/no-extraneous-dependencies': 'off'
   }
 }

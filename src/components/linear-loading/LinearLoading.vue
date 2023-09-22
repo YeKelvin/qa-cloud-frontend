@@ -1,17 +1,17 @@
 <template>
   <div class="linear-loader" style="opacity: 1">
-    <div class="linear-progress-bar indeterminate"></div>
+    <div class="linear-progress-bar indeterminate" />
   </div>
 </template>
 
 <style lang="scss" scoped>
 .linear-loader {
   position: relative;
-  overflow: hidden;
-  z-index: 2;
   top: -5px;
-  height: 2px;
+  z-index: 2;
   width: 98%;
+  height: 2px;
+  overflow: hidden;
 }
 
 .linear-loader .linear-progress-bar {
@@ -26,14 +26,15 @@
 
 .linear-loader .linear-progress-bar.indeterminate {
   width: 50%;
-  background-image: linear-gradient(78deg, #ffffff, #ff6c37 50%, #ffffff);
+  background-image: linear-gradient(78deg, #fff, #ff6c37 50%, #fff);
 }
 
 @keyframes loader-animation {
   0% {
     transform: translateX(-100%);
   }
-  to {
+
+  100% {
     transform: translateX(200%);
   }
 }

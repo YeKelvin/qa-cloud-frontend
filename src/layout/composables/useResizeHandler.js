@@ -1,4 +1,3 @@
-import { onBeforeMount, onMounted, onBeforeUnmount } from 'vue'
 import { useAppStore } from '@/store/app'
 
 const { body } = document

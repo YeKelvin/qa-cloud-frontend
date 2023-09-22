@@ -105,12 +105,11 @@ const toggleDrawerSize = () => {
 
 <style lang="scss" scoped>
 .drawer-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   width: 100%;
   padding: 5px 20px;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
 
 .l-container .el-button {

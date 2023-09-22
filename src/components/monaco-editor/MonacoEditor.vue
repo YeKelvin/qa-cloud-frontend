@@ -5,7 +5,6 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted, onUnmounted } from 'vue'
 import monaco from './monaco.base'
 import monacoOptions from './monaco.options'
 
@@ -263,14 +262,11 @@ defineExpose({
 
 <style lang="scss" scoped>
 .code-editor-container {
-  padding: 1px;
-
-  border: 1px solid #dcdfe6;
-  border-radius: 4px;
-
+  flex-grow: 1;
   width: 100%;
   height: v-bind(styleHeight);
-
-  flex-grow: 1;
+  padding: 1px;
+  border: 1px solid #dcdfe6;
+  border-radius: 4px;
 }
 </style>

@@ -50,7 +50,6 @@ import { usePyMeterStore } from '@/store/pymeter'
 import useElTree from '@/composables/useElTree'
 import ElementTreeItemName from './ElementTreeItemName.vue'
 import ElementTreeItemMenu from './ElementTreeItemMenu.vue'
-import { nextTick } from 'vue'
 
 let clickTimer = null
 const pymeterStore = usePyMeterStore()

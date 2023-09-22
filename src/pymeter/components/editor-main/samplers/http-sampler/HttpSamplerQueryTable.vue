@@ -69,11 +69,11 @@
 </template>
 
 <script setup>
-import { isEmpty } from 'lodash-es'
+import SimpleTextarea from '@/components/simple-textarea/SimpleTextarea.vue'
 import { isBlankAll } from '@/utils/string-util'
 import { Delete } from '@element-plus/icons-vue'
-import SimpleTextarea from '@/components/simple-textarea/SimpleTextarea.vue'
-import Sortable from 'sortablejs'
+import { isEmpty } from 'lodash-es'
+import sortablejs from 'sortablejs'
 
 let sortable = null
 const emit = defineEmits(['update:data'])
@@ -128,7 +128,7 @@ const isBlankRow = (row) => {
 const enableDrop = () => {
   const el = eltableRef.value.$el.querySelector('.el-table__body tbody')
 
-  sortable = Sortable.create(el, {
+  sortable = sortablejs.create(el, {
     handle: '.sorted-handle',
     onEnd: ({ newIndex, oldIndex }) => {
       const data = rows.value
