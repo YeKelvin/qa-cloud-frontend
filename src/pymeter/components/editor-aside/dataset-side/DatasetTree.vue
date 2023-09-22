@@ -10,7 +10,7 @@
     <template #default="{ node, data }">
       <span class="tree-item" @mouseenter="treeNodeMouseenter(node)" @mouseleave="treeNodeMouseleave()">
         <span class="tree-item-name-wrapper">
-          <span>
+          <span style="display: flex">
             <!-- 变量集类型标签 -->
             <span class="dataset-tag">
               <el-tag v-if="data.datasetType == 'GLOBAL'" type="danger" disable-transitions>全 局</el-tag>
@@ -51,7 +51,6 @@
     @hide="handleMenuHide"
   >
     <div style="display: flex; flex-direction: column">
-      <el-button link :disabled="disabledOperation" @click="renameDataset">编辑</el-button>
       <el-button link :disabled="disabledOperation" @click="modifyDataset">编辑</el-button>
       <el-button link :disabled="disabledOperation" @click="duplicateDataset">复制</el-button>
       <el-button link :disabled="disabledOperation" @click="copyDatasetToWorkspace">复制到空间</el-button>
@@ -105,6 +104,7 @@ const getBoundDatasetName = (datasetNo) => {
  * 编辑变量集
  */
 const modifyDataset = async () => {
+  console.log('operatingDatasetType.value: ', operatingDatasetType.value)
   if (operatingDatasetType.value === 'ENVIRONMENT') {
     renameDataset()
   } else {
