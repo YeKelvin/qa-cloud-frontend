@@ -119,7 +119,7 @@ const renameAndRebindDataset = async () => {
   const data = operatingNode.value.data
   closeMenu()
   let newName = data.datasetName
-  let newBinding = data.datasetBinding.datasetNo
+  let newBinding = data.datasetBinding?.datasetNo
   // 弹出名称对话框
   const cancelled = await ElMessageBox.confirm(null, {
     title: '编辑变量集',
