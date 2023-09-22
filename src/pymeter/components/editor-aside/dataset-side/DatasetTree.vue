@@ -14,6 +14,7 @@
             <!-- 变量集类型标签 -->
             <span class="dataset-tag">
               <el-tag v-if="data.datasetType == 'GLOBAL'" type="danger" disable-transitions>全 局</el-tag>
+              <el-tag v-if="data.datasetType == 'WORKSPACE'" type="danger" disable-transitions>空 间</el-tag>
               <el-tag v-if="data.datasetType == 'ENVIRONMENT'" disable-transitions>环 境</el-tag>
               <el-tag v-if="data.datasetType == 'CUSTOM'" type="warning" disable-transitions>自定义</el-tag>
             </span>
@@ -50,15 +51,12 @@
     @hide="handleMenuHide"
   >
     <div style="display: flex; flex-direction: column">
-      <el-button link :disabled="operatingDatasetType === 'GLOBAL'" @click="modifyDataset">编辑</el-button>
-      <el-button link :disabled="operatingDatasetType === 'GLOBAL'" @click="duplicateDataset">复制</el-button>
-      <el-button link :disabled="operatingDatasetType === 'GLOBAL'" @click="copyDatasetToWorkspace">
-        复制到空间
-      </el-button>
-      <el-button link :disabled="operatingDatasetType === 'GLOBAL'" @click="moveDatasetToWorkspace">
-        移动到空间
-      </el-button>
-      <el-button link :disabled="operatingDatasetType === 'GLOBAL'" @click="deleteDataset">删除</el-button>
+      <el-button link :disabled="disabledOperation" @click="renameDataset">编辑</el-button>
+      <el-button link :disabled="disabledOperation" @click="modifyDataset">编辑</el-button>
+      <el-button link :disabled="disabledOperation" @click="duplicateDataset">复制</el-button>
+      <el-button link :disabled="disabledOperation" @click="copyDatasetToWorkspace">复制到空间</el-button>
+      <el-button link :disabled="disabledOperation" @click="moveDatasetToWorkspace">移动到空间</el-button>
+      <el-button link :disabled="disabledOperation" @click="deleteDataset">删除</el-button>
     </div>
   </el-popover>
 </template>
@@ -89,6 +87,7 @@ const {
 const pymeterStore = usePyMeterStore()
 const workspaceStore = useWorkspaceStore()
 const operatingDatasetType = computed(() => operatingNode.value?.data?.datasetType)
+const disabledOperation = computed(() => ['GLOBAL', 'WORKSPACE'].includes(operatingDatasetType.value))
 
 /**
  * 关闭操作菜单
@@ -103,16 +102,27 @@ const getBoundDatasetName = (datasetNo) => {
 }
 
 /**
- * 重命名变量集
+ * 编辑变量集
  */
 const modifyDataset = async () => {
+  if (operatingDatasetType.value === 'ENVIRONMENT') {
+    renameDataset()
+  } else {
+    renameAndRebindDataset()
+  }
+}
+
+/**
+ * 重命名和重新绑定环境
+ */
+const renameAndRebindDataset = async () => {
   const data = operatingNode.value.data
   closeMenu()
   let newName = data.datasetName
   let newBinding = data.datasetBinding.datasetNo
   // 弹出名称对话框
   const cancelled = await ElMessageBox.confirm(null, {
-    title: '重命名变量集',
+    title: '编辑变量集',
     message: (
       <div>
         <NameInput modelValue={newName} onUpdate:modelValue={(val) => (newName = val)} />
@@ -130,6 +140,36 @@ const modifyDataset = async () => {
     datasetNo: data.datasetNo,
     datasetName: newName,
     datasetBinding: newBinding
+  })
+  // 重新查询列表
+  pymeterStore.queryDatasetAll()
+  // 重命名tab
+  pymeterStore.updateTab({ editorNo: data.datasetNo, editorName: newName })
+  // 成功提示
+  ElMessage({ message: '修改成功', type: 'info', duration: 2 * 1000 })
+}
+
+/**
+ * 重命名变量集
+ */
+const renameDataset = async () => {
+  const data = operatingNode.value.data
+  closeMenu()
+  let newName = data.datasetName
+  // 弹出名称对话框
+  const cancelled = await ElMessageBox.confirm(null, {
+    title: '重命名变量集',
+    message: <NameInput modelValue={newName} onUpdate:modelValue={(val) => (newName = val)} />,
+    confirmButtonText: '确定',
+    cancelButtonText: '取消'
+  })
+    .then(() => false)
+    .catch(() => true)
+  if (cancelled) return
+  // 修改变量集
+  await VariablesService.modifyVariableDataset({
+    datasetNo: data.datasetNo,
+    datasetName: newName
   })
   // 重新查询列表
   pymeterStore.queryDatasetAll()
