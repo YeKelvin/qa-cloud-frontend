@@ -5,16 +5,25 @@
       <Breadcrumb />
     </div>
 
-    <div class="three-column-flexbox" style="justify-content: center; color: #606266; font: 14px; font-family: inherit">
+    <div class="three-column-flexbox" style="justify-content: center; font: 14px; font-family: inherit; color: #606266">
       <!-- 空间选择器 -->
-      <span v-show="displayWorkspaceSelectorWhitelist.includes($route.path)">
-        <el-tag type="danger" hit disable-transitions>空间</el-tag>
+      <el-tag
+        v-show="displayWorkspaceWhitelist.includes($route.path)"
+        style="padding: 15px 10px"
+        hit
+        disable-transitions
+        :type="workspaceStore.workspaceNo ? 'info' : 'danger'"
+      >
         <WorkspaceSelect />
-      </span>
-      <!-- 空间组件打开按钮 -->
-      <el-button v-show="'/script/editor'.includes($route.path)" link @click="openWorkspaceComponents()">
-        <SvgIcon icon-name="navbar-workspace-settings" style="height: 1.5em; width: 1.5em" />
-      </el-button>
+        <!-- 空间组件打开按钮 -->
+        <el-button
+          v-show="workspaceStore.workspaceNo && '/script/editor'.includes($route.path)"
+          link
+          @click="openWorkspaceComponents()"
+        >
+          <SvgIcon icon-name="navbar-workspace-settings" style="width: 1.5em; height: 1.5em" />
+        </el-button>
+      </el-tag>
     </div>
 
     <div class="three-column-flexbox right-menu" style="justify-content: flex-end">
@@ -62,7 +71,7 @@ const userStore = useUserStore()
 const pymeterStore = usePyMeterStore()
 const workspaceStore = useWorkspaceStore()
 
-const displayWorkspaceSelectorWhitelist = [
+const displayWorkspaceWhitelist = [
   '/script/editor',
   '/script/testplan',
   '/system/workspace',
@@ -108,22 +117,21 @@ const logout = async () => {
 .navbar {
   display: flex;
   align-items: center;
-
   height: 50px;
   overflow: hidden;
   background: #fff;
-  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+  box-shadow: 0 1px 4px rgb(0 21 41 / 8%);
 }
 
 .hamburger-container {
-  cursor: pointer;
-  line-height: 46px;
   height: 100%;
+  line-height: 46px;
+  cursor: pointer;
   transition: background 0.3s;
   -webkit-tap-highlight-color: transparent;
 
   &:hover {
-    background: rgba(0, 0, 0, 0.025);
+    background: rgb(0 0 0 / 2.5%);
   }
 }
 
@@ -138,8 +146,8 @@ const logout = async () => {
 
 .right-menu-item {
   display: inline-block;
-  padding: 0 8px;
   height: 100%;
+  padding: 0 8px;
   font-size: 18px;
   color: #5a5e66;
   vertical-align: text-bottom;
@@ -149,17 +157,18 @@ const logout = async () => {
     transition: background 0.3s;
 
     &:hover {
-      background: rgba(0, 0, 0, 0.025);
+      background: rgb(0 0 0 / 2.5%);
     }
   }
 }
 
 .avatar-container {
   margin-right: 20px;
+
   .avatar-wrapper {
-    cursor: pointer;
     display: flex;
     align-items: flex-end;
+    cursor: pointer;
   }
 }
 

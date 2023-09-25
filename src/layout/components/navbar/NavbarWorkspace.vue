@@ -64,9 +64,9 @@ const filterNode = (value, data) => {
 
 <style lang="scss" scoped>
 .workspace-name {
-  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 :deep(.el-tree-node__content) {

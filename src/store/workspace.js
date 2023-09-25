@@ -14,7 +14,7 @@ export const useWorkspaceStore = defineStore('workspace', {
       /**
        * 当前选择的工作空间名称
        */
-      workspaceName: '工作空间',
+      workspaceName: '请选择工作空间',
 
       /**
        * 当前选择的工作空间作用域
@@ -65,7 +65,7 @@ export const useWorkspaceStore = defineStore('workspace', {
         if (this.workspaceNo !== '') {
           if (response.result.findIndex((item) => item.workspaceNo === this.workspaceNo) < 0) {
             this.workspaceNo = ''
-            this.workspaceName = '工作空间'
+            this.workspaceName = '请选择工作空间'
           }
         } else {
           // 如果当前未选择工作空间，清空已选择的脚本列表
