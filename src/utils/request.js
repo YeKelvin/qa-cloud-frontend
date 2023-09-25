@@ -1,9 +1,11 @@
-import axios from 'axios'
 import _ from 'lodash-es'
+import axios from 'axios'
+import { customAlphabet } from 'nanoid'
 
 import { ElMessageBox, ElMessage, ElLoading } from 'element-plus'
 import { getToken } from '@/utils/auth'
 import { useUserStore } from '@/store/user'
+import { useWorkspaceStore } from '@/store/workspace'
 
 /**
  * TODO: 优化axios，参考以下网址
@@ -11,6 +13,8 @@ import { useUserStore } from '@/store/user'
  * https://segmentfault.com/a/1190000027078266
  * https://blog.csdn.net/lhjuejiang/article/details/81515839
  */
+
+const nanoid = customAlphabet('1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ', 26)
 
 // loading对象
 let loading
@@ -61,6 +65,10 @@ const toHideLoading = _.debounce(() => {
 // 请求拦截器
 service.interceptors.request.use(
   (config) => {
+    config.headers['x-trace-id'] = nanoid()
+    if (useWorkspaceStore().workspaceNo) {
+      config.headers['x-workspace-no'] = useWorkspaceStore().workspaceNo
+    }
     if (useUserStore().token) {
       config.headers['access-token'] = getToken()
     }
