@@ -104,7 +104,6 @@ const getBoundDatasetName = (datasetNo) => {
  * 编辑变量集
  */
 const modifyDataset = async () => {
-  console.log('operatingDatasetType.value: ', operatingDatasetType.value)
   if (operatingDatasetType.value === 'ENVIRONMENT') {
     renameDataset()
   } else {

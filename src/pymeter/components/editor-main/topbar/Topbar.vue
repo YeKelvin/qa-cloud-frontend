@@ -11,7 +11,7 @@
         <DatasetSelect :show="show" />
         <!-- 查看变量按钮 -->
         <el-button
-          style="padding-right: 5px; outline: none; font-size: 16px"
+          style="padding-right: 5px; font-size: 16px; outline: none"
           type="primary"
           link
           :icon="View"
@@ -80,25 +80,24 @@ const show = computed(() => !isEmpty(componentName.value))
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
-
   width: 100%;
 }
 
 .component-name {
-  font-weight: bold;
-  font-size: 16px;
-  margin-left: 4px;
-  box-shadow: -4px 0 0 0 #f56c6c;
   padding: 0 10px;
+  margin-left: 4px;
+  font-size: 16px;
+  font-weight: bold;
   user-select: none;
+  box-shadow: -4px 0 0 0 #f56c6c;
 }
 
 .dataset-container {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  border-radius: 4px;
+  justify-content: space-between;
   border: 1px solid #dcdfe6;
+  border-radius: 4px;
 }
 
 .el-button--text {

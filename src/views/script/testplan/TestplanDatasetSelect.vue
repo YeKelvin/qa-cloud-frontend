@@ -9,6 +9,7 @@
       <!-- 变量选择下拉框 -->
       <el-select
         v-model="formData.datasets"
+        popper-class="dataset-popper"
         placeholder="环境 / 变量"
         tag-type="danger"
         style="width: 100%"
@@ -26,7 +27,7 @@
             <span style="display: flex; align-items: center; justify-content: space-between">
               <span>{{ item.datasetName }}</span>
               <span>
-                <el-tag v-if="item.datasetBinding" type="info" disable-transitions>
+                <el-tag v-if="item.datasetBinding" type="info" size="small" style="margin: 5px" disable-transitions>
                   {{ getBoundDatasetName(item.datasetBinding) }}
                 </el-tag>
               </span>
@@ -154,5 +155,13 @@ const getBoundDatasetName = (datasetNo) => {
   return results ? results[0].datasetName : ''
 }
 </script>
+
+<style lang="scss">
+.dataset-popper {
+  .el-tag {
+    color: inherit;
+  }
+}
+</style>
 
 <style lang="scss" scoped></style>

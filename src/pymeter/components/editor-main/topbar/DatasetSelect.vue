@@ -3,11 +3,12 @@
     v-model="selectedDatasets"
     popper-class="dataset-select-popper"
     placeholder="环境 / 变量"
+    style="width: 260px"
     tag-type="danger"
     multiple
+    clearable
     collapse-tags
     collapse-tags-tooltip
-    clearable
   >
     <!-- 自定义变量 -->
     <el-option-group v-if="!isEmpty(filteredCustomDatasetList)" key="custom" label="自定义">
@@ -20,7 +21,7 @@
         <span style="display: flex; align-items: center; justify-content: space-between">
           <span>{{ item.datasetName }}</span>
           <span>
-            <el-tag v-if="item.datasetBinding" type="info" disable-transitions>
+            <el-tag v-if="item.datasetBinding" type="info" size="small" style="margin: 5px" disable-transitions>
               {{ getBoundDatasetName(item.datasetBinding) }}
             </el-tag>
           </span>
@@ -96,7 +97,11 @@ const getBoundDatasetName = (datasetNo) => {
 
 <style lang="scss">
 .dataset-select-popper {
-  width: 214.5px;
+  width: calc(260px + 25px);
+
+  .el-tag {
+    color: inherit;
+  }
 }
 </style>
 
