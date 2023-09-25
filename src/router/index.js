@@ -12,7 +12,7 @@ export const constantRoutes = [
     hidden: true,
     children: [
       {
-        component: () => import('@/views/redirect'),
+        component: () => import('@/pages/redirect'),
         path: '/redirect/:path(.*)'
       }
     ]
@@ -20,19 +20,19 @@ export const constantRoutes = [
 
   {
     path: '/login',
-    component: () => import('@/views/login/Login.vue'),
+    component: () => import('@/pages/login/Login.vue'),
     hidden: true
   },
 
   {
     path: '/401',
-    component: () => import('@/views/error/401.vue'),
+    component: () => import('@/pages/error/401.vue'),
     hidden: true
   },
 
   {
     path: '/404',
-    component: () => import('@/views/error/404.vue'),
+    component: () => import('@/pages/error/404.vue'),
     hidden: true
   },
 
@@ -43,7 +43,7 @@ export const constantRoutes = [
     redirect: '/dashboard',
     children: [
       {
-        component: () => import('@/views/dashboard'),
+        component: () => import('@/pages/dashboard'),
         path: 'dashboard',
         name: 'Dashboard',
         meta: { title: '首页', icon: 'sidebar-home' }
@@ -56,7 +56,7 @@ export const constantRoutes = [
     component: Layout,
     children: [
       {
-        component: () => import('@/views/mine/MyDetails.vue'),
+        component: () => import('@/pages/mine/MyDetails.vue'),
         path: 'details',
         name: 'MyDetails',
         meta: { title: '个人中心' },
@@ -80,27 +80,27 @@ export const constantRoutes = [
         meta: { title: '脚本编辑', icon: 'sidebar-editor' }
       },
       {
-        component: () => import('@/views/script/testplan/Testplan.vue'),
+        component: () => import('@/pages/script/testplan/Testplan.vue'),
         path: 'testplan',
         name: 'TestplanManager',
         meta: { title: '计划管理', icon: 'sidebar-testplan' }
       },
       {
-        component: () => import('@/views/script/testplan/TestplanEditor.vue'),
+        component: () => import('@/pages/script/testplan/TestplanEditor.vue'),
         path: 'testplan/editor',
         name: 'TestplanEditor',
         meta: { title: '测试计划', activeMenu: '/script/testplan' },
         hidden: true
       },
       {
-        component: () => import('@/views/script/testplan/TestplanExecutionDetails.vue'),
+        component: () => import('@/pages/script/testplan/TestplanExecutionDetails.vue'),
         path: 'testplan/execution/details',
         name: 'ExecutionDetails',
         meta: { title: '计划详情', activeMenu: '/script/testplan' },
         hidden: true
       },
       {
-        component: () => import('@/views/script/report/Report.vue'),
+        component: () => import('@/pages/script/report/Report.vue'),
         path: 'report',
         name: 'TestReport',
         meta: { title: '测试报告', activeMenu: '/script/testplan' },
@@ -118,7 +118,7 @@ export const constantRoutes = [
     meta: { title: '定时任务', icon: 'sidebar-schedule' },
     children: [
       {
-        component: () => import('@/views/schedule/task/Task.vue'),
+        component: () => import('@/pages/schedule/task/Task.vue'),
         path: 'task',
         name: 'Task',
         meta: { title: '任务管理', icon: 'sidebar-schedule-task' }
@@ -142,25 +142,25 @@ export const asyncRoutes = [
     meta: { title: '系统管理', icon: 'sidebar-setting', roles: ['SYSTEM'] },
     children: [
       {
-        component: () => import('@/views/system/user/User.vue'),
+        component: () => import('@/pages/system/user/User.vue'),
         path: 'user',
         name: 'User',
         meta: { title: '用户管理', icon: 'sidebar-user' }
       },
       {
-        component: () => import('@/views/system/group/Group.vue'),
+        component: () => import('@/pages/system/group/Group.vue'),
         path: 'group',
         name: 'Group',
         meta: { title: '分组管理', icon: 'sidebar-group' }
       },
       {
-        component: () => import('@/views/system/role/Role.vue'),
+        component: () => import('@/pages/system/role/Role.vue'),
         path: 'role',
         name: 'Role',
         meta: { title: '角色管理', icon: 'sidebar-role' }
       },
       {
-        component: () => import('@/views/system/role/RolePermissions.vue'),
+        component: () => import('@/pages/system/role/RolePermissions.vue'),
         path: 'role/permissions',
         name: 'RolePermissions',
         meta: { title: '角色权限', activeMenu: '/system/role' },
@@ -170,17 +170,17 @@ export const asyncRoutes = [
         path: 'workspace',
         name: 'Workspace',
         meta: { title: '空间管理', icon: 'sidebar-workspace' },
-        component: () => import('@/views/system/workspace/Workspace.vue')
+        component: () => import('@/pages/system/workspace/Workspace.vue')
       },
       {
         path: 'workspace/restrictions',
         name: 'WorkspaceRestrictions',
         meta: { title: '空间管理', activeMenu: '/system/workspace' },
-        component: () => import('@/views/system/workspace/WorkspaceRestrictions.vue'),
+        component: () => import('@/pages/system/workspace/WorkspaceRestrictions.vue'),
         hidden: true
       },
       {
-        component: () => import('@/views/system/message/NoticeRobot.vue'),
+        component: () => import('@/pages/system/message/NoticeRobot.vue'),
         path: 'notice/robot',
         name: 'NoticeRobot',
         meta: { title: '消息管理', icon: 'sidebar-notification' }
@@ -197,13 +197,13 @@ export const asyncRoutes = [
     meta: { title: '日志管理', icon: 'sidebar-log', roles: ['SYSTEM'] },
     children: [
       {
-        component: () => import('@/views/log/restapi/RestAPILog.vue'),
+        component: () => import('@/pages/log/restapi/RestAPILog.vue'),
         path: 'restapi',
         name: 'RestAPILog',
         meta: { title: '请求日志', icon: 'sidebar-api' }
       },
       {
-        component: () => import('@/views/log/login/LoginLog.vue'),
+        component: () => import('@/pages/log/login/LoginLog.vue'),
         path: 'login',
         name: 'LoginLog',
         meta: { title: '登录日志', icon: 'sidebar-user' }
@@ -220,13 +220,13 @@ export const asyncRoutes = [
     meta: { title: '开放平台', icon: 'sidebar-opencenter', roles: ['SYSTEM'] },
     children: [
       {
-        component: () => import('@/views/opencenter/application/Application.vue'),
+        component: () => import('@/pages/opencenter/application/Application.vue'),
         path: 'application',
         name: 'Application',
         meta: { title: '应用管理', icon: 'sidebar-application' }
       },
       {
-        component: () => import('@/views/opencenter/apilog/OpenAPILog.vue'),
+        component: () => import('@/pages/opencenter/apilog/OpenAPILog.vue'),
         path: 'apilog',
         name: 'APILog',
         meta: { title: '接口日志', icon: 'sidebar-log' }
