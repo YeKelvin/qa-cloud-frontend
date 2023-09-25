@@ -233,7 +233,7 @@ const queryElementsTree = () => {
 const openNewCollectionTab = () => {
   pymeterStore.addTab({
     editorNo: Date.now().toString(),
-    editorName: 'New Script',
+    editorName: '新建集合',
     editorComponent: 'TestCollection',
     editorMode: 'CREATE'
   })
@@ -245,7 +245,7 @@ const openNewCollectionTab = () => {
 const openNewSnippetTab = () => {
   pymeterStore.addTab({
     editorNo: Date.now().toString(),
-    editorName: 'New Snippet',
+    editorName: '新建片段',
     editorComponent: 'SnippetCollection',
     editorMode: 'CREATE'
   })
@@ -264,9 +264,8 @@ const expandAll = (expand) => {
   display: flex;
   flex: 1;
   flex-direction: column;
-
-  height: 100%;
   width: 100%;
+  height: 100%;
 
   .el-divider--horizontal {
     width: 95%;
@@ -276,16 +275,16 @@ const expandAll = (expand) => {
 
 .collection-list-container {
   display: inline-flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   padding: 5px 10px;
 }
 
 .operation-container {
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
   align-items: center;
+  justify-content: space-evenly;
 
   .el-button--text {
     padding-top: 6px;

@@ -212,7 +212,7 @@ const elementFormRules = {
 }
 const elementInfo = ref({
   elementNo: props.editorNo,
-  elementName: 'Collection',
+  elementName: '测试集合',
   elementRemark: '',
   elementType: 'COLLECTION',
   elementClass: 'TestCollection',
