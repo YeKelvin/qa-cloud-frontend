@@ -88,7 +88,7 @@
       <!-- 请求头 -->
       <div v-if="showHeadersTab" class="tab-pane">
         <!-- 请求头模板 -->
-        <HTTPHeaderTemplate v-model="selectedHeaderTemplates" :edit-mode="editMode" />
+        <HTTPHeaderTemplate v-model="elementInfo.attributes.header_template_refs" :edit-mode="editMode" />
         <!-- 请求头表格 -->
         <HTTPHeaderTable v-model:data="headerItems" :edit-mode="editMode" />
       </div>
@@ -340,6 +340,9 @@ const elementInfo = ref({
     HTTPSampler__follow_redirects: 'false',
     HTTPSampler__connect_timeout: '',
     HTTPSampler__response_timeout: ''
+  },
+  attributes: {
+    header_template_refs: []
   }
 })
 const elementNo = computed(() => elementInfo.value.elementNo)
@@ -373,7 +376,6 @@ const runningStrategy = ref({
 })
 
 // header相关属性
-const selectedHeaderTemplates = ref([])
 const { headerItems, headerData, setContentType, getContentType, removeContentType } = useHTTPHeader()
 
 // query相关属性
@@ -410,11 +412,11 @@ const showSettingsTab = computed(() => activeTabName.value === 'SETTINGS')
 const hiddenHeadersDot = computed(() => {
   const headers = headerItems.value
   if (headers.length === 0) {
-    return isEmpty(selectedHeaderTemplates.value)
+    return isEmpty(elementInfo.value.attributes.header_template_refs)
   }
   if (headers.length === 1) {
     const item = headers[0]
-    if (isEmpty(item.name) && isEmpty(item.value)) return isEmpty(selectedHeaderTemplates.value)
+    if (isEmpty(item.name) && isEmpty(item.value)) return isEmpty(elementInfo.value.attributes.header_template_refs)
   }
   return false
 })
@@ -512,10 +514,6 @@ const query = (_elementNo_ = elementNo.value, focus = true) => {
     componentList.value = response.result
     setComponentsByType()
     sortComponents()
-  })
-  // 查询元素关联的请求头模板列表
-  ElementService.queryHttpheaderTemplateRefs({ elementNo: _elementNo_ }).then((response) => {
-    selectedHeaderTemplates.value = response.result
   })
 }
 
@@ -769,10 +767,9 @@ const modifyElement = async (close = false) => {
   // 更新元素属性
   updateElementProperty()
   // 更新元素
-  await ElementService.modifyHttpSampler({
+  await ElementService.modifyElement({
     ...elementInfo.value,
-    componentList: pendingSubmitComponentList.value,
-    headerTemplates: selectedHeaderTemplates.value
+    componentList: pendingSubmitComponentList.value
   })
   // 无需关闭 tab
   if (!close) {
@@ -805,14 +802,11 @@ const createElement = async (close = false) => {
   // 更新元素属性
   updateElementProperty()
   // 新增元素
-  const response = await ElementService.createHttpSampler({
+  const response = await ElementService.createElementChild({
     rootNo: props.metadata.rootNo,
     parentNo: props.metadata.parentNo,
-    child: {
-      ...elementInfo.value,
-      componentList: pendingSubmitComponentList.value,
-      headerTemplates: selectedHeaderTemplates.value
-    }
+    componentList: pendingSubmitComponentList.value,
+    ...elementInfo.value
   })
   // 无需关闭 tab
   if (!close) {

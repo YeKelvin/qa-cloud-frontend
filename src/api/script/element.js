@@ -16,17 +16,13 @@ export const queryElementsChildren = (params) =>
     paramsSerializer: { indexes: null }
   })
 
+export const queryElementComponents = (params) => request.get('/script/element/components', { params })
+
 export const createCollection = (data) => request.post('/script/collection', data)
 
 export const createElementChild = (data) => request.post('/script/element/child', data)
 
-export const createElementChildren = (data) => request.post('/script/element/children', data)
-
-export const createHttpSampler = (data) => request.post('/script/element/http/sampler', data)
-
 export const modifyElement = (data) => request.put('/script/element', data)
-
-export const modifyHttpSampler = (data) => request.put('/script/element/http/sampler', data)
 
 export const removeElement = (data) => request.delete('/script/element', { data })
 
@@ -39,19 +35,6 @@ export const toggleElementState = (data) => request.put('/script/element/state/t
 export const moveElement = (data) => request.post('/script/element/move', data)
 
 export const duplicateElement = (data) => request.post('/script/element/duplicate', data)
-
-export const queryHttpheaderTemplateRefs = (params) =>
-  request.get('/script/element/httpheader/template/refs', { params })
-
-export const createHttpheaderTemplateByRefs = (data) => request.post('/script/element/httpheader/template/refs', data)
-
-export const modifyHttpheaderTemplateByRefs = (data) => request.put('/script/element/httpheader/template/refs', data)
-
-export const queryElementComponents = (params) => request.get('/script/element/components', { params })
-
-export const createElementComponents = (data) => request.post('/script/element/components', data)
-
-export const modifyElementComponents = (data) => request.put('/script/element/components', data)
 
 export const pasteElement = (data) => request.post('/script/element/paste', data)
 

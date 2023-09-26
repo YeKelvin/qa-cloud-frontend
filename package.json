@@ -52,14 +52,14 @@
     "vuedraggable": "4.1.0"
   },
   "devDependencies": {
-    "@babel/core": "7.22.20",
+    "@babel/core": "7.23.0",
     "@babel/eslint-parser": "7.22.15",
     "@types/echarts": "4.9.19",
     "@types/lodash-es": "4.17.9",
     "@types/mousetrap": "1.6.11",
     "@types/nprogress": "0.2.1",
     "@types/qs": "6.9.8",
-    "@types/sortablejs": "1.15.2",
+    "@types/sortablejs": "1.15.3",
     "@vitejs/plugin-vue": "4.3.4",
     "@vitejs/plugin-vue-jsx": "3.0.2",
     "@vue/compiler-sfc": "3.3.4",

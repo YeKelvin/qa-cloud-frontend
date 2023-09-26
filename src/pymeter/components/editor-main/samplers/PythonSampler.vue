@@ -33,7 +33,7 @@
           <el-button
             v-show="queryMode"
             type="danger"
-            style="margin-left: 10px; width: 140px; min-width: 140px; max-width: 140px"
+            style="width: 140px; min-width: 140px; max-width: 140px; margin-left: 10px"
             @click="executeSampler(elementNo)"
           >
             <SvgIcon icon-name="pymeter-send" style="margin-right: 5px" />
@@ -175,10 +175,10 @@ const createElement = async (close = false) => {
     return
   }
   // 新增元素
-  const response = await ElementService.createElementChildren({
+  const response = await ElementService.createElementChild({
     rootNo: props.metadata.rootNo,
     parentNo: props.metadata.parentNo,
-    children: [elementInfo.value]
+    ...elementInfo.value
   })
   // 无需关闭 tab
   if (!close) {

@@ -190,21 +190,21 @@ const dictComprehensions = () => {
 
 .snippet-title {
   padding: 0 10px;
-  color: #606266;
   font-weight: bold;
+  color: #606266;
 }
 
 .snippet-code-list {
-  margin: 0;
   padding: 10px;
+  margin: 0;
 
   li {
+    padding-bottom: 5px;
+    font-family: inherit;
+    font-size: inherit;
+    color: #409eff;
     list-style-type: none;
     cursor: pointer;
-    color: #409eff;
-    font-size: inherit;
-    font-family: inherit;
-    padding-bottom: 5px;
   }
 }
 </style>

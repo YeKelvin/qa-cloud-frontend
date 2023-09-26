@@ -331,10 +331,10 @@ const createElement = async (close = false) => {
   // 校验参数
   if (!checkParameter()) return
   // 新增元素
-  const response = await ElementService.createElementChildren({
+  const response = await ElementService.createElementChild({
     rootNo: props.metadata.rootNo,
     parentNo: props.metadata.parentNo,
-    children: [elementInfo.value]
+    ...elementInfo.value
   })
   // 无需关闭 tab
   if (!close) {
