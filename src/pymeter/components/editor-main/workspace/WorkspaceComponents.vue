@@ -121,11 +121,11 @@ const prevProcessorList = ref([])
 const postProcessorList = ref([])
 const testAssertionList = ref([])
 const pendingSubmitComponentList = computed(() => {
-  // 添加 sortNumber 属性
-  configuratorList.value.forEach((item, index) => (item.sortNumber = index + 1))
-  prevProcessorList.value.forEach((item, index) => (item.sortNumber = index + 1))
-  postProcessorList.value.forEach((item, index) => (item.sortNumber = index + 1))
-  testAssertionList.value.forEach((item, index) => (item.sortNumber = index + 1))
+  // 添加 elementIndex 属性
+  configuratorList.value.forEach((item, index) => (item.elementIndex = index + 1))
+  prevProcessorList.value.forEach((item, index) => (item.elementIndex = index + 1))
+  postProcessorList.value.forEach((item, index) => (item.elementIndex = index + 1))
+  testAssertionList.value.forEach((item, index) => (item.elementIndex = index + 1))
   return [...configuratorList.value, ...prevProcessorList.value, ...postProcessorList.value, ...testAssertionList.value]
 })
 
@@ -156,7 +156,7 @@ const query = () => {
         return
       }
     })
-    // 根据 sortNumber 排序
+    // 根据 elementIndex 排序
     sortComponentList()
   })
   // 查询空间组件设置
@@ -170,10 +170,10 @@ const query = () => {
 }
 
 const sortComponentList = () => {
-  // 根据 sortNumber 排序
-  prevProcessorList.value.sort((a, b) => a.sortNumber - b.sortNumber)
-  postProcessorList.value.sort((a, b) => a.sortNumber - b.sortNumber)
-  testAssertionList.value.sort((a, b) => a.sortNumber - b.sortNumber)
+  // 根据 elementIndex 排序
+  prevProcessorList.value.sort((a, b) => a.elementIndex - b.elementIndex)
+  postProcessorList.value.sort((a, b) => a.elementIndex - b.elementIndex)
+  testAssertionList.value.sort((a, b) => a.elementIndex - b.elementIndex)
 }
 
 const save = async () => {

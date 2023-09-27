@@ -391,10 +391,10 @@ const prevProcessorComponentList = ref([])
 const postProcessorComponentList = ref([])
 const testAssertionComponentList = ref([])
 const pendingSubmitComponentList = computed(() => {
-  // 添加 sortNumber 属性
-  prevProcessorComponentList.value.forEach((item, index) => (item.sortNumber = index + 1))
-  postProcessorComponentList.value.forEach((item, index) => (item.sortNumber = index + 1))
-  testAssertionComponentList.value.forEach((item, index) => (item.sortNumber = index + 1))
+  // 添加 elementIndex 属性
+  prevProcessorComponentList.value.forEach((item, index) => (item.elementIndex = index + 1))
+  postProcessorComponentList.value.forEach((item, index) => (item.elementIndex = index + 1))
+  testAssertionComponentList.value.forEach((item, index) => (item.elementIndex = index + 1))
   // 组合成一个数组
   return [...prevProcessorComponentList.value, ...postProcessorComponentList.value, ...testAssertionComponentList.value]
 })
@@ -540,12 +540,12 @@ const setComponentsByType = () => {
 }
 
 /**
- * 根据 sortNumber 排序
+ * 根据 elementIndex 排序
  */
 const sortComponents = () => {
-  prevProcessorComponentList.value.sort((a, b) => a.sortNumber - b.sortNumber)
-  postProcessorComponentList.value.sort((a, b) => a.sortNumber - b.sortNumber)
-  testAssertionComponentList.value.sort((a, b) => a.sortNumber - b.sortNumber)
+  prevProcessorComponentList.value.sort((a, b) => a.elementIndex - b.elementIndex)
+  postProcessorComponentList.value.sort((a, b) => a.elementIndex - b.elementIndex)
+  testAssertionComponentList.value.sort((a, b) => a.elementIndex - b.elementIndex)
 }
 
 /**

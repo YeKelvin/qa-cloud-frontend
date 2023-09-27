@@ -197,12 +197,12 @@ const handleNodeDBClick = (node) => {
  */
 const handleNodeDrop = (draggingNode, dropNode, dropType) => {
   let targetParentNo = 0
-  let targetSortNo = 0
+  let targetIndex = 0
 
   // 跨脚本拖曳
   const over = draggingNode.data.rootNo !== dropNode.data.rootNo
   // 移动的方向
-  let moveDirection = draggingNode.data.sortNo > dropNode.data.sortNo ? 'UP' : 'DOWN'
+  let moveDirection = draggingNode.data.elementIndex > dropNode.data.elementIndex ? 'UP' : 'DOWN'
   if (over) {
     moveDirection = 'UP'
   }
@@ -210,15 +210,15 @@ const handleNodeDrop = (draggingNode, dropNode, dropType) => {
   switch (dropType) {
     case 'inner':
       targetParentNo = dropNode.data.elementNo
-      targetSortNo = dropNode.childNodes.length
+      targetIndex = dropNode.childNodes.length
       break
     case 'before':
       targetParentNo = dropNode.parent.data.elementNo
-      targetSortNo = moveDirection === 'UP' ? dropNode.data.sortNo : dropNode.data.sortNo - 1
+      targetIndex = moveDirection === 'UP' ? dropNode.data.elementIndex : dropNode.data.elementIndex - 1
       break
     case 'after':
       targetParentNo = dropNode.parent.data.elementNo
-      targetSortNo = moveDirection === 'UP' ? dropNode.data.sortNo + 1 : dropNode.data.sortNo
+      targetIndex = moveDirection === 'UP' ? dropNode.data.elementIndex + 1 : dropNode.data.elementIndex
       break
     default:
       return
@@ -228,7 +228,7 @@ const handleNodeDrop = (draggingNode, dropNode, dropType) => {
     sourceNo: draggingNode.data.elementNo,
     targetRootNo: dropNode.data.rootNo,
     targetParentNo: targetParentNo,
-    targetSortNo: targetSortNo
+    targetIndex: targetIndex
   }).then(() => {
     queryElementsTree()
   })

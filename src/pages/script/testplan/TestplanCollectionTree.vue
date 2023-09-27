@@ -136,7 +136,10 @@ const getCheckedCollections = () => {
   const nodes = eltreeRef.value.getCheckedNodes()
   const collectionList = []
   for (let i = 0, len = nodes.length; i < len; i++) {
-    collectionList.push({ sortNo: i, elementNo: nodes[i].elementNo })
+    collectionList.push({
+      elementNo: nodes[i].elementNo,
+      elementIndex: i
+    })
   }
   return collectionList
 }
