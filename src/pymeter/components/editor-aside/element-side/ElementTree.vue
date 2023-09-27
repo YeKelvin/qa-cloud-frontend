@@ -58,6 +58,7 @@ const props = defineProps({
 })
 const elementList = ref([])
 const pendingPaste = ref(null)
+const draggingParentNo = ref(null)
 const isMacOS = computed(() => /macintosh|mac os x/i.test(navigator.userAgent))
 const {
   eltreeRef,
@@ -199,14 +200,14 @@ const handleNodeDrop = (draggingNode, dropNode, dropType) => {
   let targetParentNo = 0
   let targetIndex = 0
 
-  // 跨脚本拖曳
-  const over = draggingNode.data.rootNo !== dropNode.data.rootNo
+  // 跨父级拖曳
+  const over = draggingParentNo.value !== dropNode.parent.data.elementNo
   // 移动的方向
   let moveDirection = draggingNode.data.elementIndex > dropNode.data.elementIndex ? 'UP' : 'DOWN'
   if (over) {
     moveDirection = 'UP'
   }
-
+  // 计算排序索引
   switch (dropType) {
     case 'inner':
       targetParentNo = dropNode.data.elementNo
@@ -223,7 +224,7 @@ const handleNodeDrop = (draggingNode, dropNode, dropType) => {
     default:
       return
   }
-
+  // 提交后端
   ElementService.moveElement({
     sourceNo: draggingNode.data.elementNo,
     targetRootNo: dropNode.data.rootNo,
@@ -231,6 +232,7 @@ const handleNodeDrop = (draggingNode, dropNode, dropType) => {
     targetIndex: targetIndex
   }).then(() => {
     queryElementsTree()
+    draggingParentNo.value = null
   })
 }
 
@@ -241,6 +243,8 @@ const handleNodeDrop = (draggingNode, dropNode, dropType) => {
 const allowDrag = (draggingNode) => {
   // Collection 不允许拖拽
   if (draggingNode.data.elementType === 'COLLECTION') return false
+  // 记录拖拽节点的父元素编号，因为拖拽的时候拿不到
+  draggingParentNo.value = draggingNode.parent.data.elementNo
   return true
 }
 
