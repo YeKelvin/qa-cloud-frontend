@@ -14,13 +14,13 @@
       </el-form-item>
 
       <!-- 元素备注 -->
-      <el-form-item label="备注：" prop="elementRemark">
-        <el-input v-model="elementInfo.elementRemark" placeholder="元素备注" clearable :readonly="queryMode" />
+      <el-form-item label="备注：" prop="elementDesc">
+        <el-input v-model="elementInfo.elementDesc" placeholder="元素备注" clearable :readonly="queryMode" />
       </el-form-item>
 
       <!-- 数据库选择框 -->
-      <el-form-item label="数据库：" prop="attributes.engine_no">
-        <el-select v-model="elementInfo.attributes.engine_no" style="width: 100%" :disabled="queryMode">
+      <el-form-item label="数据库：" prop="elementAttrs.engine_no">
+        <el-select v-model="elementInfo.elementAttrs.engine_no" style="width: 100%" :disabled="queryMode">
           <el-option v-for="item in engineList" :key="item.dbNo" :label="item.dbName" :value="item.dbNo">
             <span class="database-type-option">
               <span>{{ item.dbName }}</span>
@@ -156,22 +156,22 @@ const elementNo = ref(props.editorNo)
 const elementInfo = ref({
   elementNo: '',
   elementName: 'SQL请求',
-  elementRemark: '',
+  elementDesc: '',
   elementType: 'SAMPLER',
   elementClass: 'SQLSampler',
+  elementAttrs: {
+    engine_no: ''
+  },
   property: {
     SQLSampler__statement: '',
     SQLSampler__limit: '',
     SQLSampler__result_name: '',
     SQLSampler__query_timeout: ''
-  },
-  attributes: {
-    engine_no: ''
   }
 })
 const elementFormRules = reactive({
   elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }],
-  'attributes.engine_no': [{ required: true, message: '数据库编号不能为空', trigger: 'blur' }],
+  'elementAttrs.engine_no': [{ required: true, message: '数据库编号不能为空', trigger: 'blur' }],
   'property.SQLSampler__statement': [{ required: true, message: 'SQL不能为空', trigger: 'blur' }]
 })
 const engineList = ref([])

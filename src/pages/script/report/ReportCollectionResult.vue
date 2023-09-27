@@ -2,8 +2,8 @@
   <div class="details-container">
     <el-descriptions :column="1">
       <el-descriptions-item label="集合名称：">{{ details.collectionName }}</el-descriptions-item>
-      <el-descriptions-item v-if="details.collectionRemark" label="集合描述：">
-        {{ details.collectionRemark }}
+      <el-descriptions-item v-if="details.collectionDesc" label="集合描述：">
+        {{ details.collectionDesc }}
       </el-descriptions-item>
     </el-descriptions>
 
@@ -162,10 +162,11 @@ const successRate = (successfulTotal, failedTotal) => {
 
 .el-descriptions {
   :deep(.el-descriptions__label) {
-    color: #606266;
-    font-weight: bold;
     margin-right: 0;
+    font-weight: bold;
+    color: #606266;
   }
+
   :deep(.el-descriptions-item__container) {
     display: inline-flex;
     align-items: center;

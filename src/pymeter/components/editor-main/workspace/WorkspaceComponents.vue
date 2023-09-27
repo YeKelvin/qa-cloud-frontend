@@ -180,7 +180,7 @@ const save = async () => {
   // 保存空间组件
   await ElementService.setWorkspaceComponents({
     workspaceNo: workspaceNo.value,
-    components: pendingSubmitComponentList.value
+    componentList: pendingSubmitComponentList.value
   })
   // 保存空间设置
   await ElementService.setWorkspaceSettings({

@@ -14,14 +14,14 @@
       </el-form-item>
 
       <!-- 元素备注 -->
-      <el-form-item label="备注：" prop="elementRemark">
-        <el-input v-model="elementInfo.elementRemark" placeholder="元素备注" clearable :readonly="queryMode" />
+      <el-form-item label="备注：" prop="elementDesc">
+        <el-input v-model="elementInfo.elementDesc" placeholder="元素备注" clearable :readonly="queryMode" />
       </el-form-item>
 
       <!-- 片段列表 -->
-      <el-form-item label="片段引用：" prop="attributes.snippet_no" class="snippets-item">
+      <el-form-item label="片段引用：" prop="elementAttrs.snippet_no" class="snippets-item">
         <el-select
-          v-model="elementInfo.attributes.snippet_no"
+          v-model="elementInfo.elementAttrs.snippet_no"
           placeholder="脚本片段"
           style="width: 100%"
           :disabled="queryMode"
@@ -34,7 +34,7 @@
           />
         </el-select>
         <el-button
-          v-show="!isBlank(elementInfo.attributes.snippet_no)"
+          v-show="!isBlank(elementInfo.elementAttrs.snippet_no)"
           style="margin-left: 10px"
           type="primary"
           plain
@@ -46,7 +46,7 @@
       </el-form-item>
 
       <!-- 变更警告 -->
-      <template v-if="showWarning && !elementInfo.attributes.use_default">
+      <template v-if="showWarning && !elementInfo.elementAttrs.use_default">
         <el-tag type="danger" style="margin-bottom: 10px" disable-transitions>
           重要提醒：片段参数定义已发生变更，请重新编辑
         </el-tag>
@@ -73,7 +73,7 @@
       <div v-if="showParams">
         <!-- 形参 -->
         <ArgumentTable
-          v-model:use-default="elementInfo.attributes.use_default"
+          v-model:use-default="elementInfo.elementAttrs.use_default"
           :data="argumentsData"
           :edit-mode="editMode"
         />
@@ -116,7 +116,7 @@ import ArgumentTable from './SnippetSamplerArgumentTable.vue'
 
 const elementFormRules = {
   elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }],
-  'attributes.snippet_no': [{ required: true, message: '片段不能为空', trigger: 'blur' }]
+  'elementAttrs.snippet_no': [{ required: true, message: '片段不能为空', trigger: 'blur' }]
 }
 
 const props = defineProps(EditorProps)
@@ -142,15 +142,15 @@ const elementNo = ref(props.editorNo)
 const elementInfo = ref({
   elementNo: '',
   elementName: 'Snippet请求',
-  elementRemark: '',
+  elementDesc: '',
   elementType: 'SAMPLER',
   elementClass: 'SnippetSampler',
-  property: {},
-  attributes: {
+  elementAttrs: {
     arguments: [],
     snippet_no: '',
     use_default: false
-  }
+  },
+  property: {}
 })
 const activeTabName = ref('PARAMS')
 const snippetList = ref([])
@@ -159,7 +159,7 @@ const showWarning = ref(false)
 const showParams = computed(() => activeTabName.value === 'PARAMS')
 
 watch(
-  () => elementInfo.value.attributes.snippet_no,
+  () => elementInfo.value.elementAttrs.snippet_no,
   (val) => {
     if (!val) return
     // 清空原有的参数
@@ -197,7 +197,7 @@ const querySnippets = () => {
 const querySnippet = (snippetNo) => {
   ElementService.queryElementInfo({ elementNo: snippetNo }).then((response) => {
     // 将片段参数定义添加至表格
-    response.result.attributes.parameters.forEach((item) => {
+    response.result.elementAttrs.parameters.forEach((item) => {
       argumentsData.value.push({
         name: item.name,
         value: item.default,
@@ -206,7 +206,7 @@ const querySnippet = (snippetNo) => {
       })
     })
     // 非新增模式下，将请求参数合并至表格中，如果请求参数不在片段参数定义中，则丢弃
-    const attributes = elementInfo.value.attributes
+    const attributes = elementInfo.value.elementAttrs
     if (!createMode.value) {
       argumentsData.value.forEach((item) => {
         const arg = attributes.arguments.find((i) => i.name === item.name)
@@ -233,14 +233,14 @@ const querySnippet = (snippetNo) => {
  * 在侧边栏打开指定的片段集合
  */
 const openSnippetCollection = () => {
-  const snippet = snippetList.value.filter((item) => item.elementNo === elementInfo.value.attributes.snippet_no)
+  const snippet = snippetList.value.filter((item) => item.elementNo === elementInfo.value.elementAttrs.snippet_no)
   // 判断所选片段是否属于当前空间
   if (snippet.workspaceNo && snippet.workspaceNo !== workspaceStore.workspaceNo) {
     ElMessage({ message: '片段不属于当前空间下，请前往所属空间下查看', type: 'warning', duration: 2 * 1000 })
     return
   }
   // 脚本列表打开片段脚本
-  pymeterStore.addSelectedCollection(elementInfo.value.attributes.snippet_no)
+  pymeterStore.addSelectedCollection(elementInfo.value.elementAttrs.snippet_no)
   // 滚动至底部
   pymeterStore.scrollToElementTreeBottom()
 }
@@ -248,7 +248,7 @@ const openSnippetCollection = () => {
 // 校验参数值是否为空
 const checkParameter = () => {
   let pass = true
-  elementInfo.value.attributes.arguments.forEach((item) => {
+  elementInfo.value.elementAttrs.arguments.forEach((item) => {
     if (isBlank(item.value)) {
       pass = false
       return
@@ -260,8 +260,8 @@ const checkParameter = () => {
 
 // 设置元素属性
 const setElementProperty = () => {
-  if (elementInfo.value.attributes.use_default) return
-  elementInfo.value.attributes.arguments = argumentsData.value.map((item) => ({
+  if (elementInfo.value.elementAttrs.use_default) return
+  elementInfo.value.elementAttrs.arguments = argumentsData.value.map((item) => ({
     name: item.name,
     value: item.value
   }))

@@ -14,8 +14,8 @@
       </el-form-item>
 
       <!-- 元素备注 -->
-      <el-form-item label="备注：" prop="elementRemark">
-        <el-input v-model="elementInfo.elementRemark" placeholder="元素备注" clearable :readonly="queryMode" />
+      <el-form-item label="备注：" prop="elementDesc">
+        <el-input v-model="elementInfo.elementDesc" placeholder="元素备注" clearable :readonly="queryMode" />
       </el-form-item>
 
       <!-- 最大循环次数 -->
@@ -106,7 +106,7 @@ const elementNo = ref(props.editorNo)
 const elementInfo = ref({
   elementNo: '',
   elementName: 'WHILE控制器',
-  elementRemark: '',
+  elementDesc: '',
   elementType: 'CONTROLLER',
   elementClass: 'WhileController',
   property: {

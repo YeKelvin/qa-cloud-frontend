@@ -15,8 +15,8 @@
       </el-form-item>
 
       <!-- 元素备注 -->
-      <el-form-item label="备注：" prop="elementRemark">
-        <el-input v-model="elementInfo.elementRemark" placeholder="元素备注" clearable :readonly="queryMode" />
+      <el-form-item label="备注：" prop="elementDesc">
+        <el-input v-model="elementInfo.elementDesc" placeholder="元素备注" clearable :readonly="queryMode" />
       </el-form-item>
 
       <!-- 设置类 Tabs -->
@@ -28,7 +28,7 @@
         </el-tab-pane>
         <el-tab-pane name="HTTP_SETTINGS">
           <template #label>
-            <el-badge :hidden="!elementInfo.attributes.use_http_session" type="success" is-dot>HTTP配置</el-badge>
+            <el-badge :hidden="!elementInfo.elementAttrs.use_http_session" type="success" is-dot>HTTP配置</el-badge>
           </template>
         </el-tab-pane>
       </el-tabs>
@@ -43,7 +43,7 @@
         <!-- 是否使用 HTTP 会话 -->
         <el-form-item label="使用会话：">
           <el-switch
-            v-model="elementInfo.attributes.use_http_session"
+            v-model="elementInfo.elementAttrs.use_http_session"
             inline-prompt
             :active-icon="Check"
             :inactive-icon="Close"
@@ -95,7 +95,7 @@
 
     <el-dialog v-model="showArgumentsDialog" width="60%" center>
       <template #header>
-        <span style="color: #606266; font-family: inherit">设置片段参数</span>
+        <span style="font-family: inherit; color: #606266">设置片段参数</span>
       </template>
 
       <template #default>
@@ -153,14 +153,14 @@ const elementNo = ref(props.editorNo)
 const elementInfo = ref({
   elementNo: '',
   elementName: '脚本片段',
-  elementRemark: '',
+  elementDesc: '',
   elementType: 'COLLECTION',
   elementClass: 'SnippetCollection',
-  property: {},
-  attributes: {
+  elementAttrs: {
     parameters: [],
     use_http_session: false
-  }
+  },
+  property: {}
 })
 const elementFormRules = reactive({
   elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }]
@@ -187,7 +187,7 @@ onMounted(() => {
   if (createMode.value) return
   ElementService.queryElementInfo({ elementNo: elementNo.value }).then((response) => {
     assignElement(elementInfo.value, response.result)
-    const attributes = elementInfo.value.attributes
+    const attributes = elementInfo.value.elementAttrs
     parametersData.value = attributes.parameters
     argumentsData.value = attributes.parameters
   })
@@ -205,7 +205,7 @@ const updateElementNo = (val) => {
  * 更新元素属性
  */
 const updateElementProperty = () => {
-  elementInfo.value.attributes.parameters = parametersData.value.filter(
+  elementInfo.value.elementAttrs.parameters = parametersData.value.filter(
     (item) => !isBlankAll(item.name, item.default, item.desc)
   )
 }
@@ -224,7 +224,7 @@ const removeAllBlankRow = () => {
  */
 const checkParameter = () => {
   let pass = true
-  elementInfo.value.attributes.parameters.forEach((item) => {
+  elementInfo.value.elementAttrs.parameters.forEach((item) => {
     if (isBlank(item.name)) {
       pass = false
       return

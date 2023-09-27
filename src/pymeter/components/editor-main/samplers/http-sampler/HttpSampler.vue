@@ -14,8 +14,8 @@
       </el-form-item>
 
       <!-- 元素备注 -->
-      <el-form-item label="备注：" prop="elementRemark">
-        <el-input v-model="elementInfo.elementRemark" placeholder="元素备注" clearable :readonly="queryMode" />
+      <el-form-item label="备注：" prop="elementDesc">
+        <el-input v-model="elementInfo.elementDesc" placeholder="元素备注" clearable :readonly="queryMode" />
       </el-form-item>
 
       <!-- URL = 请求方法 + 请求方法-->
@@ -88,7 +88,7 @@
       <!-- 请求头 -->
       <div v-if="showHeadersTab" class="tab-pane">
         <!-- 请求头模板 -->
-        <HTTPHeaderTemplate v-model="elementInfo.attributes.header_template_refs" :edit-mode="editMode" />
+        <HTTPHeaderTemplate v-model="elementInfo.elementAttrs.header_template_refs" :edit-mode="editMode" />
         <!-- 请求头表格 -->
         <HTTPHeaderTable v-model:data="headerItems" :edit-mode="editMode" />
       </div>
@@ -327,9 +327,12 @@ const elementFormRules = {
 const elementInfo = ref({
   elementNo: props.editorNo,
   elementName: 'HTTP请求',
-  elementRemark: '',
+  elementDesc: '',
   elementType: 'SAMPLER',
   elementClass: 'HTTPSampler',
+  elementAttrs: {
+    header_template_refs: []
+  },
   property: {
     HTTPSampler__url: '',
     HTTPSampler__method: 'GET',
@@ -340,9 +343,6 @@ const elementInfo = ref({
     HTTPSampler__follow_redirects: 'false',
     HTTPSampler__connect_timeout: '',
     HTTPSampler__response_timeout: ''
-  },
-  attributes: {
-    header_template_refs: []
   }
 })
 const elementNo = computed(() => elementInfo.value.elementNo)
@@ -412,11 +412,11 @@ const showSettingsTab = computed(() => activeTabName.value === 'SETTINGS')
 const hiddenHeadersDot = computed(() => {
   const headers = headerItems.value
   if (headers.length === 0) {
-    return isEmpty(elementInfo.value.attributes.header_template_refs)
+    return isEmpty(elementInfo.value.elementAttrs.header_template_refs)
   }
   if (headers.length === 1) {
     const item = headers[0]
-    if (isEmpty(item.name) && isEmpty(item.value)) return isEmpty(elementInfo.value.attributes.header_template_refs)
+    if (isEmpty(item.name) && isEmpty(item.value)) return isEmpty(elementInfo.value.elementAttrs.header_template_refs)
   }
   return false
 })

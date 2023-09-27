@@ -117,47 +117,47 @@ const handleTabRemove = (tabName) => {
 <style lang="scss" scoped>
 .view-empty {
   display: flex;
+  flex: 1;
   align-items: center;
   justify-content: center;
-  flex: 1;
 }
 
 .result-view {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
   display: flex;
   flex: 1;
   flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
 .view-header {
-  width: 100%;
   display: flex;
+  width: 100%;
   margin-bottom: 10px;
 }
 
 .view-body {
-  width: 100%;
-  height: 0;
   display: flex;
   flex: 1;
+  width: 100%;
+  height: 0;
 }
 
 .tab-label-wrapper {
   display: flex;
   align-items: center;
-
   padding: 0 5px;
 }
 
 .running-icon {
-  font-size: 24px;
   margin-right: 5px;
+  font-size: 24px;
 }
 
 :deep(.el-tabs) {
   --el-tabs-header-height: 41px;
+
   width: 100%;
   padding: 0 20px;
 }
@@ -167,7 +167,7 @@ const handleTabRemove = (tabName) => {
 }
 
 :deep(.el-tabs__nav-wrap) {
-  &:after {
+  &::after {
     height: 1px;
   }
 }

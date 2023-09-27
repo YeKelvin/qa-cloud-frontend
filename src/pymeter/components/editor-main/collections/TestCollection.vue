@@ -14,8 +14,8 @@
       </el-form-item>
 
       <!-- 元素备注 -->
-      <el-form-item label="备注：" prop="elementRemark">
-        <el-input v-model="elementInfo.elementRemark" placeholder="元素备注" clearable :readonly="queryMode" />
+      <el-form-item label="备注：" prop="elementDesc">
+        <el-input v-model="elementInfo.elementDesc" placeholder="元素备注" clearable :readonly="queryMode" />
       </el-form-item>
 
       <!-- 串行执行 -->
@@ -89,7 +89,7 @@
               </div>
             </template>
             <el-switch
-              v-model="elementInfo.attributes.exclude_workspaces"
+              v-model="elementInfo.elementAttrs.exclude_workspaces"
               inline-prompt
               :active-icon="Check"
               :inactive-icon="Close"
@@ -213,15 +213,15 @@ const elementFormRules = {
 const elementInfo = ref({
   elementNo: props.editorNo,
   elementName: '测试集合',
-  elementRemark: '',
+  elementDesc: '',
   elementType: 'COLLECTION',
   elementClass: 'TestCollection',
+  elementAttrs: {
+    exclude_workspaces: false
+  },
   property: {
     TestCollection__serialize_workers: 'true',
     TestCollection__delay: '0'
-  },
-  attributes: {
-    exclude_workspaces: false
   }
 })
 const elementNo = computed(() => elementInfo.value.elementNo)
@@ -236,7 +236,7 @@ const showPrevProcessorTab = computed(() => activeTabName.value === 'PREV_PROCES
 const showPostProcessorTab = computed(() => activeTabName.value === 'POST_PROCESSOR')
 const showTestAssertionTab = computed(() => activeTabName.value === 'TEST_ASSERTION')
 const hiddenSettingsDot = computed(() => {
-  return !elementInfo.value.attributes.exclude_workspaces && isEmpty(runningStrategy.value.reverse)
+  return !elementInfo.value.elementAttrs.exclude_workspaces && isEmpty(runningStrategy.value.reverse)
 })
 
 const componentList = ref([])

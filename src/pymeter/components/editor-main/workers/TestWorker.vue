@@ -14,8 +14,8 @@
       </el-form-item>
 
       <!-- 元素备注 -->
-      <el-form-item label="备注：" prop="elementRemark">
-        <el-input v-model="elementInfo.elementRemark" placeholder="元素备注" clearable :readonly="queryMode" />
+      <el-form-item label="备注：" prop="elementDesc">
+        <el-input v-model="elementInfo.elementDesc" placeholder="元素备注" clearable :readonly="queryMode" />
       </el-form-item>
 
       <!-- 元素属性 -->
@@ -59,7 +59,7 @@
         <!-- 是否使用 HTTP 会话 -->
         <el-form-item label="使用会话：">
           <el-switch
-            v-model="elementInfo.attributes.enable_http_session"
+            v-model="elementInfo.elementAttrs.enable_http_session"
             inline-prompt
             :active-icon="Check"
             :inactive-icon="Close"
@@ -69,7 +69,7 @@
         <!-- 是否在每次迭代开始前重新打开一个新的 HTTP 会话 -->
         <el-form-item label="迭代时刷新会话：">
           <el-switch
-            v-model="elementInfo.attributes.clear_http_session_for_each_iteration"
+            v-model="elementInfo.elementAttrs.clear_http_session_for_each_iteration"
             inline-prompt
             :active-icon="Check"
             :inactive-icon="Close"
@@ -176,9 +176,13 @@ const elementNo = ref(props.editorNo)
 const elementInfo = ref({
   elementNo: '',
   elementName: '测试用例',
-  elementRemark: '',
+  elementDesc: '',
   elementType: 'WORKER',
   elementClass: 'TestWorker',
+  elementAttrs: {
+    enable_http_session: false,
+    clear_http_session_for_each_iteration: false
+  },
   property: {
     TestWorker__on_sample_error: 'start_next_thread',
     TestWorker__number_of_threads: '1',
@@ -190,34 +194,30 @@ const elementInfo = ref({
         LoopController__continue_forever: false
       }
     }
-  },
-  attributes: {
-    enable_http_session: false,
-    clear_http_session_for_each_iteration: false
   }
 })
 const activeTabName = ref('HTTP')
 const showHTTPSettings = computed(() => activeTabName.value === 'HTTP')
-const hiddenConfigDot = computed(() => elementInfo.value.attributes.enable_http_session === false)
+const hiddenConfigDot = computed(() => elementInfo.value.elementAttrs.enable_http_session === false)
 const showJsonScriptDialog = ref(false)
 const jsonEditorRef = ref()
 
 watch(
-  () => elementInfo.value.attributes.enable_http_session,
+  () => elementInfo.value.elementAttrs.enable_http_session,
   (val) => {
-    const clear_each_iteration = elementInfo.value.attributes.clear_http_session_for_each_iteration
-    if (!val && clear_each_iteration === true) {
-      elementInfo.value.attributes.clear_http_session_for_each_iteration = false
+    const clearEachIteration = elementInfo.value.elementAttrs.clear_http_session_for_each_iteration
+    if (!val && clearEachIteration === true) {
+      elementInfo.value.elementAttrs.clear_http_session_for_each_iteration = false
     }
   }
 )
 
 watch(
-  () => elementInfo.value.attributes.clear_http_session_for_each_iteration,
+  () => elementInfo.value.elementAttrs.clear_http_session_for_each_iteration,
   (val) => {
-    const enable_http_session = elementInfo.value.attributes.enable_http_session
-    if (val && enable_http_session === false) {
-      elementInfo.value.attributes.enable_http_session = true
+    const enableHTTPSession = elementInfo.value.elementAttrs.enable_http_session
+    if (val && enableHTTPSession === false) {
+      elementInfo.value.elementAttrs.enable_http_session = true
     }
   }
 )

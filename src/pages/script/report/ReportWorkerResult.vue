@@ -2,8 +2,8 @@
   <div class="details-container">
     <el-descriptions :column="1">
       <el-descriptions-item label="用例名称：">{{ details.workerName }}</el-descriptions-item>
-      <el-descriptions-item v-if="details.workerRemark" label="用例描述：">
-        {{ details.workerRemark }}
+      <el-descriptions-item v-if="details.workerDesc" label="用例描述：">
+        {{ details.workerDesc }}
       </el-descriptions-item>
     </el-descriptions>
 
@@ -19,7 +19,7 @@
       </el-descriptions-item>
     </el-descriptions>
 
-    <div style="display: flex; justify-content: space-between; align-content: center">
+    <div style="display: flex; align-content: center; justify-content: space-between">
       <el-table :data="totalData" highlight-current-row style="width: 50%; height: 400px">
         <el-table-column prop="totalType" label="统计" />
         <el-table-column prop="samplerTotal" label="请求" />
@@ -163,17 +163,18 @@ const successRate = (successfulTotal, failedTotal) => {
 }
 
 .el-table {
-  &:before {
+  &::before {
     height: 0;
   }
 }
 
 .el-descriptions {
   :deep(.el-descriptions__label) {
-    color: #606266;
-    font-weight: bold;
     margin-right: 0;
+    font-weight: bold;
+    color: #606266;
   }
+
   :deep(.el-descriptions-item__container) {
     display: inline-flex;
     align-items: center;

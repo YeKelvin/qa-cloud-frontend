@@ -2,8 +2,8 @@
   <div class="sampler-result-container">
     <el-descriptions :column="1">
       <el-descriptions-item label="请求名称：">{{ sampler.samplerName }}</el-descriptions-item>
-      <el-descriptions-item v-if="sampler.samplerRemark" label="请求描述：">
-        {{ sampler.samplerRemark }}
+      <el-descriptions-item v-if="sampler.samplerDesc" label="请求描述：">
+        {{ sampler.samplerDesc }}
       </el-descriptions-item>
     </el-descriptions>
 
