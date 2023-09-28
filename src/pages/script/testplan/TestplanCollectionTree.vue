@@ -134,14 +134,11 @@ const resetChecked = () => {
 
 const getCheckedCollections = () => {
   const nodes = eltreeRef.value.getCheckedNodes()
-  const collectionList = []
+  const collections = []
   for (let i = 0, len = nodes.length; i < len; i++) {
-    collectionList.push({
-      elementNo: nodes[i].elementNo,
-      elementIndex: i
-    })
+    collections.push(nodes[i].elementNo)
   }
-  return collectionList
+  return collections
 }
 
 defineExpose({

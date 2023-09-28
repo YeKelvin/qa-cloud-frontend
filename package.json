@@ -56,7 +56,7 @@
     "@babel/eslint-parser": "7.22.15",
     "@types/echarts": "4.9.19",
     "@types/lodash-es": "4.17.9",
-    "@types/mousetrap": "1.6.11",
+    "@types/mousetrap": "1.6.12",
     "@types/nprogress": "0.2.1",
     "@types/qs": "6.9.8",
     "@types/sortablejs": "1.15.3",

@@ -1,7 +1,7 @@
 <template>
   <div class="testplan-container">
     <span class="testplan-title">
-      <span style="color: #606266; font-weight: 700">测试计划</span>
+      <span style="font-weight: 700; color: #606266">测试计划</span>
       <el-divider />
     </span>
 
@@ -87,7 +87,7 @@
             <!-- 通知机器人 -->
             <el-form-item label="结果通知：" prop="property.engineNo">
               <el-select
-                v-model="formData.notificationRobots"
+                v-model="formData.noticeRobots"
                 filterable
                 multiple
                 style="width: 100%"
@@ -174,13 +174,13 @@ const formData = reactive({
   delay: '0',
   save: true,
   saveOnError: false,
-  stopOnErrorCount: '3',
-  notificationRobots: []
+  noticeRobots: [],
+  stopOnErrorCount: '3'
 })
 const formRules = reactive({
   planName: [{ required: true, message: '计划名称不能为空', trigger: 'blur' }],
-  concurrency: [{ required: true, message: '并发数量不能为空', trigger: 'blur' }],
-  iterations: [{ required: true, message: '迭代次数不能为空', validator: checkIterations, trigger: 'blur' }]
+  iterations: [{ required: true, message: '迭代次数不能为空', validator: checkIterations, trigger: 'blur' }],
+  concurrency: [{ required: true, message: '并发数量不能为空', trigger: 'blur' }]
 })
 
 const queryMode = computed(() => editorMode.value === 'QUERY')
@@ -251,8 +251,8 @@ const createTestplan = async () => {
   }
 
   // 获取已勾选的集合
-  const collectionList = collectionTreeRef.value.getCheckedCollections()
-  if (collectionList.length === 0) {
+  const collections = collectionTreeRef.value.getCheckedCollections()
+  if (collections.length === 0) {
     ElMessage({ message: '脚本至少选择一个', type: 'warning', duration: 2 * 1000 })
     return
   }
@@ -260,7 +260,7 @@ const createTestplan = async () => {
   // 新增测试计划
   await TestplanService.createTestplan({
     workspaceNo: workspaceStore.workspaceNo,
-    collectionList: collectionList,
+    collections: collections,
     ...formData
   })
   // 成功提示
@@ -284,14 +284,14 @@ const modifyTestplan = async () => {
   }
 
   // 获取已勾选的集合
-  const collectionList = collectionTreeRef.value.getCheckedCollections()
-  if (collectionList.length === 0) {
+  const collections = collectionTreeRef.value.getCheckedCollections()
+  if (collections.length === 0) {
     ElMessage({ message: '脚本至少选择一个', type: 'warning', duration: 2 * 1000 })
     return
   }
 
   // 修改测试计划
-  await TestplanService.modifyTestplan({ collectionList: collectionList, ...formData })
+  await TestplanService.modifyTestplan({ ...formData, collections: collections })
   // 成功提示
   ElMessage({ message: '修改成功', type: 'info', duration: 2 * 1000 })
   // 返回上一页
@@ -309,18 +309,16 @@ const goBack = () => {
 <style lang="scss" scoped>
 .testplan-container {
   position: absolute;
-  width: 100%;
-  height: 100%;
-
   display: flex;
   flex-direction: column;
+  width: 100%;
+  height: 100%;
 }
 
 .testplan-title {
   display: flex;
   flex-direction: column;
   width: 100%;
-
   padding: 0 10px;
   padding-top: 20px;
 
@@ -332,10 +330,8 @@ const goBack = () => {
 .testplan-body {
   display: flex;
   flex: 1;
-
-  height: 0;
   width: 100%;
-
+  height: 0;
   padding: 20px;
   padding-top: 10px;
 }
@@ -346,8 +342,8 @@ const goBack = () => {
 
 .robot-type-option {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
 }
 
 .el-form-item--small.el-form-item {

@@ -11,8 +11,8 @@
         </template>
       </el-table-column>
       <el-table-column prop="environment" label="测试环境" />
-      <el-table-column prop="runningState" label="执行状态">
-        <template #default="{ row }">{{ RunningState[row.runningState] }}</template>
+      <el-table-column prop="executionState" label="执行状态">
+        <template #default="{ row }">{{ RunningState[row.executionState] }}</template>
       </el-table-column>
       <el-table-column prop="startTime" label="执行时间" min-width="100">
         <template #default="{ row }">
@@ -83,7 +83,7 @@ const interrupt = (executionNo) => {
  * 判断是否展示中断按钮
  */
 const isShowInterruptBtn = (row) => {
-  return row.runningState === 'WAITING' || row.runningState === 'RUNNING' || row.runningState === 'ITERATING'
+  return row.executionState === 'WAITING' || row.executionState === 'RUNNING' || row.executionState === 'ITERATING'
 }
 
 /**

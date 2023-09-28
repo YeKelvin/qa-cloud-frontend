@@ -8,7 +8,7 @@
         <ConditionInput v-model="queryConditions.scrumVersion" label="版本" />
         <ConditionInput v-model="queryConditions.scrumSprint" label="迭代" />
         <ConditionSelect v-model="queryConditions.testPhase" :options="TestPhase" label="测试阶段" />
-        <ConditionSelect v-model="queryConditions.state" :options="TestplanState" label="计划状态" />
+        <ConditionSelect v-model="queryConditions.planState" :options="TestplanState" label="计划状态" />
       </div>
       <div style="display: flex; justify-content: space-between">
         <div />
@@ -34,7 +34,7 @@
         <el-table-column prop="scrumSprint" label="迭代" min-width="150" />
         <el-table-column prop="testPhase" label="测试阶段" min-width="150" width="150">
           <template #default="{ row }">
-            <span style="display: flex; justify-content: space-between; align-items: center">
+            <span style="display: flex; align-items: center; justify-content: space-between">
               <span>{{ TestPhase[row.testPhase] }}</span>
               <el-popover
                 :ref="
@@ -46,7 +46,7 @@
                 placement="bottom"
                 width="300"
               >
-                <span style="display: flex; justify-content: space-between; align-items: center">
+                <span style="display: flex; align-items: center; justify-content: space-between">
                   <el-select
                     v-model="row.tobeModifiedTestPhase"
                     style="width: 100%; margin-right: 10px"
@@ -71,10 +71,10 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column prop="state" label="计划状态" min-width="150" width="150">
+        <el-table-column prop="planState" label="计划状态" min-width="150" width="150">
           <template #default="{ row }">
-            <span style="display: flex; justify-content: space-between; align-items: center">
-              <span>{{ TestplanState[row.state] }}</span>
+            <span style="display: flex; align-items: center; justify-content: space-between">
+              <span>{{ TestplanState[row.planState] }}</span>
               <el-popover
                 :ref="
                   (el) => {
@@ -85,7 +85,7 @@
                 placement="bottom"
                 width="300"
               >
-                <span style="display: flex; justify-content: space-between; align-items: center">
+                <span style="display: flex; align-items: center; justify-content: space-between">
                   <el-select
                     v-model="row.tobeModifiedState"
                     style="width: 100%; margin-right: 10px"
@@ -96,7 +96,7 @@
                   <el-button type="danger" @click="modifyTestplanState(row)">保存</el-button>
                 </span>
                 <template #reference>
-                  <el-button v-if="row.state != 'COMPLETED'" :icon="Edit" type="danger" size="small" circle plain />
+                  <el-button v-if="row.planState != 'COMPLETED'" :icon="Edit" type="danger" size="small" circle plain />
                 </template>
               </el-popover>
             </span>
@@ -120,12 +120,12 @@
         <el-table-column prop="createdBy" label="创建人" min-width="150" width="150" />
         <el-table-column fixed="right" label="操作" min-width="250" width="250">
           <template #default="{ row }">
-            <template v-if="row.state != 'COMPLETED'">
+            <template v-if="row.planState != 'COMPLETED'">
               <el-button type="primary" link style="margin-left: 12px" @click="gotoTestplanEditor(row.planNo, 'QUERY')">
                 查看详情
               </el-button>
               <el-button type="primary" link @click="openExecutionRecordDialog(row)">历史记录</el-button>
-              <el-button type="primary" link style="color: #f56c6c; font-weight: bold" @click="executeTestplan(row)">
+              <el-button type="primary" link style="font-weight: bold; color: #f56c6c" @click="executeTestplan(row)">
                 立即执行
               </el-button>
             </template>
@@ -174,10 +174,10 @@ import dayjs from 'dayjs'
 const { queryConditions, resetQueryConditions } = useQueryConditions({
   planNo: '',
   planName: '',
+  planState: '',
   scrumSprint: '',
   scrumVersion: '',
-  testPhase: '',
-  state: ''
+  testPhase: ''
 })
 const router = useRouter()
 const workspaceStore = useWorkspaceStore()
@@ -293,7 +293,7 @@ const modifyTestplanState = ({ planNo, tobeModifiedState }) => {
     return
   }
   // 修改计划状态
-  TestplanService.modifyTestplanState({ planNo: planNo, state: tobeModifiedState })
+  TestplanService.modifyTestplanState({ planNo: planNo, planState: tobeModifiedState })
     .then(() => {
       // 重新查询列表
       queryList()
@@ -358,15 +358,15 @@ const handleCurrentChange = (val) => {
 }
 
 .pagination-container {
-  flex-shrink: 0;
   display: flex;
+  flex-shrink: 0;
   justify-content: flex-end;
   padding: 10px 0;
   padding-right: 10px;
 }
 
 :deep(.el-card__header) {
-  padding: 10px 10px;
+  padding: 10px;
 }
 
 :deep(.el-card__body) {
