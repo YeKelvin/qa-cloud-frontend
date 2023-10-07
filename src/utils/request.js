@@ -111,6 +111,8 @@ service.interceptors.response.use(
           useUserStore()
             .resetToken()
             .then(() => {
+              // 如果已经在登录页就不用再刷新了
+              if (window.location.pathname === '/login') return
               // 刷新页面
               location.reload()
             })
