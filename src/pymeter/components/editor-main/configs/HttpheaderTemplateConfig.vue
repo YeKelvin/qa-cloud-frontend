@@ -350,16 +350,15 @@ functions.modifyFn = saveHeaders
 
 <style lang="scss" scoped>
 span {
-  white-space: pre-wrap;
   text-overflow: ellipsis;
   letter-spacing: 0.6px;
+  white-space: pre-wrap;
 }
 
 .header-container {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-
+  justify-content: space-between;
   width: 100%;
   padding: 0 15px;
   margin-bottom: 10px;

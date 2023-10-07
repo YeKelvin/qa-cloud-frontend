@@ -125,7 +125,20 @@ const setAllChecked = () => {
 }
 
 const setCheckedKeys = (keys) => {
+  // 设置选中的脚本
   eltreeRef.value.setCheckedKeys(keys)
+  // 调整脚本顺序
+  const indexs = []
+  const list = [...collections.value]
+  for (let i = 0; i < keys.length; i++) {
+    const index = collections.value.findIndex((item) => item.elementNo === keys[i])
+    if (index === -1) return
+    indexs.push(index)
+  }
+  for (let i = 0; i < indexs.length; i++) {
+    [list[i], list[indexs[i]]] = [list[indexs[i]], list[i]]
+  }
+  collections.value = list
 }
 
 const resetChecked = () => {
@@ -176,7 +189,8 @@ defineExpose({
 :deep(.el-checkbox__inner::after) {
   top: 0;
   left: 6px;
-  width: 5px;
-  height: 15px;
+  width: 4px;
+  height: 14px;
+  border-width: 2px;
 }
 </style>
