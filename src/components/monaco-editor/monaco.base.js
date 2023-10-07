@@ -9,7 +9,6 @@ import 'monaco-editor/esm/vs/language/typescript/monaco.contribution.js'
 import 'monaco-editor/esm/vs/basic-languages/python/python.contribution.js'
 import 'monaco-editor/esm/vs/basic-languages/sql/sql.contribution.js'
 
-// import 'monaco-editor/esm/vs/editor/standalone/browser/iPadShowKeyboard/iPadShowKeyboard.js'
 // import 'monaco-editor/esm/vs/editor/standalone/browser/inspectTokens/inspectTokens.js'
 import 'monaco-editor/esm/vs/editor/standalone/browser/quickAccess/standaloneHelpQuickAccess.js'
 import 'monaco-editor/esm/vs/editor/standalone/browser/quickAccess/standaloneGotoLineQuickAccess.js'
