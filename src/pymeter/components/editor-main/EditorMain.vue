@@ -33,7 +33,7 @@
 
     <!-- 占位图 -->
     <template v-else>
-      <div style="display: flex;align-items: center; justify-content: center; height: 100%;}">
+      <div style="display: flex; align-items: center; justify-content: center; height: 100%">
         <SvgIcon icon-name="undraw-programming" style="font-size: 400px" />
       </div>
     </template>
@@ -123,7 +123,6 @@ onBeforeUnmount(() => {
   display: flex;
   flex: 1;
   flex-direction: column;
-
   padding: 0;
   overflow: auto;
 }

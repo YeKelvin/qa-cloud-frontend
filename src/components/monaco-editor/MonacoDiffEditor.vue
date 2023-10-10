@@ -44,8 +44,8 @@ watch(
 )
 
 let instance
-let originalModel;
-let modifiedModel;
+let originalModel
+let modifiedModel
 onMounted(() => {
   originalModel = monaco.editor.createModel(props.oldValue, props.language)
   modifiedModel = monaco.editor.createModel(props.newValue, props.language)

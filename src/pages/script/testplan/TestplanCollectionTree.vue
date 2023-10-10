@@ -136,7 +136,7 @@ const setCheckedKeys = (keys) => {
     indexs.push(index)
   }
   for (let i = 0; i < indexs.length; i++) {
-    [list[i], list[indexs[i]]] = [list[indexs[i]], list[i]]
+    ;[list[i], list[indexs[i]]] = [list[indexs[i]], list[i]]
   }
   collections.value = list
 }

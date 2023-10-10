@@ -48,7 +48,6 @@ const DEFAULT_OPTIONS = {
   renderIndentGuides: true,
   renderLineHighlight: 'all',
   renderWhitespace: 'all',
-  roundedSelection: false,
   // 滚动配置
   scrollbar: {
     // 编辑器滚动至尽头时，父页面可继续滚动

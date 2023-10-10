@@ -86,8 +86,8 @@ onMounted(() => {
   })
   nextTick(() => {
     setTimeout(() => {
-        reqRef.value.formatDocument()
-        resRef.value.formatDocument()
+      reqRef.value.formatDocument()
+      resRef.value.formatDocument()
     }, 100)
   })
 })

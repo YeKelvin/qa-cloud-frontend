@@ -2,7 +2,7 @@
   <el-card shadow="hover" style="width: 100%">
     <template #header>
       <el-select v-model="asideName" size="large" style="flex-grow: 1">
-        <el-option label="脚本" value="ELEMENT" />
+        <el-option label="测试脚本" value="ELEMENT" />
         <el-option label="环境/变量" value="DATASET" />
         <el-option label="HTTP请求头" value="HTTPHEADER" />
         <el-option label="数据库" value="DATABASE" />
@@ -38,9 +38,9 @@ const asideComponents = reactive({
   }
 
   .el-input__inner {
-    box-shadow: none;
     font-size: 16px;
     font-weight: bold;
+    box-shadow: none;
   }
 
   .el-input__wrapper {
@@ -49,8 +49,8 @@ const asideComponents = reactive({
 }
 
 :deep(.el-card__body) {
-  height: 100%;
   width: 100%;
+  height: 100%;
   padding: 0;
   padding-bottom: 50px;
 }
