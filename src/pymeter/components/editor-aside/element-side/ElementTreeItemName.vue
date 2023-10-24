@@ -3,8 +3,8 @@
   <span class="element-name-wrapper">
     <!-- 图标 -->
     <span style="padding-right: 5px">
-      <SvgIcon v-if="data.elementClass == 'TestCollection'" icon-name="pymeter-test-collection" />
-      <SvgIcon v-else-if="data.elementClass == 'SnippetCollection'" icon-name="pymeter-snippet-collection" />
+      <SvgIcon v-if="data.elementType == 'COLLECTION'" icon-name="pymeter-collection" />
+      <SvgIcon v-else-if="data.elementType == 'SNIPPET'" icon-name="pymeter-snippet" />
       <SvgIcon v-else-if="data.elementType == 'WORKER'" icon-name="pymeter-worker" />
       <SvgIcon v-else-if="data.elementClass == 'HTTPSampler'" icon-name="pymeter-http" />
       <SvgIcon v-else-if="data.elementClass == 'PythonSampler'" icon-name="pymeter-python" />
@@ -26,23 +26,13 @@
     <!-- 集合标识 -->
     <el-tag v-if="data.elementClass == 'TestCollection'" size="small" disable-transitions>集合</el-tag>
     <!-- 片段标识 -->
-    <el-tag v-if="data.elementClass == 'SnippetCollection'" size="small" disable-transitions>片段</el-tag>
-    <!-- 禁用标识 -->
-    <el-tag v-if="!data.enabled" type="danger" size="small" disable-transitions>禁用</el-tag>
+    <el-tag v-if="data.elementClass == 'TestSnippet'" size="small" disable-transitions>片段</el-tag>
     <!-- Setup标识 -->
     <el-tag v-if="data.elementClass == 'SetupWorker'" size="small" disable-transitions>前置</el-tag>
     <!-- TearDown标识 -->
     <el-tag v-if="data.elementClass == 'TearDownWorker'" size="small" disable-transitions>后置</el-tag>
-    <!-- SetupDebuger标识 -->
-    <template v-if="data.elementClass == 'SetupDebuger'">
-      <el-tag size="small" disable-transitions>后置</el-tag>
-      <el-tag size="small" disable-transitions>调试器</el-tag>
-    </template>
-    <!-- TearDownDebuger标识 -->
-    <template v-if="data.elementClass == 'TearDownDebuger'">
-      <el-tag size="small" disable-transitions>前置</el-tag>
-      <el-tag size="small" disable-transitions>调试器</el-tag>
-    </template>
+    <!-- 禁用标识 -->
+    <el-tag v-if="!data.enabled" type="danger" size="small" disable-transitions>禁用</el-tag>
   </span>
 </template>
 
@@ -64,9 +54,9 @@ export default {
 }
 
 .element-name {
-  white-space: normal;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: normal;
 }
 
 .el-tag {

@@ -1,30 +1,36 @@
 <template>
-  <div v-show="show" class="topbar-container">
+  <div v-show="showToolBar" class="toolbar-container">
     <!-- 操作栏 -->
-    <div class="topbar-main">
+    <div class="toolbar-main">
       <!-- 左侧：组件名称 -->
-      <div class="component-name">{{ componentName }}</div>
+      <div class="r-container component-name">{{ componentName }}</div>
 
       <!-- 右侧：操作区域 -->
-      <span class="dataset-container">
-        <!-- 变量集选择器 -->
-        <DatasetSelect :show="show" />
-        <!-- 查看变量按钮 -->
-        <el-button
-          style="padding-right: 5px; font-size: 16px; outline: none"
-          type="primary"
-          link
-          :icon="View"
-          @click="showVariablesDialog = true"
-        />
-      </span>
+      <div class="l-container">
+        <!-- 元素变更历史按钮 -->
+        <el-button style="padding-right: 20px" type="primary" link @click="showChangelog = true">
+          <SvgIcon icon-name="common-changelog" style="font-size: 20px" />
+        </el-button>
+        <!-- 变量集 -->
+        <span class="dataset-container">
+          <!-- 变量集选择器 -->
+          <DatasetSelect :show="showToolBar" />
+          <!-- 查看变量按钮 -->
+          <el-button style="padding-right: 5px" type="primary" link @click="showDatasetDialog = true">
+            <SvgIcon icon-name="pymeter-show-data" style="font-size: 20px" />
+          </el-button>
+        </span>
+      </div>
     </div>
 
     <!-- 华丽丽的分割线 -->
     <el-divider />
 
     <!-- 变量详情视图 -->
-    <VariablesDialog v-if="showVariablesDialog" v-model="showVariablesDialog" />
+    <DatasetDialog v-if="showDatasetDialog" v-model="showDatasetDialog" />
+
+    <!-- 元素变更日志 -->
+    <ChangeLogDrawer v-model="showChangelog" destroy-on-close />
   </div>
 </template>
 
@@ -32,7 +38,8 @@
 import { View } from '@element-plus/icons-vue'
 import { isEmpty } from 'lodash-es'
 import DatasetSelect from './DatasetSelect.vue'
-import VariablesDialog from './VariablesDialog.vue'
+import DatasetDialog from './DatasetDialog.vue'
+import ChangeLogDrawer from './ChangeLogDrawer.vue'
 
 const props = defineProps({
   component: { type: String, default: '' }
@@ -40,16 +47,14 @@ const props = defineProps({
 // 组件名称
 const componentNames = {
   TestCollection: '测试集合',
-  SnippetCollection: '测试片段',
+  TestSnippet: '测试片段',
   TestWorker: '测试用例',
   SetupWorker: '前置用例',
   TeardownWorker: '后置用例',
-  SetupDebuger: '前置调试器',
-  TeardownDebuger: '后置调试器',
   IfController: 'IF控制器',
   WhileController: 'WHILE控制器',
-  ForeachController: '遍历控制器',
   LoopController: '循环控制器',
+  ForeachController: '遍历控制器',
   RetryController: '重试控制器',
   TransactionController: '事务控制器',
   HTTPSampler: 'HTTP请求',
@@ -59,16 +64,18 @@ const componentNames = {
   DatabaseEngine: '数据库配置器',
   WorkspaceComponents: '空间组件'
 }
-// 是否显示变量详情视图
-const showVariablesDialog = ref(false)
 // 组件名称
 const componentName = computed(() => componentNames[props.component])
 // 是否显示操作栏的标识
-const show = computed(() => !isEmpty(componentName.value))
+const showToolBar = computed(() => !isEmpty(componentName.value))
+// 是否显示变量详情视图
+const showDatasetDialog = ref(false)
+// 是否显示变更日志
+const showChangelog = ref(false)
 </script>
 
 <style lang="scss" scoped>
-.topbar-container {
+.toolbar-container {
   padding: 0 10px;
 
   .el-divider--horizontal {
@@ -76,11 +83,23 @@ const show = computed(() => !isEmpty(componentName.value))
   }
 }
 
-.topbar-main {
+.toolbar-main {
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
+}
+
+.r-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.l-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .component-name {

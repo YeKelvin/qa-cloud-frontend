@@ -12,7 +12,7 @@
       </el-tabs>
 
       <!-- 顶栏 -->
-      <Topbar :component="activeTab.editorComponent" />
+      <Toolbar :component="activeTab.editorComponent" />
 
       <!-- pymeter 组件 -->
       <el-scrollbar id="editor-main-scrollbar" style="width: 100%; height: 100%" wrap-style="overflow-x:auto;">
@@ -42,37 +42,34 @@
 
 <script setup>
 import { usePyMeterStore } from '@/store/pymeter'
-import Topbar from './topbar/Topbar.vue'
+import Toolbar from './toolbar/Toolbar.vue'
 import Mousetrap from 'mousetrap'
 
 const editors = reactive({
   // collection
   TestCollection: markRaw(defineAsyncComponent(() => import('./collections/TestCollection.vue'))),
-  SnippetCollection: markRaw(
-    defineAsyncComponent(() => import('./collections/snippet-collection/SnippetCollection.vue'))
-  ),
+  // snippet
+  TestSnippet: markRaw(defineAsyncComponent(() => import('./snippets/TestSnippet.vue'))),
   // worker
   TestWorker: markRaw(defineAsyncComponent(() => import('./workers/TestWorker.vue'))),
   SetupWorker: markRaw(defineAsyncComponent(() => import('./workers/SetupWorker.vue'))),
   TeardownWorker: markRaw(defineAsyncComponent(() => import('./workers/TeardownWorker.vue'))),
-  SetupDebuger: markRaw(defineAsyncComponent(() => import('./workers/SetupDebuger.vue'))),
-  TeardownDebuger: markRaw(defineAsyncComponent(() => import('./workers/TeardownDebuger.vue'))),
   // sampler
+  SQLSampler: markRaw(defineAsyncComponent(() => import('./samplers/SQLSampler.vue'))),
   HTTPSampler: markRaw(defineAsyncComponent(() => import('./samplers/http-sampler/HttpSampler.vue'))),
   PythonSampler: markRaw(defineAsyncComponent(() => import('./samplers/PythonSampler.vue'))),
-  SQLSampler: markRaw(defineAsyncComponent(() => import('./samplers/SQLSampler.vue'))),
   SnippetSampler: markRaw(defineAsyncComponent(() => import('./samplers/snippet-sampler/SnippetSampler.vue'))),
   // controller
   IfController: markRaw(defineAsyncComponent(() => import('./controllers/IfController.vue'))),
-  WhileController: markRaw(defineAsyncComponent(() => import('./controllers/WhileController.vue'))),
-  ForeachController: markRaw(defineAsyncComponent(() => import('./controllers/ForeachController.vue'))),
   LoopController: markRaw(defineAsyncComponent(() => import('./controllers/LoopController.vue'))),
+  WhileController: markRaw(defineAsyncComponent(() => import('./controllers/WhileController.vue'))),
   RetryController: markRaw(defineAsyncComponent(() => import('./controllers/RetryController.vue'))),
+  ForeachController: markRaw(defineAsyncComponent(() => import('./controllers/ForeachController.vue'))),
   TransactionController: markRaw(defineAsyncComponent(() => import('./controllers/TransactionController.vue'))),
   // config
+  DatabaseEngine: markRaw(defineAsyncComponent(() => import('./configs/DatabaseEngineConfig.vue'))),
   VariableDataset: markRaw(defineAsyncComponent(() => import('./configs/VariableDatasetConfig.vue'))),
   HttpHeadersTemplate: markRaw(defineAsyncComponent(() => import('./configs/HttpheaderTemplateConfig.vue'))),
-  DatabaseEngine: markRaw(defineAsyncComponent(() => import('./configs/DatabaseEngineConfig.vue'))),
   // timer
   ConstantTimer: markRaw(defineAsyncComponent(() => import('./timers/ConstantTimer.vue'))),
   // others

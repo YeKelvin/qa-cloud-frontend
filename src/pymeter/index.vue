@@ -46,8 +46,8 @@ onMounted(() => {
 .editor-container {
   display: flex;
   flex: 1;
-  height: 0;
   width: 100%;
+  height: 0;
   margin-bottom: 4px;
 }
 
@@ -59,48 +59,44 @@ onMounted(() => {
 }
 
 .l-container {
-  height: 100%;
   width: 100%;
+  height: 100%;
 }
 
 .resize-box-right {
   flex: 1;
-  overflow: hidden;
   margin-left: 2px;
+  overflow: hidden;
 }
 
 .r-container {
-  height: 100%;
   width: 100%;
+  height: 100%;
 }
 
 .resize-real-box {
   position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 5px;
-  left: 0;
+  inset: 0 5px 0 0;
   height: 100%;
 }
+
 .resize-bar-horizontal {
   width: 100%;
-  height: 50px;
-  opacity: 0;
-  overflow: scroll;
-
-  resize: horizontal;
-  cursor: col-resize;
-
   min-width: 400px;
   max-width: 800px;
+  height: 50px;
+  overflow: scroll;
+  cursor: col-resize;
+  resize: horizontal;
+  opacity: 0;
 }
 
 .resize-line-horizontal {
   position: absolute;
   right: 0;
   height: 50px;
-  border-right: 3px double #ddd;
   pointer-events: none;
+  border-right: 3px double #ddd;
 }
 
 .resize-bar-horizontal:hover ~ .resize-line-horizontal,

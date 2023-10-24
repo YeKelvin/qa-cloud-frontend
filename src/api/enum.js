@@ -147,13 +147,12 @@ export const ElementType = {
 export const ElementClass = {
   // collection
   TestCollection: '测试集合',
-  SnippetCollection: '片段集合',
   // worker
   TestWorker: '测试用例',
   SetupWorker: '前置用例',
-  SetupDebuger: '前置调试器',
   TearDownWorker: '后置用例',
-  TearDownDebuger: '后置调试分器',
+  // snippet
+  TestSnippet: '测试片段',
   // sampler
   HTTPSampler: 'HTTP取样器',
   PythonSampler: 'Python取样器',
@@ -188,3 +187,65 @@ export const ApplicationState = {
   ENABLE: '启用',
   DISABLE: '禁用'
 }
+
+export const PropertyDefinition = {
+  // TestElement
+  TestElement__name: '元素名称',
+  TestElement__desc: '元素描述',
+
+  // TestCollection
+  TestCollection__serialize_workers: '顺序执行用例',
+  TestCollection__delay: '延迟执行时间',
+
+  // TestSnippet
+
+  // TestWorker
+  TestWorker__on_sample_error: '错误时动作',
+  TestWorker__number_of_threads: '并发数',
+  TestWorker__start_interval: '线程启动间隔时间',
+  TestWorker__main_controller: '主控制器',
+
+  // SetupWorker
+  // TearDownWorker
+
+  // IfController
+  // LoopController
+  // WhileController
+  // RetryController
+  // ForeachController
+  // TransactionController
+
+  // HTTPSampler
+  HTTPSampler__url: '请求地址',
+  HTTPSampler__method: '请求方法',
+  HTTPSampler__headers: '请求头',
+  HTTPSampler__params: 'Query参数',
+  HTTPSampler__data: 'Body数据',
+  HTTPSampler__encoding: '请求编码',
+  HTTPSampler__follow_redirects: '跟随重定向',
+  HTTPSampler__connect_timeout: '连接超时时间',
+  HTTPSampler__response_timeout: '响应超时时间',
+
+  // PythonSampler
+  PythonSampler__script: 'Python脚本',
+
+  // SQLSampler
+  SQLSampler__statement: 'SQL语句',
+  SQLSampler__limit: '结果数量限制',
+  SQLSampler__result_name: '存储变量名称',
+  SQLSampler__query_timeout: '查询超时时间'
+
+  // SnippetSampler
+
+  // SleepPrevProcessor
+  // PythonPrevProcessor
+
+  // SleepPostProcessor
+  // PythonPostProcessor
+  // JsonPathPostProcessor
+
+  // PythonAssertion
+  // JsonPathAssertion
+}
+
+export const AttributeDefinition = {}

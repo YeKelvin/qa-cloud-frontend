@@ -43,7 +43,7 @@ export default function useRunnableElement() {
   /**
    * 根据 collectionNo 执行片段
    */
-  const executeSnippetCollection = async (elementNo, additionalVariables) => {
+  const executeTestSnippet = async (elementNo, additionalVariables) => {
     try {
       // 没有选择变量集时给出提示
       if (isEmpty(pymeterStore.selectedDatasets)) {
@@ -58,7 +58,7 @@ export default function useRunnableElement() {
       // 等待获取 sid，后再执行脚本
       const sid = await socketio.getId()
       // 后端异步执行脚本
-      await ExecutionService.executeSnippets({
+      await ExecutionService.executeSnippet({
         socketId: sid,
         collectionNo: elementNo,
         datasets: pymeterStore.selectedDatasets,
@@ -139,7 +139,7 @@ export default function useRunnableElement() {
 
   return {
     executeTestCollection,
-    executeSnippetCollection,
+    executeTestSnippet,
     executeTestWorker,
     executeSampler
   }

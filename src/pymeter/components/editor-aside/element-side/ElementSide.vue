@@ -59,10 +59,10 @@
           </el-option>
         </el-option-group>
 
-        <!-- 脚本片段 -->
-        <el-option-group v-if="!isEmpty(snippets)" key="snippets" label="片段" style="padding-bottom: 50px">
+        <!-- 测试片段 -->
+        <el-option-group v-if="!isEmpty(snippetList)" key="snippets" label="片段" style="padding-bottom: 50px">
           <el-option
-            v-for="snippet in snippets"
+            v-for="snippet in snippetList"
             :key="snippet.elementNo"
             :label="snippet.elementName"
             :value="snippet.elementNo"
@@ -131,7 +131,7 @@ const workspaceStore = useWorkspaceStore()
 const elSelectRef = ref()
 const loading = ref(false)
 const collectionList = ref([])
-const snippets = ref([])
+const snippetList = ref([])
 const elementTreeRef = ref()
 const selectedCollections = computed({
   get: () => pymeterStore.selectedCollections,
@@ -186,7 +186,7 @@ const scrollToBottom = () => {
 }
 
 /**
- * 根据工作空间编号查询测试集合和脚本片段
+ * 根据工作空间编号查询测试集合和测试片段
  */
 const queryCollections = async () => {
   // 加载中
@@ -199,18 +199,18 @@ const queryCollections = async () => {
       elementClass: 'TestCollection'
     })
   ).result
-  // 查询 SnippetCollection
-  snippets.value = (
+  // 查询 TestSnippet
+  snippetList.value = (
     await ElementService.queryElementAll({
       workspaceNo: workspaceStore.workspaceNo,
-      elementType: 'COLLECTION',
-      elementClass: 'SnippetCollection'
+      elementType: 'SNIPPET',
+      elementClass: 'TestSnippet'
     })
   ).result
   // 加载完成
   loading.value = false
   // 提取集合编号
-  const collections = [...collectionList.value, ...snippets.value].map((item) => item.elementNo)
+  const collections = [...collectionList.value, ...snippetList.value].map((item) => item.elementNo)
   // 遍历取消选择无效的集合
   const selecteds = selectedCollections.value
   for (let i = selecteds.length - 1; i >= 0; i--) {
@@ -240,13 +240,13 @@ const openNewCollectionTab = () => {
 }
 
 /**
- * 打开新增 SnippetCollection 的标签页
+ * 打开新增 TestSnippet 的标签页
  */
 const openNewSnippetTab = () => {
   pymeterStore.addTab({
     editorNo: Date.now().toString(),
     editorName: '新建片段',
-    editorComponent: 'SnippetCollection',
+    editorComponent: 'TestSnippet',
     editorMode: 'CREATE'
   })
 }

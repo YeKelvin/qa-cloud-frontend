@@ -39,7 +39,7 @@
           type="primary"
           plain
           :icon="View"
-          @click="openSnippetCollection()"
+          @click="openTestSnippet()"
         >
           查 看
         </el-button>
@@ -184,8 +184,8 @@ onMounted(() => {
 const querySnippets = () => {
   ElementService.queryElementAll({
     workspaceNo: props.metadata.workspaceNo,
-    elementType: 'COLLECTION',
-    elementClass: 'SnippetCollection'
+    elementType: 'SNIPPET',
+    elementClass: 'TestSnippet'
   }).then((response) => {
     snippetList.value = response.result
   })
@@ -232,7 +232,7 @@ const querySnippet = (snippetNo) => {
 /**
  * 在侧边栏打开指定的片段集合
  */
-const openSnippetCollection = () => {
+const openTestSnippet = () => {
   const snippet = snippetList.value.filter((item) => item.elementNo === elementInfo.value.elementAttrs.snippet_no)
   // 判断所选片段是否属于当前空间
   if (snippet.workspaceNo && snippet.workspaceNo !== workspaceStore.workspaceNo) {

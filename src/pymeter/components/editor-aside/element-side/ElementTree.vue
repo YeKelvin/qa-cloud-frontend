@@ -138,7 +138,7 @@ const queryElementsTree = (expandtop = false) => {
     return
   }
   // 根据列表查询元素及其子代
-  ElementService.queryElementsChildren({ elements: props.collections }).then((response) => {
+  ElementService.queryElementChildrenByList({ elements: props.collections }).then((response) => {
     // 存储列表
     elementList.value = response.result
     nextTick(() => {

@@ -68,6 +68,13 @@ export const usePyMeterStore = defineStore('pymeter', {
   getters: {},
   actions: {
     /**
+     * 获取当前tab
+     */
+    currentTab() {
+      const tab = this.tabs.filter((tab) => tab.editorNo === this.activeTabNo)
+      return tab ? tab[0] : null
+    },
+    /**
      * 添加 tab
      */
     addTab({ editorNo, editorName, editorComponent, editorMode, metadata }) {

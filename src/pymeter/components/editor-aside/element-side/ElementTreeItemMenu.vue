@@ -80,31 +80,10 @@
         <el-button link @click="openNewTransactionControllerTab">事务控制器</el-button>
       </el-popover>
 
-      <!-- debuger 二级菜单 -->
-      <el-popover
-        v-if="item?.elementClass == 'SnippetCollection'"
-        v-model:visible="debugerVisible"
-        trigger="hover"
-        placement="right-start"
-        popper-class="element-menu-popover"
-        transition="el-zoom-in-top"
-        :hide-after="50"
-        :offset="10"
-      >
-        <template #reference>
-          <el-button link class="element-menu--top-option" @click="debugerVisible = true">
-            <span>新增调试组</span>
-            <el-icon><ArrowRight /></el-icon>
-          </el-button>
-        </template>
-        <el-button link @click="openNewSetupDebugerTab">前置调试组</el-button>
-        <el-button link @click="openNewTeardownDebugerTab">后置调试组</el-button>
-      </el-popover>
-
       <template v-if="item?.elementType == 'COLLECTION'">
         <el-divider />
-        <el-button link @click="copyElementToWorkspace">复制到空间</el-button>
-        <el-button link @click="moveElementToWorkspace">移动到空间</el-button>
+        <el-button link @click="copyRootToWorkspace">复制到空间</el-button>
+        <el-button link @click="moveRootToWorkspace">移动到空间</el-button>
       </template>
       <template v-else>
         <el-divider v-if="item?.elementType != 'SAMPLER'" />
@@ -167,22 +146,13 @@ const visible = computed({
 const workersVisible = ref(false)
 const samplersVisible = ref(false)
 const controllersVisible = ref(false)
-const debugerVisible = ref(false)
 const showSamplers = computed(() => {
   if (!item.value) return
-  return (
-    item.value.elementType === 'WORKER' ||
-    item.value.elementType === 'CONTROLLER' ||
-    item.value.elementClass === 'SnippetCollection'
-  )
+  return ['SNIPPET', 'WORKER', 'CONTROLLER'].includes(item.value.elementType)
 })
 const showControllers = computed(() => {
   if (!item.value) return
-  return (
-    item.value.elementType === 'WORKER' ||
-    item.value.elementType === 'CONTROLLER' ||
-    item.value.elementClass === 'SnippetCollection'
-  )
+  return ['SNIPPET', 'WORKER', 'CONTROLLER'].includes(item.value.elementType)
 })
 const isMacOS = computed(() => /macintosh|mac os x/i.test(navigator.userAgent))
 const shortcutKeyPrefix = computed(() => {
@@ -195,7 +165,6 @@ const closeMenu = () => {
   workersVisible.value = false
   samplersVisible.value = false
   controllersVisible.value = false
-  debugerVisible.value = false
   visible.value = false
 }
 
@@ -233,20 +202,6 @@ const openNewSetupWorkerTab = () => {
   })
 }
 
-const openNewSetupDebugerTab = () => {
-  closeMenu()
-  pymeterStore.addTab({
-    editorNo: Date.now().toString(),
-    editorName: '新建调试器',
-    editorComponent: 'SetupDebuger',
-    editorMode: 'CREATE',
-    metadata: {
-      rootNo: item.value.rootNo,
-      parentNo: item.value.elementNo
-    }
-  })
-}
-
 /**
  * 打开新增 TeatdownWorker 的标签页
  */
@@ -256,20 +211,6 @@ const openNewTeardownWorkerTab = () => {
     editorNo: Date.now().toString(),
     editorName: '新建用例',
     editorComponent: 'TeardownWorker',
-    editorMode: 'CREATE',
-    metadata: {
-      rootNo: item.value.rootNo,
-      parentNo: item.value.elementNo
-    }
-  })
-}
-
-const openNewTeardownDebugerTab = () => {
-  closeMenu()
-  pymeterStore.addTab({
-    editorNo: Date.now().toString(),
-    editorName: '新建调试器',
-    editorComponent: 'TeardownDebuger',
     editorMode: 'CREATE',
     metadata: {
       rootNo: item.value.rootNo,
@@ -490,7 +431,7 @@ const duplicateElement = () => {
 /**
  * 复制元素至指定空间
  */
-const copyElementToWorkspace = async () => {
+const copyRootToWorkspace = async () => {
   const data = item.value
   closeMenu()
   let workspaceNo = null
@@ -511,7 +452,7 @@ const copyElementToWorkspace = async () => {
     .catch(() => true)
   if (cancelled) return
   // 复制元素到指定的空间
-  await ElementService.copyElementToWorkspace({ elementNo: data.elementNo, workspaceNo: workspaceNo })
+  await ElementService.copyRootToWorkspace({ elementNo: data.elementNo, workspaceNo: workspaceNo })
   // 成功提示
   ElMessage({ message: '复制成功', type: 'info', duration: 1 * 1000 })
 }
@@ -519,7 +460,7 @@ const copyElementToWorkspace = async () => {
 /**
  * 移动元素至指定空间
  */
-const moveElementToWorkspace = async () => {
+const moveRootToWorkspace = async () => {
   const data = item.value
   closeMenu()
   let workspaceNo = null
@@ -540,7 +481,7 @@ const moveElementToWorkspace = async () => {
     .catch(() => true)
   if (cancelled) return
   // 移动元素到指定空间
-  await ElementService.moveElementToWorkspace({ elementNo: data.elementNo, workspaceNo: workspaceNo })
+  await ElementService.moveRootToWorkspace({ elementNo: data.elementNo, workspaceNo: workspaceNo })
   // 从已选中的集合列表中移除该集合
   pymeterStore.removeSelectedCollection(data.elementNo)
   // 关闭tab

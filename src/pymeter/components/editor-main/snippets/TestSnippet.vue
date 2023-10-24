@@ -69,13 +69,13 @@
             type="danger"
             style="margin-left: 10px"
             placement="bottom"
-            @click="executeSnippetCollection(elementNo)"
+            @click="executeTestSnippet(elementNo)"
           >
             <SvgIcon icon-name="pymeter-send" style="margin-right: 5px" />
             <span style="margin-left: 5px">运 行</span>
             <template #dropdown>
               <el-dropdown-menu>
-                <el-dropdown-item @click="querySnippetsJson()">查询脚本(JSON)</el-dropdown-item>
+                <el-dropdown-item @click="querySnippetJson()">查询脚本(JSON)</el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
@@ -110,7 +110,7 @@
           <span>运 行</span>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item @click="querySnippetsJson()">查询脚本(JSON)</el-dropdown-item>
+              <el-dropdown-item @click="querySnippetJson()">查询脚本(JSON)</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -137,14 +137,14 @@ import useElement from '@/pymeter/composables/useElement'
 import useRunnableElement from '@/pymeter/composables/useRunnableElement'
 import EditorProps from '@/pymeter/composables/editor.props'
 import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
-import ArgumentTable from './SnippetCollectionArgumentTable.vue' // 实参
-import ParameterTable from './SnippetCollectionParameterTable.vue' // 形参
+import ArgumentTable from './TestSnippetArgumentTable.vue' // 实参
+import ParameterTable from './TestSnippetParameterTable.vue' // 形参
 
 const props = defineProps(EditorProps)
 const pymeterStore = usePyMeterStore()
 const workspaceStore = useWorkspaceStore()
 const { assignElement } = useElement()
-const { executeSnippetCollection } = useRunnableElement()
+const { executeTestSnippet } = useRunnableElement()
 const { editMode, queryMode, modifyMode, createMode, functions, editNow, setReadonly, updateTab, closeTab } =
   useEditor(props)
 
@@ -152,10 +152,10 @@ const elformRef = ref()
 const elementNo = ref(props.editorNo)
 const elementInfo = ref({
   elementNo: '',
-  elementName: '脚本片段',
+  elementName: '测试片段',
   elementDesc: '',
-  elementType: 'COLLECTION',
-  elementClass: 'SnippetCollection',
+  elementType: 'SNIPPET',
+  elementClass: 'TestSnippet',
   elementAttrs: {
     parameters: [],
     use_http_session: false
@@ -297,7 +297,7 @@ const createElement = async (close = false) => {
   // 校验参数名称不能为空
   if (!checkParameter()) return
   // 新增元素
-  const response = await ElementService.createCollection({
+  const response = await ElementService.createElementRoot({
     workspaceNo: workspaceStore.workspaceNo,
     ...elementInfo.value
   })
@@ -333,15 +333,15 @@ const createElement = async (close = false) => {
  */
 const executeCollection = async () => {
   showArgumentsDialog.value = false
-  await executeSnippetCollection(elementNo.value, additionalVariables.value)
+  await executeTestSnippet(elementNo.value, additionalVariables.value)
 }
 
 /**
  * 查看 Json 脚本
  */
-const querySnippetsJson = () => {
+const querySnippetJson = () => {
   showArgumentsDialog.value = false
-  ExecutionService.querySnippetsJson({
+  ExecutionService.querySnippetJson({
     collectionNo: elementNo.value,
     datasets: pymeterStore.selectedDatasets,
     useCurrentValue: pymeterStore.useCurrentValue,

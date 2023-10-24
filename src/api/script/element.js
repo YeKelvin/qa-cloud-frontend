@@ -10,15 +10,15 @@ export const queryElementInfo = (params) => request.get('/script/element/info', 
 
 export const queryElementChildren = (params) => request.get('/script/element/children', { params })
 
-export const queryElementsChildren = (params) =>
-  request.get('/script/elements/children', {
+export const queryElementChildrenByList = (params) =>
+  request.get('/script/element/children/by/list', {
     params,
     paramsSerializer: { indexes: null }
   })
 
 export const queryElementComponents = (params) => request.get('/script/element/components', { params })
 
-export const createCollection = (data) => request.post('/script/collection', data)
+export const createElementRoot = (data) => request.post('/script/element/root', data)
 
 export const createElementChild = (data) => request.post('/script/element/child', data)
 
@@ -38,9 +38,9 @@ export const duplicateElement = (data) => request.post('/script/element/duplicat
 
 export const pasteElement = (data) => request.post('/script/element/paste', data)
 
-export const copyElementToWorkspace = (data) => request.post('/script/element/collection/copy/to/workspace', data)
+export const copyRootToWorkspace = (data) => request.post('/script/element/root/copy/to/workspace', data)
 
-export const moveElementToWorkspace = (data) => request.post('/script/element/collection/move/to/workspace', data)
+export const moveRootToWorkspace = (data) => request.post('/script/element/root/move/to/workspace', data)
 
 export const queryWorkspaceComponents = (params) => request.get('/script/element/workspace/components', { params })
 

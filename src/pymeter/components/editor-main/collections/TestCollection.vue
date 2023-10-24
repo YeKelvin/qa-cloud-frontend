@@ -391,7 +391,7 @@ const createElement = async (close = false) => {
   // 更新元素属性
   updateElementProperty()
   // 新增元素
-  const response = await ElementService.createCollection({
+  const response = await ElementService.createElementRoot({
     workspaceNo: workspaceStore.workspaceNo,
     ...elementInfo.value,
     componentList: pendingSubmitComponentList.value

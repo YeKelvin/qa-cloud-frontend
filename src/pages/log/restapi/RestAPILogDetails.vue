@@ -36,7 +36,7 @@
       <el-table-column prop="newValue" label="更新后数据" min-width="200" />
       <el-table-column fixed="right" label="操作" min-width="80" width="80" align="center">
         <template #default="{ row }">
-          <el-button v-if="row.action == 'UPDATE'" type="primary" link @click="openDiff(row)">对比</el-button>
+          <el-button v-if="row.action == 'UPDATE'" type="primary" link @click="openDiff(row)">比较</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -105,6 +105,10 @@ const openDiff = (row) => {
 .diff-dialog {
   .el-dialog__header {
     display: none;
+  }
+
+  .el-dialog__body {
+    padding: 5px;
   }
 }
 </style>

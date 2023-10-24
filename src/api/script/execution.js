@@ -6,7 +6,7 @@ export const executeWorker = (data) => request.post('/script/worker/execute', da
 
 export const executeSampler = (data) => request.post('/script/sampler/execute', data)
 
-export const executeSnippets = (data) => request.post('/script/snippets/execute', data)
+export const executeSnippet = (data) => request.post('/script/snippet/execute', data)
 
 export const executeTestPlan = (data) => request.post('/script/testplan/execute', data)
 
@@ -24,8 +24,8 @@ export const queryWorkerJson = (params) =>
     paramsSerializer: { indexes: null }
   })
 
-export const querySnippetsJson = (params) =>
-  request.get('/script/snippets/json', {
+export const querySnippetJson = (params) =>
+  request.get('/script/snippet/json', {
     params: params,
     paramsSerializer: { indexes: null }
   })

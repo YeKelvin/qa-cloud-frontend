@@ -1,5 +1,5 @@
 <template>
-  <div id="topbar-variables-dialog">
+  <div id="dataset-dialog">
     <el-dialog width="60%" :show-close="false" center v-bind="$attrs" @close="$emit('update:model-value', false)">
       <!-- 顶栏 -->
       <template #header>
@@ -13,7 +13,7 @@
             />
           </el-tabs>
           <el-button
-            style="border-bottom: var(--el-border); border-radius: 0; padding-right: 10px"
+            style="padding-right: 10px; border-bottom: var(--el-border); border-radius: 0"
             type="primary"
             link
             :icon="Edit"
@@ -189,7 +189,7 @@ onMounted(() => {
   }
   // 计算 backtop 位置
   nextTick(() => {
-    const dialog = document.querySelector('#topbar-variables-dialog').querySelector('.el-dialog')
+    const dialog = document.querySelector('#dataset-dialog').querySelector('.el-dialog')
     backtop.right = (document.body.clientWidth - dialog.clientWidth) / 2 + 20
     backtop.bottom = document.body.clientHeight - dialog.offsetTop - 40 - 600 - 40
   })
