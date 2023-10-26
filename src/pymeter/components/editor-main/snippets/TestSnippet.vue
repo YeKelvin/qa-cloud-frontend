@@ -157,8 +157,8 @@ const elementInfo = ref({
   elementType: 'SNIPPET',
   elementClass: 'TestSnippet',
   elementAttrs: {
-    parameters: [],
-    use_http_session: false
+    TestSnippet__parameters: [],
+    TestSnippet__use_http_session: false
   },
   property: {}
 })
@@ -205,7 +205,7 @@ const updateElementNo = (val) => {
  * 更新元素属性
  */
 const updateElementProperty = () => {
-  elementInfo.value.elementAttrs.parameters = parametersData.value.filter(
+  elementInfo.value.elementAttrs.TestSnippet__parameters = parametersData.value.filter(
     (item) => !isBlankAll(item.name, item.default, item.desc)
   )
 }
@@ -224,7 +224,7 @@ const removeAllBlankRow = () => {
  */
 const checkParameter = () => {
   let pass = true
-  elementInfo.value.elementAttrs.parameters.forEach((item) => {
+  elementInfo.value.elementAttrs.TestSnippet__parameters.forEach((item) => {
     if (isBlank(item.name)) {
       pass = false
       return

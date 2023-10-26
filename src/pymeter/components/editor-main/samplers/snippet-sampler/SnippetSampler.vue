@@ -19,9 +19,9 @@
       </el-form-item>
 
       <!-- 片段列表 -->
-      <el-form-item label="片段引用：" prop="elementAttrs.snippet_no" class="snippets-item">
+      <el-form-item label="片段引用：" prop="elementAttrs.SnippetSampler__snippet_no" class="snippets-item">
         <el-select
-          v-model="elementInfo.elementAttrs.snippet_no"
+          v-model="elementInfo.elementAttrs.SnippetSampler__snippet_no"
           placeholder="脚本片段"
           style="width: 100%"
           :disabled="queryMode"
@@ -34,7 +34,7 @@
           />
         </el-select>
         <el-button
-          v-show="!isBlank(elementInfo.elementAttrs.snippet_no)"
+          v-show="!isBlank(elementInfo.elementAttrs.SnippetSampler__snippet_no)"
           style="margin-left: 10px"
           type="primary"
           plain
@@ -46,7 +46,7 @@
       </el-form-item>
 
       <!-- 变更警告 -->
-      <template v-if="showWarning && !elementInfo.elementAttrs.use_default">
+      <template v-if="showWarning && !elementInfo.elementAttrs.SnippetSampler__use_default">
         <el-tag type="danger" style="margin-bottom: 10px" disable-transitions>
           重要提醒：片段参数定义已发生变更，请重新编辑
         </el-tag>
@@ -73,7 +73,7 @@
       <div v-if="showParams">
         <!-- 形参 -->
         <ArgumentTable
-          v-model:use-default="elementInfo.elementAttrs.use_default"
+          v-model:use-default="elementInfo.elementAttrs.SnippetSampler__use_default"
           :data="argumentsData"
           :edit-mode="editMode"
         />
@@ -116,7 +116,7 @@ import ArgumentTable from './SnippetSamplerArgumentTable.vue'
 
 const elementFormRules = {
   elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }],
-  'elementAttrs.snippet_no': [{ required: true, message: '片段不能为空', trigger: 'blur' }]
+  'elementAttrs.SnippetSampler__snippet_no': [{ required: true, message: '片段不能为空', trigger: 'blur' }]
 }
 
 const props = defineProps(EditorProps)
@@ -146,9 +146,9 @@ const elementInfo = ref({
   elementType: 'SAMPLER',
   elementClass: 'SnippetSampler',
   elementAttrs: {
-    arguments: [],
-    snippet_no: '',
-    use_default: false
+    SnippetSampler__snippet_no: '',
+    SnippetSampler__arguments: [],
+    SnippetSampler__use_default: false
   },
   property: {}
 })
@@ -159,7 +159,7 @@ const showWarning = ref(false)
 const showParams = computed(() => activeTabName.value === 'PARAMS')
 
 watch(
-  () => elementInfo.value.elementAttrs.snippet_no,
+  () => elementInfo.value.elementAttrs.SnippetSampler__snippet_no,
   (val) => {
     if (!val) return
     // 清空原有的参数
@@ -209,7 +209,7 @@ const querySnippet = (snippetNo) => {
     const attributes = elementInfo.value.elementAttrs
     if (!createMode.value) {
       argumentsData.value.forEach((item) => {
-        const arg = attributes.arguments.find((i) => i.name === item.name)
+        const arg = attributes.SnippetSampler__arguments.find((i) => i.name === item.name)
         if (arg) {
           item.value = arg.value
         }
@@ -217,11 +217,11 @@ const querySnippet = (snippetNo) => {
     }
     // 将请求参数合并至表格中，如果片段参数定义（对称差集）有变更，则给出提示
     if (queryMode.value) {
-      if (argumentsData.value.length !== attributes.arguments.length) {
+      if (argumentsData.value.length !== attributes.SnippetSampler__arguments.length) {
         showWarning.value = true
       }
-      const leftDiff = differenceBy(argumentsData.value, attributes.arguments, 'name')
-      const rightDiff = differenceBy(attributes.arguments, argumentsData.value, 'name')
+      const leftDiff = differenceBy(argumentsData.value, attributes.SnippetSampler__arguments, 'name')
+      const rightDiff = differenceBy(attributes.SnippetSampler__arguments, argumentsData.value, 'name')
       if (leftDiff.length > 0 || rightDiff.length > 0) {
         showWarning.value = true
       }
@@ -233,14 +233,16 @@ const querySnippet = (snippetNo) => {
  * 在侧边栏打开指定的片段集合
  */
 const openTestSnippet = () => {
-  const snippet = snippetList.value.filter((item) => item.elementNo === elementInfo.value.elementAttrs.snippet_no)
+  const snippet = snippetList.value.filter(
+    (item) => item.elementNo === elementInfo.value.elementAttrs.SnippetSampler__snippet_no
+  )
   // 判断所选片段是否属于当前空间
   if (snippet.workspaceNo && snippet.workspaceNo !== workspaceStore.workspaceNo) {
     ElMessage({ message: '片段不属于当前空间下，请前往所属空间下查看', type: 'warning', duration: 2 * 1000 })
     return
   }
   // 脚本列表打开片段脚本
-  pymeterStore.addSelectedCollection(elementInfo.value.elementAttrs.snippet_no)
+  pymeterStore.addSelectedCollection(elementInfo.value.elementAttrs.SnippetSampler__snippet_no)
   // 滚动至底部
   pymeterStore.scrollToElementTreeBottom()
 }
@@ -248,7 +250,7 @@ const openTestSnippet = () => {
 // 校验参数值是否为空
 const checkParameter = () => {
   let pass = true
-  elementInfo.value.elementAttrs.arguments.forEach((item) => {
+  elementInfo.value.elementAttrs.SnippetSampler__arguments.forEach((item) => {
     if (isBlank(item.value)) {
       pass = false
       return
@@ -260,8 +262,8 @@ const checkParameter = () => {
 
 // 设置元素属性
 const setElementProperty = () => {
-  if (elementInfo.value.elementAttrs.use_default) return
-  elementInfo.value.elementAttrs.arguments = argumentsData.value.map((item) => ({
+  if (elementInfo.value.elementAttrs.SnippetSampler__use_default) return
+  elementInfo.value.elementAttrs.SnippetSampler__arguments = argumentsData.value.map((item) => ({
     name: item.name,
     value: item.value
   }))

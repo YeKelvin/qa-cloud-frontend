@@ -196,6 +196,7 @@ export const PropertyDefinition = {
   // TestCollection
   TestCollection__serialize_workers: '顺序执行用例',
   TestCollection__delay: '延迟执行时间',
+  TestCollection__running_strategy: '运行策略',
 
   // TestSnippet
 
@@ -206,13 +207,41 @@ export const PropertyDefinition = {
   TestWorker__main_controller: '主控制器',
 
   // SetupWorker
+  SetupWorker__on_sample_error: '错误时动作',
+  SetupWorker__number_of_threads: '并发数',
+  SetupWorker__start_interval: '线程启动间隔时间',
+  SetupWorker__main_controller: '主控制器',
+
   // TearDownWorker
+  TearDownWorker__on_sample_error: '错误时动作',
+  TearDownWorker__number_of_threads: '并发数',
+  TearDownWorker__start_interval: '线程启动间隔时间',
+  TearDownWorker__main_controller: '主控制器',
 
   // IfController
+  IfController__condition: 'if条件',
+
   // LoopController
+  LoopController__loops: '循环次数',
+  LoopController__continue_forever: '永远',
+
   // WhileController
+  WhileController__condition: 'while条件',
+  WhileController__max_loop_count: 'while最大循环数',
+  WhileController__timeout: 'while超时时间',
+  WhileController__delay: 'while延迟时间',
+
   // RetryController
+  RetryController__retries: '重试次数',
+  RetryController__intervals: '重试间隔时间',
+  RetryController__flag_prefix: '重试标识前缀',
+
   // ForeachController
+  ForeachController__target: '遍历项目',
+  ForeachController__iter: '遍历对象',
+  ForeachController__type: '遍历对象类型',
+  ForeachController__delay: '遍历延迟时间',
+
   // TransactionController
 
   // HTTPSampler
@@ -225,6 +254,7 @@ export const PropertyDefinition = {
   HTTPSampler__follow_redirects: '跟随重定向',
   HTTPSampler__connect_timeout: '连接超时时间',
   HTTPSampler__response_timeout: '响应超时时间',
+  HTTPSampler__running_strategy: '运行策略',
 
   // PythonSampler
   PythonSampler__script: 'Python脚本',
@@ -233,19 +263,58 @@ export const PropertyDefinition = {
   SQLSampler__statement: 'SQL语句',
   SQLSampler__limit: '结果数量限制',
   SQLSampler__result_name: '存储变量名称',
-  SQLSampler__query_timeout: '查询超时时间'
+  SQLSampler__query_timeout: '查询超时时间',
 
   // SnippetSampler
 
   // SleepPrevProcessor
+  SleepPrevProcessor__delay: '等待时间',
+
   // PythonPrevProcessor
+  PythonPrevProcessor__script: 'Python脚本',
 
   // SleepPostProcessor
+  SleepPostProcessor__delay: '等待时间',
+
   // PythonPostProcessor
+  PythonPostProcessor__script: 'Python脚本',
+
   // JsonPathPostProcessor
+  JsonPathPostProcessor__variable_scope: '变量作用域',
+  JsonPathPostProcessor__variable_name: '变量名称',
+  JsonPathPostProcessor__jsonpath: 'JsonPath表达式',
+  JsonPathPostProcessor__list_random: '列表随机',
+  JsonPathPostProcessor__default_value: '变量默认值',
 
   // PythonAssertion
+  PythonAssertion__script: 'Python脚本',
+
   // JsonPathAssertion
+  JsonPathAssertion__jsonpath: 'JsonPath表达式',
+  JsonPathAssertion__expected_value: '期望值',
+  JsonPathAssertion__operator: '判断操作符'
 }
 
-export const AttributeDefinition = {}
+export const AttributeDefinition = {
+  // TestCollection
+  TestCollection__exclude_workspaces: '排除空间组件',
+
+  // TestSnippet
+  TestSnippet__parameters: '片段参数',
+  TestSnippet__use_http_session: '使用会话',
+
+  // TestWorker
+  Worker__use_http_session: '使用会话',
+  Worker__clear_http_session_each_iteration: '迭代时刷新会话',
+
+  // HTTPSampler
+  HTTPSampler__header_template_refs: '请求头模板',
+
+  // SQLSampler
+  SQLSampler__engine_no: '数据库引擎',
+
+  // SnippetSampler
+  SnippetSampler__snippet_no: '测试片段',
+  SnippetSampler__arguments: '片段参数',
+  SnippetSampler__use_default: '使用默认值'
+}

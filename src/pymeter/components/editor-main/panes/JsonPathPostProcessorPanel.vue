@@ -24,7 +24,7 @@
           <!-- 变量作用域 -->
           <el-select
             v-model="elementProperty.JsonPathPostProcessor__variable_scope"
-            style="min-width: 100px; width: 100px"
+            style="width: 100px; min-width: 100px"
             :disabled="props.readonly"
           >
             <el-option label="局部变量" value="LOCAL" />

@@ -53,8 +53,8 @@
     <div style="display: flex; flex-direction: column">
       <el-button link :disabled="disabledOperation" @click="modifyDataset">编辑</el-button>
       <el-button link :disabled="disabledOperation" @click="duplicateDataset">复制</el-button>
-      <el-button link :disabled="disabledOperation" @click="copyDatasetToWorkspace">复制到空间</el-button>
-      <el-button link :disabled="disabledOperation" @click="moveDatasetToWorkspace">移动到空间</el-button>
+      <el-button link :disabled="disabledOperation" @click="copyDatasetToWorkspace">复制空间</el-button>
+      <el-button link :disabled="disabledOperation" @click="moveDatasetToWorkspace">移动空间</el-button>
       <el-button link :disabled="disabledOperation" @click="deleteDataset">删除</el-button>
     </div>
   </el-popover>

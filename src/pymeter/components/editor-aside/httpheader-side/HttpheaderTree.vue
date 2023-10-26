@@ -41,8 +41,8 @@
     <div style="display: flex; flex-direction: column">
       <el-button link @click="renameTemplate">重命名</el-button>
       <el-button link @click="duplicateTemplate">复制</el-button>
-      <el-button link @click="copyTemplateToWorkspace">复制到空间</el-button>
-      <el-button link @click="moveTemplateToWorkspace">移动到空间</el-button>
+      <el-button link @click="copyTemplateToWorkspace">复制空间</el-button>
+      <el-button link @click="moveTemplateToWorkspace">移动空间</el-button>
       <el-button link @click="deleteTemplate">删除</el-button>
     </div>
   </el-popover>
@@ -272,11 +272,12 @@ defineExpose({
     justify-content: flex-start;
     width: 100%;
     padding: 5px 16px;
+    font-family: inherit;
+    font-size: var(--el-font-size-base);
+    font-weight: inherit;
     line-height: 22px;
     color: var(--el-text-color-regular);
-    font-size: var(--el-font-size-base);
-    font-family: inherit;
-    font-weight: inherit;
+
     &:hover {
       color: var(--el-color-primary);
       background-color: var(--el-color-primary-light-9) !important;
@@ -289,20 +290,20 @@ defineExpose({
 }
 
 .httpheader-template-menu--top-option > span {
-  width: 100%;
   justify-content: space-between;
+  width: 100%;
 }
 
 .httpheader-template-menu--shortcut-option > span {
-  width: 100%;
   justify-content: space-between;
+  width: 100%;
 }
 </style>
 
 <style lang="scss" scoped>
 .tree-item {
-  flex: 1;
   display: flex;
+  flex: 1;
   align-items: center;
   justify-content: space-between;
   padding-right: 8px;
@@ -315,16 +316,16 @@ defineExpose({
 }
 
 .tree-item-icon {
-  height: 1.8em !important;
   width: 1.8em !important;
+  height: 1.8em !important;
   padding-right: 5px;
 }
 
 .tree-item-name {
-  white-space: nowrap;
+  padding-right: 10px;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding-right: 10px;
+  white-space: nowrap;
 }
 
 :deep(.el-tree-node__content) {

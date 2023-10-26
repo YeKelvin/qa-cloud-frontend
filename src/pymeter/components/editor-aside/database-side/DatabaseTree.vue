@@ -45,8 +45,8 @@
   >
     <div style="display: flex; flex-direction: column">
       <el-button link @click="duplicateDatabaseEngine">复制</el-button>
-      <el-button link @click="copyDatabaseEngineToWorkspace">复制到空间</el-button>
-      <el-button link @click="moveDatabaseEngineToWorkspace">移动到空间</el-button>
+      <el-button link @click="copyDatabaseEngineToWorkspace">复制空间</el-button>
+      <el-button link @click="moveDatabaseEngineToWorkspace">移动空间</el-button>
       <el-button link @click="deleteDatabaseEngine">删除</el-button>
     </div>
   </el-popover>

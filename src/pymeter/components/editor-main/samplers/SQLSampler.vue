@@ -19,8 +19,8 @@
       </el-form-item>
 
       <!-- 数据库选择框 -->
-      <el-form-item label="数据库：" prop="elementAttrs.engine_no">
-        <el-select v-model="elementInfo.elementAttrs.engine_no" style="width: 100%" :disabled="queryMode">
+      <el-form-item label="数据库：" prop="elementAttrs.SQLSampler__engine_no">
+        <el-select v-model="elementInfo.elementAttrs.SQLSampler__engine_no" style="width: 100%" :disabled="queryMode">
           <el-option v-for="item in engineList" :key="item.dbNo" :label="item.dbName" :value="item.dbNo">
             <span class="database-type-option">
               <span>{{ item.dbName }}</span>
@@ -160,7 +160,7 @@ const elementInfo = ref({
   elementType: 'SAMPLER',
   elementClass: 'SQLSampler',
   elementAttrs: {
-    engine_no: ''
+    SQLSampler__engine_no: ''
   },
   property: {
     SQLSampler__statement: '',
@@ -171,7 +171,7 @@ const elementInfo = ref({
 })
 const elementFormRules = reactive({
   elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }],
-  'elementAttrs.engine_no': [{ required: true, message: '数据库编号不能为空', trigger: 'blur' }],
+  'elementAttrs.SQLSampler__engine_no': [{ required: true, message: '数据库编号不能为空', trigger: 'blur' }],
   'property.SQLSampler__statement': [{ required: true, message: 'SQL不能为空', trigger: 'blur' }]
 })
 const engineList = ref([])

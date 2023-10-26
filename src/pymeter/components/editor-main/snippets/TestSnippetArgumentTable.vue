@@ -28,9 +28,9 @@ import SimpleTextarea from '@/components/simple-textarea/SimpleTextarea.vue'
 }
 
 span {
-  letter-spacing: 0.6px;
-  white-space: pre-wrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  letter-spacing: 0.6px;
+  white-space: pre-wrap;
 }
 </style>

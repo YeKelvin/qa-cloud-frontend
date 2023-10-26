@@ -82,8 +82,8 @@
 
       <template v-if="item?.elementType == 'COLLECTION'">
         <el-divider />
-        <el-button link @click="copyRootToWorkspace">复制到空间</el-button>
-        <el-button link @click="moveRootToWorkspace">移动到空间</el-button>
+        <el-button link @click="copyRootToWorkspace">复制空间</el-button>
+        <el-button link @click="moveRootToWorkspace">移动空间</el-button>
       </template>
       <template v-else>
         <el-divider v-if="item?.elementType != 'SAMPLER'" />
@@ -441,7 +441,7 @@ const copyRootToWorkspace = async () => {
     message: (
       <WorkspaceTree
         key={data.elementNo}
-        data={workspaceStore.workspaceList}
+        data={workspaceStore.workspaceList.filter((item) => item.workspaceNo !== workspaceStore.workspaceNo)}
         onNodeClick={(data) => (workspaceNo = data.workspaceNo)}
       />
     ),
@@ -470,7 +470,7 @@ const moveRootToWorkspace = async () => {
     message: (
       <WorkspaceTree
         key={data.elementNo}
-        data={workspaceStore.workspaceList}
+        data={workspaceStore.workspaceList.filter((item) => item.workspaceNo !== workspaceStore.workspaceNo)}
         onNodeClick={(data) => (workspaceNo = data.workspaceNo)}
       />
     ),
@@ -482,10 +482,10 @@ const moveRootToWorkspace = async () => {
   if (cancelled) return
   // 移动元素到指定空间
   await ElementService.moveRootToWorkspace({ elementNo: data.elementNo, workspaceNo: workspaceNo })
-  // 从已选中的集合列表中移除该集合
-  pymeterStore.removeSelectedCollection(data.elementNo)
   // 关闭tab
   pymeterStore.removeTab({ editorNo: data.elementNo })
+  // 从已选中的集合列表中移除该集合
+  pymeterStore.removeSelectedCollection(data.elementNo)
   // 重新查询列表
   pymeterStore.refreshElementTree()
   // 成功提示

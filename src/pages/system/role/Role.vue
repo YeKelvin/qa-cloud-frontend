@@ -56,9 +56,9 @@
     <div class="pagination-container">
       <el-pagination
         v-model:current-page="page"
+        v-model:page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :page-sizes="[10, 25, 50, 100]"
-        :page-size="pageSize"
         :total="total"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
