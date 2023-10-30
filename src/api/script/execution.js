@@ -10,7 +10,7 @@ export const executeSnippet = (data) => request.post('/script/snippet/execute', 
 
 export const executeTestPlan = (data) => request.post('/script/testplan/execute', data)
 
-export const interruptTestplan = (data) => request.post('/script/testplan/execution/interrupt', data)
+export const interruptTestplan = (data) => request.post('/script/testplan/interrupt', data)
 
 export const queryCollectionJson = (params) =>
   request.get('/script/collection/json', {

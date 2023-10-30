@@ -150,7 +150,7 @@ export const ElementClass = {
   // worker
   TestWorker: '测试用例',
   SetupWorker: '前置用例',
-  TearDownWorker: '后置用例',
+  TeardownWorker: '后置用例',
   // snippet
   TestSnippet: '测试片段',
   // sampler
@@ -212,11 +212,11 @@ export const PropertyDefinition = {
   SetupWorker__start_interval: '线程启动间隔时间',
   SetupWorker__main_controller: '主控制器',
 
-  // TearDownWorker
-  TearDownWorker__on_sample_error: '错误时动作',
-  TearDownWorker__number_of_threads: '并发数',
-  TearDownWorker__start_interval: '线程启动间隔时间',
-  TearDownWorker__main_controller: '主控制器',
+  // TeardownWorker
+  TeardownWorker__on_sample_error: '错误时动作',
+  TeardownWorker__number_of_threads: '并发数',
+  TeardownWorker__start_interval: '线程启动间隔时间',
+  TeardownWorker__main_controller: '主控制器',
 
   // IfController
   IfController__condition: 'if条件',
@@ -297,7 +297,7 @@ export const PropertyDefinition = {
 
 export const AttributeDefinition = {
   // TestCollection
-  TestCollection__exclude_workspaces: '排除空间组件',
+  TestCollection__exclude_workspace: '排除空间组件',
 
   // TestSnippet
   TestSnippet__parameters: '片段参数',

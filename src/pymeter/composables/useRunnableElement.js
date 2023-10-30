@@ -60,10 +60,10 @@ export default function useRunnableElement() {
       // 后端异步执行脚本
       await ExecutionService.executeSnippet({
         socketId: sid,
-        collectionNo: elementNo,
+        snippetNo: elementNo,
         datasets: pymeterStore.selectedDatasets,
-        useCurrentValue: pymeterStore.useCurrentValue,
-        variables: additionalVariables
+        variables: additionalVariables,
+        useCurrentValue: pymeterStore.useCurrentValue
       })
       // 打开结果面板
       pymeterStore.openResultDrawer()

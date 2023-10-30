@@ -89,7 +89,7 @@
               </div>
             </template>
             <el-switch
-              v-model="elementInfo.elementAttrs.TestCollection__exclude_workspaces"
+              v-model="elementInfo.elementAttrs.TestCollection__exclude_workspace"
               inline-prompt
               :active-icon="Check"
               :inactive-icon="Close"
@@ -217,7 +217,7 @@ const elementInfo = ref({
   elementType: 'COLLECTION',
   elementClass: 'TestCollection',
   elementAttrs: {
-    TestCollection__exclude_workspaces: false
+    TestCollection__exclude_workspace: false
   },
   property: {
     TestCollection__serialize_workers: 'true',
@@ -236,7 +236,7 @@ const showPrevProcessorTab = computed(() => activeTabName.value === 'PREV_PROCES
 const showPostProcessorTab = computed(() => activeTabName.value === 'POST_PROCESSOR')
 const showTestAssertionTab = computed(() => activeTabName.value === 'TEST_ASSERTION')
 const hiddenSettingsDot = computed(() => {
-  return !elementInfo.value.elementAttrs.TestCollection__exclude_workspaces && isEmpty(runningStrategy.value.reverse)
+  return !elementInfo.value.elementAttrs.TestCollection__exclude_workspace && isEmpty(runningStrategy.value.reverse)
 })
 
 const componentList = ref([])

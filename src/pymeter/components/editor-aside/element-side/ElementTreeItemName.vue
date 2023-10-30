@@ -29,8 +29,8 @@
     <el-tag v-if="data.elementClass == 'TestSnippet'" size="small" disable-transitions>片段</el-tag>
     <!-- Setup标识 -->
     <el-tag v-if="data.elementClass == 'SetupWorker'" size="small" disable-transitions>前置</el-tag>
-    <!-- TearDown标识 -->
-    <el-tag v-if="data.elementClass == 'TearDownWorker'" size="small" disable-transitions>后置</el-tag>
+    <!-- Teardown标识 -->
+    <el-tag v-if="data.elementClass == 'TeardownWorker'" size="small" disable-transitions>后置</el-tag>
     <!-- 禁用标识 -->
     <el-tag v-if="!data.enabled" type="danger" size="small" disable-transitions>禁用</el-tag>
   </span>

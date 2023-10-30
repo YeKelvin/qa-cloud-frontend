@@ -19,9 +19,9 @@
       </el-form-item>
 
       <!-- 元素属性 -->
-      <el-form-item label="失败处理：" prop="property.TearDownWorker__on_sample_error">
+      <el-form-item label="失败处理：" prop="property.TeardownWorker__on_sample_error">
         <el-select
-          v-model="elementInfo.property.TearDownWorker__on_sample_error"
+          v-model="elementInfo.property.TeardownWorker__on_sample_error"
           :disabled="queryMode"
           style="width: 100%"
         >
@@ -142,16 +142,16 @@ const elementInfo = ref({
   elementName: '后置用例',
   elementDesc: '',
   elementType: 'WORKER',
-  elementClass: 'TearDownWorker',
+  elementClass: 'TeardownWorker',
   elementAttrs: {
     Worker__use_http_session: false,
     Worker__clear_http_session_each_iteration: false
   },
   property: {
-    TearDownWorker__on_sample_error: 'start_next_thread',
-    TearDownWorker__number_of_threads: '1',
-    TearDownWorker__start_interval: '',
-    TearDownWorker__main_controller: {
+    TeardownWorker__on_sample_error: 'start_next_thread',
+    TeardownWorker__number_of_threads: '1',
+    TeardownWorker__start_interval: '',
+    TeardownWorker__main_controller: {
       class: 'LoopController',
       property: {
         LoopController__loops: '1',
@@ -162,9 +162,9 @@ const elementInfo = ref({
 })
 const elementFormRules = reactive({
   elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }],
-  'property.TearDownWorker__on_sample_error': [{ required: true, message: '失败处理不能为空', trigger: 'blur' }],
-  'property.TearDownWorker__number_of_threads': [{ required: true, message: '并发数不能为空', trigger: 'blur' }],
-  'property.TearDownWorker__main_controller.property.LoopController__loops': [
+  'property.TeardownWorker__on_sample_error': [{ required: true, message: '失败处理不能为空', trigger: 'blur' }],
+  'property.TeardownWorker__number_of_threads': [{ required: true, message: '并发数不能为空', trigger: 'blur' }],
+  'property.TeardownWorker__main_controller.property.LoopController__loops': [
     { required: true, message: '循环次数不能为空', trigger: 'blur' }
   ]
 })
