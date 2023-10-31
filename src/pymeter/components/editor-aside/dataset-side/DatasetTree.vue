@@ -302,7 +302,11 @@ const handleNodeClick = (data) => {
     editorNo: data.datasetNo,
     editorName: data.datasetName,
     editorComponent: 'VariableDataset',
-    editorMode: 'QUERY'
+    editorMode: 'QUERY',
+    metadata: {
+      sn: data.datasetNo,
+      datasetNo: data.datasetNo
+    }
   })
 }
 

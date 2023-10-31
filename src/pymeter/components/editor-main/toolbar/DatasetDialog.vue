@@ -238,6 +238,8 @@ const openVariableDatasetEditor = () => {
     editorComponent: 'VariableDataset',
     editorMode: 'QUERY',
     metadata: {
+      sn: dataset.datasetNo,
+      datasetNo: dataset.datasetNo,
       datasetName: dataset.datasetName,
       datasetType: dataset.datasetType,
       datasetDesc: dataset.datasetDesc

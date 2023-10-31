@@ -4,7 +4,13 @@
       <div class="flexbox-between">
         <span style="font-size: 16px; color: var(--el-text-color-regular)">变更日志</span>
         <span style="display: flex; align-items: center">
-          <el-dropdown trigger="click" style="margin-right: 20px" :show-timeout="0.25" :hide-timeout="0.25">
+          <el-dropdown
+            v-if="currentElementNo"
+            trigger="click"
+            style="margin-right: 20px"
+            :show-timeout="0.25"
+            :hide-timeout="0.25"
+          >
             <span style="color: var(--el-color-primary); cursor: pointer">{{ onlyself ? '元素' : '全部' }}</span>
             <template #dropdown>
               <el-dropdown-menu>
@@ -205,7 +211,7 @@ const currentTab = computed(() => {
 const currentElementNo = computed(() => {
   const tab = currentTab.value
   if (!tab) return
-  return tab.metadata.realNo
+  return tab.metadata.elementNo
 })
 const loading = ref(false)
 const activities = ref([])
@@ -247,7 +253,7 @@ const toggleOrder = () => {
 const query = () => {
   loading.value = true
   HistoryService.queryElementChangelogList({
-    elementNo: currentTab.value.metadata.realNo,
+    elementNo: currentTab.value.metadata.sn,
     onlyself: onlyself.value,
     order: desc.value ? 'desc' : 'asc',
     page: page.value,

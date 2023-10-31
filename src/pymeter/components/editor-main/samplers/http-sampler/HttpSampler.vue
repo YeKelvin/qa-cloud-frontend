@@ -327,8 +327,9 @@ const elementFormRules = {
   'property.HTTPSampler__url': [{ required: true, message: '请求地址不能为空', trigger: 'blur' }],
   'property.HTTPSampler__method': [{ required: true, message: '请求方法不能为空', trigger: 'blur' }]
 }
+const elementNo = ref(props.editorNo)
 const elementData = ref({
-  elementNo: props.editorNo,
+  elementNo: '',
   elementName: 'HTTP请求',
   elementDesc: '',
   elementType: 'SAMPLER',
@@ -348,8 +349,6 @@ const elementData = ref({
     HTTPSampler__response_timeout: ''
   }
 })
-const elementNo = computed(() => elementData.value.elementNo)
-const elementName = computed(() => elementData.value.elementName)
 
 // 运行策略的逻辑条件数据
 const conditionData = [
@@ -697,6 +696,14 @@ const updateElementProperty = () => {
 }
 
 /**
+ * 更新元素编号
+ */
+const updateElementNo = (val) => {
+  elementNo.value = val
+  elementData.value.elementNo = val
+}
+
+/**
  * 校验逻辑条件
  */
 const checkRunningStrategyFilter = () => {
@@ -783,7 +790,7 @@ const modifyElement = async (close = false) => {
     // 移除所有表格里的空行
     removeAllBlankRow()
     // 更新 tab 标题
-    updateTab(elementName.value)
+    updateTab(elementData.value.elementName)
     // 重新查询元素信息，内置元素和请求头模板
     query(undefined, false)
   }
@@ -820,7 +827,9 @@ const createElement = async (close = false) => {
     // 移除所有表格里的空行
     removeAllBlankRow()
     // 更新 tab 标题和编号
-    updateTab(elementName.value, response.result.elementNo)
+    updateTab(elementData.value.elementName, response.result.elementNo)
+    // 更新元素编号
+    updateElementNo(response.result.elementNo)
     // 重新查询元素信息，内置元素和请求头模板
     query(response.result.elementNo, false)
   }

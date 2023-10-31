@@ -8,10 +8,10 @@ export const queryElementAllWithChildren = (params) => request.get('/script/elem
 
 export const queryElementInfo = (params) => request.get('/script/element/info', { params })
 
-export const queryElementChildren = (params) => request.get('/script/element/children', { params })
+export const queryElementTree = (params) => request.get('/script/element/tree', { params })
 
-export const queryElementChildrenByList = (params) =>
-  request.get('/script/element/children/by/list', {
+export const queryElementTreeByRoots = (params) =>
+  request.get('/script/element/tree/by/roots', {
     params,
     paramsSerializer: { indexes: null }
   })

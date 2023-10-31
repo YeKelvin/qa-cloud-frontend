@@ -48,7 +48,11 @@ const openHttpheaderTemplate = (templateNo, templateName) => {
     editorNo: templateNo,
     editorName: templateName,
     editorComponent: 'HttpHeadersTemplate',
-    editorMode: 'QUERY'
+    editorMode: 'QUERY',
+    metadata: {
+      sn: templateNo,
+      templateNo: templateNo
+    }
   })
 }
 
@@ -97,9 +101,8 @@ const createTemplate = async () => {
   display: flex;
   flex: 1;
   flex-direction: column;
-
-  height: 100%;
   width: 100%;
+  height: 100%;
 
   .el-divider--horizontal {
     width: 95%;
@@ -108,9 +111,9 @@ const createTemplate = async () => {
 }
 
 :deep(.el-input-group__prepend button.el-button) {
-  border-color: transparent;
-  background-color: transparent;
   color: #409eff;
+  background-color: transparent;
+  border-color: transparent;
   border-top: 0;
   border-bottom: 0;
 }

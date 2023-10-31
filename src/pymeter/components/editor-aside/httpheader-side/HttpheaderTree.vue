@@ -240,7 +240,11 @@ const handleNodeClick = (data) => {
     editorNo: data.templateNo,
     editorName: data.templateName,
     editorComponent: 'HttpHeadersTemplate',
-    editorMode: 'QUERY'
+    editorMode: 'QUERY',
+    metadata: {
+      sn: data.templateNo,
+      templateNo: data.templateNo
+    }
   })
 }
 

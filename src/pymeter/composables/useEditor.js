@@ -30,11 +30,11 @@ export default function useEditor(props) {
   /**
    * 更新 tab
    */
-  const updateTab = (name, sn = null) => {
+  const updateTab = (name, number = null) => {
     pymeterStore.updateTab({
       editorNo: editorNo.value,
       editorName: name,
-      realNo: sn
+      metadata: number ? { sn: number, elementNo: number } : null
     })
   }
 

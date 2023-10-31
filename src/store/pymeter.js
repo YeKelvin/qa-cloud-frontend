@@ -80,19 +80,18 @@ export const usePyMeterStore = defineStore('pymeter', {
     addTab({ editorNo, editorName, editorComponent, editorMode, metadata }) {
       const tabList = [...this.tabs]
 
-      let notExists = true
+      let nonExistent = true
       for (let i = 0; i < tabList.length; i++) {
         const tab = tabList[i]
-        if (tab.editorNo === editorNo || tab.metadata.realNo === editorNo) {
-          notExists = false
+        if (tab.editorNo === editorNo || tab.metadata.sn === editorNo) {
+          nonExistent = false
           this.activeTabNo = tab.editorNo
           break
         }
       }
 
-      if (notExists) {
+      if (nonExistent) {
         metadata = metadata || {}
-        metadata.realNo = editorNo
         this.tabs.push({
           editorNo,
           editorName,
@@ -131,14 +130,14 @@ export const usePyMeterStore = defineStore('pymeter', {
     /**
      * 更新 tabName
      */
-    updateTab({ editorNo, editorName = null, realNo = null }) {
+    updateTab({ editorNo, editorName = null, metadata = null }) {
       for (let i = 0; i < this.tabs.length; i++) {
         if (this.tabs[i].editorNo === editorNo) {
           if (editorName) {
             this.tabs[i].editorName = editorName
           }
-          if (realNo) {
-            this.tabs[i].metadata.realNo = realNo
+          if (metadata) {
+            Object.assign(this.tabs[i].metadata, metadata)
           }
         }
       }

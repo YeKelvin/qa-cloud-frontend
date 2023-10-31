@@ -195,9 +195,9 @@ const createElement = async (close = false) => {
     // 设置为只读模式
     setReadonly()
     // 更新 tab 标题和编号
-    updateTab(elementData.value.elementName, response.result[0])
+    updateTab(elementData.value.elementName, response.result.elementNo)
     // 更新元素编号
-    updateElementNo(response.result[0])
+    updateElementNo(response.result.elementNo)
   }
   // 展开父节点
   expandParentNode()

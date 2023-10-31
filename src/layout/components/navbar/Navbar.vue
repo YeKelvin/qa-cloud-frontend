@@ -91,6 +91,8 @@ const openWorkspaceComponents = () => {
     editorComponent: 'WorkspaceComponents',
     editorMode: 'QUERY',
     metadata: {
+      sn: workspaceStore.workspaceNo,
+      workspaceNo: workspaceStore.workspaceNo,
       workspaceName: workspaceStore.workspaceName,
       workspaceScope: workspaceStore.workspaceScope
     }
