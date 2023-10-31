@@ -5,17 +5,17 @@
       label-position="right"
       label-width="80px"
       inline-message
-      :model="elementInfo"
+      :model="elementData"
       :rules="elementFormRules"
     >
       <!-- 元素名称 -->
       <el-form-item label="名称：" prop="elementName">
-        <el-input v-model="elementInfo.elementName" placeholder="元素名称" clearable :readonly="queryMode" />
+        <el-input v-model="elementData.elementName" placeholder="元素名称" clearable :readonly="queryMode" />
       </el-form-item>
 
       <!-- 元素备注 -->
       <el-form-item label="备注：" prop="elementDesc">
-        <el-input v-model="elementInfo.elementDesc" placeholder="元素备注" clearable :readonly="queryMode" />
+        <el-input v-model="elementData.elementDesc" placeholder="元素备注" clearable :readonly="queryMode" />
       </el-form-item>
 
       <!-- URL = 请求方法 + 请求方法-->
@@ -23,14 +23,14 @@
         <span style="display: flex; flex: 1">
           <!-- 请求方法 -->
           <el-input
-            v-model="elementInfo.property.HTTPSampler__url"
+            v-model="elementData.property.HTTPSampler__url"
             placeholder="请求地址"
             clearable
             :readonly="queryMode"
           >
             <template #prepend>
               <!-- 请求方法 -->
-              <HTTPMethodSelect v-model="elementInfo.property.HTTPSampler__method" :disabled="queryMode" />
+              <HTTPMethodSelect v-model="elementData.property.HTTPSampler__method" :disabled="queryMode" />
             </template>
           </el-input>
           <!-- 运行按钮 -->
@@ -89,7 +89,7 @@
       <div v-if="showHeadersTab" class="tab-pane">
         <!-- 请求头模板 -->
         <HTTPHeaderTemplate
-          v-model="elementInfo.elementAttrs.HTTPSampler__header_template_refs"
+          v-model="elementData.elementAttrs.HTTPSampler__header_template_refs"
           :edit-mode="editMode"
         />
         <!-- 请求头表格 -->
@@ -158,7 +158,7 @@
           <!-- 重定向 -->
           <el-form-item label="重定向：">
             <el-switch
-              v-model="elementInfo.property.HTTPSampler__follow_redirects"
+              v-model="elementData.property.HTTPSampler__follow_redirects"
               active-value="true"
               inactive-value="false"
               inline-prompt
@@ -171,7 +171,7 @@
           <!-- 编码 -->
           <el-form-item label="编码：">
             <el-input
-              v-model="elementInfo.property.HTTPSampler__encoding"
+              v-model="elementData.property.HTTPSampler__encoding"
               style="width: 300px"
               placeholder="UTF-8"
               clearable
@@ -182,7 +182,7 @@
           <!-- 连接超时时间 -->
           <el-form-item label="连接超时：">
             <el-input
-              v-model="elementInfo.property.HTTPSampler__connect_timeout"
+              v-model="elementData.property.HTTPSampler__connect_timeout"
               style="width: 300px"
               placeholder="超时时长"
               clearable
@@ -195,7 +195,7 @@
           <!-- 响应超时时间 -->
           <el-form-item label="响应超时：">
             <el-input
-              v-model="elementInfo.property.HTTPSampler__response_timeout"
+              v-model="elementData.property.HTTPSampler__response_timeout"
               style="width: 300px"
               placeholder="超时时长"
               clearable
@@ -327,7 +327,7 @@ const elementFormRules = {
   'property.HTTPSampler__url': [{ required: true, message: '请求地址不能为空', trigger: 'blur' }],
   'property.HTTPSampler__method': [{ required: true, message: '请求方法不能为空', trigger: 'blur' }]
 }
-const elementInfo = ref({
+const elementData = ref({
   elementNo: props.editorNo,
   elementName: 'HTTP请求',
   elementDesc: '',
@@ -348,8 +348,8 @@ const elementInfo = ref({
     HTTPSampler__response_timeout: ''
   }
 })
-const elementNo = computed(() => elementInfo.value.elementNo)
-const elementName = computed(() => elementInfo.value.elementName)
+const elementNo = computed(() => elementData.value.elementNo)
+const elementName = computed(() => elementData.value.elementName)
 
 // 运行策略的逻辑条件数据
 const conditionData = [
@@ -415,12 +415,12 @@ const showSettingsTab = computed(() => activeTabName.value === 'SETTINGS')
 const hiddenHeadersDot = computed(() => {
   const headers = headerItems.value
   if (headers.length === 0) {
-    return isEmpty(elementInfo.value.elementAttrs.HTTPSampler__header_template_refs)
+    return isEmpty(elementData.value.elementAttrs.HTTPSampler__header_template_refs)
   }
   if (headers.length === 1) {
     const item = headers[0]
     if (isEmpty(item.name) && isEmpty(item.value)) {
-      return isEmpty(elementInfo.value.elementAttrs.HTTPSampler__header_template_refs)
+      return isEmpty(elementData.value.elementAttrs.HTTPSampler__header_template_refs)
     }
   }
   return false
@@ -459,7 +459,7 @@ const hiddenBodyDot = computed(() => {
   return false
 })
 const hiddenConfigDot = computed(() => {
-  const elProps = elementInfo.value.property
+  const elProps = elementData.value.property
   return (
     elProps.HTTPSampler__encoding === '' &&
     elProps.HTTPSampler__connect_timeout === '' &&
@@ -507,7 +507,7 @@ onMounted(() => {
 const query = (_elementNo_ = elementNo.value, focus = true) => {
   // 查询元素信息
   ElementService.queryElementInfo({ elementNo: _elementNo_ }).then((response) => {
-    elementInfo.value = response.result
+    elementData.value = response.result
     setHeaderItems()
     setQueryItems()
     setAboutBody()
@@ -557,7 +557,7 @@ const sortComponents = () => {
  * 初始化 headers
  */
 const setHeaderItems = () => {
-  const headers = elementInfo.value.property.HTTPSampler__headers
+  const headers = elementData.value.property.HTTPSampler__headers
   if (!isEmpty(headerItems.value)) {
     headerItems.value = [] // 表格不为空时，清空数组
   }
@@ -575,7 +575,7 @@ const setHeaderItems = () => {
  * 初始化 params
  */
 const setQueryItems = () => {
-  const querys = elementInfo.value.property.HTTPSampler__params
+  const querys = elementData.value.property.HTTPSampler__params
   if (!isEmpty(queryItems.value)) {
     queryItems.value = [] // 表格不为空时，清空数组
   }
@@ -594,7 +594,7 @@ const setQueryItems = () => {
  * 初始化 forms
  */
 const setFormItems = () => {
-  const forms = elementInfo.value.property.HTTPSampler__data
+  const forms = elementData.value.property.HTTPSampler__data
   if (!isEmpty(formItems.value)) {
     formItems.value = [] // 表格不为空时，清空数组
   }
@@ -613,7 +613,7 @@ const setFormItems = () => {
  * 初始化 files
  */
 const setFileItems = () => {
-  const files = elementInfo.value.property.HTTPSampler__data
+  const files = elementData.value.property.HTTPSampler__data
   if (!isEmpty(fileItems.value)) {
     fileItems.value = [] // 表格不为空时，清空数组
   }
@@ -649,14 +649,14 @@ const setAboutBody = () => {
  * 设置body编辑器的内容
  */
 const setBodyData = () => {
-  bodyCodeEditorRef.value && bodyCodeEditorRef.value.setValue(elementInfo.value.property.HTTPSampler__data)
+  bodyCodeEditorRef.value && bodyCodeEditorRef.value.setValue(elementData.value.property.HTTPSampler__data)
 }
 
 /**
  * 设置运行策略
  */
 const setRunningStrategy = () => {
-  const strategyProp = elementInfo.value.property.HTTPSampler__running_strategy
+  const strategyProp = elementData.value.property.HTTPSampler__running_strategy
   if (isEmpty(strategyProp)) return
   runningStrategy.value.filter = strategyProp.filter || {}
   runningStrategy.value.reverse = strategyProp.reverse || []
@@ -677,7 +677,7 @@ const focusActiveTab = () => {
  * 更新元素属性
  */
 const updateElementProperty = () => {
-  const elProps = elementInfo.value.property
+  const elProps = elementData.value.property
   // 合并请求头、query参数和body参数
   assign(elProps, {
     HTTPSampler__headers: headerData.value,
@@ -773,7 +773,7 @@ const modifyElement = async (close = false) => {
   updateElementProperty()
   // 更新元素
   await ElementService.modifyElement({
-    ...elementInfo.value,
+    ...elementData.value,
     componentList: pendingSubmitComponentList.value
   })
   // 无需关闭 tab
@@ -811,7 +811,7 @@ const createElement = async (close = false) => {
     rootNo: props.metadata.rootNo,
     parentNo: props.metadata.parentNo,
     componentList: pendingSubmitComponentList.value,
-    ...elementInfo.value
+    ...elementData.value
   })
   // 无需关闭 tab
   if (!close) {

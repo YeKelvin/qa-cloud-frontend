@@ -5,23 +5,23 @@
       label-position="right"
       label-width="120px"
       inline-message
-      :model="elementInfo"
+      :model="elementData"
       :rules="elementFormRules"
     >
       <!-- 元素名称 -->
       <el-form-item label="名称：" prop="elementName">
-        <el-input v-model="elementInfo.elementName" placeholder="元素名称" clearable :readonly="queryMode" />
+        <el-input v-model="elementData.elementName" placeholder="元素名称" clearable :readonly="queryMode" />
       </el-form-item>
 
       <!-- 元素备注 -->
       <el-form-item label="备注：" prop="elementDesc">
-        <el-input v-model="elementInfo.elementDesc" placeholder="元素备注" clearable :readonly="queryMode" />
+        <el-input v-model="elementData.elementDesc" placeholder="元素备注" clearable :readonly="queryMode" />
       </el-form-item>
 
       <!-- 片段列表 -->
       <el-form-item label="片段引用：" prop="elementAttrs.SnippetSampler__snippet_no" class="snippets-item">
         <el-select
-          v-model="elementInfo.elementAttrs.SnippetSampler__snippet_no"
+          v-model="elementData.elementAttrs.SnippetSampler__snippet_no"
           placeholder="脚本片段"
           style="width: 100%"
           :disabled="queryMode"
@@ -34,7 +34,7 @@
           />
         </el-select>
         <el-button
-          v-show="!isBlank(elementInfo.elementAttrs.SnippetSampler__snippet_no)"
+          v-show="!isBlank(elementData.elementAttrs.SnippetSampler__snippet_no)"
           style="margin-left: 10px"
           type="primary"
           plain
@@ -46,7 +46,7 @@
       </el-form-item>
 
       <!-- 变更警告 -->
-      <template v-if="showWarning && !elementInfo.elementAttrs.SnippetSampler__use_default">
+      <template v-if="showWarning && !elementData.elementAttrs.SnippetSampler__use_default">
         <el-tag type="danger" style="margin-bottom: 10px" disable-transitions>
           重要提醒：片段参数定义已发生变更，请重新编辑
         </el-tag>
@@ -73,7 +73,7 @@
       <div v-if="showParams">
         <!-- 形参 -->
         <ArgumentTable
-          v-model:use-default="elementInfo.elementAttrs.SnippetSampler__use_default"
+          v-model:use-default="elementData.elementAttrs.SnippetSampler__use_default"
           :data="argumentsData"
           :edit-mode="editMode"
         />
@@ -139,7 +139,7 @@ const {
 } = useEditor(props)
 const elformRef = ref()
 const elementNo = ref(props.editorNo)
-const elementInfo = ref({
+const elementData = ref({
   elementNo: '',
   elementName: 'Snippet请求',
   elementDesc: '',
@@ -159,7 +159,7 @@ const showWarning = ref(false)
 const showParams = computed(() => activeTabName.value === 'PARAMS')
 
 watch(
-  () => elementInfo.value.elementAttrs.SnippetSampler__snippet_no,
+  () => elementData.value.elementAttrs.SnippetSampler__snippet_no,
   (val) => {
     if (!val) return
     // 清空原有的参数
@@ -174,7 +174,7 @@ onMounted(() => {
   // 查询或更新模式时，先拉取元素信息
   if (createMode.value) return
   ElementService.queryElementInfo({ elementNo: elementNo.value }).then((response) => {
-    assignElement(elementInfo.value, response.result)
+    assignElement(elementData.value, response.result)
   })
 })
 
@@ -206,7 +206,7 @@ const querySnippet = (snippetNo) => {
       })
     })
     // 非新增模式下，将请求参数合并至表格中，如果请求参数不在片段参数定义中，则丢弃
-    const attributes = elementInfo.value.elementAttrs
+    const attributes = elementData.value.elementAttrs
     if (!createMode.value) {
       argumentsData.value.forEach((item) => {
         const arg = attributes.SnippetSampler__arguments.find((i) => i.name === item.name)
@@ -234,7 +234,7 @@ const querySnippet = (snippetNo) => {
  */
 const openTestSnippet = () => {
   const snippet = snippetList.value.filter(
-    (item) => item.elementNo === elementInfo.value.elementAttrs.SnippetSampler__snippet_no
+    (item) => item.elementNo === elementData.value.elementAttrs.SnippetSampler__snippet_no
   )
   // 判断所选片段是否属于当前空间
   if (snippet.workspaceNo && snippet.workspaceNo !== workspaceStore.workspaceNo) {
@@ -242,7 +242,7 @@ const openTestSnippet = () => {
     return
   }
   // 脚本列表打开片段脚本
-  pymeterStore.addSelectedCollection(elementInfo.value.elementAttrs.SnippetSampler__snippet_no)
+  pymeterStore.addSelectedCollection(elementData.value.elementAttrs.SnippetSampler__snippet_no)
   // 滚动至底部
   pymeterStore.scrollToElementTreeBottom()
 }
@@ -250,7 +250,7 @@ const openTestSnippet = () => {
 // 校验参数值是否为空
 const checkParameter = () => {
   let pass = true
-  elementInfo.value.elementAttrs.SnippetSampler__arguments.forEach((item) => {
+  elementData.value.elementAttrs.SnippetSampler__arguments.forEach((item) => {
     if (isBlank(item.value)) {
       pass = false
       return
@@ -262,8 +262,8 @@ const checkParameter = () => {
 
 // 设置元素属性
 const setElementProperty = () => {
-  if (elementInfo.value.elementAttrs.SnippetSampler__use_default) return
-  elementInfo.value.elementAttrs.SnippetSampler__arguments = argumentsData.value.map((item) => ({
+  if (elementData.value.elementAttrs.SnippetSampler__use_default) return
+  elementData.value.elementAttrs.SnippetSampler__arguments = argumentsData.value.map((item) => ({
     name: item.name,
     value: item.value
   }))
@@ -274,7 +274,7 @@ const setElementProperty = () => {
  */
 const updateElementNo = (val) => {
   elementNo.value = val
-  elementInfo.value.elementNo = val
+  elementData.value.elementNo = val
 }
 
 /**
@@ -295,13 +295,13 @@ const modifyElement = async (close = false) => {
   // 校验参数
   if (!checkParameter()) return
   // 修改元素
-  await ElementService.modifyElement({ elementNo: elementNo.value, ...elementInfo.value })
+  await ElementService.modifyElement({ elementNo: elementNo.value, ...elementData.value })
   // 无需关闭 tab
   if (!close) {
     // 设置为只读模式
     setReadonly()
     // 更新 tab 标题
-    updateTab(elementInfo.value.elementName)
+    updateTab(elementData.value.elementName)
     // 隐藏警告
     showWarning.value = false
   }
@@ -336,14 +336,14 @@ const createElement = async (close = false) => {
   const response = await ElementService.createElementChild({
     rootNo: props.metadata.rootNo,
     parentNo: props.metadata.parentNo,
-    ...elementInfo.value
+    ...elementData.value
   })
   // 无需关闭 tab
   if (!close) {
     // 设置为只读模式
     setReadonly()
     // 更新 tab 标题和编号
-    updateTab(elementInfo.value.elementName, response.result[0])
+    updateTab(elementData.value.elementName, response.result[0])
     // 更新元素编号
     updateElementNo(response.result[0])
   }

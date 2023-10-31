@@ -5,23 +5,23 @@
       label-position="right"
       label-width="140px"
       inline-message
-      :model="elementInfo"
+      :model="elementData"
       :rules="elementFormRules"
     >
       <!-- 元素名称 -->
       <el-form-item label="名称：" prop="elementName">
-        <el-input v-model="elementInfo.elementName" placeholder="元素名称" clearable :readonly="queryMode" />
+        <el-input v-model="elementData.elementName" placeholder="元素名称" clearable :readonly="queryMode" />
       </el-form-item>
 
       <!-- 元素备注 -->
       <el-form-item label="备注：" prop="elementDesc">
-        <el-input v-model="elementInfo.elementDesc" placeholder="元素备注" clearable :readonly="queryMode" />
+        <el-input v-model="elementData.elementDesc" placeholder="元素备注" clearable :readonly="queryMode" />
       </el-form-item>
 
       <!-- 元素属性 -->
       <el-form-item label="失败处理：" prop="property.TeardownWorker__on_sample_error">
         <el-select
-          v-model="elementInfo.property.TeardownWorker__on_sample_error"
+          v-model="elementData.property.TeardownWorker__on_sample_error"
           :disabled="queryMode"
           style="width: 100%"
         >
@@ -49,7 +49,7 @@
         <!-- 是否使用 HTTP 会话 -->
         <el-form-item label="使用会话：">
           <el-switch
-            v-model="elementInfo.elementAttrs.Worker__use_http_session"
+            v-model="elementData.elementAttrs.Worker__use_http_session"
             inline-prompt
             :active-icon="Check"
             :inactive-icon="Close"
@@ -59,7 +59,7 @@
         <!-- 是否在每次迭代开始前重新打开一个新的 HTTP 会话 -->
         <el-form-item label="迭代时刷新会话：">
           <el-switch
-            v-model="elementInfo.elementAttrs.Worker__clear_http_session_each_iteration"
+            v-model="elementData.elementAttrs.Worker__clear_http_session_each_iteration"
             inline-prompt
             :active-icon="Check"
             :inactive-icon="Close"
@@ -137,7 +137,7 @@ const {
 } = useEditor(props)
 const elformRef = ref()
 const elementNo = ref(props.editorNo)
-const elementInfo = ref({
+const elementData = ref({
   elementNo: '',
   elementName: '后置用例',
   elementDesc: '',
@@ -170,26 +170,26 @@ const elementFormRules = reactive({
 })
 const activeTabName = ref('HTTP')
 const showHTTPSettings = computed(() => activeTabName.value === 'HTTP')
-const hiddenConfigDot = computed(() => elementInfo.value.elementAttrs.Worker__use_http_session === false)
+const hiddenConfigDot = computed(() => elementData.value.elementAttrs.Worker__use_http_session === false)
 const showJsonScriptDialog = ref(false)
 const jsonEditorRef = ref()
 
 watch(
-  () => elementInfo.value.elementAttrs.Worker__use_http_session,
+  () => elementData.value.elementAttrs.Worker__use_http_session,
   (val) => {
-    const clearEachIteration = elementInfo.value.elementAttrs.Worker__clear_http_session_each_iteration
+    const clearEachIteration = elementData.value.elementAttrs.Worker__clear_http_session_each_iteration
     if (!val && clearEachIteration === true) {
-      elementInfo.value.elementAttrs.Worker__clear_http_session_each_iteration = false
+      elementData.value.elementAttrs.Worker__clear_http_session_each_iteration = false
     }
   }
 )
 
 watch(
-  () => elementInfo.value.elementAttrs.Worker__clear_http_session_each_iteration,
+  () => elementData.value.elementAttrs.Worker__clear_http_session_each_iteration,
   (val) => {
-    const enableHTTPSession = elementInfo.value.elementAttrs.Worker__use_http_session
+    const enableHTTPSession = elementData.value.elementAttrs.Worker__use_http_session
     if (val && enableHTTPSession === false) {
-      elementInfo.value.elementAttrs.Worker__use_http_session = true
+      elementData.value.elementAttrs.Worker__use_http_session = true
     }
   }
 )
@@ -198,7 +198,7 @@ onMounted(() => {
   // 查询或更新模式时，先拉取元素信息
   if (createMode.value) return
   ElementService.queryElementInfo({ elementNo: elementNo.value }).then((response) => {
-    assignElement(elementInfo.value, response.result)
+    assignElement(elementData.value, response.result)
   })
 })
 
@@ -207,7 +207,7 @@ onMounted(() => {
  */
 const updateElementNo = (val) => {
   elementNo.value = val
-  elementInfo.value.elementNo = val
+  elementData.value.elementNo = val
 }
 
 /**
@@ -224,13 +224,13 @@ const modifyElement = async (close = false) => {
     return
   }
   // 修改元素
-  await ElementService.modifyElement({ elementNo: elementNo.value, ...elementInfo.value })
+  await ElementService.modifyElement({ elementNo: elementNo.value, ...elementData.value })
   // 无需关闭 tab
   if (!close) {
     // 设置为只读模式
     setReadonly()
     // 更新 tab 标题
-    updateTab(elementInfo.value.elementName)
+    updateTab(elementData.value.elementName)
   }
   // 重新查询侧边栏的元素列表
   refreshElementTree()
@@ -259,14 +259,14 @@ const createElement = async (close = false) => {
   const response = await ElementService.createElementChild({
     rootNo: props.metadata.rootNo,
     parentNo: props.metadata.parentNo,
-    ...elementInfo.value
+    ...elementData.value
   })
   // 无需关闭 tab
   if (!close) {
     // 设置为只读模式
     setReadonly()
     // 更新 tab 标题和编号
-    updateTab(elementInfo.value.elementName, response.result[0])
+    updateTab(elementData.value.elementName, response.result[0])
     // 更新元素编号
     updateElementNo(response.result[0])
   }

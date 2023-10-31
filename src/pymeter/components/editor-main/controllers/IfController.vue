@@ -5,24 +5,24 @@
       label-position="right"
       label-width="100px"
       inline-message
-      :model="elementInfo"
+      :model="elementData"
       :rules="elementFormRules"
     >
       <!-- 元素名称 -->
       <el-form-item label="名称：" prop="elementName">
-        <el-input v-model="elementInfo.elementName" placeholder="元素名称" clearable :readonly="queryMode" />
+        <el-input v-model="elementData.elementName" placeholder="元素名称" clearable :readonly="queryMode" />
       </el-form-item>
 
       <!-- 元素备注 -->
       <el-form-item label="备注：" prop="elementDesc">
-        <el-input v-model="elementInfo.elementDesc" placeholder="元素备注" clearable :readonly="queryMode" />
+        <el-input v-model="elementData.elementDesc" placeholder="元素备注" clearable :readonly="queryMode" />
       </el-form-item>
 
       <!-- if条件 -->
       <el-form-item label="表达式：" prop="property.IfController__condition">
         <MonacoEditor
           ref="codeEditorRef"
-          v-model="elementInfo.property.IfController__condition"
+          v-model="elementData.property.IfController__condition"
           language="python"
           line-numbers="off"
           style="height: 100px"
@@ -73,7 +73,7 @@ const {
 } = useEditor(props)
 const elformRef = ref()
 const elementNo = ref(props.editorNo)
-const elementInfo = ref({
+const elementData = ref({
   elementNo: '',
   elementName: 'IF控制器',
   elementDesc: '',
@@ -93,7 +93,7 @@ onMounted(() => {
   // 查询或更新模式时，先拉取元素信息
   if (createMode.value) return
   ElementService.queryElementInfo({ elementNo: elementNo.value }).then((response) => {
-    elementInfo.value = response.result
+    elementData.value = response.result
     codeEditorRef.value.setValue(response.result.property.IfController__condition)
   })
 })
@@ -103,7 +103,7 @@ onMounted(() => {
  */
 const updateElementNo = (val) => {
   elementNo.value = val
-  elementInfo.value.elementNo = val
+  elementData.value.elementNo = val
 }
 
 /**
@@ -120,13 +120,13 @@ const modifyElement = async (close = false) => {
     return
   }
   // 修改元素
-  await ElementService.modifyElement({ elementNo: elementNo.value, ...elementInfo.value })
+  await ElementService.modifyElement({ elementNo: elementNo.value, ...elementData.value })
   // 无需关闭 tab
   if (!close) {
     // 设置为只读模式
     setReadonly()
     // 更新 tab 标题
-    updateTab(elementInfo.value.elementName)
+    updateTab(elementData.value.elementName)
   }
   // 重新查询侧边栏的元素列表
   refreshElementTree()
@@ -155,14 +155,14 @@ const createElement = async (close = false) => {
   const response = await ElementService.createElementChild({
     rootNo: props.metadata.rootNo,
     parentNo: props.metadata.parentNo,
-    ...elementInfo.value
+    ...elementData.value
   })
   // 无需关闭 tab
   if (!close) {
     // 设置为只读模式
     setReadonly()
     // 更新 tab 标题和编号
-    updateTab(elementInfo.value.elementName, response.result[0])
+    updateTab(elementData.value.elementName, response.result[0])
     // 更新元素编号
     updateElementNo(response.result[0])
   }

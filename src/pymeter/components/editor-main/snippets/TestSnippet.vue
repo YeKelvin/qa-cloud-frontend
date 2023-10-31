@@ -6,17 +6,17 @@
       label-width="100px"
       style="width: 100%"
       inline-message
-      :model="elementInfo"
+      :model="elementData"
       :rules="elementFormRules"
     >
       <!-- 元素名称 -->
       <el-form-item label="名称：" prop="elementName">
-        <el-input v-model="elementInfo.elementName" placeholder="元素名称" clearable :readonly="queryMode" />
+        <el-input v-model="elementData.elementName" placeholder="元素名称" clearable :readonly="queryMode" />
       </el-form-item>
 
       <!-- 元素备注 -->
       <el-form-item label="备注：" prop="elementDesc">
-        <el-input v-model="elementInfo.elementDesc" placeholder="元素备注" clearable :readonly="queryMode" />
+        <el-input v-model="elementData.elementDesc" placeholder="元素备注" clearable :readonly="queryMode" />
       </el-form-item>
 
       <!-- 设置类 Tabs -->
@@ -28,7 +28,7 @@
         </el-tab-pane>
         <el-tab-pane name="HTTP_SETTINGS">
           <template #label>
-            <el-badge :hidden="!elementInfo.elementAttrs.use_http_session" type="success" is-dot>HTTP配置</el-badge>
+            <el-badge :hidden="!elementData.elementAttrs.use_http_session" type="success" is-dot>HTTP配置</el-badge>
           </template>
         </el-tab-pane>
       </el-tabs>
@@ -43,7 +43,7 @@
         <!-- 是否使用 HTTP 会话 -->
         <el-form-item label="使用会话：">
           <el-switch
-            v-model="elementInfo.elementAttrs.use_http_session"
+            v-model="elementData.elementAttrs.use_http_session"
             inline-prompt
             :active-icon="Check"
             :inactive-icon="Close"
@@ -150,7 +150,7 @@ const { editMode, queryMode, modifyMode, createMode, functions, editNow, setRead
 
 const elformRef = ref()
 const elementNo = ref(props.editorNo)
-const elementInfo = ref({
+const elementData = ref({
   elementNo: '',
   elementName: '测试片段',
   elementDesc: '',
@@ -186,8 +186,8 @@ onMounted(() => {
   // 查询或更新模式时，先拉取元素信息
   if (createMode.value) return
   ElementService.queryElementInfo({ elementNo: elementNo.value }).then((response) => {
-    assignElement(elementInfo.value, response.result)
-    const attributes = elementInfo.value.elementAttrs
+    assignElement(elementData.value, response.result)
+    const attributes = elementData.value.elementAttrs
     parametersData.value = attributes.parameters
     argumentsData.value = attributes.parameters
   })
@@ -198,14 +198,14 @@ onMounted(() => {
  */
 const updateElementNo = (val) => {
   elementNo.value = val
-  elementInfo.value.elementNo = val
+  elementData.value.elementNo = val
 }
 
 /**
  * 更新元素属性
  */
 const updateElementProperty = () => {
-  elementInfo.value.elementAttrs.TestSnippet__parameters = parametersData.value.filter(
+  elementData.value.elementAttrs.TestSnippet__parameters = parametersData.value.filter(
     (item) => !isBlankAll(item.name, item.default, item.desc)
   )
 }
@@ -224,7 +224,7 @@ const removeAllBlankRow = () => {
  */
 const checkParameter = () => {
   let pass = true
-  elementInfo.value.elementAttrs.TestSnippet__parameters.forEach((item) => {
+  elementData.value.elementAttrs.TestSnippet__parameters.forEach((item) => {
     if (isBlank(item.name)) {
       pass = false
       return
@@ -252,7 +252,7 @@ const modifyElement = async (close = false) => {
   // 校验参数名称不能为空
   if (!checkParameter()) return
   // 修改元素
-  await ElementService.modifyElement({ elementNo: elementNo.value, ...elementInfo.value })
+  await ElementService.modifyElement({ elementNo: elementNo.value, ...elementData.value })
   // 无需关闭 tab
   if (!close) {
     // 设置为只读模式
@@ -260,7 +260,7 @@ const modifyElement = async (close = false) => {
     // 移除表格里的空行
     removeAllBlankRow()
     // 更新 tab 标题
-    updateTab(elementInfo.value.elementName)
+    updateTab(elementData.value.elementName)
     // 更新实参数据
     argumentsData.value = parametersData.value
   }
@@ -299,7 +299,7 @@ const createElement = async (close = false) => {
   // 新增元素
   const response = await ElementService.createElementRoot({
     workspaceNo: workspaceStore.workspaceNo,
-    ...elementInfo.value
+    ...elementData.value
   })
   // 无需关闭 tab
   if (!close) {
@@ -308,7 +308,7 @@ const createElement = async (close = false) => {
     // 移除表格里的空行
     removeAllBlankRow()
     // 更新 tab 标题和编号
-    updateTab(elementInfo.value.elementName, response.result.elementNo)
+    updateTab(elementData.value.elementName, response.result.elementNo)
     // 更新元素编号
     updateElementNo(response.result.elementNo)
     // 更新实参数据

@@ -5,23 +5,23 @@
       label-position="right"
       label-width="120px"
       inline-message
-      :model="elementInfo"
+      :model="elementData"
       :rules="elementFormRules"
     >
       <!-- 元素名称 -->
       <el-form-item label="名称：" prop="elementName">
-        <el-input v-model="elementInfo.elementName" placeholder="元素名称" clearable :readonly="queryMode" />
+        <el-input v-model="elementData.elementName" placeholder="元素名称" clearable :readonly="queryMode" />
       </el-form-item>
 
       <!-- 元素备注 -->
       <el-form-item label="备注：" prop="elementDesc">
-        <el-input v-model="elementInfo.elementDesc" placeholder="元素备注" clearable :readonly="queryMode" />
+        <el-input v-model="elementData.elementDesc" placeholder="元素备注" clearable :readonly="queryMode" />
       </el-form-item>
 
       <!-- 串行执行 -->
       <el-form-item label="串行执行：" prop="property.TestCollection__serialize_workers">
         <el-switch
-          v-model="elementInfo.property.TestCollection__serialize_workers"
+          v-model="elementData.property.TestCollection__serialize_workers"
           active-value="true"
           inactive-value="false"
           inline-prompt
@@ -34,7 +34,7 @@
       <!-- 间隔时间 -->
       <!-- <el-form-item label="间隔时间：" prop="property.TestCollection__delay">
         <el-input
-          v-model="elementInfo.property.TestCollection__delay"
+          v-model="elementData.property.TestCollection__delay"
           placeholder="间隔运行时间"
           clearable
           :readonly="true"
@@ -89,7 +89,7 @@
               </div>
             </template>
             <el-switch
-              v-model="elementInfo.elementAttrs.TestCollection__exclude_workspace"
+              v-model="elementData.elementAttrs.TestCollection__exclude_workspace"
               inline-prompt
               :active-icon="Check"
               :inactive-icon="Close"
@@ -210,7 +210,7 @@ const elementFormRef = ref()
 const elementFormRules = {
   elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }]
 }
-const elementInfo = ref({
+const elementData = ref({
   elementNo: props.editorNo,
   elementName: '测试集合',
   elementDesc: '',
@@ -224,8 +224,8 @@ const elementInfo = ref({
     TestCollection__delay: '0'
   }
 })
-const elementNo = computed(() => elementInfo.value.elementNo)
-const elementName = computed(() => elementInfo.value.elementName)
+const elementNo = computed(() => elementData.value.elementNo)
+const elementName = computed(() => elementData.value.elementName)
 // 运行策略
 const runningStrategy = ref({
   reverse: []
@@ -236,7 +236,7 @@ const showPrevProcessorTab = computed(() => activeTabName.value === 'PREV_PROCES
 const showPostProcessorTab = computed(() => activeTabName.value === 'POST_PROCESSOR')
 const showTestAssertionTab = computed(() => activeTabName.value === 'TEST_ASSERTION')
 const hiddenSettingsDot = computed(() => {
-  return !elementInfo.value.elementAttrs.TestCollection__exclude_workspace && isEmpty(runningStrategy.value.reverse)
+  return !elementData.value.elementAttrs.TestCollection__exclude_workspace && isEmpty(runningStrategy.value.reverse)
 })
 
 const componentList = ref([])
@@ -267,7 +267,7 @@ onMounted(() => {
 const query = (_elementNo_ = elementNo.value) => {
   // 查询元素信息
   ElementService.queryElementInfo({ elementNo: _elementNo_ }).then((response) => {
-    assignElement(elementInfo.value, response.result)
+    assignElement(elementData.value, response.result)
     setRunningStrategy()
   })
   // 查询内置元素
@@ -304,7 +304,7 @@ const setComponentsByType = () => {
  * 设置运行策略
  */
 const setRunningStrategy = () => {
-  const strategyProp = elementInfo.value.property.TestCollection__running_strategy
+  const strategyProp = elementData.value.property.TestCollection__running_strategy
   if (isEmpty(strategyProp)) return
   runningStrategy.value.reverse = strategyProp.reverse || []
 }
@@ -322,7 +322,7 @@ const sortComponents = () => {
  * 更新元素属性
  */
 const updateElementProperty = () => {
-  const elProps = elementInfo.value.property
+  const elProps = elementData.value.property
   // 设置运行策略
   if (isEmpty(runningStrategy.value.reverse) && 'TestCollection__running_strategy' in elProps) {
     elProps.TestCollection__running_strategy = null
@@ -348,7 +348,7 @@ const modifyElement = async (close = false) => {
   updateElementProperty()
   // 修改元素
   await ElementService.modifyElement({
-    ...elementInfo.value,
+    ...elementData.value,
     componentList: pendingSubmitComponentList.value
   })
   // 无需关闭 tab
@@ -393,7 +393,7 @@ const createElement = async (close = false) => {
   // 新增元素
   const response = await ElementService.createElementRoot({
     workspaceNo: workspaceStore.workspaceNo,
-    ...elementInfo.value,
+    ...elementData.value,
     componentList: pendingSubmitComponentList.value
   })
   // 无需关闭 tab

@@ -5,22 +5,22 @@
       label-position="right"
       label-width="120px"
       inline-message
-      :model="elementInfo"
+      :model="elementData"
       :rules="elementFormRules"
     >
       <!-- 元素名称 -->
       <el-form-item label="名称：" prop="elementName">
-        <el-input v-model="elementInfo.elementName" placeholder="元素名称" clearable :readonly="queryMode" />
+        <el-input v-model="elementData.elementName" placeholder="元素名称" clearable :readonly="queryMode" />
       </el-form-item>
 
       <!-- 元素备注 -->
       <el-form-item label="备注：" prop="elementDesc">
-        <el-input v-model="elementInfo.elementDesc" placeholder="元素备注" clearable :readonly="queryMode" />
+        <el-input v-model="elementData.elementDesc" placeholder="元素备注" clearable :readonly="queryMode" />
       </el-form-item>
 
       <!-- 数据库选择框 -->
       <el-form-item label="数据库：" prop="elementAttrs.SQLSampler__engine_no">
-        <el-select v-model="elementInfo.elementAttrs.SQLSampler__engine_no" style="width: 100%" :disabled="queryMode">
+        <el-select v-model="elementData.elementAttrs.SQLSampler__engine_no" style="width: 100%" :disabled="queryMode">
           <el-option v-for="item in engineList" :key="item.dbNo" :label="item.dbName" :value="item.dbNo">
             <span class="database-type-option">
               <span>{{ item.dbName }}</span>
@@ -33,7 +33,7 @@
       <!-- 变量名称 -->
       <el-form-item label="变量名称：" prop="property.SQLSampler__result_name">
         <el-input
-          v-model="elementInfo.property.SQLSampler__result_name"
+          v-model="elementData.property.SQLSampler__result_name"
           placeholder="用于存储查询结果集，默认=rows"
           clearable
           :readonly="queryMode"
@@ -66,7 +66,7 @@
         <!-- 结果数限制 -->
         <el-form-item label="结果大小限制：" prop="property.SQLSampler__limit">
           <el-input
-            v-model="elementInfo.property.SQLSampler__limit"
+            v-model="elementData.property.SQLSampler__limit"
             placeholder="默认=10"
             style="width: 300px"
             clearable
@@ -79,7 +79,7 @@
         <!-- 超时时间 -->
         <el-form-item label="超时时间：" prop="property.SQLSampler__query_timeout">
           <el-input
-            v-model="elementInfo.property.SQLSampler__query_timeout"
+            v-model="elementData.property.SQLSampler__query_timeout"
             placeholder="默认=10000"
             style="width: 300px"
             clearable
@@ -94,7 +94,7 @@
       <div v-show="showStatementTab">
         <MonacoEditor
           ref="codeEditorRef"
-          v-model="elementInfo.property.SQLSampler__statement"
+          v-model="elementData.property.SQLSampler__statement"
           language="sql"
           style="margin-bottom: 20px"
           :readonly="queryMode"
@@ -153,7 +153,7 @@ const {
 } = useEditor(props)
 const elformRef = ref()
 const elementNo = ref(props.editorNo)
-const elementInfo = ref({
+const elementData = ref({
   elementNo: '',
   elementName: 'SQL请求',
   elementDesc: '',
@@ -179,9 +179,9 @@ const codeEditorRef = ref()
 const activeTabName = ref('STATEMENT')
 const showStatementTab = computed(() => activeTabName.value === 'STATEMENT')
 const showSettingsTab = computed(() => activeTabName.value === 'SETTINGS')
-const hiddenStatementDot = computed(() => elementInfo.value.property.SQLSampler__statement === '')
+const hiddenStatementDot = computed(() => elementData.value.property.SQLSampler__statement === '')
 const hiddenSettingsDot = computed(() => {
-  const elprop = elementInfo.value.property
+  const elprop = elementData.value.property
   return elprop.SQLSampler__limit === '' && elprop.SQLSampler__query_timeout === ''
 })
 
@@ -194,7 +194,7 @@ onMounted(() => {
   // 查询或更新模式时，先拉取元素信息
   if (createMode.value) return
   ElementService.queryElementInfo({ elementNo: elementNo.value }).then((response) => {
-    assignElement(elementInfo.value, response.result)
+    assignElement(elementData.value, response.result)
     codeEditorRef.value.setValue(response.result.property.SQLSampler__statement)
   })
 })
@@ -204,7 +204,7 @@ onMounted(() => {
  */
 const updateElementNo = (val) => {
   elementNo.value = val
-  elementInfo.value.elementNo = val
+  elementData.value.elementNo = val
 }
 
 /**
@@ -221,13 +221,13 @@ const modifyElement = async (close = false) => {
     return
   }
   // 修改元素
-  await ElementService.modifyElement({ elementNo: elementNo.value, ...elementInfo.value })
+  await ElementService.modifyElement({ elementNo: elementNo.value, ...elementData.value })
   // 无需关闭 tab
   if (!close) {
     // 设置为只读模式
     setReadonly()
     // 更新 tab 标题
-    updateTab(elementInfo.value.elementName)
+    updateTab(elementData.value.elementName)
   }
   // 重新查询侧边栏的元素列表
   refreshElementTree()
@@ -256,14 +256,14 @@ const createElement = async (close = false) => {
   const response = await ElementService.createElementChild({
     rootNo: props.metadata.rootNo,
     parentNo: props.metadata.parentNo,
-    ...elementInfo.value
+    ...elementData.value
   })
   // 无需关闭 tab
   if (!close) {
     // 设置为只读模式
     setReadonly()
     // 更新 tab 标题和编号
-    updateTab(elementInfo.value.elementName, response.result[0])
+    updateTab(elementData.value.elementName, response.result[0])
     // 更新元素编号
     updateElementNo(response.result[0])
   }
