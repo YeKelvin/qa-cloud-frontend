@@ -35,7 +35,6 @@
 </template>
 
 <script setup>
-import { View } from '@element-plus/icons-vue'
 import { isEmpty } from 'lodash-es'
 import DatasetSelect from './DatasetSelect.vue'
 import DatasetDialog from './DatasetDialog.vue'
@@ -62,7 +61,7 @@ const componentNames = {
   SnippetSampler: 'Snippet请求',
   SQLSampler: 'SQL请求',
   DatabaseEngine: '数据库配置器',
-  WorkspaceComponents: '空间组件'
+  WorkspaceComponent: '空间组件'
 }
 // 组件名称
 const componentName = computed(() => componentNames[props.component])

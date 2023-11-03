@@ -243,6 +243,8 @@ const handleNodeClick = (data) => {
     editorMode: 'QUERY',
     metadata: {
       sn: data.templateNo,
+      name: data.templateName,
+      component: 'HttpHeadersTemplate',
       templateNo: data.templateNo
     }
   })

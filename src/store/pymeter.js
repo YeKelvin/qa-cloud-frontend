@@ -4,7 +4,7 @@ import * as VariablesService from '@/api/script/variables'
 import { useWorkspaceStore } from '@/store/workspace'
 import { isEmpty } from 'lodash-es'
 import { defineStore } from 'pinia'
-import { removeCache } from './pymeter-tools'
+import { removeCache, confirmClose } from './pymeter-tools'
 
 export const usePyMeterStore = defineStore('pymeter', {
   state: () => {
@@ -77,26 +77,29 @@ export const usePyMeterStore = defineStore('pymeter', {
     /**
      * 添加 tab
      */
-    addTab({ editorNo, editorName, editorComponent, editorMode, metadata }) {
-      const tabList = [...this.tabs]
-
-      let nonExistent = true
-      for (let i = 0; i < tabList.length; i++) {
-        const tab = tabList[i]
+    addTab({ editorNo, editorName, editorComponent, editorMode, metadata = {}, unsaved = false }) {
+      // 标识tab是否不存在
+      let nonexistent = true
+      // 查找是否存在相同编号的tab
+      const size = this.tabs.length
+      for (let i = 0; i < size; i++) {
+        const tab = this.tabs[i]
+        // 如果存在则激活tab
         if (tab.editorNo === editorNo || tab.metadata.sn === editorNo) {
-          nonExistent = false
+          nonexistent = false
           this.activeTabNo = tab.editorNo
           break
         }
       }
-
-      if (nonExistent) {
-        metadata = metadata || {}
+      // 不存在则打开新的tab并激活
+      if (nonexistent) {
         this.tabs.push({
           editorNo,
           editorName,
           editorComponent,
           editorMode,
+          closing: false,
+          unsaved,
           metadata
         })
         this.activeTabNo = editorNo
@@ -106,23 +109,34 @@ export const usePyMeterStore = defineStore('pymeter', {
     /**
      * 关闭 tab 并移除 keep-alive 缓存
      */
-    removeTab({ editorNo }) {
-      const tabList = [...this.tabs]
-      const tabNo = this.activeTabNo
-
-      if (tabNo === editorNo) {
-        for (let i = 0; i < tabList.length; i++) {
-          const tab = tabList[i]
-          if (tab.editorNo === editorNo) {
-            const nextTab = tabList[i + 1] || tabList[i - 1]
-            if (nextTab) {
-              this.activeTabNo = nextTab.editorNo
-            }
-          }
+    async removeTab({ editorNo }) {
+      let closingTab = null
+      let closingIndex = null
+      // 获取需要关闭的tab对象
+      const size = this.tabs.length
+      for (let i = 0; i < size; i++) {
+        if (this.tabs[i].editorNo === editorNo) {
+          closingTab = this.tabs[i]
+          closingIndex = i
         }
       }
-      this.tabs = tabList.filter((tab) => tab.editorNo !== editorNo)
-
+      // 如果tab数据未保存，则添加一个关闭中的标识并激活tab
+      if (closingTab.unsaved) {
+        // 激活tab
+        this.activeTabNo = editorNo
+        // 二次确认
+        const canceled = await confirmClose(closingTab)
+        if (canceled) return
+      }
+      // 如果需要关闭的tab为当前激活的tab，则需要把当前tab改为下一个或上一个
+      if (this.activeTabNo === editorNo) {
+        const nextTab = this.tabs[closingIndex + 1] || this.tabs[closingIndex - 1]
+        if (nextTab) {
+          this.activeTabNo = nextTab.editorNo
+        }
+      }
+      // 删除tab
+      this.tabs = this.tabs.filter((tab) => tab.editorNo !== editorNo)
       // 手动移除 keep-alive 缓存
       removeCache(this.keepAlive, editorNo)
     },
@@ -131,7 +145,8 @@ export const usePyMeterStore = defineStore('pymeter', {
      * 更新 tabName
      */
     updateTab({ editorNo, editorName = null, metadata = null }) {
-      for (let i = 0; i < this.tabs.length; i++) {
+      const size = this.tabs.length
+      for (let i = 0; i < size; i++) {
         if (this.tabs[i].editorNo === editorNo) {
           if (editorName) {
             this.tabs[i].editorName = editorName
@@ -147,6 +162,7 @@ export const usePyMeterStore = defineStore('pymeter', {
      * 关闭所有已打开的 tab 页
      */
     removeAllTab() {
+      // TODO: 这里应该有问题
       this.tabs.forEach((tab) => this.removeTab(tab))
       this.activeTabNo = ''
     },

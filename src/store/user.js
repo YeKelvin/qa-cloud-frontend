@@ -61,11 +61,11 @@ export const useUserStore = defineStore('user', {
         UserService.queryInfo()
           .then((response) => {
             if (!response) {
-              reject('身份认证失败或失效，请重新登录')
+              reject(new Error('身份认证失败或失效，请重新登录'))
               return
             }
             if (response && (!response.success || !response.result)) {
-              reject('身份认证失败或失效，请重新登录')
+              reject(new Error('身份认证失败或失效，请重新登录'))
               return
             }
 

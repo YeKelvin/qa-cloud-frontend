@@ -6,16 +6,16 @@
       label-width="100px"
       inline-message
       :model="elementData"
-      :rules="elementFormRules"
+      :rules="elementRules"
     >
       <!-- 元素名称 -->
       <el-form-item label="名称：" prop="elementName">
-        <el-input v-model="elementData.elementName" placeholder="元素名称" clearable :readonly="queryMode" />
+        <el-input v-model="elementData.elementName" placeholder="元素名称" clearable />
       </el-form-item>
 
       <!-- 元素备注 -->
       <el-form-item label="备注：" prop="elementDesc">
-        <el-input v-model="elementData.elementDesc" placeholder="元素备注" clearable :readonly="queryMode" />
+        <el-input v-model="elementData.elementDesc" placeholder="元素备注" clearable />
       </el-form-item>
 
       <!-- 说明 -->
@@ -31,10 +31,9 @@
           </span>
           <!-- 运行按钮 -->
           <el-button
-            v-show="queryMode"
-            type="danger"
+            type="primary"
             style="width: 140px; min-width: 140px; max-width: 140px; margin-left: 10px"
-            @click="executeSampler(elementNo)"
+            @click="executeSampler(elementData.rootNo, elementData.elementNo)"
           >
             <SvgIcon icon-name="pymeter-send" style="margin-right: 5px" />
             运 行
@@ -48,26 +47,16 @@
         v-model="elementData.property.PythonSampler__script"
         type="PYTHON"
         phase="SAMPLER"
-        :readonly="queryMode"
       />
 
       <!-- 操作按钮 -->
-      <el-affix target=".pymeter-component-container" position="bottom" :offset="60">
-        <el-form-item v-if="queryMode">
-          <el-button :icon="Edit" type="primary" @click="editNow()">编 辑</el-button>
-          <el-button :icon="Close" @click="closeTab()">关 闭</el-button>
-        </el-form-item>
-        <el-form-item v-else-if="modifyMode">
-          <el-button :icon="Check" type="danger" @click="modifyElement()">保 存</el-button>
-          <el-button :icon="Check" @click="modifyElement(true)">保存并关闭</el-button>
-          <el-button :icon="Close" @click="closeTab()">关 闭</el-button>
-        </el-form-item>
-        <el-form-item v-else-if="createMode">
-          <el-button :icon="Check" type="primary" @click="createElement()">保 存</el-button>
-          <el-button :icon="Check" @click="createElement(true)">保存并关闭</el-button>
-          <el-button :icon="Close" @click="closeTab()">关 闭</el-button>
-        </el-form-item>
-      </el-affix>
+      <template v-if="unsaved">
+        <el-affix target=".pymeter-component-container" position="bottom" :offset="60">
+          <div class="flexbox-center">
+            <el-button type="danger" @click="save()">保 存 ( {{ shortcutKeyName }} )</el-button>
+          </div>
+        </el-affix>
+      </template>
     </el-form>
   </div>
 </template>
@@ -75,30 +64,32 @@
 <script setup>
 import * as ElementService from '@/api/script/element'
 import PythonEditor from '@/pymeter/components/editor-main/common/PythonEditor.vue'
+import EditorEmits from '@/pymeter/composables/editor.emits'
 import EditorProps from '@/pymeter/composables/editor.props'
 import useEditor from '@/pymeter/composables/useEditor'
 import useRunnableElement from '@/pymeter/composables/useRunnableElement'
-import { Check, Close, Edit } from '@element-plus/icons-vue'
+import { usePyMeterDB } from '@/store/pymeter-db'
+import { toHashCode } from '@/utils/object-util'
 import { ElMessage } from 'element-plus'
+import { debounce } from 'lodash-es'
 
 const props = defineProps(EditorProps)
+const emit = defineEmits(EditorEmits)
 const { executeSampler } = useRunnableElement()
 const {
-  queryMode,
-  modifyMode,
-  createMode,
-  functions,
-  editNow,
-  setReadonly,
-  updateTab,
-  closeTab,
+  unsaved,
+  metadata,
+  creation,
+  localkey,
+  shortcutKeyName,
+  updateTabName,
+  updateTabMetadata,
   expandParentNode,
   refreshElementTree
-} = useEditor(props)
-const elformRef = ref()
-const elementNo = ref(props.editorNo)
+} = useEditor()
+const offlineDB = usePyMeterDB().offlineDB
 const elementData = ref({
-  elementNo: '',
+  elementNo: props.metadata.elementNo,
   elementName: 'Python请求',
   elementDesc: '',
   elementType: 'SAMPLER',
@@ -107,107 +98,119 @@ const elementData = ref({
     PythonSampler__script: ''
   }
 })
-const elementFormRules = reactive({
+const elementRules = {
   elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }]
-})
+}
+const elformRef = ref()
 const codeEditorRef = ref()
 
-onMounted(() => {
-  // 查询或更新模式时，先拉取元素信息
-  if (createMode.value) return
-  ElementService.queryElementInfo({ elementNo: elementNo.value }).then((response) => {
-    elementData.value = response.result
-    codeEditorRef.value.setValue(response.result.property.PythonSampler__script)
-  })
+watch(
+  elementData,
+  debounce((localdata) => {
+    console.log('watch')
+    // 如果前后端数据一致则代表数据未更改
+    if (metadata.value.hashcode === toHashCode(localdata)) {
+      unsaved.value = false
+      return
+    }
+    console.log('存离线')
+    // 标记数据未保存
+    unsaved.value = true
+    // 存储离线数据
+    offlineDB.setItem(localkey.value, JSON.parse(JSON.stringify({ data: localdata, meta: metadata.value })))
+  }, 500),
+  { deep: true, flush: 'sync' }
+)
+
+onMounted(async () => {
+  // 优先查询离线数据
+  if (unsaved.value) {
+    queryOfflineData()
+  } else {
+    if (creation.value) return // 新增模式无需读取任何数据
+    // 查询后端数据
+    queryBackendData()
+  }
 })
 
 /**
- * 更新元素编号
+ * 查询离线数据
  */
-const updateElementNo = (val) => {
-  elementNo.value = val
-  elementData.value.elementNo = val
+const queryOfflineData = async () => {
+  const offline = await offlineDB.getItem(localkey.value)
+  Object.assign(elementData.value, offline.data)
+  Object.assign(metadata.value, offline.meta)
+  codeEditorRef.value.setValue(offline.data.property.PythonSampler__script)
+}
+
+/**
+ * 查询后端数据
+ */
+const queryBackendData = async () => {
+  const response = await ElementService.queryElementInfo({ elementNo: elementData.value.elementNo })
+  Object.assign(elementData.value, response.result)
+  Object.assign(metadata.value, { hashcode: toHashCode(elementData.value) })
+  codeEditorRef.value.setValue(response.result.property.PythonSampler__script)
 }
 
 /**
  * 修改元素信息
  */
-const modifyElement = async (close = false) => {
-  // 表单校验
-  const error = await elformRef.value
-    .validate()
-    .then(() => false)
-    .catch(() => true)
-  if (error) {
-    ElMessage({ message: '数据校验失败', type: 'error', duration: 2 * 1000 })
-    return
-  }
+const modifyElement = async () => {
   // 修改元素
-  await ElementService.modifyElement({ elementNo: elementNo.value, ...elementData.value })
-  // 无需关闭 tab
-  if (!close) {
-    // 设置为只读模式
-    setReadonly()
-    // 更新 tab 标题
-    updateTab(elementData.value.elementName)
-  }
-  // 重新查询侧边栏的元素列表
-  refreshElementTree()
-  // 成功提示
-  ElMessage({ message: '修改元素成功', type: 'info', duration: 2 * 1000 })
-  // 需要关闭 tab
-  if (close) {
-    closeTab()
-  }
+  await ElementService.modifyElement(elementData.value)
 }
 
 /**
  * 创建元素
  */
-const createElement = async (close = false) => {
-  // 表单校验
-  const error = await elformRef.value
-    .validate()
-    .then(() => false)
-    .catch(() => true)
-  if (error) {
-    ElMessage({ message: '数据校验失败', type: 'error', duration: 2 * 1000 })
-    return
-  }
+const createElement = async () => {
   // 新增元素
   const response = await ElementService.createElementChild({
     rootNo: props.metadata.rootNo,
     parentNo: props.metadata.parentNo,
     ...elementData.value
   })
-  // 无需关闭 tab
-  if (!close) {
-    // 设置为只读模式
-    setReadonly()
-    // 更新 tab 标题和编号
-    updateTab(elementData.value.elementName, response.result.elementNo)
-    // 更新元素编号
-    updateElementNo(response.result.elementNo)
-  }
+  // 提取元素编号
+  const elementNo = response.result.elementNo
+  // 更新元素编号
+  elementData.value.elementNo = elementNo
   // 展开父节点
   expandParentNode()
+  // 更新 tab 元数据
+  updateTabMetadata({ sn: elementNo, elementNo: elementNo })
+}
+
+/**
+ * 保存数据至后端
+ */
+const save = async () => {
+  // 表单校验
+  const error = await elformRef.value
+    .validate()
+    .then(() => false)
+    .catch(() => true)
+  if (error) {
+    ElMessage({ message: '数据校验失败', type: 'error', duration: 2 * 1000 })
+    return
+  }
+  // 保存元素
+  creation.value ? await createElement() : await modifyElement()
+  // 标记数据已保存
+  unsaved.value = false
+  // 保存成功后移除离线数据
+  offlineDB.removeItem(localkey.value)
   // 重新查询侧边栏的元素列表
   refreshElementTree()
+  // 更新 tab 标题
+  updateTabName(elementData.value.elementName)
   // 成功提示
-  ElMessage({ message: '新增元素成功', type: 'info', duration: 2 * 1000 })
-  // 需要关闭 tab
-  if (close) {
-    closeTab()
-  }
+  ElMessage({ message: '保存成功', type: 'info', duration: 2 * 1000 })
 }
 
-// 暂存函数，给 useEditor 使用
-functions.createFn = createElement
-functions.modifyFn = modifyElement
+defineExpose({
+  save
+})
 </script>
 
-<style lang="scss" scoped>
-:deep(.el-textarea.is-disabled .el-textarea__inner) {
-  cursor: auto;
-}
-</style>
+<style lang="scss" scoped></style>

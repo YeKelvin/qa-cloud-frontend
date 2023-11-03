@@ -235,7 +235,11 @@ const openNewCollectionTab = () => {
     editorNo: Date.now().toString(),
     editorName: '新建集合',
     editorComponent: 'TestCollection',
-    editorMode: 'CREATE'
+    editorMode: 'CREATE',
+    metadata: {
+      name: '新建集合',
+      component: 'TestCollection'
+    }
   })
 }
 
@@ -247,7 +251,11 @@ const openNewSnippetTab = () => {
     editorNo: Date.now().toString(),
     editorName: '新建片段',
     editorComponent: 'TestSnippet',
-    editorMode: 'CREATE'
+    editorMode: 'CREATE',
+    metadata: {
+      name: '新建片段',
+      component: 'TestSnippet'
+    }
   })
 }
 

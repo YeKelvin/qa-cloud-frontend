@@ -53,7 +53,7 @@ export default function useSocketIO() {
 
       timeoutId = setTimeout(() => {
         clearInterval(intervalId)
-        reject('get sid timeout')
+        reject(new Error('socket connect timeout'))
       }, timeout)
 
       intervalId = setInterval(() => {

@@ -212,6 +212,8 @@ const handleNodeClick = (data) => {
     editorMode: 'QUERY',
     metadata: {
       sn: data.dbNo,
+      name: data.dbName,
+      component: 'DatabaseEngine',
       databaseNo: data.dbNo
     }
   })

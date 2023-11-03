@@ -3,12 +3,12 @@
     <template v-if="pymeterStore.tabs.length > 0">
       <!-- tabs头 -->
       <el-tabs v-model="pymeterStore.activeTabNo" type="card" closable @tab-remove="handleTabRemove">
-        <el-tab-pane
-          v-for="tab in pymeterStore.tabs"
-          :key="tab.editorNo"
-          :label="tab.editorName"
-          :name="tab.editorNo"
-        />
+        <el-tab-pane v-for="tab in pymeterStore.tabs" :key="tab.editorNo" :name="tab.editorNo">
+          <template #label>
+            <span>{{ tab.editorName }}</span>
+            <el-badge :hidden="!tab.unsaved" type="danger" is-dot />
+          </template>
+        </el-tab-pane>
       </el-tabs>
 
       <!-- 顶栏 -->
@@ -20,9 +20,11 @@
           <component
             :is="editors[activeTab.editorComponent]"
             :key="activeTab.editorNo"
+            v-model:unsaved="activeTab.unsaved"
+            v-model:metadata="activeTab.metadata"
+            :closing="activeTab.closing"
             :editor-no="activeTab.editorNo"
             :editor-mode="activeTab.editorMode"
-            :metadata="activeTab.metadata"
           />
         </keep-alive>
       </el-scrollbar>
@@ -41,6 +43,8 @@
 </template>
 
 <script setup>
+import { isEmpty } from 'lodash-es'
+import { usePyMeterDB } from '@/store/pymeter-db'
 import { usePyMeterStore } from '@/store/pymeter'
 import Toolbar from './toolbar/Toolbar.vue'
 import Mousetrap from 'mousetrap'
@@ -73,7 +77,7 @@ const editors = reactive({
   // timer
   ConstantTimer: markRaw(defineAsyncComponent(() => import('./timers/ConstantTimer.vue'))),
   // others
-  WorkspaceComponents: markRaw(defineAsyncComponent(() => import('./workspace/WorkspaceComponents.vue')))
+  WorkspaceComponent: markRaw(defineAsyncComponent(() => import('./workspace/WorkspaceComponent.vue')))
 })
 
 const pymeterStore = usePyMeterStore()
@@ -98,15 +102,27 @@ watch(keepAliveRef, (val) => {
 
 onMounted(() => {
   // 注册快捷键
-  Mousetrap.bind('mod+k', () => {
-    pymeterStore.removeTab({ editorNo: pymeterStore.activeTabNo })
-    return false
-  })
+  Mousetrap.bind('mod+k', () => pymeterStore.removeTab({ editorNo: pymeterStore.activeTabNo }))
+  // 打开离线数据对应的tab
+  openOfflineTab()
 })
 onBeforeUnmount(() => {
   // 移除快捷键
   Mousetrap.unbind('mod+k')
 })
+
+const openOfflineTab = () => {
+  const pymeterDB = usePyMeterDB()
+  pymeterDB.offlineDB.iterate((offline, key) => {
+    pymeterStore.addTab({
+      editorNo: isEmpty(offline.meta.sn) ? key : offline.meta.sn,
+      editorName: offline.meta.name,
+      editorComponent: offline.meta.component,
+      unsaved: true,
+      metadata: offline.meta
+    })
+  })
+}
 </script>
 
 <style lang="scss" scoped>
@@ -138,5 +154,13 @@ onBeforeUnmount(() => {
   &:first-child {
     border-left: none;
   }
+}
+
+:deep(.el-badge) {
+  padding-left: 8px;
+}
+
+:deep(.el-badge__content) {
+  display: flex;
 }
 </style>

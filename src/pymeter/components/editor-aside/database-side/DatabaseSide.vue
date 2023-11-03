@@ -35,7 +35,11 @@ const createDatabaseEngine = () => {
     editorNo: Date.now().toString(),
     editorName: '新建数据库',
     editorComponent: 'DatabaseEngine',
-    editorMode: 'CREATE'
+    editorMode: 'CREATE',
+    metadata: {
+      name: '新建数据库',
+      component: 'DatabaseEngine'
+    }
   })
 }
 </script>

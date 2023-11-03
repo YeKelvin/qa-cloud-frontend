@@ -179,6 +179,8 @@ const openNewWorkerTab = () => {
     editorComponent: 'TestWorker',
     editorMode: 'CREATE',
     metadata: {
+      name: '新建用例',
+      component: 'TestWorker',
       rootNo: item.value.rootNo,
       parentNo: item.value.elementNo
     }
@@ -196,6 +198,8 @@ const openNewSetupWorkerTab = () => {
     editorComponent: 'SetupWorker',
     editorMode: 'CREATE',
     metadata: {
+      name: '新建用例',
+      component: 'SetupWorker',
       rootNo: item.value.rootNo,
       parentNo: item.value.elementNo
     }
@@ -213,6 +217,8 @@ const openNewTeardownWorkerTab = () => {
     editorComponent: 'TeardownWorker',
     editorMode: 'CREATE',
     metadata: {
+      name: '新建用例',
+      component: 'TeardownWorker',
       rootNo: item.value.rootNo,
       parentNo: item.value.elementNo
     }
@@ -230,6 +236,8 @@ const openNewHttpSamplerTab = () => {
     editorComponent: 'HTTPSampler',
     editorMode: 'CREATE',
     metadata: {
+      name: '新建请求',
+      component: 'HTTPSampler',
       rootNo: item.value.rootNo,
       parentNo: item.value.elementNo
     }
@@ -247,6 +255,8 @@ const openNewPythonSamplerTab = () => {
     editorComponent: 'PythonSampler',
     editorMode: 'CREATE',
     metadata: {
+      name: '新建请求',
+      component: 'PythonSampler',
       rootNo: item.value.rootNo,
       parentNo: item.value.elementNo
     }
@@ -264,6 +274,8 @@ const openNewSQLSamplerTab = () => {
     editorComponent: 'SQLSampler',
     editorMode: 'CREATE',
     metadata: {
+      name: '新建请求',
+      component: 'SQLSampler',
       rootNo: item.value.rootNo,
       parentNo: item.value.elementNo
     }
@@ -281,6 +293,8 @@ const openNewSnippetSamplerTab = () => {
     editorComponent: 'SnippetSampler',
     editorMode: 'CREATE',
     metadata: {
+      name: '新建请求',
+      component: 'SnippetSampler',
       workspaceNo: workspaceStore.workspaceNo,
       rootNo: item.value.rootNo,
       parentNo: item.value.elementNo
@@ -299,6 +313,8 @@ const openNewIfControllerTab = () => {
     editorComponent: 'IfController',
     editorMode: 'CREATE',
     metadata: {
+      name: '新建控制器',
+      component: 'IfController',
       rootNo: item.value.rootNo,
       parentNo: item.value.elementNo
     }
@@ -316,6 +332,8 @@ const openNewForeachControllerTab = () => {
     editorComponent: 'ForeachController',
     editorMode: 'CREATE',
     metadata: {
+      name: '新建控制器',
+      component: 'ForeachController',
       rootNo: item.value.rootNo,
       parentNo: item.value.elementNo
     }
@@ -333,6 +351,8 @@ const openNewLoopControllerTab = () => {
     editorComponent: 'LoopController',
     editorMode: 'CREATE',
     metadata: {
+      name: '新建控制器',
+      component: 'LoopController',
       rootNo: item.value.rootNo,
       parentNo: item.value.elementNo
     }
@@ -350,6 +370,8 @@ const openNewRetryControllerTab = () => {
     editorComponent: 'RetryController',
     editorMode: 'CREATE',
     metadata: {
+      name: '新建控制器',
+      component: 'RetryController',
       rootNo: item.value.rootNo,
       parentNo: item.value.elementNo
     }
@@ -367,6 +389,8 @@ const openNewTransactionControllerTab = () => {
     editorComponent: 'TransactionController',
     editorMode: 'CREATE',
     metadata: {
+      name: '新建事务',
+      component: 'TransactionController',
       rootNo: item.value.rootNo,
       parentNo: item.value.elementNo
     }
@@ -384,6 +408,8 @@ const openNewWhileControllerTab = () => {
     editorComponent: 'WhileController',
     editorMode: 'CREATE',
     metadata: {
+      name: '新建控制器',
+      component: 'WhileController',
       rootNo: item.value.rootNo,
       parentNo: item.value.elementNo
     }

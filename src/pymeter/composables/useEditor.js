@@ -1,40 +1,76 @@
 import { usePyMeterStore } from '@/store/pymeter'
-import useOS from '@/composables/useOS'
+import { isEmpty } from 'lodash-es'
 
-export default function useEditor(props) {
-  const { isMacOS } = useOS()
+export default function useEditor() {
+  const instance = getCurrentInstance()
   const pymeterStore = usePyMeterStore()
 
-  const { editorNo, editorMode, metadata } = toRefs(props)
-  const editMode = ref(editorMode.value)
-  const queryMode = computed(() => editMode.value === 'QUERY')
-  const modifyMode = computed(() => editMode.value === 'MODIFY')
-  const createMode = computed(() => editMode.value === 'CREATE')
+  const creation = computed(() => isEmpty(instance.props.metadata.sn))
+  const localkey = computed(() => (creation.value ? instance.props.editorNo : instance.props.metadata.sn))
 
-  const functions = reactive({})
+  const { editorNo, editorMode } = toRefs(instance.props) // TODO: delete
+  const editMode = ref(editorMode.value) // TODO: delete
+  const queryMode = computed(() => editMode.value === 'QUERY') // TODO: delete
+  const modifyMode = computed(() => editMode.value === 'MODIFY') // TODO: delete
+  const createMode = computed(() => editMode.value === 'CREATE') // TODO: delete
+
+  const unsaved = computed({
+    get: () => instance.props.unsaved,
+    set: (val) => instance.emit('update:unsaved', val)
+  })
+
+  const metadata = computed({
+    get: () => instance.props.metadata,
+    set: (val) => instance.emit('update:metadata', val)
+  })
+
+  const onMacOS = computed(() => /macintosh|mac os x/i.test(navigator.userAgent))
+  const shortcutKeyName = computed(() => {
+    return onMacOS.value ? '⌘+S' : 'Ctrl+S'
+  })
+
+  const functions = reactive({}) // TODO: delete
 
   /**
    * 开启编辑模式
    */
   const editNow = () => {
-    editMode.value = 'MODIFY'
+    editMode.value = 'MODIFY' // TODO: delete
   }
 
   /**
    * 设为只读模式
    */
   const setReadonly = () => {
-    editMode.value = 'QUERY'
+    editMode.value = 'QUERY' // TODO: delete
   }
 
   /**
    * 更新 tab
    */
   const updateTab = (name, number = null) => {
+    // TODO: delete
     pymeterStore.updateTab({
       editorNo: editorNo.value,
       editorName: name,
       metadata: number ? { sn: number, elementNo: number } : null
+    })
+  }
+
+  const updateTabName = (name) => {
+    pymeterStore.updateTab({
+      editorNo: editorNo.value,
+      editorName: name,
+      metadata: {
+        name: name
+      }
+    })
+  }
+
+  const updateTabMetadata = (metadata) => {
+    pymeterStore.updateTab({
+      editorNo: editorNo.value,
+      metadata: metadata
     })
   }
 
@@ -60,30 +96,13 @@ export default function useEditor(props) {
   }
 
   /**
-   * 开启编辑模式（快捷键）
+   * 保存数据（快捷键）
    */
-  const editNowByShortcut = async (e) => {
+  const saveByShortcut = async (e) => {
     if (e.repeat) return
-    if (e.key === 'e' && (isMacOS ? e.metaKey : e.ctrlKey)) {
+    if (e.key === 's' && (onMacOS.value ? e.metaKey : e.ctrlKey)) {
       e.preventDefault()
-      if (!queryMode.value) return
-      editNow()
-    }
-  }
-
-  /**
-   * 提交新增或修改（快捷键）
-   */
-  const submitByShortcut = async (e) => {
-    if (e.repeat) return
-    if (e.key === 's' && (isMacOS ? e.metaKey : e.ctrlKey)) {
-      e.preventDefault()
-      if (queryMode.value) return
-      if (createMode.value) {
-        functions.createFn()
-      } else {
-        functions.modifyFn()
-      }
+      unsaved.value && instance.exposed.save()
     }
   }
 
@@ -92,7 +111,7 @@ export default function useEditor(props) {
    */
   const closeByShortcut = async (e) => {
     if (e.repeat) return
-    if (e.key === 'k' && (isMacOS ? e.metaKey : e.ctrlKey)) {
+    if (e.key === 'k' && (onMacOS.value ? e.metaKey : e.ctrlKey)) {
       e.preventDefault()
       closeTab()
     }
@@ -103,18 +122,26 @@ export default function useEditor(props) {
   onMounted(() => {
     // 注册快捷键
     container = document.querySelector('.pymeter-component-container')
-    container.addEventListener('keydown', editNowByShortcut, false)
-    container.addEventListener('keydown', submitByShortcut, false)
+    container.addEventListener('keydown', saveByShortcut, false)
     container.addEventListener('keydown', closeByShortcut, false)
   })
   onBeforeUnmount(() => {
     // 移除快捷键
-    container.removeEventListener('keydown', editNowByShortcut, false)
-    container.removeEventListener('keydown', submitByShortcut, false)
+    container.removeEventListener('keydown', saveByShortcut, false)
     container.removeEventListener('keydown', closeByShortcut, false)
   })
+  watch(
+    () => instance.props.closing,
+    (closing) => closing && instance.exposed.save(),
+    { flush: 'sync' }
+  )
 
   return {
+    unsaved,
+    metadata,
+    creation,
+    localkey,
+    shortcutKeyName,
     editMode,
     queryMode,
     modifyMode,
@@ -124,6 +151,8 @@ export default function useEditor(props) {
     setReadonly,
     updateTab,
     closeTab,
+    updateTabName,
+    updateTabMetadata,
     expandParentNode,
     refreshElementTree
   }

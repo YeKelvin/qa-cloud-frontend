@@ -179,6 +179,8 @@ const handleNodeClick = (data) => {
       editorMode: 'QUERY',
       metadata: {
         sn: data.elementNo,
+        name: data.elementName,
+        component: data.elementClass,
         rootNo: data.rootNo,
         parentNo: data.parentNo,
         elementNo: data.elementNo
@@ -315,7 +317,7 @@ const allowDrop = (draggingNode, dropNode, type) => {
  */
 const cutByShortcut = (e) => {
   if (e.repeat) return
-  if (e.key === 'x' && (isMacOS ? e.metaKey : e.ctrlKey)) {
+  if (e.key === 'x' && (isMacOS.value ? e.metaKey : e.ctrlKey)) {
     e.preventDefault() // 阻止浏览器默认快捷键
     // 获取当前节点数据
     const data = eltreeRef.value.getCurrentNode()
@@ -330,7 +332,7 @@ const cutByShortcut = (e) => {
  */
 const copyByShortcut = (e) => {
   if (e.repeat) return
-  if (e.key === 'c' && (isMacOS ? e.metaKey : e.ctrlKey)) {
+  if (e.key === 'c' && (isMacOS.value ? e.metaKey : e.ctrlKey)) {
     e.preventDefault() // 阻止浏览器默认快捷键
     // 获取当前节点数据
     const data = eltreeRef.value.getCurrentNode()
@@ -376,7 +378,7 @@ const debouncedPasteElement = debounce(
  */
 const pasteByShortcut = (e) => {
   if (e.repeat) return
-  if (e.key === 'v' && (isMacOS ? e.metaKey : e.ctrlKey)) {
+  if (e.key === 'v' && (isMacOS.value ? e.metaKey : e.ctrlKey)) {
     e.preventDefault()
     debouncedPasteElement()
   }
@@ -432,7 +434,7 @@ const debouncedDuplicateElement = debounce(
  */
 const duplicateByShortcut = async (e) => {
   if (e.repeat) return
-  if (e.key === 'd' && (isMacOS ? e.metaKey : e.ctrlKey)) {
+  if (e.key === 'd' && (isMacOS.value ? e.metaKey : e.ctrlKey)) {
     e.preventDefault()
     debouncedDuplicateElement()
   }
@@ -461,7 +463,7 @@ const debouncedToggleElementState = debounce(
  */
 const toggleStateByShortcut = (e) => {
   if (e.repeat) return
-  if (e.key === '/' && (isMacOS ? e.metaKey : e.ctrlKey)) {
+  if (e.key === '/' && (isMacOS.value ? e.metaKey : e.ctrlKey)) {
     e.preventDefault()
     debouncedToggleElementState()
   }

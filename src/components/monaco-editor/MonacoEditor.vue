@@ -5,6 +5,7 @@
 </template>
 
 <script setup>
+import { debounce } from 'lodash-es'
 import monaco from './monaco.base'
 import monacoOptions from './monaco.options'
 
@@ -64,7 +65,7 @@ onMounted(() => {
   // 设置行尾符合为\n
   instance.getModel().setEOL(monaco.editor.EndOfLinePreference.LF)
   // 双向绑定
-  instance.onDidChangeModelContent(() => emit('update:modelValue', instance.getValue()))
+  instance.onDidChangeModelContent(debounce(() => emit('update:modelValue', instance.getValue()), 200))
   // 移除有冲突的默认快捷键
   removeDefaultKeybindings()
 })

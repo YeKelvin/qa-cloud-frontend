@@ -51,6 +51,8 @@ const openHttpheaderTemplate = (templateNo, templateName) => {
     editorMode: 'QUERY',
     metadata: {
       sn: templateNo,
+      name: templateName,
+      component: 'HttpHeadersTemplate',
       templateNo: templateNo
     }
   })

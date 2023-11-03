@@ -1,12 +1,24 @@
+import { useWorkspaceStore } from '@/store/workspace'
 import localforage from 'localforage'
-
-// const pymeterDB = localforage.createInstance({ name: 'pymeterDB' })
-const pymeterDB = {}
 
 export const usePyMeterDB = defineStore('pymeter-db', {
   state: () => {
-    return {}
+    return {
+      database: new Map()
+    }
   },
-  getters: {},
-  actions: {}
+  getters: {
+    offlineDB: (state) => {
+      const workspaceNo = useWorkspaceStore().workspaceNo
+      if (!state.database.has(workspaceNo)) {
+        state.database.set(workspaceNo, localforage.createInstance({ name: workspaceNo, storeName: 'offline-data' }))
+      }
+      return state.database.get(workspaceNo)
+    }
+  },
+  actions: {
+    async remove(key) {
+      await this.offlineDB.removeItem(key)
+    }
+  }
 })
