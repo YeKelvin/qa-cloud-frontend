@@ -1,155 +1,176 @@
 <template>
   <div class="python-editor-container">
     <MonacoEditor
-      ref="pythonEditor"
-      v-model="localModelValue"
+      ref="pythonEditorRef"
+      v-model="localValue"
       class="python-editor"
-      language="python"
       style="margin-bottom: 10px"
+      language="python"
+      :height="props.height"
       :readonly="readonly"
     />
-    <div class="snippet-code-container">
+    <div class="right-container">
+      <!-- 运行按钮 -->
+      <div v-if="runnable" style="padding-left: 10px; margin-bottom: 10px">
+        <el-button type="primary" style="width: 100%" @click="emit('run')">
+          <SvgIcon icon-name="pymeter-send" style="margin-right: 5px" />
+          运 行
+        </el-button>
+      </div>
+      <!-- 片段列表 -->
       <span class="snippet-title">代码片段</span>
       <el-scrollbar style="width: 100%; height: 100%" wrap-style="overflow-x:auto;">
         <ul class="snippet-code-list">
-          <li @click="getVarSnippet()">获取局部变量</li>
-          <li @click="getPropSnippet()">获取全局变量</li>
+          <li @click="insertVarsGetter()">获取局部变量</li>
+          <li @click="insertPropsGetter()">获取全局变量</li>
           <template v-if="type == 'HTTP' && (phase == 'POST' || phase == 'ASSERTION')">
-            <li @click="getResponseJsonSnippet()">获取Json响应</li>
+            <li @click="insertResponseJson()">获取Json响应</li>
           </template>
-          <li @click="getTableData()">获取表数据</li>
-          <li @click="setVarSnippet()">设置局部变量</li>
-          <li @click="setPropSnippet()">设置全局变量</li>
-          <li @click="outputLogInfo()">输出日志</li>
+          <li @click="insertTableData()">获取表数据</li>
+          <li @click="insertVarsSetter()">设置局部变量</li>
+          <li @click="insertPropsSetter()">设置全局变量</li>
+          <li @click="insertLog()">输出日志</li>
           <template v-if="phase == 'ASSERTION'">
-            <li @click="assertion()">断言</li>
+            <li @click="insertAssertion()">断言</li>
           </template>
-          <li @click="toJson()">Json序列化</li>
-          <li @click="fromJson()">Json反序列化</li>
-          <li @click="foreachList()">列表遍历</li>
-          <li @click="foreachDict()">字典遍历</li>
-          <li @click="listComprehensions()">列表推导式</li>
-          <li @click="dictComprehensions()">字典推导式</li>
+          <li @click="insertToJsonFN()">Json序列化</li>
+          <li @click="insertFromJsonFN()">Json反序列化</li>
+          <li @click="insertForeachList()">列表遍历</li>
+          <li @click="insertForeachDict()">字典遍历</li>
+          <li @click="insertListComprehensions()">列表推导式</li>
+          <li @click="insertDictComprehensions()">字典推导式</li>
         </ul>
       </el-scrollbar>
     </div>
   </div>
 </template>
 
-<script>
+<script setup>
 import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
 
-export default defineComponent({
-  components: { MonacoEditor },
-  props: {
-    readonly: Boolean,
-    phase: String, // SAMPLER | PREV | POST | ASSERTION
-    type: String // PYTHON | HTTP
-  },
-  emits: ['update:modelValue'],
-  computed: {
-    localModelValue: {
-      get() {
-        return this.$attrs.modelValue
-      },
-      set(val) {
-        this.$emit('update:modelValue', val)
-      }
-    }
-  },
-  methods: {
-    /**
-     * 设置编辑器内容
-     */
-    setValue(val) {
-      this.$refs.pythonEditor.setValue(val)
-    },
+const emit = defineEmits(['update:modelValue', 'run'])
+const attrs = useAttrs()
+const props = defineProps({
+  readonly: { type: Boolean, default: false },
+  runnable: { type: Boolean, default: false },
+  height: { type: [String, Number], default: '300px' },
+  phase: { type: String, required: true }, // SAMPLER | PREV | POST | ASSERTION
+  type: { type: String, required: true } // PYTHON | HTTP
+})
+const localValue = computed({
+  get: () => attrs.modelValue,
+  set: (val) => emit('update:modelValue', val)
+})
+const pythonEditorRef = ref()
 
-    /**
-     * 获取编辑器内容
-     */
-    getValue() {
-      return this.$refs.pythonEditor.getValue()
-    },
+/**
+ * 设置编辑器内容
+ */
+const setValue = (val) => {
+  pythonEditorRef.value.setValue(val)
+}
 
-    getVarSnippet() {
-      let selection = this.$refs.pythonEditor.getSelectionValue()
-      selection = selection || 'name'
-      this.$refs.pythonEditor.insertSnippet(`vars.get(\${1:${selection}})`)
-      this.$refs.pythonEditor.focus()
-    },
-    getPropSnippet() {
-      let selection = this.$refs.pythonEditor.getSelectionValue()
-      selection = selection || 'name'
-      this.$refs.pythonEditor.insertSnippet(`props.get(\${1:${selection}})`)
-      this.$refs.pythonEditor.focus()
-    },
-    getResponseJsonSnippet() {
-      this.$refs.pythonEditor.insert('res = result.json\n')
-      this.$refs.pythonEditor.focus()
-    },
-    getTableData() {
-      this.$refs.pythonEditor.insertSnippet("val = vars.get('rows')[0]['${1:colunmName}']\n")
-      this.$refs.pythonEditor.focus()
-    },
-    setVarSnippet() {
-      let selection = this.$refs.pythonEditor.getSelectionValue()
-      selection = selection || 'value'
-      this.$refs.pythonEditor.insertSnippet(`vars.put('\${1:name}', \${2:${selection}})`)
-      this.$refs.pythonEditor.focus()
-    },
-    setPropSnippet() {
-      let selection = this.$refs.pythonEditor.getSelectionValue()
-      selection = selection || 'value'
-      this.$refs.pythonEditor.insertSnippet(`props.put('\${1:name}', \${2:${selection}})`)
-      this.$refs.pythonEditor.focus()
-    },
-    outputLogInfo() {
-      const selection = this.$refs.pythonEditor.getSelectionValue()
-      if (selection) {
-        this.$refs.pythonEditor.insert(`log.info(f'{${selection}=}')\n`)
-      } else {
-        this.$refs.pythonEditor.insertSnippet("log.info('${1:content}')\n")
-      }
-      this.$refs.pythonEditor.focus()
-    },
-    assertion() {
-      this.$refs.pythonEditor.insertSnippet("assert ${1:condition}, '${2:message}'\n")
-      this.$refs.pythonEditor.focus()
-    },
-    toJson() {
-      let selection = this.$refs.pythonEditor.getSelectionValue()
-      selection = selection || 'object'
-      this.$refs.pythonEditor.insertSnippet(`to_json(\${1:${selection}})`)
-      this.$refs.pythonEditor.focus()
-    },
-    fromJson() {
-      let selection = this.$refs.pythonEditor.getSelectionValue()
-      selection = selection || 'json_str'
-      this.$refs.pythonEditor.insertSnippet(`from_json(\${1:${selection}})`)
-      this.$refs.pythonEditor.focus()
-    },
-    foreachList() {
-      this.$refs.pythonEditor.insertSnippet('for ${2:item} in ${1:list_object}:\n    ${3:exp}')
-      this.$refs.pythonEditor.focus()
-    },
-    foreachDict() {
-      this.$refs.pythonEditor.insertSnippet('for ${2:key}, ${3:value} in ${1:dic_object}.items():\n    ${4:exp}')
-      this.$refs.pythonEditor.focus()
-    },
-    listComprehensions() {
-      this.$refs.pythonEditor.insertSnippet(
-        'comprehensions = [${3:out_exp} for ${2:item} in ${1:list_object} if ${4:condition}]\n'
-      )
-      this.$refs.pythonEditor.focus()
-    },
-    dictComprehensions() {
-      this.$refs.pythonEditor.insertSnippet(
-        'comprehensions = {${4:key}:${5:value} for ${2:key}, ${3:value} in ${1:dict_object}.items() if ${6:condition}}\n'
-      )
-      this.$refs.pythonEditor.focus()
-    }
+/**
+ * 获取编辑器内容
+ */
+const getValue = () => {
+  return pythonEditorRef.value.getValue()
+}
+
+const insertVarsGetter = () => {
+  let selection = pythonEditorRef.value.getSelectionValue()
+  selection = selection || 'name'
+  pythonEditorRef.value.insertSnippet(`vars.get(\${1:${selection}})`)
+  pythonEditorRef.value.focus()
+}
+
+const insertPropsGetter = () => {
+  let selection = pythonEditorRef.value.getSelectionValue()
+  selection = selection || 'name'
+  pythonEditorRef.value.insertSnippet(`props.get(\${1:${selection}})`)
+  pythonEditorRef.value.focus()
+}
+
+const insertVarsSetter = () => {
+  let selection = pythonEditorRef.value.getSelectionValue()
+  selection = selection || 'value'
+  pythonEditorRef.value.insertSnippet(`vars.put('\${1:name}', \${2:${selection}})`)
+  pythonEditorRef.value.focus()
+}
+
+const insertPropsSetter = () => {
+  let selection = pythonEditorRef.value.getSelectionValue()
+  selection = selection || 'value'
+  pythonEditorRef.value.insertSnippet(`props.put('\${1:name}', \${2:${selection}})`)
+  pythonEditorRef.value.focus()
+}
+
+const insertResponseJson = () => {
+  pythonEditorRef.value.insert('res = result.json\n')
+  pythonEditorRef.value.focus()
+}
+
+const insertTableData = () => {
+  pythonEditorRef.value.insertSnippet("val = vars.get('rows')[0]['${1:colunmName}']\n")
+  pythonEditorRef.value.focus()
+}
+
+const insertLog = () => {
+  const selection = pythonEditorRef.value.getSelectionValue()
+  if (selection) {
+    pythonEditorRef.value.insert(`log.info(f'{${selection}=}')\n`)
+  } else {
+    pythonEditorRef.value.insertSnippet("log.info('${1:content}')\n")
   }
+  pythonEditorRef.value.focus()
+}
+
+const insertAssertion = () => {
+  pythonEditorRef.value.insertSnippet("assert ${1:condition}, '${2:message}'\n")
+  pythonEditorRef.value.focus()
+}
+
+const insertToJsonFN = () => {
+  let selection = pythonEditorRef.value.getSelectionValue()
+  selection = selection || 'object'
+  pythonEditorRef.value.insertSnippet(`to_json(\${1:${selection}})`)
+  pythonEditorRef.value.focus()
+}
+
+const insertFromJsonFN = () => {
+  let selection = pythonEditorRef.value.getSelectionValue()
+  selection = selection || 'json_str'
+  pythonEditorRef.value.insertSnippet(`from_json(\${1:${selection}})`)
+  pythonEditorRef.value.focus()
+}
+
+const insertForeachList = () => {
+  pythonEditorRef.value.insertSnippet('for ${2:item} in ${1:list_object}:\n    ${3:exp}')
+  pythonEditorRef.value.focus()
+}
+
+const insertForeachDict = () => {
+  pythonEditorRef.value.insertSnippet('for ${2:key}, ${3:value} in ${1:dic_object}.items():\n    ${4:exp}')
+  pythonEditorRef.value.focus()
+}
+
+const insertListComprehensions = () => {
+  pythonEditorRef.value.insertSnippet(
+    'comprehensions = [${3:out_exp} for ${2:item} in ${1:list_object} if ${4:condition}]\n'
+  )
+  pythonEditorRef.value.focus()
+}
+
+const insertDictComprehensions = () => {
+  pythonEditorRef.value.insertSnippet(
+    'comprehensions = {${4:key}:${5:value} for ${2:key}, ${3:value} in ${1:dict_object}.items() if ${6:condition}}\n'
+  )
+  pythonEditorRef.value.focus()
+}
+
+defineExpose({
+  setValue,
+  getValue
 })
 </script>
 
@@ -163,31 +184,33 @@ export default defineComponent({
   flex: 1;
 }
 
-.snippet-code-container {
+.right-container {
+  display: flex;
+  flex-direction: column;
   width: 140px;
   min-width: 140px;
   max-width: 140px;
   height: 300px;
-  padding-bottom: 20px;
 }
 
 .snippet-title {
   padding: 0 10px;
-  color: #606266;
   font-weight: bold;
+  color: #606266;
 }
 
 .snippet-code-list {
-  margin: 0;
   padding: 10px;
+  padding-bottom: 50px;
+  margin: 0;
 
   li {
+    padding-bottom: 5px;
+    font-family: inherit;
+    font-size: inherit;
+    color: #409eff;
     list-style-type: none;
     cursor: pointer;
-    color: #409eff;
-    font-size: inherit;
-    font-family: inherit;
-    padding-bottom: 5px;
   }
 }
 </style>

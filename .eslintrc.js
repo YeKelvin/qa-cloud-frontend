@@ -59,6 +59,7 @@ module.exports = {
     'no-useless-return': 'off',
     'no-multiple-empty-lines': ['warn', { max: 2 }], // 不允许多个空行
     'no-async-promise-executor': 'off',
+    'no-template-curly-in-string': 'off',
     'prefer-const': ['warn', { destructuring: 'all', ignoreReadBeforeAssign: true }],
     'prefer-template': 'error',
     'block-scoped-var': 'error',

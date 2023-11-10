@@ -67,7 +67,7 @@ export default function useEditor() {
     })
   }
 
-  const updateTabMetadata = (metadata) => {
+  const updateTabMeta = (metadata) => {
     pymeterStore.updateTab({
       editorNo: editorNo.value,
       metadata: metadata
@@ -152,7 +152,7 @@ export default function useEditor() {
     updateTab,
     closeTab,
     updateTabName,
-    updateTabMetadata,
+    updateTabMeta,
     expandParentNode,
     refreshElementTree
   }

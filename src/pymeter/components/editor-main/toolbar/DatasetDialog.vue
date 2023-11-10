@@ -12,20 +12,11 @@
               :name="item.datasetNo"
             />
           </el-tabs>
-          <el-button
-            style="padding-right: 10px; border-bottom: var(--el-border); border-radius: 0"
-            type="primary"
-            link
-            :icon="Edit"
-            @click="openVariableDatasetEditor()"
-          >
-            批量编辑
-          </el-button>
         </div>
       </template>
 
+      <!-- 筛选输入框 -->
       <el-input v-model="filterText" style="padding: 10px" placeholder="搜索变量" clearable />
-
       <!-- 滚动条 -->
       <el-scrollbar
         id="variables-view__scrollbar"
@@ -43,17 +34,17 @@
             <template #default="{ row }">
               <div
                 class="variable-item-wrapper"
-                @dblclick="copy(row.varName, { close: true })"
+                @dblclick="copy(row.variableName, { close: true })"
                 @mouseenter="row.hoverName = true"
                 @mouseleave="row.hoverName = false"
               >
-                <span>{{ row.varName }}</span>
+                <span>{{ row.variableName }}</span>
                 <el-button
                   v-show="row.hoverName"
                   type="primary"
                   link
                   :icon="CopyDocument"
-                  @click="copy(row.varName, { close: true })"
+                  @click="copy(row.variableName, { close: true })"
                 />
               </div>
             </template>
@@ -126,6 +117,9 @@
           </el-table-column>
         </el-table>
       </el-scrollbar>
+      <div class="flexbox-center">
+        <el-button type="primary" plain :icon="Edit" @click="openDatasetEditor()">批量编辑</el-button>
+      </div>
       <!-- 回到顶部按钮 -->
       <el-backtop
         target="#variables-view__scrollbar .el-scrollbar__wrap"
@@ -138,12 +132,11 @@
 
 <script setup>
 import * as VariablesService from '@/api/script/variables'
-import { ElMessage } from 'element-plus'
-import { Check, Close, Edit, CopyDocument } from '@element-plus/icons-vue'
-import { isEmpty } from 'lodash-es'
-import { isBlank } from '@/utils/string-util'
-import { usePyMeterStore } from '@/store/pymeter'
 import useClipboard from '@/composables/useClipboard'
+import { usePyMeterStore } from '@/store/pymeter'
+import { Check, Close, CopyDocument, Edit } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { isEmpty } from 'lodash-es'
 
 const { toClipboard } = useClipboard()
 const emit = defineEmits(['update:model-value'])
@@ -157,13 +150,13 @@ const backtop = reactive({
 })
 const filterText = ref('')
 const filterTableData = computed(() => {
-  if (isBlank(filterText.value)) {
+  if (isEmpty(filterText.value)) {
     return rows.value
   } else {
     const text = filterText.value.trim()
     return rows.value.filter(
       (item) =>
-        (item.varName && item.varName.indexOf(text) !== -1) ||
+        (item.variableName && item.variableName.indexOf(text) !== -1) ||
         (item.initialValue && item.initialValue.indexOf(text) !== -1) ||
         (item.currentValue && item.currentValue.indexOf(text) !== -1)
     )
@@ -219,7 +212,7 @@ const queryVariables = () => {
  * 更新变量的当前值
  */
 const updateCurrentValue = (row) => {
-  VariablesService.updateCurrentValue({ varNo: row.varNo, value: row.currentValue }).then(() => {
+  VariablesService.updateCurrentValue({ variableNo: row.variableNo, value: row.currentValue }).then(() => {
     queryVariables()
   })
 }
@@ -227,7 +220,7 @@ const updateCurrentValue = (row) => {
 /**
  * 打开变量集组件
  */
-const openVariableDatasetEditor = () => {
+const openDatasetEditor = () => {
   const dataset = pymeterStore.datasetList.find((item) => item.datasetNo === activeTabNo.value)
   if (!dataset) return
 
@@ -295,18 +288,18 @@ const openVariableDatasetEditor = () => {
   border-radius: 0 !important;
 }
 
+:deep(.el-tabs__content) {
+  display: none;
+}
+
 :deep(.el-dialog__body) {
   padding: 0;
-  padding-bottom: 20px;
+  padding-bottom: 10px;
 }
 
 :deep(.el-table td, .el-table th) {
   padding: 2px;
 }
-
-/* :deep(.el-table__inner-wrapper::before) {
-  height: 0;
-} */
 
 :deep(.el-empty__description) {
   display: none;

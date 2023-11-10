@@ -20,24 +20,13 @@
 
       <!-- 说明 -->
       <el-form-item label="内置变量：">
-        <span style="display: flex; flex: 1; justify-content: space-between">
-          <span style="display: flex; flex-wrap: wrap; align-items: center">
-            <el-tag style="margin-right: 10px" disable-transitions>log</el-tag>
-            <el-tag style="margin-right: 10px" disable-transitions>ctx</el-tag>
-            <el-tag style="margin-right: 10px" disable-transitions>vars</el-tag>
-            <el-tag style="margin-right: 10px" disable-transitions>props</el-tag>
-            <el-tag style="margin-right: 10px" disable-transitions>prev</el-tag>
-            <el-tag style="margin-right: 10px" disable-transitions>result</el-tag>
-          </span>
-          <!-- 运行按钮 -->
-          <el-button
-            type="primary"
-            style="width: 140px; min-width: 140px; max-width: 140px; margin-left: 10px"
-            @click="executeSampler(elementData.rootNo, elementData.elementNo)"
-          >
-            <SvgIcon icon-name="pymeter-send" style="margin-right: 5px" />
-            运 行
-          </el-button>
+        <span style="display: flex; flex-wrap: wrap; align-items: center">
+          <el-tag style="margin-right: 10px" disable-transitions>log</el-tag>
+          <el-tag style="margin-right: 10px" disable-transitions>ctx</el-tag>
+          <el-tag style="margin-right: 10px" disable-transitions>vars</el-tag>
+          <el-tag style="margin-right: 10px" disable-transitions>props</el-tag>
+          <el-tag style="margin-right: 10px" disable-transitions>prev</el-tag>
+          <el-tag style="margin-right: 10px" disable-transitions>result</el-tag>
         </span>
       </el-form-item>
 
@@ -47,15 +36,14 @@
         v-model="elementData.property.PythonSampler__script"
         type="PYTHON"
         phase="SAMPLER"
+        height="400px"
+        runnable
+        @run="executeSampler(elementData.rootNo, elementData.elementNo)"
       />
 
       <!-- 操作按钮 -->
       <template v-if="unsaved">
-        <el-affix target=".pymeter-component-container" position="bottom" :offset="60">
-          <div class="flexbox-center">
-            <el-button type="danger" @click="save()">保 存 ( {{ shortcutKeyName }} )</el-button>
-          </div>
-        </el-affix>
+        <SaveButton :tips="shortcutKeyName" @click="save()" />
       </template>
     </el-form>
   </div>
@@ -64,6 +52,7 @@
 <script setup>
 import * as ElementService from '@/api/script/element'
 import PythonEditor from '@/pymeter/components/editor-main/common/PythonEditor.vue'
+import SaveButton from '@/pymeter/components/editor-main/common/SaveButton.vue'
 import EditorEmits from '@/pymeter/composables/editor.emits'
 import EditorProps from '@/pymeter/composables/editor.props'
 import useEditor from '@/pymeter/composables/useEditor'
@@ -83,7 +72,7 @@ const {
   localkey,
   shortcutKeyName,
   updateTabName,
-  updateTabMetadata,
+  updateTabMeta,
   expandParentNode,
   refreshElementTree
 } = useEditor()
@@ -127,7 +116,8 @@ onMounted(async () => {
   if (unsaved.value) {
     queryOfflineData()
   } else {
-    if (creation.value) return // 新增模式无需读取任何数据
+    // 新增模式无需读取任何数据
+    if (creation.value) return
     // 查询后端数据
     queryBackendData()
   }
@@ -175,10 +165,10 @@ const createElement = async () => {
   const elementNo = response.result.elementNo
   // 更新元素编号
   elementData.value.elementNo = elementNo
+  // 更新 tab 元数据
+  updateTabMeta({ sn: elementNo, elementNo: elementNo })
   // 展开父节点
   expandParentNode()
-  // 更新 tab 元数据
-  updateTabMetadata({ sn: elementNo, elementNo: elementNo })
 }
 
 /**

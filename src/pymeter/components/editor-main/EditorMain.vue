@@ -18,7 +18,7 @@
       <el-scrollbar id="editor-main-scrollbar" style="width: 100%; height: 100%" wrap-style="overflow-x:auto;">
         <keep-alive ref="keepAliveRef">
           <component
-            :is="editors[activeTab.editorComponent]"
+            :is="components[activeTab.editorComponent]"
             :key="activeTab.editorNo"
             v-model:unsaved="activeTab.unsaved"
             v-model:metadata="activeTab.metadata"
@@ -49,7 +49,7 @@ import { usePyMeterStore } from '@/store/pymeter'
 import Toolbar from './toolbar/Toolbar.vue'
 import Mousetrap from 'mousetrap'
 
-const editors = reactive({
+const components = reactive({
   // collection
   TestCollection: markRaw(defineAsyncComponent(() => import('./collections/TestCollection.vue'))),
   // snippet
@@ -71,9 +71,9 @@ const editors = reactive({
   ForeachController: markRaw(defineAsyncComponent(() => import('./controllers/ForeachController.vue'))),
   TransactionController: markRaw(defineAsyncComponent(() => import('./controllers/TransactionController.vue'))),
   // config
-  DatabaseEngine: markRaw(defineAsyncComponent(() => import('./configs/DatabaseEngineConfig.vue'))),
-  VariableDataset: markRaw(defineAsyncComponent(() => import('./configs/VariableDatasetConfig.vue'))),
-  HttpHeadersTemplate: markRaw(defineAsyncComponent(() => import('./configs/HttpheaderTemplateConfig.vue'))),
+  DatabaseEngine: markRaw(defineAsyncComponent(() => import('./configs/DatabaseEngine.vue'))),
+  VariableDataset: markRaw(defineAsyncComponent(() => import('./configs/VariableDataset.vue'))),
+  HttpHeadersTemplate: markRaw(defineAsyncComponent(() => import('./configs/HttpheaderTemplate.vue'))),
   // timer
   ConstantTimer: markRaw(defineAsyncComponent(() => import('./timers/ConstantTimer.vue'))),
   // others
@@ -100,21 +100,21 @@ watch(keepAliveRef, (val) => {
   pymeterStore.keepAlive = val
 })
 
-onMounted(() => {
+onMounted(async () => {
   // 注册快捷键
   Mousetrap.bind('mod+k', () => pymeterStore.removeTab({ editorNo: pymeterStore.activeTabNo }))
   // 打开离线数据对应的tab
-  openOfflineTab()
+  await openOfflineTab()
 })
 onBeforeUnmount(() => {
   // 移除快捷键
   Mousetrap.unbind('mod+k')
 })
 
-const openOfflineTab = () => {
+const openOfflineTab = async () => {
   const pymeterDB = usePyMeterDB()
-  pymeterDB.offlineDB.iterate((offline, key) => {
-    pymeterStore.addTab({
+  await pymeterDB.offlineDB.iterate((offline, key) => {
+    pymeterStore.pushTab({
       editorNo: isEmpty(offline.meta.sn) ? key : offline.meta.sn,
       editorName: offline.meta.name,
       editorComponent: offline.meta.component,
@@ -122,6 +122,9 @@ const openOfflineTab = () => {
       metadata: offline.meta
     })
   })
+  if (pymeterStore.tabs.length > 0) {
+    pymeterStore.activeTabNo = pymeterStore.tabs[pymeterStore.tabs.length - 1].editorNo
+  }
 }
 </script>
 

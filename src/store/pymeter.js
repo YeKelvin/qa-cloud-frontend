@@ -74,6 +74,33 @@ export const usePyMeterStore = defineStore('pymeter', {
       const tab = this.tabs.filter((tab) => tab.editorNo === this.activeTabNo)
       return tab ? tab[0] : null
     },
+
+    pushTab({ editorNo, editorName, editorComponent, editorMode, metadata = {}, unsaved = false }) {
+      // 标识tab是否不存在
+      let nonexistent = true
+      // 查找是否存在相同编号的tab
+      const size = this.tabs.length
+      for (let i = 0; i < size; i++) {
+        const tab = this.tabs[i]
+        // 如果存在则激活tab
+        if (tab.editorNo === editorNo || tab.metadata.sn === editorNo) {
+          nonexistent = false
+          break
+        }
+      }
+      // 不存在则打开新的tab并激活
+      if (nonexistent) {
+        this.tabs.push({
+          editorNo,
+          editorName,
+          editorComponent,
+          editorMode,
+          closing: false,
+          unsaved,
+          metadata
+        })
+      }
+    },
     /**
      * 添加 tab
      */
