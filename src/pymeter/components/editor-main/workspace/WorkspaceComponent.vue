@@ -51,11 +51,10 @@
             </div>
           </template>
           <el-select
-            v-model="settings.running_strategy.reverse"
+            v-model="componentData.settingData.running_strategy.reverse"
             style="width: 300px"
             multiple
             clearable
-            :disabled="queryMode"
           >
             <el-option label="前置" value="PREV" />
             <el-option label="后置" value="POST" />
@@ -67,133 +66,169 @@
 
     <!-- 前置处理器 -->
     <div v-if="showPrevProcessorTab" class="tab-pane">
-      <PrevProcessorPane v-model="prevProcessorList" :edit-mode="editMode" owner-type="ALL" />
+      <PrevProcessorPane v-model="componentData.prevProcessorList" edit-mode="MODIFY" owner-type="ALL" />
     </div>
 
     <!-- 后置处理器 -->
     <div v-if="showPostProcessorTab" class="tab-pane">
-      <PostProcessorPane v-model="postProcessorList" :edit-mode="editMode" owner-type="ALL" />
+      <PostProcessorPane v-model="componentData.postProcessorList" edit-mode="MODIFY" owner-type="ALL" />
     </div>
 
     <!-- 测试断言器 -->
     <div v-if="showTestAssertionTab" class="tab-pane">
-      <TestAssertionPane v-model="testAssertionList" :edit-mode="editMode" owner-type="ALL" />
+      <TestAssertionPane v-model="componentData.testAssertionList" edit-mode="MODIFY" owner-type="ALL" />
     </div>
   </div>
 
   <!-- 操作按钮 -->
-  <el-affix target=".pymeter-component-container" position="bottom" :offset="60">
-    <div class="operation-button">
-      <template v-if="queryMode">
-        <el-button :icon="Edit" type="primary" @click="editNow()">编 辑</el-button>
-        <el-button :icon="Close" @click="closeTab()">关 闭</el-button>
-      </template>
-      <template v-else>
-        <el-button :icon="Check" type="danger" @click="save()">保 存</el-button>
-        <el-button :icon="Close" @click="closeTab()">关 闭</el-button>
-      </template>
-    </div>
-  </el-affix>
+  <template v-if="unsaved">
+    <SaveButton :tips="shortcutKeyName" @click="save()" />
+  </template>
 </template>
 
 <script setup>
 import * as ElementService from '@/api/script/element'
-import TestAssertionPane from '@/pymeter/components/editor-main/panes/AssertionPane.vue'
-import PostProcessorPane from '@/pymeter/components/editor-main/panes/PostProcessorPane.vue'
-import PrevProcessorPane from '@/pymeter/components/editor-main/panes/PrevProcessorPane.vue'
+import TestAssertionPane from '@/pymeter/components/editor-main/component-panes/TestAssertionPane.vue'
+import PostProcessorPane from '@/pymeter/components/editor-main/component-panes/PostProcessorPane.vue'
+import PrevProcessorPane from '@/pymeter/components/editor-main/component-panes/PrevProcessorPane.vue'
 import EditorProps from '@/pymeter/composables/editor.props'
+import EditorEmits from '@/pymeter/composables/editor.emits'
+import SaveButton from '@/pymeter/components/editor-main/common/SaveButton.vue'
 import useEditor from '@/pymeter/composables/useEditor'
-import { Check, Close, Edit, Warning } from '@element-plus/icons-vue'
+import { Warning } from '@element-plus/icons-vue'
+import { usePyMeterDB } from '@/store/pymeter-db'
+import { toHashCode } from '@/utils/object-util'
 import { ElMessage } from 'element-plus'
-import { isEmpty } from 'lodash-es'
+import { isEmpty, debounce } from 'lodash-es'
 
 const props = defineProps(EditorProps)
-const { editMode, queryMode, functions, editNow, setReadonly, closeTab } = useEditor(props)
-const workspaceNo = ref(props.editorNo)
-const settings = ref({
-  running_strategy: {
-    reverse: []
-  }
+const emit = defineEmits(EditorEmits)
+const { unsaved, metadata, localkey, shortcutKeyName } = useEditor()
+const offlineDB = usePyMeterDB().offlineDB
+const componentData = ref({
+  workspaceNo: props.metadata.workspaceNo,
+  settingData: {
+    running_strategy: {
+      reverse: []
+    }
+  },
+  configuratorList: [],
+  prevProcessorList: [],
+  postProcessorList: [],
+  testAssertionList: []
 })
-const componentList = ref([])
-const configuratorList = ref([])
-const prevProcessorList = ref([])
-const postProcessorList = ref([])
-const testAssertionList = ref([])
-const pendingSubmitComponentList = computed(() => {
-  // 添加 elementIndex 属性
-  configuratorList.value.forEach((item, index) => (item.elementIndex = index + 1))
-  prevProcessorList.value.forEach((item, index) => (item.elementIndex = index + 1))
-  postProcessorList.value.forEach((item, index) => (item.elementIndex = index + 1))
-  testAssertionList.value.forEach((item, index) => (item.elementIndex = index + 1))
-  return [...configuratorList.value, ...prevProcessorList.value, ...postProcessorList.value, ...testAssertionList.value]
-})
-
 const activeTabName = ref('SETTINGS')
 const showSettingsTab = computed(() => activeTabName.value === 'SETTINGS')
-const showConfiguratorTab = computed(() => activeTabName.value === 'CONFIGURATOR')
+// const showConfiguratorTab = computed(() => activeTabName.value === 'CONFIGURATOR')
 const showPrevProcessorTab = computed(() => activeTabName.value === 'PREV_PROCESSOR')
 const showPostProcessorTab = computed(() => activeTabName.value === 'POST_PROCESSOR')
 const showTestAssertionTab = computed(() => activeTabName.value === 'TEST_ASSERTION')
-const hiddenSettingsDot = computed(() => isEmpty(settings.value.running_strategy.reverse))
+const hiddenSettingsDot = computed(() => isEmpty(componentData.value.settingData.running_strategy.reverse))
 
-onMounted(() => {
-  query()
+watch(
+  componentData,
+  debounce((localdata) => {
+    console.log('watch')
+    // 如果前后端数据一致则代表数据未更改
+    if (metadata.value.hashcode === toHashCode(localdata)) {
+      unsaved.value = false
+      return
+    }
+    console.log('存离线')
+    // 标记数据未保存
+    unsaved.value = true
+    // 存储离线数据
+    offlineDB.setItem(localkey.value, JSON.parse(JSON.stringify({ data: localdata, meta: metadata.value })))
+  }, 500),
+  { deep: true, flush: 'sync' }
+)
+
+onMounted(async () => {
+  // 优先查询离线数据
+  if (unsaved.value) {
+    queryOfflineData()
+  } else {
+    // 查询后端数据
+    queryBackendData()
+  }
 })
 
-const query = () => {
-  // 查询空间组件
-  ElementService.queryWorkspaceComponents({ workspaceNo: workspaceNo.value }).then((response) => {
-    componentList.value = response.result
-    componentList.value.forEach((component) => {
-      if (component.elementType === 'PREV_PROCESSOR') {
-        prevProcessorList.value.push(component)
-      } else if (component.elementType === 'POST_PROCESSOR') {
-        postProcessorList.value.push(component)
-      } else if (component.elementType === 'ASSERTION') {
-        testAssertionList.value.push(component)
-      } else {
-        return
-      }
-    })
-    // 根据 elementIndex 排序
-    sortComponentList()
-  })
+/**
+ * 查询离线数据
+ */
+const queryOfflineData = async () => {
+  const offline = await offlineDB.getItem(localkey.value)
+  Object.assign(componentData.value, offline.data)
+  Object.assign(metadata.value, offline.meta)
+}
+
+/**
+ * 查询后端数据
+ */
+const queryBackendData = async () => {
+  let response = null
+  const prevList = []
+  const postList = []
+  const testList = []
   // 查询空间组件设置
-  ElementService.queryWorkspaceSettings({ workspaceNo: workspaceNo.value }).then((response) => {
-    const result = response.result
-    const reverse = result?.running_strategy?.reverse
-    if (!isEmpty(reverse)) {
-      settings.value.running_strategy.reverse = reverse
+  response = await ElementService.queryWorkspaceSettings({ workspaceNo: componentData.value.workspaceNo })
+  const reverse = response.result?.running_strategy?.reverse
+  if (!isEmpty(reverse)) {
+    componentData.value.settingData.running_strategy.reverse = reverse
+  }
+  // 查询空间组件
+  response = await ElementService.queryWorkspaceComponents({ workspaceNo: componentData.value.workspaceNo })
+  response.result.forEach((component) => {
+    if (component.elementType === 'PREV_PROCESSOR') {
+      prevList.push(component)
+      return
+    }
+    if (component.elementType === 'POST_PROCESSOR') {
+      postList.push(component)
+      return
+    }
+    if (component.elementType === 'ASSERTION') {
+      testList.push(component)
+      return
     }
   })
-}
-
-const sortComponentList = () => {
   // 根据 elementIndex 排序
-  prevProcessorList.value.sort((a, b) => a.elementIndex - b.elementIndex)
-  postProcessorList.value.sort((a, b) => a.elementIndex - b.elementIndex)
-  testAssertionList.value.sort((a, b) => a.elementIndex - b.elementIndex)
+  prevList.sort((a, b) => a.elementIndex - b.elementIndex)
+  postList.sort((a, b) => a.elementIndex - b.elementIndex)
+  testList.sort((a, b) => a.elementIndex - b.elementIndex)
+  // 更新页面数据
+  componentData.value.prevProcessorList = prevList
+  componentData.value.postProcessorList = postList
+  componentData.value.testAssertionList = testList
+  // 计算HashCode并存储
+  Object.assign(metadata.value, { hashcode: toHashCode(componentData.value) })
 }
 
+/**
+ * 提交数据
+ */
 const save = async () => {
   // 保存空间组件
   await ElementService.setWorkspaceComponents({
-    workspaceNo: workspaceNo.value,
-    componentList: pendingSubmitComponentList.value
+    workspaceNo: componentData.value.workspaceNo,
+    componentList: [
+      ...componentData.value.configuratorList.value,
+      ...componentData.value.prevProcessorList.value,
+      ...componentData.value.postProcessorList.value,
+      ...componentData.value.testAssertionList.value
+    ]
   })
   // 保存空间设置
   await ElementService.setWorkspaceSettings({
-    workspaceNo: workspaceNo.value,
-    settings: settings.value
+    workspaceNo: componentData.value.workspaceNo,
+    settings: componentData.value.settingData
   })
   ElMessage({ message: '设置成功', type: 'info', duration: 2 * 1000 })
-  setReadonly()
 }
 
-// 暂存函数，给 useEditor 使用
-functions.createFn = save
-functions.modifyFn = save
+defineExpose({
+  save
+})
 </script>
 
 <style lang="scss" scoped>

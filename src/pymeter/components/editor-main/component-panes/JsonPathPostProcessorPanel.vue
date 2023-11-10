@@ -4,11 +4,7 @@
     label-width="100px"
     inline-message
     scroll-to-error
-    style="width: 100%; margin-top: 20px"
-    :style="{
-      'padding-left': props.readonly ? '37px' : '69px',
-      'padding-right': props.readonly ? '71px' : '105px'
-    }"
+    style="width: 100%; padding-right: 105px; padding-left: 69px; margin-top: 20px"
     :model="elementProperty"
     :rules="rules"
   >
@@ -18,14 +14,12 @@
         v-model="elementProperty.JsonPathPostProcessor__variable_name"
         placeholder="存储提取值的变量名称"
         clearable
-        :readonly="props.readonly"
       >
         <template #prepend>
           <!-- 变量作用域 -->
           <el-select
             v-model="elementProperty.JsonPathPostProcessor__variable_scope"
             style="width: 100px; min-width: 100px"
-            :disabled="props.readonly"
           >
             <el-option label="局部变量" value="LOCAL" />
             <el-option label="全局变量" value="GLOBAL" />
@@ -36,12 +30,7 @@
 
     <!-- JsonPath表达式 -->
     <el-form-item label="JsonPath：" prop="JsonPathPostProcessor__jsonpath">
-      <el-input
-        v-model="elementProperty.JsonPathPostProcessor__jsonpath"
-        placeholder="$.aa.bb[0].cc"
-        clearable
-        :readonly="props.readonly"
-      />
+      <el-input v-model="elementProperty.JsonPathPostProcessor__jsonpath" placeholder="$.aa.bb[0].cc" clearable />
     </el-form-item>
 
     <!-- 列表随机 -->
@@ -53,7 +42,6 @@
         inline-prompt
         :active-icon="Check"
         :inactive-icon="Close"
-        :disabled="props.readonly"
       />
     </el-form-item>
 
@@ -63,7 +51,6 @@
         v-model="elementProperty.JsonPathPostProcessor__default_value"
         placeholder="提取失败时使用默认值"
         clearable
-        :readonly="props.readonly"
       />
     </el-form-item>
   </el-form>
@@ -73,7 +60,6 @@
 import { Check, Close } from '@element-plus/icons-vue'
 
 const props = defineProps({
-  readonly: Boolean,
   elementProperty: Object
 })
 const elementProperty = computed(() => props.elementProperty)

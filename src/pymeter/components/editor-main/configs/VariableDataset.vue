@@ -66,7 +66,6 @@ import EditorProps from '@/pymeter/composables/editor.props'
 import useEditor from '@/pymeter/composables/useEditor'
 import { usePyMeterDB } from '@/store/pymeter-db'
 import { toHashCode } from '@/utils/object-util'
-import { isBlankAll } from '@/utils/string-util'
 import { Check, Close, Delete } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { has, isEmpty, debounce } from 'lodash-es'
@@ -174,7 +173,7 @@ const newRow = () => {
  * 判断是否为空行
  */
 const isBlankRow = (row) => {
-  return isBlankAll(row.variableName, row.variableDesc, row.initialValue, row.currentValue)
+  return isEmpty(row.variableName) && isEmpty(row.initialValue) && isEmpty(row.currentValue)
 }
 
 /**
@@ -209,7 +208,7 @@ const comfirmDeleteVariables = async (...args) => {
 }
 
 /**
- * 保存数据至后端
+ * 提交数据
  */
 const save = async () => {
   // 手动清空的空行如果存在 variableNo 则加入待删除列表
@@ -231,7 +230,7 @@ const save = async () => {
     configData.value.deletionList = []
   }
 
-  // 修改变量
+  // 过滤空行
   const vars = configData.value.variableList.filter((row) => !isBlankRow(row))
   // 提交修改
   !isEmpty(vars) &&

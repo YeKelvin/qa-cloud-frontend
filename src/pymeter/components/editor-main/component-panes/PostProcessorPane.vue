@@ -1,6 +1,6 @@
 <template>
-  <div class="assertion-pane">
-    <template v-if="!isEmpty(assertionList)">
+  <div class="post-processor-pane">
+    <template v-if="!isEmpty(postProcessorList)">
       <!-- 操作按钮 -->
       <div style="padding-left: 30px; margin-bottom: 10px">
         <!-- 全部展开按钮 -->
@@ -18,19 +18,18 @@
       <!-- 可拖拽排序列表 -->
       <draggable
         ref="draggableRef"
-        class="list-group"
         tag="el-collapse"
+        class="list-group"
         handle=".move-handle"
         item-key="elementNo"
-        :disabled="queryMode"
-        :list="assertionList"
+        :list="postProcessorList"
         :component-data="{ modelValue: activeNames, 'onUpdate:modelValue': (val) => (activeNames = val) }"
       >
         <template #item="{ element, index }">
           <el-collapse-item :key="element.elementNo" :name="element.elementNo" class="list-group-item">
             <template #title>
               <!-- 排序图标 -->
-              <el-button v-show="!queryMode" class="move-handle" link @click.stop>
+              <el-button class="move-handle" link @click.stop>
                 <SvgIcon icon-name="pymeter-move" />
               </el-button>
               <!-- 组件序号 -->
@@ -42,24 +41,11 @@
                 {{ ElementClass[element.elementClass] }}
               </el-tag>
               <!-- 组件名称 -->
-              <el-input
-                v-model="element.elementName"
-                style="margin-right: 10px"
-                :readonly="queryMode"
-                @click.stop
-                @keypress.space.stop
-              />
+              <el-input v-model="element.elementName" style="margin-right: 10px" @click.stop @keypress.space.stop />
               <!-- 组件状态 -->
-              <el-switch
-                v-model="element.enabled"
-                style="margin-right: 10px"
-                size="small"
-                :disabled="queryMode"
-                @click.stop
-              />
+              <el-switch v-model="element.enabled" style="margin-right: 10px" size="small" @click.stop />
               <!-- 删除按钮 -->
               <el-button
-                v-show="!queryMode"
                 type="danger"
                 style="margin-right: 10px; font-size: 16px"
                 link
@@ -72,7 +58,6 @@
             <component
               :is="components[element.elementClass]"
               :key="element.elementNo"
-              :readonly="queryMode"
               :owner-type="ownerType"
               :element-no="element.elementNo"
               :element-name="element.elementName"
@@ -95,10 +80,11 @@
         :teleported="false"
       >
         <template #reference>
-          <el-button type="primary" link :icon="Plus" :disabled="queryMode">添加断言器</el-button>
+          <el-button type="primary" link :icon="Plus">添加处理器</el-button>
         </template>
-        <el-button link @click="addPythonAssertion">Python断言</el-button>
-        <el-button link @click="addJsonPathAssertion">Json断言</el-button>
+        <el-button link @click="addPythonPostProcessor">Python脚本</el-button>
+        <el-button link @click="addJsonPathPostProcessor">Json提取器</el-button>
+        <el-button link @click="addSleepPostProcessor">固定定时器</el-button>
       </el-popover>
     </div>
   </div>
@@ -111,18 +97,17 @@ import { Delete, Plus } from '@element-plus/icons-vue'
 import { ElementClass } from '@/api/enum'
 
 const components = {
-  PythonAssertion: markRaw(defineAsyncComponent(() => import('./PythonEditorPanel.vue'))),
-  JsonPathAssertion: markRaw(defineAsyncComponent(() => import('./JsonPathAssertionPanel.vue')))
+  PythonPostProcessor: markRaw(defineAsyncComponent(() => import('./PythonEditorPanel.vue'))),
+  JsonPathPostProcessor: markRaw(defineAsyncComponent(() => import('./JsonPathPostProcessorPanel.vue'))),
+  SleepPostProcessor: markRaw(defineAsyncComponent(() => import('./SleepPostProcessorPanel.vue')))
 }
 
-const attrs = useAttrs()
 const emit = defineEmits(['update:modelValue'])
+const attrs = useAttrs()
 const props = defineProps({
-  editMode: { type: String, default: 'QUERY' },
   ownerType: { type: String, required: true } // HTTP | PYTHON | SQL
 })
-const queryMode = computed(() => props.editMode === 'QUERY')
-const assertionList = computed({
+const postProcessorList = computed({
   get: () => attrs.modelValue,
   set: (val) => emit('update:modelValue', val)
 })
@@ -130,67 +115,91 @@ const activeNames = ref([])
 const menuVisible = ref(false)
 const draggableRef = ref()
 
+watch(postProcessorList, (list) => list.forEach((item, index) => (item.elementIndex = index + 1)))
+
 onMounted(() => {
-  if (assertionList.value.length === 1) {
-    activeNames.value.push(assertionList.value[0].elementNo)
+  if (postProcessorList.value.length === 1) {
+    activeNames.value.push(postProcessorList.value[0].elementNo)
   }
 })
 
 onBeforeUnmount(() => {
-  // sortable destroy 时会报错
+  // TODO: sortable destroy 时会报错
   // https://github.com/SortableJS/Sortable/issues/2201
   const draggable = draggableRef.value
   if (draggable?._sortable) draggable._sortable = undefined
 })
 
-const addPythonAssertion = () => {
+const addPythonPostProcessor = () => {
   // 生成临时元素编号
   const elementNo = Date.now().toString()
   // 使新组件处于打开状态
   activeNames.value.push(elementNo)
   // 添加新组件
-  assertionList.value.push({
+  postProcessorList.value.push({
     elementNo: elementNo,
-    elementName: 'Python断言',
-    elementType: 'ASSERTION',
-    elementClass: 'PythonAssertion',
+    elementName: 'Python脚本',
+    elementType: 'POST_PROCESSOR',
+    elementClass: 'PythonPostProcessor',
     enabled: true,
     property: {
-      PythonAssertion__script: ''
+      PythonPostProcessor__script: ''
     }
   })
-  // 关闭菜单
+  // 闭关菜单
   menuVisible.value = false
 }
 
-const addJsonPathAssertion = () => {
+const addJsonPathPostProcessor = () => {
   // 生成临时元素编号
   const elementNo = Date.now().toString()
   // 使新组件处于打开状态
   activeNames.value.push(elementNo)
   // 添加新组件
-  assertionList.value.push({
+  postProcessorList.value.push({
     elementNo: elementNo,
-    elementName: 'Json断言',
-    elementType: 'ASSERTION',
-    elementClass: 'JsonPathAssertion',
+    elementName: 'Json提取器',
+    elementType: 'POST_PROCESSOR',
+    elementClass: 'JsonPathPostProcessor',
     enabled: true,
     property: {
-      JsonPathAssertion__jsonpath: '',
-      JsonPathAssertion__expected_value: '',
-      JsonPathAssertion__operator: 'EQUAL'
+      JsonPathPostProcessor__variable_scope: 'LOCAL',
+      JsonPathPostProcessor__variable_name: '',
+      JsonPathPostProcessor__jsonpath: '',
+      JsonPathPostProcessor__list_random: 'false',
+      JsonPathPostProcessor__default_value: ''
     }
   })
-  // 关闭菜单
+  // 闭关菜单
+  menuVisible.value = false
+}
+
+const addSleepPostProcessor = () => {
+  // 生成临时元素编号
+  const elementNo = Date.now().toString()
+  // 使新组件处于打开状态
+  activeNames.value.push(elementNo)
+  // 添加新组件
+  postProcessorList.value.push({
+    elementNo: elementNo,
+    elementName: '固定定时器',
+    elementType: 'POST_PROCESSOR',
+    elementClass: 'SleepPostProcessor',
+    enabled: true,
+    property: {
+      SleepPostProcessor__delay: '0'
+    }
+  })
+  // 闭关菜单
   menuVisible.value = false
 }
 
 const remove = (index) => {
-  assertionList.value.splice(index, 1)
+  postProcessorList.value.splice(index, 1)
 }
 
 const expandAll = () => {
-  activeNames.value = assertionList.value.map((item) => item.elementNo)
+  activeNames.value = postProcessorList.value.map((item) => item.elementNo)
 }
 
 const collapseAll = () => {
@@ -199,7 +208,7 @@ const collapseAll = () => {
 </script>
 
 <style lang="scss" scoped>
-.assertion-pane {
+.post-processor-pane {
   margin-bottom: 20px;
 }
 

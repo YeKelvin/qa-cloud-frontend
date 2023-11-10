@@ -4,17 +4,13 @@
     label-width="100px"
     inline-message
     scroll-to-error
-    style="width: 100%; margin-top: 20px"
-    :style="{
-      'padding-left': props.readonly ? '35px' : '69px',
-      'padding-right': props.readonly ? '71px' : '105px'
-    }"
+    style="width: 100%; padding-right: 105px; margin-top: 20; pxpadding-left: 69px"
     :model="elementProperty"
     :rules="rules"
   >
     <!-- 延迟时间 -->
     <el-form-item label="延迟时间：" prop="SleepPrevProcessor__delay">
-      <el-input v-model="elementProperty.SleepPrevProcessor__delay" clearable :readonly="props.readonly">
+      <el-input v-model="elementProperty.SleepPrevProcessor__delay" clearable>
         <template #append>ms</template>
       </el-input>
     </el-form-item>
@@ -23,7 +19,6 @@
 
 <script setup>
 const props = defineProps({
-  readonly: Boolean,
   elementProperty: Object
 })
 const elementProperty = computed(() => props.elementProperty)

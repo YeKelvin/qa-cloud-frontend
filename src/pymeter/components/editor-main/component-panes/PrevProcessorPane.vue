@@ -18,11 +18,10 @@
       <!-- 可拖拽排序列表 -->
       <draggable
         ref="draggableRef"
-        class="list-group"
         tag="el-collapse"
+        class="list-group"
         handle=".move-handle"
         item-key="elementNo"
-        :disabled="queryMode"
         :list="prevProcessorList"
         :component-data="{ modelValue: activeNames, 'onUpdate:modelValue': (val) => (activeNames = val) }"
       >
@@ -30,7 +29,7 @@
           <el-collapse-item :key="element.elementNo" :name="element.elementNo" class="list-group-item">
             <template #title>
               <!-- 排序图标 -->
-              <el-button v-show="!queryMode" class="move-handle" link @click.stop>
+              <el-button class="move-handle" link @click.stop>
                 <SvgIcon icon-name="pymeter-move" />
               </el-button>
               <!-- 组件序号 -->
@@ -42,24 +41,11 @@
                 {{ ElementClass[element.elementClass] }}
               </el-tag>
               <!-- 组件名称 -->
-              <el-input
-                v-model="element.elementName"
-                style="margin-right: 10px"
-                :readonly="queryMode"
-                @click.stop
-                @keypress.space.stop
-              />
+              <el-input v-model="element.elementName" style="margin-right: 10px" @click.stop @keypress.space.stop />
               <!-- 组件状态 -->
-              <el-switch
-                v-model="element.enabled"
-                style="margin-right: 10px"
-                size="small"
-                :disabled="queryMode"
-                @click.stop
-              />
+              <el-switch v-model="element.enabled" style="margin-right: 10px" size="small" @click.stop />
               <!-- 删除按钮 -->
               <el-button
-                v-show="!queryMode"
                 type="danger"
                 style="margin-right: 10px; font-size: 16px"
                 link
@@ -72,7 +58,6 @@
             <component
               :is="components[element.elementClass]"
               :key="element.elementNo"
-              :readonly="queryMode"
               :owner-type="ownerType"
               :element-no="element.elementNo"
               :element-name="element.elementName"
@@ -95,7 +80,7 @@
         :teleported="false"
       >
         <template #reference>
-          <el-button type="primary" link :icon="Plus" :disabled="queryMode">添加处理器</el-button>
+          <el-button type="primary" link :icon="Plus">添加处理器</el-button>
         </template>
         <el-button link @click="addPythonPrevProcessor">Python脚本</el-button>
         <el-button link @click="addSleepPrevProcessor">固定定时器</el-button>
@@ -116,13 +101,10 @@ const components = {
 }
 
 const emit = defineEmits(['update:modelValue'])
+const attrs = useAttrs()
 const props = defineProps({
-  editMode: { type: String, default: 'QUERY' },
   ownerType: { type: String, required: true } // ALL | HTTP | PYTHON | SQL
 })
-
-const attrs = useAttrs()
-const queryMode = computed(() => props.editMode === 'QUERY')
 const prevProcessorList = computed({
   get: () => attrs.modelValue,
   set: (val) => emit('update:modelValue', val)
@@ -130,6 +112,8 @@ const prevProcessorList = computed({
 const activeNames = ref([])
 const menuVisible = ref(false)
 const draggableRef = ref()
+
+watch(prevProcessorList, (list) => list.forEach((item, index) => (item.elementIndex = index + 1)))
 
 onMounted(() => {
   if (prevProcessorList.value.length === 1) {

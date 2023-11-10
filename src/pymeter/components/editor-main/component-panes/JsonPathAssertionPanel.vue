@@ -4,27 +4,18 @@
     label-width="100px"
     inline-message
     scroll-to-error
-    style="width: 100%; margin-top: 20px"
-    :style="{
-      'padding-left': props.readonly ? '24px' : '56px',
-      'padding-right': props.readonly ? '71px' : '104px'
-    }"
+    style="width: 100%; padding-right: 104px; padding-left: 56px; margin-top: 20px"
     :model="elementProperty"
     :rules="rules"
   >
     <!-- JsonPath表达式 -->
     <el-form-item label="JsonPath：" prop="JsonPathAssertion__jsonpath">
-      <el-input
-        v-model="elementProperty.JsonPathAssertion__jsonpath"
-        placeholder="$.aa.bb[0].cc"
-        clearable
-        :readonly="props.readonly"
-      />
+      <el-input v-model="elementProperty.JsonPathAssertion__jsonpath" placeholder="$.aa.bb[0].cc" clearable />
     </el-form-item>
 
     <!-- 判断类型 -->
     <el-form-item label="判断类型：" prop="JsonPathAssertion__operator">
-      <el-select v-model="elementProperty.JsonPathAssertion__operator" :disabled="props.readonly" style="width: 100%">
+      <el-select v-model="elementProperty.JsonPathAssertion__operator" style="width: 100%">
         <el-option label="等于" value="EQUAL" />
         <el-option label="不等于" value="NOT_EQUAL" />
         <el-option label="大于" value="GREATER_THAN" />
@@ -53,19 +44,13 @@
       label="期望值："
       prop="JsonPathAssertion__expected_value"
     >
-      <el-input
-        v-model="elementProperty.JsonPathAssertion__expected_value"
-        placeholder="期望值"
-        clearable
-        :readonly="props.readonly"
-      />
+      <el-input v-model="elementProperty.JsonPathAssertion__expected_value" placeholder="期望值" clearable />
     </el-form-item>
   </el-form>
 </template>
 
 <script setup>
 const props = defineProps({
-  readonly: Boolean,
   elementProperty: Object
 })
 const elementProperty = computed(() => props.elementProperty)

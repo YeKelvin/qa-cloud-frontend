@@ -4,293 +4,184 @@
     <div class="header-container">
       <!-- 搜索 -->
       <span style="display: inline-flex; flex: 1">
-        <el-input v-show="queryMode" v-model="filterText" placeholder="搜索请求头" clearable />
+        <el-input v-model="filteredText" placeholder="搜索请求头" clearable />
       </span>
     </div>
 
     <!-- 请求头表格 -->
-    <el-table ref="eltableRef" :data="filterTableData" fit stripe highlight-current-row>
+    <el-table ref="eltableRef" :data="filteredData" style="margin-bottom: 20px" fit stripe highlight-current-row>
       <!-- 数据为空时显示添加按钮 -->
       <template #empty><el-empty /></template>
 
       <!-- 是否启用 -->
-      <el-table-column v-if="queryMode" label="启用" align="center" width="60" min-width="60">
+      <el-table-column label="启用" align="center" width="80" min-width="80">
         <template #default="{ row }">
-          <el-checkbox v-model="row.enabled" @click.prevent="modifyHeaderState(row)" />
+          <el-switch v-model="row.enabled" size="small" :active-icon="Check" :inactive-icon="Close" inline-prompt />
         </template>
       </el-table-column>
 
       <!-- 请求头名称 -->
       <el-table-column label="请求头名称">
         <template #default="{ row }">
-          <SimpleTextarea v-if="!queryMode || row.editing" v-model="row.headerName" />
-          <span v-else>{{ row.headerName }}</span>
+          <SimpleTextarea v-model="row.headerName" />
         </template>
       </el-table-column>
 
       <!-- 请求头的值 -->
       <el-table-column label="请求头内容">
         <template #default="{ row }">
-          <SimpleTextarea v-if="!queryMode || row.editing" v-model="row.headerValue" />
-          <span v-else>{{ row.headerValue }}</span>
+          <SimpleTextarea v-model="row.headerValue" />
         </template>
       </el-table-column>
 
       <!-- 操作列 -->
-      <el-table-column fixed="right" align="center" width="80" min-width="80">
-        <!-- 操作列表头，新增请求头按钮 -->
-        <template #header>
-          <el-button v-show="queryMode" type="primary" link :icon="Plus" @click="newRowAndScroll()">添加</el-button>
-        </template>
-        <!-- 操作按钮 -->
+      <el-table-column label="操作" fixed="right" align="center" width="80" min-width="80">
         <template #default="{ row, $index }">
-          <!-- 编辑或新增模式下可用的按钮 -->
           <!-- 删除请求头按钮 -->
-          <el-button v-if="!queryMode" type="primary" link :icon="Close" @click="cancelHeader(row, $index)" />
-          <!-- 查询模式下可用的按钮 -->
-          <template v-if="queryMode">
-            <template v-if="row.editing">
-              <!-- 单行提交按钮 -->
-              <el-button type="danger" link :icon="Check" @click="submitHeader(row)" />
-              <!-- 单行取消按钮 -->
-              <el-button type="primary" link :icon="Close" @click="queryHeaders()" />
-            </template>
-            <template v-else>
-              <!-- 单行编辑按钮 -->
-              <el-button type="primary" link :icon="Edit" @click="row.editing = true" />
-              <!-- 删除请求头按钮 -->
-              <el-button type="primary" link :icon="Delete" @click="removeHeader(row)" />
-            </template>
-          </template>
+          <el-button type="primary" link :icon="Delete" @click="removeHeader(row, $index)" />
         </template>
       </el-table-column>
     </el-table>
 
-    <div v-show="queryMode && !isEmpty(rows)" style="padding: 10px 20px">
-      <el-button type="primary" link :icon="Plus" @click="newEditingRow">添加</el-button>
-    </div>
-
-    <!-- 底部操作按钮 -->
-    <div style="display: flex; justify-content: center; margin-top: 20px">
-      <template v-if="queryMode">
-        <el-button type="primary" :icon="Edit" @click="batchEditNow()">批量编辑</el-button>
-        <el-button :icon="Close" @click="closeTab()">关闭</el-button>
-      </template>
-      <template v-else>
-        <el-button type="danger" :icon="Check" @click="saveHeaders()">保存</el-button>
-        <el-button :icon="Close" @click="cancelEdit()">取消</el-button>
-      </template>
-    </div>
+    <!-- 操作按钮 -->
+    <template v-if="unsaved">
+      <SaveButton :tips="shortcutKeyName" @click="save()" />
+    </template>
   </div>
 </template>
 
 <script setup>
-import * as HttpHeadersService from '@/api/script/headers'
-import { ElMessage, ElMessageBox } from 'element-plus'
-import { Check, Close, Delete, Edit, Plus } from '@element-plus/icons-vue'
-import { isEmpty, has } from 'lodash-es'
-import { isBlank, isBlankAll, isNotBlank } from '@/utils/string-util'
-import { usePyMeterStore } from '@/store/pymeter'
-import useEditor from '@/pymeter/composables/useEditor'
-import EditorProps from '@/pymeter/composables/editor.props'
+import * as HttpHeaderService from '@/api/script/headers'
 import SimpleTextarea from '@/components/simple-textarea/SimpleTextarea.vue'
+import SaveButton from '@/pymeter/components/editor-main/common/SaveButton.vue'
+import EditorEmits from '@/pymeter/composables/editor.emits'
+import EditorProps from '@/pymeter/composables/editor.props'
+import useEditor from '@/pymeter/composables/useEditor'
+import { usePyMeterDB } from '@/store/pymeter-db'
+import { toHashCode } from '@/utils/object-util'
+import { Check, Close, Delete } from '@element-plus/icons-vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { has, isEmpty, debounce } from 'lodash-es'
 
 const props = defineProps(EditorProps)
-const pymeterStore = usePyMeterStore()
-const { queryMode, createMode, functions, editNow, setReadonly, closeTab } = useEditor(props)
+const emit = defineEmits(EditorEmits)
+const { unsaved, metadata, localkey, shortcutKeyName } = useEditor()
+const offlineDB = usePyMeterDB().offlineDB
+const configData = ref({
+  templateNo: props.metadata.templateNo,
+  headerList: [],
+  deletionList: []
+})
 const eltableRef = ref()
-const templateNo = ref(props.editorNo)
-const rows = ref([])
-const pendingDeletionList = ref([])
-const filterText = ref('')
-const filterTableData = computed(() => {
-  const filterKey = filterText.value
-  if (isBlank(filterKey)) {
-    return rows.value
-  } else {
-    return rows.value.filter(
-      (item) =>
-        (item.headerName && item.headerName.indexOf(filterKey.trim()) !== -1) ||
-        (item.headerValue && item.headerValue.indexOf(filterKey.trim()) !== -1) ||
-        (item.headerDesc && item.headerDesc.indexOf(filterText.value.trim()) !== -1)
-    )
-  }
+const filteredText = ref('')
+const filteredData = computed(() => {
+  const filterKey = filteredText.value
+  if (isEmpty(filterKey)) return configData.value.headerList
+  return configData.value.headerList.filter(
+    (item) =>
+      (item.headerName && item.headerName.indexOf(filterKey.trim()) !== -1) ||
+      (item.headerValue && item.headerValue.indexOf(filterKey.trim()) !== -1)
+  )
 })
 
-watch(queryMode, () => {
-  // 动态显隐表格列后重新渲染表格
-  nextTick(() => {
-    eltableRef.value.doLayout()
-  })
-  // 表格没有数据时自动添加一行
-  autoNewRow()
-})
+watch(
+  configData,
+  debounce((localdata) => {
+    console.log('watch')
+    // 底部自动新加一行
+    autoNewRow()
+    // 如果前后端数据一致则代表数据未更改
+    if (metadata.value.hashcode === toHashCode(localdata)) {
+      unsaved.value = false
+      return
+    }
+    console.log('存离线')
+    // 标记数据未保存
+    unsaved.value = true
+    // 存储离线数据
+    offlineDB.setItem(localkey.value, JSON.parse(JSON.stringify({ data: localdata, meta: metadata.value })))
+  }, 250),
+  { deep: true, flush: 'sync' }
+)
 
-watch(rows, () => autoNewRow(), { deep: true })
-
-onMounted(() => {
-  if (createMode.value) {
-    newRow()
+onMounted(async () => {
+  // 优先查询离线数据
+  if (unsaved.value) {
+    queryOfflineData()
   } else {
-    // 查询或编辑模式时，先拉取变量信息
-    queryHeaders()
+    // 查询后端数据
+    queryBackendData()
   }
 })
 
 /**
- * 切换为批量编辑模式
+ * 查询离线数据
  */
-const batchEditNow = () => {
-  filterText.value = ''
-  editNow()
+const queryOfflineData = async () => {
+  const offline = await offlineDB.getItem(localkey.value)
+  Object.assign(configData.value, offline.data)
+  Object.assign(metadata.value, offline.meta)
+}
+
+/**
+ * 查询后端数据
+ */
+const queryBackendData = async () => {
+  const response = await HttpHeaderService.queryHttpHeadersByTemplate({ templateNo: configData.value.templateNo })
+  const backendData = response.result
+  backendData.push({ headerName: '', headerDesc: '', headerValue: '', enabled: true })
+  configData.value.headerList = backendData
+  configData.value.deletionList = []
+  Object.assign(metadata.value, { hashcode: toHashCode(configData.value) })
 }
 
 /**
  * 最后一行不为空时，自动添加一行
  */
 const autoNewRow = () => {
-  if (queryMode.value) return
-  if (isEmpty(rows.value)) {
+  const headerList = configData.value.headerList
+  if (isEmpty(headerList)) {
     newRow()
   } else {
-    const lastRow = rows.value[rows.value.length - 1]
+    const lastRow = headerList[headerList.length - 1]
     if (!isBlankRow(lastRow)) newRow()
   }
-}
-
-/**
- * 查询模板下的所有请求头
- */
-const queryHeaders = () => {
-  HttpHeadersService.queryHttpHeadersByTemplate({ templateNo: templateNo.value }).then((response) => {
-    rows.value = response.result
-    pendingDeletionList.value = []
-  })
 }
 
 /**
  * 新增一行空行
  */
 const newRow = () => {
-  rows.value.push({ headerName: '', headerValue: '', headerDesc: '', enabled: true })
-}
-
-const newEditingRow = () => {
-  rows.value.push({ headerName: '', headerValue: '', headerDesc: '', enabled: true, editing: true })
-}
-
-/**
- * 新增一行空行并滚动至底部
- */
-const newRowAndScroll = () => {
-  rows.value.push({ headerName: '', headerValue: '', headerDesc: '', enabled: true, editing: true })
-  scrollToBottom()
+  configData.value.headerList.push({ headerName: '', headerDesc: '', headerValue: '', enabled: true })
 }
 
 /**
  * 判断是否为空行
  */
 const isBlankRow = (row) => {
-  return isBlankAll(row.headerName, row.headerValue, row.headerDesc)
+  return isEmpty(row.headerName) && isEmpty(row.headerValue)
 }
 
 /**
- * 滚动至底部
+ * 删除请求头
  */
-const scrollToBottom = () => {
-  const scrollbar = document.querySelector('#editor-main-scrollbar > .el-scrollbar__wrap')
-  scrollbar.scrollTop = scrollbar.scrollHeight
-}
-
-/**
- * 取消编辑
- */
-const cancelEdit = () => {
-  queryHeaders()
-  setReadonly()
-}
-
-/**
- * 根据索引号删除行
- */
-const cancelHeader = (row, index) => {
+const removeHeader = (row, index) => {
   if (has(row, 'headerNo')) {
     // 存在 headerNo 时，添加至待删除列表中，等待提交时调用批量删除请求头接口
-    pendingDeletionList.value.push(row)
-    rows.value.splice(index, 1)
+    configData.value.deletionList.push(row)
+    configData.value.headerList.splice(index, 1)
   } else {
     // 没有 headerNo 时，代表数据库中没有该请求头，直接移出提交列表
-    rows.value.splice(index, 1)
+    configData.value.headerList.splice(index, 1)
   }
 }
 
 /**
- * 新增或修改单个请求头
+ * 删除变量二次确认
  */
-const submitHeader = (row) => {
-  if (isBlank(row.headerName)) {
-    ElMessage({ message: '请求头不允许为空', type: 'error', duration: 2 * 1000 })
-    return
-  }
-
-  if (isNotBlank(row.headerNo)) {
-    // 修改请求头
-    HttpHeadersService.modifyHttpHeader({
-      headerNo: row.headerNo,
-      headerName: row.headerName,
-      headerValue: row.headerValue,
-      headerDesc: row.headerDesc
-    }).then(() => {
-      ElMessage({ message: '修改成功', type: 'info', duration: 2 * 1000 })
-      queryHeaders()
-    })
-  } else {
-    // 新增请求头
-    HttpHeadersService.createHttpHeader({
-      templateNo: templateNo.value,
-      headerName: row.headerName,
-      headerValue: row.headerValue,
-      headerDesc: row.headerDesc
-    }).then(() => {
-      // 成功提示
-      ElMessage({ message: '新增成功', type: 'info', duration: 2 * 1000 })
-      // 重新查询请求头
-      queryHeaders()
-    })
-  }
-}
-
-/**
- * 根据索引号删除行
- */
-const removeHeader = async (row) => {
-  // 二次确认
-  const cancelled = await popupDeletionComfirm(row.headerName)
-  if (cancelled) return
-  // 删除请求头
-  await HttpHeadersService.deleteHttpHeader({ headerNo: row.headerNo })
-  // 删除请求头所在行数据
-  const index = rows.value.findIndex((item) => item.headerName === row.headerName)
-  rows.value.splice(index, 1)
-}
-
-/**
- * 修改请求头启用状态
- */
-const modifyHeaderState = (row) => {
-  // 切换请求头状态
-  row.enabled = !row.enabled
-  // 调用接口变更请求头状态
-  if (row.enabled) {
-    HttpHeadersService.enableHttpHeader({ headerNo: row.headerNo })
-  } else {
-    HttpHeadersService.disableHttpHeader({ headerNo: row.headerNo })
-  }
-}
-
-const popupDeletionComfirm = async (...args) => {
-  const msgList = [h('p', null, '确定删除以下请求头吗？')]
-  args.forEach((item) => msgList.push(h('p', null, item)))
+const comfirmDeleteHeaders = async (...args) => {
+  const msgList = [h('p', null, '是否确定删除以下请求头?')]
+  args.forEach((item) => msgList.push(h('b', null, item)))
   return await ElMessageBox.confirm(null, {
     title: '警告',
     message: h('div', null, msgList),
@@ -303,58 +194,49 @@ const popupDeletionComfirm = async (...args) => {
 }
 
 /**
- * 保存编辑后的请求头
+ * 提交数据
  */
-const saveHeaders = async () => {
+const save = async () => {
   // 手动清空的空行如果存在 headerNo 则加入待删除列表
-  rows.value
+  configData.value.headerList
     .filter((row) => isBlankRow(row))
-    .forEach((row) => {
-      if (has(row, 'headerNo')) {
-        pendingDeletionList.value.push(row)
-      }
-    })
+    .forEach((row) => has(row, 'headerNo') && configData.value.deletionList.push(row))
 
   // 批量删除变量
-  if (!isEmpty(pendingDeletionList.value)) {
+  if (!isEmpty(configData.value.deletionList)) {
     // 二次确认
-    const cancelled = await popupDeletionComfirm(...pendingDeletionList.value.map((item) => item.headerName))
+    const cancelled = await comfirmDeleteHeaders(...configData.value.deletionList.map((item) => item.headerName))
     if (cancelled) return
-    await HttpHeadersService.deleteHttpHeaders({
-      templateNo: templateNo.value,
-      headers: pendingDeletionList.value.map((item) => item.headerNo)
+    // 提交删除
+    await HttpHeaderService.deleteHttpHeaders({
+      templateNo: configData.value.templateNo,
+      headers: configData.value.deletionList.map((item) => item.headerNo)
     })
+    // 清空待删除列表
+    configData.value.deletionList = []
   }
 
-  // 批量更新请求头
-  const headers = rows.value.filter((row) => !isBlankRow(row))
-  await HttpHeadersService.modifyHttpHeaders({
-    templateNo: templateNo.value,
-    headerList: headers
-  })
-
+  // 过滤空行
+  const headers = configData.value.headerList.filter((row) => !isBlankRow(row))
+  // 提交修改
+  !isEmpty(headers) &&
+    (await HttpHeaderService.modifyHttpHeaders({ templateNo: configData.value.templateNo, headerList: headers }))
+  // 标记数据已保存
+  unsaved.value = false
+  // 保存成功后移除离线数据
+  offlineDB.removeItem(localkey.value)
+  // 重新查询变量
+  queryBackendData()
   // 成功提示
-  ElMessage({ message: '编辑成功', type: 'info', duration: 2 * 1000 })
-  // 重新查询请求头
-  queryHeaders()
-  // 切换为只读模式
-  setReadonly()
-  // 重新查询列表
-  pymeterStore.queryHttpheaderTemplateAll()
+  ElMessage({ message: '保存成功', type: 'info', duration: 2 * 1000 })
 }
 
-// 暂存函数，给 useEditor 使用
-functions.createFn = saveHeaders
-functions.modifyFn = saveHeaders
+defineExpose({
+  save
+})
 </script>
 
 <style lang="scss" scoped>
-span {
-  text-overflow: ellipsis;
-  letter-spacing: 0.6px;
-  white-space: pre-wrap;
-}
-
 .header-container {
   display: flex;
   align-items: center;

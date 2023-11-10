@@ -149,7 +149,7 @@
 
       <!-- 测试断言器 -->
       <div v-if="showTestAssertionTab" class="tab-pane">
-        <AssertionPane v-model="testAssertionComponentList" :edit-mode="editMode" owner-type="ALL" />
+        <TestAssertionPane v-model="testAssertionComponentList" :edit-mode="editMode" owner-type="ALL" />
       </div>
 
       <!-- HTTP配置 -->
@@ -285,9 +285,9 @@
 import * as ElementService from '@/api/script/element'
 import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
 import ComponentFilter from '@/pymeter/components/editor-main/common/ComponentFilter.vue'
-import AssertionPane from '@/pymeter/components/editor-main/panes/AssertionPane.vue'
-import PostProcessorPane from '@/pymeter/components/editor-main/panes/PostProcessorPane.vue'
-import PrevProcessorPane from '@/pymeter/components/editor-main/panes/PrevProcessorPane.vue'
+import TestAssertionPane from '@/pymeter/components/editor-main/component-panes/TestAssertionPane.vue'
+import PostProcessorPane from '@/pymeter/components/editor-main/component-panes/PostProcessorPane.vue'
+import PrevProcessorPane from '@/pymeter/components/editor-main/component-panes/PrevProcessorPane.vue'
 import EditorProps from '@/pymeter/composables/editor.props'
 import useEditor from '@/pymeter/composables/useEditor'
 import useRunnableElement from '@/pymeter/composables/useRunnableElement'
