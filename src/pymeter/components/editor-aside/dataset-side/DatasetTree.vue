@@ -306,8 +306,7 @@ const handleNodeClick = (data) => {
     metadata: {
       sn: data.datasetNo,
       name: data.datasetName,
-      component: 'VariableDataset',
-      datasetNo: data.datasetNo
+      component: 'VariableDataset'
     }
   })
 }

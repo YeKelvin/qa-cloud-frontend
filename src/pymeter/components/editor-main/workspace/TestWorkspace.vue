@@ -8,22 +8,22 @@
       </el-tab-pane>
       <!-- <el-tab-pane name="CONFIGURATOR">
         <template #label>
-          <el-badge :hidden="isEmpty(configuratorList)" type="success" is-dot>配置器</el-badge>
+          <el-badge :hidden="isEmpty(elementData.elementCompos.confList)" type="success" is-dot>配置器</el-badge>
         </template>
       </el-tab-pane> -->
       <el-tab-pane name="PREV_PROCESSOR">
         <template #label>
-          <el-badge :hidden="isEmpty(prevProcessorList)" type="success" is-dot>前置处理器</el-badge>
+          <el-badge :hidden="isEmpty(elementData.elementCompos.prevList)" type="success" is-dot>前置处理器</el-badge>
         </template>
       </el-tab-pane>
       <el-tab-pane name="POST_PROCESSOR">
         <template #label>
-          <el-badge :hidden="isEmpty(postProcessorList)" type="success" is-dot>后置处理器</el-badge>
+          <el-badge :hidden="isEmpty(elementData.elementCompos.postList)" type="success" is-dot>后置处理器</el-badge>
         </template>
       </el-tab-pane>
       <el-tab-pane name="TEST_ASSERTION">
         <template #label>
-          <el-badge :hidden="isEmpty(testAssertionList)" type="success" is-dot>测试断言器</el-badge>
+          <el-badge :hidden="isEmpty(elementData.elementCompos.testList)" type="success" is-dot>测试断言器</el-badge>
         </template>
       </el-tab-pane>
     </el-tabs>
@@ -31,13 +31,13 @@
     <div v-if="showSettingsTab" class="tab-pane">
       <el-form label-position="right" label-width="140px">
         <!-- 倒序执行 -->
-        <el-form-item>
+        <el-form-item style="padding-top: 10px">
           <!-- label -->
           <template #label>
             <div style="display: flex">
               <span>倒序执行组件：</span>
               <!-- tips -->
-              <el-tooltip placement="right" effect="light">
+              <el-tooltip placement="bottom-start" effect="light">
                 <template #content>
                   <div style="font-size: 14px; color: var(--el-text-color-regular)">
                     <div>- 说明: 根据组件类型指定取样器组件的运行顺序</div>
@@ -51,7 +51,7 @@
             </div>
           </template>
           <el-select
-            v-model="componentData.settingData.running_strategy.reverse"
+            v-model="elementData.elementAttrs.running_strategy.reverse"
             style="width: 300px"
             multiple
             clearable
@@ -66,17 +66,17 @@
 
     <!-- 前置处理器 -->
     <div v-if="showPrevProcessorTab" class="tab-pane">
-      <PrevProcessorPane v-model="componentData.prevProcessorList" edit-mode="MODIFY" owner-type="ALL" />
+      <PrevProcessorPane v-model="elementData.elementCompos.prevList" edit-mode="MODIFY" owner-type="ALL" />
     </div>
 
     <!-- 后置处理器 -->
     <div v-if="showPostProcessorTab" class="tab-pane">
-      <PostProcessorPane v-model="componentData.postProcessorList" edit-mode="MODIFY" owner-type="ALL" />
+      <PostProcessorPane v-model="elementData.elementCompos.postList" edit-mode="MODIFY" owner-type="ALL" />
     </div>
 
     <!-- 测试断言器 -->
     <div v-if="showTestAssertionTab" class="tab-pane">
-      <TestAssertionPane v-model="componentData.testAssertionList" edit-mode="MODIFY" owner-type="ALL" />
+      <TestAssertionPane v-model="elementData.elementCompos.testList" edit-mode="MODIFY" owner-type="ALL" />
     </div>
   </div>
 
@@ -88,34 +88,43 @@
 
 <script setup>
 import * as ElementService from '@/api/script/element'
-import TestAssertionPane from '@/pymeter/components/editor-main/component-panes/TestAssertionPane.vue'
+import SaveButton from '@/pymeter/components/editor-main/common/SaveButton.vue'
 import PostProcessorPane from '@/pymeter/components/editor-main/component-panes/PostProcessorPane.vue'
 import PrevProcessorPane from '@/pymeter/components/editor-main/component-panes/PrevProcessorPane.vue'
-import EditorProps from '@/pymeter/composables/editor.props'
+import TestAssertionPane from '@/pymeter/components/editor-main/component-panes/TestAssertionPane.vue'
 import EditorEmits from '@/pymeter/composables/editor.emits'
-import SaveButton from '@/pymeter/components/editor-main/common/SaveButton.vue'
+import EditorProps from '@/pymeter/composables/editor.props'
 import useEditor from '@/pymeter/composables/useEditor'
-import { Warning } from '@element-plus/icons-vue'
+import useElement from '@/pymeter/composables/useElement'
 import { usePyMeterDB } from '@/store/pymeter-db'
 import { toHashCode } from '@/utils/object-util'
+import { Warning } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
-import { isEmpty, debounce } from 'lodash-es'
+import { debounce, isEmpty } from 'lodash-es'
 
 const props = defineProps(EditorProps)
 const emit = defineEmits(EditorEmits)
+const { assignElement, assignComponent } = useElement()
 const { unsaved, metadata, localkey, shortcutKeyName } = useEditor()
 const offlineDB = usePyMeterDB().offlineDB
-const componentData = ref({
-  workspaceNo: props.metadata.workspaceNo,
-  settingData: {
+const elementData = ref({
+  elementNo: props.metadata.sn,
+  elementName: '空间元素',
+  elementDesc: '',
+  elementType: 'WORKSPACE',
+  elementClass: 'TestWorkspace',
+  elementAttrs: {
     running_strategy: {
       reverse: []
     }
   },
-  configuratorList: [],
-  prevProcessorList: [],
-  postProcessorList: [],
-  testAssertionList: []
+  elementProps: {},
+  elementCompos: {
+    confList: [],
+    prevList: [],
+    postList: [],
+    testList: []
+  }
 })
 const activeTabName = ref('SETTINGS')
 const showSettingsTab = computed(() => activeTabName.value === 'SETTINGS')
@@ -123,15 +132,22 @@ const showSettingsTab = computed(() => activeTabName.value === 'SETTINGS')
 const showPrevProcessorTab = computed(() => activeTabName.value === 'PREV_PROCESSOR')
 const showPostProcessorTab = computed(() => activeTabName.value === 'POST_PROCESSOR')
 const showTestAssertionTab = computed(() => activeTabName.value === 'TEST_ASSERTION')
-const hiddenSettingsDot = computed(() => isEmpty(componentData.value.settingData.running_strategy.reverse))
+const hiddenSettingsDot = computed(() => isEmpty(elementData.value.elementAttrs.running_strategy.reverse))
 
 watch(
-  componentData,
+  elementData,
   debounce((localdata) => {
     console.log('watch')
+    // 添加组件索引
+    localdata.elementCompos.prevList.forEach((item, index) => (item.elementIndex = index + 1))
+    localdata.elementCompos.postList.forEach((item, index) => (item.elementIndex = index + 1))
+    localdata.elementCompos.testList.forEach((item, index) => (item.elementIndex = index + 1))
     // 如果前后端数据一致则代表数据未更改
     if (metadata.value.hashcode === toHashCode(localdata)) {
+      // 数据一致则表示数据未变更
       unsaved.value = false
+      // 数据未变更，移除离线数据
+      offlineDB.removeItem(localkey.value)
       return
     }
     console.log('存离线')
@@ -139,7 +155,7 @@ watch(
     unsaved.value = true
     // 存储离线数据
     offlineDB.setItem(localkey.value, JSON.parse(JSON.stringify({ data: localdata, meta: metadata.value })))
-  }, 500),
+  }, 250),
   { deep: true, flush: 'sync' }
 )
 
@@ -158,7 +174,7 @@ onMounted(async () => {
  */
 const queryOfflineData = async () => {
   const offline = await offlineDB.getItem(localkey.value)
-  Object.assign(componentData.value, offline.data)
+  Object.assign(elementData.value, offline.data)
   Object.assign(metadata.value, offline.meta)
 }
 
@@ -167,41 +183,31 @@ const queryOfflineData = async () => {
  */
 const queryBackendData = async () => {
   let response = null
-  const prevList = []
-  const postList = []
-  const testList = []
-  // 查询空间组件设置
-  response = await ElementService.queryWorkspaceSettings({ workspaceNo: componentData.value.workspaceNo })
-  const reverse = response.result?.running_strategy?.reverse
-  if (!isEmpty(reverse)) {
-    componentData.value.settingData.running_strategy.reverse = reverse
-  }
-  // 查询空间组件
-  response = await ElementService.queryWorkspaceComponents({ workspaceNo: componentData.value.workspaceNo })
-  response.result.forEach((component) => {
-    if (component.elementType === 'PREV_PROCESSOR') {
-      prevList.push(component)
-      return
-    }
-    if (component.elementType === 'POST_PROCESSOR') {
-      postList.push(component)
-      return
-    }
-    if (component.elementType === 'ASSERTION') {
-      testList.push(component)
-      return
-    }
-  })
-  // 根据 elementIndex 排序
-  prevList.sort((a, b) => a.elementIndex - b.elementIndex)
-  postList.sort((a, b) => a.elementIndex - b.elementIndex)
-  testList.sort((a, b) => a.elementIndex - b.elementIndex)
-  // 更新页面数据
-  componentData.value.prevProcessorList = prevList
-  componentData.value.postProcessorList = postList
-  componentData.value.testAssertionList = testList
+  // 查询空间元素信息
+  response = await ElementService.queryElementInfo({ elementNo: elementData.value.elementNo })
+  assignElement(elementData.value, response.result)
+  // 查询空间元素组件
+  response = await ElementService.queryElementComponents({ elementNo: elementData.value.elementNo })
+  assignComponent(elementData.value, response.result)
+  // 初始化空间设置
+  initAttrs()
   // 计算HashCode并存储
-  Object.assign(metadata.value, { hashcode: toHashCode(componentData.value) })
+  Object.assign(metadata.value, { hashcode: toHashCode(elementData.value) })
+}
+
+/**
+ * 初始化空间属性
+ */
+const initAttrs = () => {
+  if (!elementData.value.elementAttrs) {
+    elementData.value.elementAttrs = { running_strategy: { reverse: [] } }
+  }
+  if (!elementData.value.elementAttrs.running_strategy) {
+    elementData.value.elementAttrs.running_strategy = { reverse: [] }
+  }
+  if (!elementData.value.elementAttrs.running_strategy.reverse) {
+    elementData.value.elementAttrs.running_strategy.reverse = []
+  }
 }
 
 /**
@@ -209,20 +215,12 @@ const queryBackendData = async () => {
  */
 const save = async () => {
   // 保存空间组件
-  await ElementService.setWorkspaceComponents({
-    workspaceNo: componentData.value.workspaceNo,
-    componentList: [
-      ...componentData.value.configuratorList.value,
-      ...componentData.value.prevProcessorList.value,
-      ...componentData.value.postProcessorList.value,
-      ...componentData.value.testAssertionList.value
-    ]
-  })
-  // 保存空间设置
-  await ElementService.setWorkspaceSettings({
-    workspaceNo: componentData.value.workspaceNo,
-    settings: componentData.value.settingData
-  })
+  await ElementService.modifyElement(elementData.value)
+  // 标记数据已保存
+  unsaved.value = false
+  // 保存成功后移除离线数据
+  offlineDB.removeItem(localkey.value)
+  // 成功提示
   ElMessage({ message: '设置成功', type: 'info', duration: 2 * 1000 })
 }
 

@@ -149,8 +149,7 @@ const elementData = ref({
     SnippetSampler__snippet_no: '',
     SnippetSampler__arguments: [],
     SnippetSampler__use_default: false
-  },
-  property: {}
+  }
 })
 const activeTabName = ref('PARAMS')
 const snippetList = ref([])

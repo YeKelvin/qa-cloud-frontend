@@ -45,6 +45,7 @@ const props = defineProps({
 })
 // 组件名称
 const componentNames = {
+  TestWorkspace: '测试空间',
   TestCollection: '测试集合',
   TestSnippet: '测试片段',
   TestWorker: '测试用例',
@@ -60,8 +61,7 @@ const componentNames = {
   PythonSampler: 'Python请求',
   SnippetSampler: 'Snippet请求',
   SQLSampler: 'SQL请求',
-  DatabaseEngine: '数据库配置器',
-  WorkspaceComponent: '空间组件'
+  DatabaseEngine: '数据库配置器'
 }
 // 组件名称
 const componentName = computed(() => componentNames[props.component])

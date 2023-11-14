@@ -1,6 +1,6 @@
 import * as ExecutionService from '@/api/script/execution'
 import { isEmpty } from 'lodash-es'
-import { ElMessageBox } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { usePyMeterDB } from '@/store/pymeter-db'
 import { usePyMeterStore } from '@/store/pymeter'
 import useSocketIO from '@/composables/useSocketIO'
@@ -10,24 +10,25 @@ export default function useRunnableElement() {
   const pymeterDB = usePyMeterDB()
   const pymeterStore = usePyMeterStore()
 
-  const getOfflineData = (rootNo) => {
-    const offlines = []
-    pymeterDB.offlineDB.iterate((offline) => {
+  const getOfflineData = async (rootNo) => {
+    const offlines = new Map()
+    await pymeterDB.offlineDB.iterate((offline) => {
+      console.log('off-el: ', offline)
       if ('rootNo' in offline.meta) {
-        offline.meta.rootNo === rootNo && offlines.push(offline.data)
+        offline.meta.rootNo === rootNo && offlines.set(offline.meta.sn, offline.data)
       } else {
-        offlines.push(offline.data)
+        offlines.set(offline.meta.sn, offline.data)
       }
     })
-    return offlines
+    return Object.fromEntries(offlines)
   }
 
   /**
    * 没有选择变量集时给出提示
    */
-  const popupNoDatasetTips = async () => {
+  const confirmWithoutDataset = async () => {
     if (isEmpty(pymeterStore.selectedDatasets)) {
-      await ElMessageBox.confirm('当前没有选择[环境/变量]，确定执行吗？', '警告', {
+      await ElMessageBox.confirm('当前没有选择[环境/变量]，是否确定执行？', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -36,18 +37,12 @@ export default function useRunnableElement() {
   }
 
   /**
-   * 根据 collectionNo 执行脚本
+   * 执行集合
    */
-  const executeTestCollection = async (elementNo) => {
+  const executeTestCollection = async (collectionNo) => {
     try {
       // 没有选择变量集时给出提示
-      if (isEmpty(pymeterStore.selectedDatasets)) {
-        await ElMessageBox.confirm('当前没有选择[环境/变量]，确定执行吗？', '警告', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        })
-      }
+      await confirmWithoutDataset()
       // 连接 socket
       socketio.connect()
       // 等待获取 sid，后再执行脚本
@@ -55,7 +50,8 @@ export default function useRunnableElement() {
       // 后端异步执行脚本
       await ExecutionService.executeCollection({
         socketId: sid,
-        collectionNo: elementNo,
+        collectionNo: collectionNo,
+        offlines: await getOfflineData(collectionNo),
         datasets: pymeterStore.selectedDatasets,
         useCurrentValue: pymeterStore.useCurrentValue
       })
@@ -68,18 +64,12 @@ export default function useRunnableElement() {
   }
 
   /**
-   * 根据 collectionNo 执行片段
+   * 执行片段
    */
-  const executeTestSnippet = async (elementNo, addition) => {
+  const executeTestSnippet = async (snippetNo, addition) => {
     try {
       // 没有选择变量集时给出提示
-      if (isEmpty(pymeterStore.selectedDatasets)) {
-        await ElMessageBox.confirm('当前没有选择[环境/变量]，确定执行吗？', '警告', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        })
-      }
+      await confirmWithoutDataset()
       // 连接 socket
       socketio.connect()
       // 等待获取 sid，后再执行脚本
@@ -87,7 +77,8 @@ export default function useRunnableElement() {
       // 后端异步执行脚本
       await ExecutionService.executeSnippet({
         socketId: sid,
-        snippetNo: elementNo,
+        snippetNo: snippetNo,
+        offlines: await getOfflineData(snippetNo),
         datasets: pymeterStore.selectedDatasets,
         variables: addition,
         useCurrentValue: pymeterStore.useCurrentValue
@@ -101,18 +92,16 @@ export default function useRunnableElement() {
   }
 
   /**
-   * 根据 workerNo 执行脚本
+   * 执行脚本
    */
-  const executeTestWorker = async (elementNo) => {
+  const executeTestWorker = async (rootNo, elementNo) => {
     try {
-      // 没有选择变量集时给出提示
-      if (isEmpty(pymeterStore.selectedDatasets)) {
-        await ElMessageBox.confirm('当前没有选择[环境/变量]，确定执行吗？', '警告', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        })
+      if (isEmpty(rootNo)) {
+        ElMessage({ message: '根元素编号不能为空', type: 'error', duration: 2 * 1000 })
+        return
       }
+      // 没有选择变量集时给出提示
+      await confirmWithoutDataset()
       // 连接 socket
       socketio.connect()
       // 等待获取 sid，后再执行脚本
@@ -121,6 +110,7 @@ export default function useRunnableElement() {
       await ExecutionService.executeWorker({
         socketId: sid,
         workerNo: elementNo,
+        offlines: await getOfflineData(rootNo),
         datasets: pymeterStore.selectedDatasets,
         useCurrentValue: pymeterStore.useCurrentValue
       })
@@ -133,12 +123,16 @@ export default function useRunnableElement() {
   }
 
   /**
-   * 根据 samplerNo 执行脚本
+   * 执行请求
    */
   const executeSampler = async (rootNo, elementNo) => {
+    if (isEmpty(rootNo)) {
+      ElMessage({ message: '根元素编号不能为空', type: 'error', duration: 2 * 1000 })
+      return
+    }
     try {
       // 没有选择变量集时给出提示
-      await popupNoDatasetTips()
+      await confirmWithoutDataset()
       // 连接 socket
       socketio.connect()
       // 等待获取 sid，后再执行脚本
@@ -147,7 +141,7 @@ export default function useRunnableElement() {
       await ExecutionService.executeSampler({
         samplerNo: elementNo,
         socketId: sid,
-        offlines: getOfflineData(rootNo),
+        offlines: await getOfflineData(rootNo),
         datasets: pymeterStore.selectedDatasets,
         useCurrentValue: pymeterStore.useCurrentValue
       })

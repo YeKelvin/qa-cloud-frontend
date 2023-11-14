@@ -19,7 +19,7 @@
         <el-button
           v-show="workspaceStore.workspaceNo && '/script/editor'.includes($route.path)"
           link
-          @click="openWorkspaceComponent()"
+          @click="openTestWorkspace()"
         >
           <SvgIcon icon-name="navbar-workspace-settings" style="width: 1.5em; height: 1.5em" />
         </el-button>
@@ -79,7 +79,7 @@ const displayWorkspaceWhitelist = [
   '/schedule/task'
 ]
 
-const openWorkspaceComponent = () => {
+const openTestWorkspace = () => {
   // 未选择空间时，不允许打开组件
   if (!workspaceStore.workspaceNo) {
     ElMessage({ message: '未选择工作空间', type: 'error', duration: 2 * 1000 })
@@ -88,15 +88,12 @@ const openWorkspaceComponent = () => {
   pymeterStore.addTab({
     editorNo: workspaceStore.workspaceNo,
     editorName: workspaceStore.workspaceName,
-    editorComponent: 'WorkspaceComponent',
+    editorComponent: 'TestWorkspace',
     editorMode: 'QUERY',
     metadata: {
       sn: workspaceStore.workspaceNo,
       name: workspaceStore.workspaceName,
-      component: 'WorkspaceComponent',
-      workspaceNo: workspaceStore.workspaceNo,
-      workspaceName: workspaceStore.workspaceName,
-      workspaceScope: workspaceStore.workspaceScope
+      component: 'TestWorkspace'
     }
   })
 }

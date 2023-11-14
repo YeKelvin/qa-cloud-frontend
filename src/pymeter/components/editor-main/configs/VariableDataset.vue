@@ -75,7 +75,7 @@ const emit = defineEmits(EditorEmits)
 const { unsaved, metadata, localkey, shortcutKeyName } = useEditor()
 const offlineDB = usePyMeterDB().offlineDB
 const configData = ref({
-  datasetNo: props.metadata.datasetNo,
+  datasetNo: props.metadata.sn,
   variableList: [],
   deletionList: []
 })
@@ -100,7 +100,10 @@ watch(
     autoNewRow()
     // 如果前后端数据一致则代表数据未更改
     if (metadata.value.hashcode === toHashCode(localdata)) {
+      // 数据一致则表示数据未变更
       unsaved.value = false
+      // 数据未变更，移除离线数据
+      offlineDB.removeItem(localkey.value)
       return
     }
     console.log('存离线')
@@ -195,7 +198,7 @@ const removeVariable = (row, index) => {
  */
 const comfirmDeleteVariables = async (...args) => {
   const msgList = [h('p', null, '是否确定删除以下变量?')]
-  args.forEach((item) => msgList.push(h('b', null, item)))
+  args.forEach((item) => msgList.push(h('p', null, h('b', null, item))))
   return await ElMessageBox.confirm(null, {
     title: '警告',
     message: h('div', null, msgList),

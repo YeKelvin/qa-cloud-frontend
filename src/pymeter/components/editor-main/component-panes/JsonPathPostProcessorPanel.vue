@@ -60,9 +60,9 @@
 import { Check, Close } from '@element-plus/icons-vue'
 
 const props = defineProps({
-  elementProperty: Object
+  elementProps: Object
 })
-const elementProperty = computed(() => props.elementProperty)
+const elementProperty = computed(() => props.elementProps)
 const defaultProperty = {
   JsonPathPostProcessor__variable_scope: 'LOCAL',
   JsonPathPostProcessor__variable_name: '',

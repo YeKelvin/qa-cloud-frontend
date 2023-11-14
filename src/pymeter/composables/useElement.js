@@ -8,13 +8,22 @@ export default function useEditor(props) {
     target.elementDesc = source.elementDesc
     target.elementType = source.elementType
     target.elementClass = source.elementClass
-    Object.assign(target.property, source.property)
     if ('elementAttrs' in target) {
       Object.assign(target.elementAttrs, source.elementAttrs)
+    }
+    if ('elementProps' in target) {
+      Object.assign(target.elementProps, source.elementProps)
+    }
+  }
+
+  const assignComponent = (target, source) => {
+    if ('elementCompos' in target) {
+      Object.assign(target.elementCompos, source)
     }
   }
 
   return {
-    assignElement
+    assignElement,
+    assignComponent
   }
 }

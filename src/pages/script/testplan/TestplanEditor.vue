@@ -85,7 +85,7 @@
             </el-form-item>
 
             <!-- 通知机器人 -->
-            <el-form-item label="结果通知：" prop="property.engineNo">
+            <el-form-item label="结果通知：" prop="noticeRobots">
               <el-select
                 v-model="formData.noticeRobots"
                 filterable

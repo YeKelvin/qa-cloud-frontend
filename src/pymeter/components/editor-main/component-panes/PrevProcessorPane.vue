@@ -47,7 +47,7 @@
               <!-- 删除按钮 -->
               <el-button
                 type="danger"
-                style="margin-right: 10px; font-size: 16px"
+                style="margin-right: 10px; font-size: 18px"
                 link
                 :icon="Delete"
                 @click.stop="remove(index)"
@@ -63,7 +63,7 @@
               :element-name="element.elementName"
               :element-type="element.elementType"
               :element-class="element.elementClass"
-              :element-property="element.property"
+              :element-props="element.elementProps"
             />
           </el-collapse-item>
         </template>
@@ -113,8 +113,6 @@ const activeNames = ref([])
 const menuVisible = ref(false)
 const draggableRef = ref()
 
-watch(prevProcessorList, (list) => list.forEach((item, index) => (item.elementIndex = index + 1)))
-
 onMounted(() => {
   if (prevProcessorList.value.length === 1) {
     activeNames.value.push(prevProcessorList.value[0].elementNo)
@@ -135,12 +133,12 @@ const addPythonPrevProcessor = () => {
   activeNames.value.push(elementNo)
   // 添加新组件
   prevProcessorList.value.push({
+    enabled: true,
     elementNo: elementNo,
     elementName: 'Python脚本',
     elementType: 'PREV_PROCESSOR',
     elementClass: 'PythonPrevProcessor',
-    enabled: true,
-    property: {
+    elementProps: {
       PythonPrevProcessor__script: ''
     }
   })
@@ -155,12 +153,12 @@ const addSleepPrevProcessor = () => {
   activeNames.value.push(elementNo)
   // 添加新组件
   prevProcessorList.value.push({
+    enabled: true,
     elementNo: elementNo,
     elementName: '固定定时器',
     elementType: 'PREV_PROCESSOR',
     elementClass: 'SleepPrevProcessor',
-    enabled: true,
-    property: {
+    elementProps: {
       SleepPrevProcessor__delay: '0'
     }
   })

@@ -19,8 +19,13 @@
       </el-form-item>
 
       <!-- 循环次数 -->
-      <el-form-item label="循环次数：" prop="property.LoopController__loops">
-        <el-input v-model="elementData.property.LoopController__loops" maxlength="2" clearable :disabled="queryMode" />
+      <el-form-item label="循环次数：" prop="elementProps.LoopController__loops">
+        <el-input
+          v-model="elementData.elementProps.LoopController__loops"
+          maxlength="2"
+          clearable
+          :disabled="queryMode"
+        />
       </el-form-item>
 
       <!-- 操作按钮 -->
@@ -70,14 +75,14 @@ const elementData = ref({
   elementDesc: '',
   elementType: 'CONTROLLER',
   elementClass: 'LoopController',
-  property: {
+  elementProps: {
     LoopController__loops: '1',
     LoopController__continue_forever: false
   }
 })
 const elementFormRules = reactive({
   elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }],
-  'property.LoopController__loops': [{ required: true, message: '循环次数不能为空', trigger: 'blur' }]
+  'elementProps.LoopController__loops': [{ required: true, message: '循环次数不能为空', trigger: 'blur' }]
 })
 
 onMounted(() => {

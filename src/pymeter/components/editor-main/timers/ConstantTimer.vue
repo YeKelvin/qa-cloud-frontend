@@ -19,8 +19,8 @@
       </el-form-item>
 
       <!-- 延迟时间 -->
-      <el-form-item label="延迟时间：" prop="property.ConstantTimer__delay">
-        <el-input v-model="elementData.property.ConstantTimer__delay" clearable :readonly="queryMode">
+      <el-form-item label="延迟时间：" prop="elementProps.ConstantTimer__delay">
+        <el-input v-model="elementData.elementProps.ConstantTimer__delay" clearable :readonly="queryMode">
           <template #append>ms</template>
         </el-input>
       </el-form-item>
@@ -68,17 +68,17 @@ const elformRef = ref()
 const elementNo = ref(props.editorNo)
 const elementData = ref({
   elementNo: '',
-  elementName: 'Constant Timer',
+  elementName: '固定定时器',
   elementDesc: '',
   elementType: 'TIMER',
   elementClass: 'ConstantTimer',
-  property: {
+  elementProps: {
     ConstantTimer__delay: '1000'
   }
 })
 const elementFormRules = reactive({
   elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }],
-  'property.ConstantTimer__delay': [{ required: true, message: '延迟时间不能为空', trigger: 'blur' }]
+  'elementProps.ConstantTimer__delay': [{ required: true, message: '延迟时间不能为空', trigger: 'blur' }]
 })
 
 onMounted(() => {

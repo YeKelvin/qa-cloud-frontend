@@ -50,6 +50,8 @@ import Toolbar from './toolbar/Toolbar.vue'
 import Mousetrap from 'mousetrap'
 
 const components = reactive({
+  // workspace
+  TestWorkspace: markRaw(defineAsyncComponent(() => import('./workspace/TestWorkspace.vue'))),
   // collection
   TestCollection: markRaw(defineAsyncComponent(() => import('./collections/TestCollection.vue'))),
   // snippet
@@ -75,9 +77,7 @@ const components = reactive({
   VariableDataset: markRaw(defineAsyncComponent(() => import('./configs/VariableDataset.vue'))),
   HttpHeadersTemplate: markRaw(defineAsyncComponent(() => import('./configs/HttpheaderTemplate.vue'))),
   // timer
-  ConstantTimer: markRaw(defineAsyncComponent(() => import('./timers/ConstantTimer.vue'))),
-  // others
-  WorkspaceComponent: markRaw(defineAsyncComponent(() => import('./workspace/WorkspaceComponent.vue')))
+  ConstantTimer: markRaw(defineAsyncComponent(() => import('./timers/ConstantTimer.vue')))
 })
 
 const pymeterStore = usePyMeterStore()

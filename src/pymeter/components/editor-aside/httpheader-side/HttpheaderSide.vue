@@ -52,8 +52,7 @@ const openHttpheaderTemplate = (templateNo, templateName) => {
     metadata: {
       sn: templateNo,
       name: templateName,
-      component: 'HttpHeadersTemplate',
-      templateNo: templateNo
+      component: 'HttpHeadersTemplate'
     }
   })
 }

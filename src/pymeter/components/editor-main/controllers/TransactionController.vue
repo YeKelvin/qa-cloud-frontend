@@ -64,8 +64,7 @@ const elementData = ref({
   elementName: '事务控制器',
   elementDesc: '',
   elementType: 'CONTROLLER',
-  elementClass: 'TransactionController',
-  property: {}
+  elementClass: 'TransactionController'
 })
 const elementFormRules = reactive({
   elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }]

@@ -159,8 +159,7 @@ const elementData = ref({
   elementAttrs: {
     TestSnippet__parameters: [],
     TestSnippet__use_http_session: false
-  },
-  property: {}
+  }
 })
 const elementFormRules = reactive({
   elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }]

@@ -19,10 +19,10 @@
       </el-form-item>
 
       <!-- if条件 -->
-      <el-form-item label="表达式：" prop="property.IfController__condition">
+      <el-form-item label="表达式：" prop="elementProps.IfController__condition">
         <MonacoEditor
           ref="codeEditorRef"
-          v-model="elementData.property.IfController__condition"
+          v-model="elementData.elementProps.IfController__condition"
           language="python"
           line-numbers="off"
           style="height: 100px"
@@ -79,13 +79,13 @@ const elementData = ref({
   elementDesc: '',
   elementType: 'CONTROLLER',
   elementClass: 'IfController',
-  property: {
+  elementProps: {
     IfController__condition: ''
   }
 })
 const elementFormRules = reactive({
   elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }],
-  'property.IfController__condition': [{ required: true, message: '条件不能为空', trigger: 'blur' }]
+  'elementProps.IfController__condition': [{ required: true, message: '条件不能为空', trigger: 'blur' }]
 })
 const codeEditorRef = ref()
 
@@ -94,7 +94,7 @@ onMounted(() => {
   if (createMode.value) return
   ElementService.queryElementInfo({ elementNo: elementNo.value }).then((response) => {
     elementData.value = response.result
-    codeEditorRef.value.setValue(response.result.property.IfController__condition)
+    codeEditorRef.value.setValue(response.result.elementProps.IfController__condition)
   })
 })
 

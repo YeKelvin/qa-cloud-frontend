@@ -19,9 +19,9 @@
       </el-form-item>
 
       <!-- 最大循环次数 -->
-      <el-form-item label="最大循环数：" prop="property.WhileController__max_loop_count">
+      <el-form-item label="最大循环数：" prop="elementProps.WhileController__max_loop_count">
         <el-input
-          v-model="elementData.property.WhileController__max_loop_count"
+          v-model="elementData.elementProps.WhileController__max_loop_count"
           placeholder="最大循环次数"
           clearable
           :readonly="queryMode"
@@ -29,9 +29,9 @@
       </el-form-item>
 
       <!-- 循环超时时间 -->
-      <el-form-item label="超时时间：" prop="property.WhileController__timeout">
+      <el-form-item label="超时时间：" prop="elementProps.WhileController__timeout">
         <el-input
-          v-model="elementData.property.WhileController__timeout"
+          v-model="elementData.elementProps.WhileController__timeout"
           placeholder="超时时间（ms）"
           clearable
           :readonly="queryMode"
@@ -39,9 +39,9 @@
       </el-form-item>
 
       <!-- 间隔时间 -->
-      <el-form-item label="间隔时间：" prop="property.WhileController__delay">
+      <el-form-item label="间隔时间：" prop="elementProps.WhileController__delay">
         <el-input
-          v-model="elementData.property.WhileController__delay"
+          v-model="elementData.elementProps.WhileController__delay"
           placeholder="间隔时间（ms）"
           clearable
           :readonly="queryMode"
@@ -49,10 +49,10 @@
       </el-form-item>
 
       <!-- while条件 -->
-      <el-form-item label="表达式：" prop="property.WhileController__condition">
+      <el-form-item label="表达式：" prop="elementProps.WhileController__condition">
         <MonacoEditor
           ref="codeEditorRef"
-          v-model="elementData.property.WhileController__condition"
+          v-model="elementData.elementProps.WhileController__condition"
           language="python"
           line-numbers="off"
           style="height: 100px"
@@ -109,7 +109,7 @@ const elementData = ref({
   elementDesc: '',
   elementType: 'CONTROLLER',
   elementClass: 'WhileController',
-  property: {
+  elementProps: {
     WhileController__condition: '',
     WhileController__max_loop_count: '',
     WhileController__timeout: '',
@@ -118,7 +118,7 @@ const elementData = ref({
 })
 const elementFormRules = reactive({
   elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }],
-  'property.WhileController__condition': [{ required: true, message: '元素名称不能为空', trigger: 'blur' }]
+  'elementProps.WhileController__condition': [{ required: true, message: '元素名称不能为空', trigger: 'blur' }]
 })
 const codeEditorRef = ref()
 
@@ -127,7 +127,7 @@ onMounted(() => {
   if (createMode.value) return
   ElementService.queryElementInfo({ elementNo: elementNo.value }).then((response) => {
     elementData.value = response.result
-    codeEditorRef.value.setValue(response.result.property.WhileController__condition)
+    codeEditorRef.value.setValue(response.result.elementProps.WhileController__condition)
   })
 })
 

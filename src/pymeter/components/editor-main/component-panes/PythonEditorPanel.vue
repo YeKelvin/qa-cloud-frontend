@@ -55,16 +55,16 @@ const props = defineProps({
   ownerType: String,
   elementType: String,
   elementClass: String,
-  elementProperty: Object
+  elementProps: Object
 })
-const properties = computed(() => props.elementProperty)
+const elementProperty = computed(() => props.elementProps)
 const scriptPropertyName = computed(() => ScriptPropertyNameEmun[props.elementClass])
 const scriptContent = computed({
   get() {
-    return properties.value[scriptPropertyName.value]
+    return elementProperty.value[scriptPropertyName.value]
   },
   set(val) {
-    properties.value[scriptPropertyName.value] = val
+    elementProperty.value[scriptPropertyName.value] = val
   }
 })
 const pythonEditor = ref()

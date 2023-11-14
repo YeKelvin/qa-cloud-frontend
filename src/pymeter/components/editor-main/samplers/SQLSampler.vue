@@ -31,9 +31,9 @@
       </el-form-item>
 
       <!-- 变量名称 -->
-      <el-form-item label="变量名称：" prop="property.SQLSampler__result_name">
+      <el-form-item label="变量名称：" prop="elementProps.SQLSampler__result_name">
         <el-input
-          v-model="elementData.property.SQLSampler__result_name"
+          v-model="elementData.elementProps.SQLSampler__result_name"
           placeholder="用于存储查询结果集，默认=rows"
           clearable
           :readonly="queryMode"
@@ -64,9 +64,9 @@
 
       <div v-show="showSettingsTab">
         <!-- 结果数限制 -->
-        <el-form-item label="结果大小限制：" prop="property.SQLSampler__limit">
+        <el-form-item label="结果大小限制：" prop="elementProps.SQLSampler__limit">
           <el-input
-            v-model="elementData.property.SQLSampler__limit"
+            v-model="elementData.elementProps.SQLSampler__limit"
             placeholder="默认=10"
             style="width: 300px"
             clearable
@@ -77,9 +77,9 @@
         </el-form-item>
 
         <!-- 超时时间 -->
-        <el-form-item label="超时时间：" prop="property.SQLSampler__query_timeout">
+        <el-form-item label="超时时间：" prop="elementProps.SQLSampler__query_timeout">
           <el-input
-            v-model="elementData.property.SQLSampler__query_timeout"
+            v-model="elementData.elementProps.SQLSampler__query_timeout"
             placeholder="默认=10000"
             style="width: 300px"
             clearable
@@ -94,7 +94,7 @@
       <div v-show="showStatementTab">
         <MonacoEditor
           ref="codeEditorRef"
-          v-model="elementData.property.SQLSampler__statement"
+          v-model="elementData.elementProps.SQLSampler__statement"
           language="sql"
           style="margin-bottom: 20px"
           :readonly="queryMode"
@@ -162,7 +162,7 @@ const elementData = ref({
   elementAttrs: {
     SQLSampler__engine_no: ''
   },
-  property: {
+  elementProps: {
     SQLSampler__statement: '',
     SQLSampler__limit: '',
     SQLSampler__result_name: '',
@@ -172,16 +172,16 @@ const elementData = ref({
 const elementFormRules = reactive({
   elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }],
   'elementAttrs.SQLSampler__engine_no': [{ required: true, message: '数据库编号不能为空', trigger: 'blur' }],
-  'property.SQLSampler__statement': [{ required: true, message: 'SQL不能为空', trigger: 'blur' }]
+  'elementProps.SQLSampler__statement': [{ required: true, message: 'SQL不能为空', trigger: 'blur' }]
 })
 const engineList = ref([])
 const codeEditorRef = ref()
 const activeTabName = ref('STATEMENT')
 const showStatementTab = computed(() => activeTabName.value === 'STATEMENT')
 const showSettingsTab = computed(() => activeTabName.value === 'SETTINGS')
-const hiddenStatementDot = computed(() => elementData.value.property.SQLSampler__statement === '')
+const hiddenStatementDot = computed(() => elementData.value.elementProps.SQLSampler__statement === '')
 const hiddenSettingsDot = computed(() => {
-  const elprop = elementData.value.property
+  const elprop = elementData.value.elementProps
   return elprop.SQLSampler__limit === '' && elprop.SQLSampler__query_timeout === ''
 })
 
@@ -195,7 +195,7 @@ onMounted(() => {
   if (createMode.value) return
   ElementService.queryElementInfo({ elementNo: elementNo.value }).then((response) => {
     assignElement(elementData.value, response.result)
-    codeEditorRef.value.setValue(response.result.property.SQLSampler__statement)
+    codeEditorRef.value.setValue(response.result.elementProps.SQLSampler__statement)
   })
 })
 

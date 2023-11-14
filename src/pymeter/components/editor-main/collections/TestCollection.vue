@@ -19,9 +19,9 @@
       </el-form-item>
 
       <!-- 串行执行 -->
-      <el-form-item label="串行执行：" prop="property.TestCollection__serialize_workers">
+      <el-form-item label="串行执行：" prop="elementProps.TestCollection__serialize_workers">
         <el-switch
-          v-model="elementData.property.TestCollection__serialize_workers"
+          v-model="elementData.elementProps.TestCollection__serialize_workers"
           active-value="true"
           inactive-value="false"
           inline-prompt
@@ -32,9 +32,9 @@
       </el-form-item>
 
       <!-- 间隔时间 -->
-      <!-- <el-form-item label="间隔时间：" prop="property.TestCollection__delay">
+      <!-- <el-form-item label="间隔时间：" prop="elementProps.TestCollection__delay">
         <el-input
-          v-model="elementData.property.TestCollection__delay"
+          v-model="elementData.elementProps.TestCollection__delay"
           placeholder="间隔运行时间"
           clearable
           :readonly="true"
@@ -219,9 +219,15 @@ const elementData = ref({
   elementAttrs: {
     TestCollection__exclude_workspace: false
   },
-  property: {
+  elementProps: {
     TestCollection__serialize_workers: 'true',
     TestCollection__delay: '0'
+  },
+  elementCompos: {
+    confList: [],
+    prevList: [],
+    postList: [],
+    testList: []
   }
 })
 const elementNo = computed(() => elementData.value.elementNo)
@@ -304,7 +310,7 @@ const setComponentsByType = () => {
  * 设置运行策略
  */
 const setRunningStrategy = () => {
-  const strategyProp = elementData.value.property.TestCollection__running_strategy
+  const strategyProp = elementData.value.elementProps.TestCollection__running_strategy
   if (isEmpty(strategyProp)) return
   runningStrategy.value.reverse = strategyProp.reverse || []
 }
@@ -322,7 +328,7 @@ const sortComponents = () => {
  * 更新元素属性
  */
 const updateElementProperty = () => {
-  const elProps = elementData.value.property
+  const elProps = elementData.value.elementProps
   // 设置运行策略
   if (isEmpty(runningStrategy.value.reverse) && 'TestCollection__running_strategy' in elProps) {
     elProps.TestCollection__running_strategy = null

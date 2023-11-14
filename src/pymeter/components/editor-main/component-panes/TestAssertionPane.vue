@@ -47,7 +47,7 @@
               <!-- 删除按钮 -->
               <el-button
                 type="danger"
-                style="margin-right: 10px; font-size: 16px"
+                style="margin-right: 10px; font-size: 18px"
                 link
                 :icon="Delete"
                 @click.stop="remove(index)"
@@ -63,7 +63,7 @@
               :element-name="element.elementName"
               :element-type="element.elementType"
               :element-class="element.elementClass"
-              :element-property="element.property"
+              :element-props="element.elementProps"
             />
           </el-collapse-item>
         </template>
@@ -135,12 +135,12 @@ const addPythonAssertion = () => {
   activeNames.value.push(elementNo)
   // 添加新组件
   testAssertionList.value.push({
+    enabled: true,
     elementNo: elementNo,
     elementName: 'Python断言',
     elementType: 'ASSERTION',
     elementClass: 'PythonAssertion',
-    enabled: true,
-    property: {
+    elementProps: {
       PythonAssertion__script: ''
     }
   })
@@ -155,12 +155,12 @@ const addJsonPathAssertion = () => {
   activeNames.value.push(elementNo)
   // 添加新组件
   testAssertionList.value.push({
+    enabled: true,
     elementNo: elementNo,
     elementName: 'Json断言',
     elementType: 'ASSERTION',
     elementClass: 'JsonPathAssertion',
-    enabled: true,
-    property: {
+    elementProps: {
       JsonPathAssertion__jsonpath: '',
       JsonPathAssertion__expected_value: '',
       JsonPathAssertion__operator: 'EQUAL'

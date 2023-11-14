@@ -213,8 +213,7 @@ const handleNodeClick = (data) => {
     metadata: {
       sn: data.dbNo,
       name: data.dbName,
-      component: 'DatabaseEngine',
-      databaseNo: data.dbNo
+      component: 'DatabaseEngine'
     }
   })
 }

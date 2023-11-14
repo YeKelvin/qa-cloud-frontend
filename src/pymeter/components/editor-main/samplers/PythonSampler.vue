@@ -33,12 +33,12 @@
       <!-- 元素脚本 -->
       <PythonEditor
         ref="codeEditorRef"
-        v-model="elementData.property.PythonSampler__script"
+        v-model="elementData.elementProps.PythonSampler__script"
         type="PYTHON"
         phase="SAMPLER"
         height="400px"
         runnable
-        @run="executeSampler(elementData.rootNo, elementData.elementNo)"
+        @run="executeSampler(metadata.rootNo, elementData.elementNo)"
       />
 
       <!-- 操作按钮 -->
@@ -78,12 +78,13 @@ const {
 } = useEditor()
 const offlineDB = usePyMeterDB().offlineDB
 const elementData = ref({
-  elementNo: props.metadata.elementNo,
+  elementNo: props.metadata.sn,
   elementName: 'Python请求',
   elementDesc: '',
   elementType: 'SAMPLER',
   elementClass: 'PythonSampler',
-  property: {
+  elementAttrs: {},
+  elementProps: {
     PythonSampler__script: ''
   }
 })
@@ -99,7 +100,10 @@ watch(
     console.log('watch')
     // 如果前后端数据一致则代表数据未更改
     if (metadata.value.hashcode === toHashCode(localdata)) {
+      // 数据一致则表示数据未变更
       unsaved.value = false
+      // 数据未变更，移除离线数据
+      offlineDB.removeItem(localkey.value)
       return
     }
     console.log('存离线')
@@ -107,7 +111,7 @@ watch(
     unsaved.value = true
     // 存储离线数据
     offlineDB.setItem(localkey.value, JSON.parse(JSON.stringify({ data: localdata, meta: metadata.value })))
-  }, 500),
+  }, 250),
   { deep: true, flush: 'sync' }
 )
 
@@ -130,7 +134,7 @@ const queryOfflineData = async () => {
   const offline = await offlineDB.getItem(localkey.value)
   Object.assign(elementData.value, offline.data)
   Object.assign(metadata.value, offline.meta)
-  codeEditorRef.value.setValue(offline.data.property.PythonSampler__script)
+  codeEditorRef.value.setValue(offline.data.elementProps.PythonSampler__script)
 }
 
 /**
@@ -140,7 +144,7 @@ const queryBackendData = async () => {
   const response = await ElementService.queryElementInfo({ elementNo: elementData.value.elementNo })
   Object.assign(elementData.value, response.result)
   Object.assign(metadata.value, { hashcode: toHashCode(elementData.value) })
-  codeEditorRef.value.setValue(response.result.property.PythonSampler__script)
+  codeEditorRef.value.setValue(response.result.elementProps.PythonSampler__script)
 }
 
 /**

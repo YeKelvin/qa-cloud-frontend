@@ -51,9 +51,9 @@
 
 <script setup>
 const props = defineProps({
-  elementProperty: Object
+  elementProps: Object
 })
-const elementProperty = computed(() => props.elementProperty)
+const elementProperty = computed(() => props.elementProps)
 const defaultProperty = {
   JsonPathAssertion__jsonpath: '',
   JsonPathAssertion__expected_value: '',

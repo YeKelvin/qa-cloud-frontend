@@ -19,8 +19,12 @@
       </el-form-item>
 
       <!-- 元素属性 -->
-      <el-form-item label="失败处理：" prop="property.TestWorker__on_sample_error">
-        <el-select v-model="elementData.property.TestWorker__on_sample_error" :disabled="queryMode" style="width: 100%">
+      <el-form-item label="失败处理：" prop="elementProps.TestWorker__on_sample_error">
+        <el-select
+          v-model="elementData.elementProps.TestWorker__on_sample_error"
+          :disabled="queryMode"
+          style="width: 100%"
+        >
           <el-option label="继续" value="continue" />
           <el-option label="开始下一个主控制器的循环" value="start_next_thread" />
           <el-option label="开始下一个当前控制器的循环" value="start_next_current_loop" />
@@ -32,14 +36,14 @@
       </el-form-item>
 
       <!-- 并发数 -->
-      <!-- <el-form-item label="并发数：" prop="property.TestWorker__number_of_threads">
-        <el-input v-model="elementData.property.TestWorker__number_of_threads" clearable disabled />
+      <!-- <el-form-item label="并发数：" prop="elementProps.TestWorker__number_of_threads">
+        <el-input v-model="elementData.elementProps.TestWorker__number_of_threads" clearable disabled />
       </el-form-item> -->
 
       <!-- 循环次数 -->
-      <el-form-item label="循环次数：" prop="property.TestWorker__main_controller.property.LoopController__loops">
+      <el-form-item label="循环次数：" prop="elementProps.TestWorker__main_controller.property.LoopController__loops">
         <el-input
-          v-model="elementData.property.TestWorker__main_controller.property.LoopController__loops"
+          v-model="elementData.elementProps.TestWorker__main_controller.property.LoopController__loops"
           clearable
           :disabled="queryMode"
         />
@@ -148,9 +152,9 @@ const checkLoops = (_, value, callback) => {
 
 const elementFormRules = {
   elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }],
-  'property.TestWorker__on_sample_error': [{ required: true, message: '失败处理不能为空', trigger: 'blur' }],
-  'property.TestWorker__number_of_threads': [{ required: true, message: '并发数不能为空', trigger: 'blur' }],
-  'property.TestWorker__main_controller.property.LoopController__loops': [
+  'elementProps.TestWorker__on_sample_error': [{ required: true, message: '失败处理不能为空', trigger: 'blur' }],
+  'elementProps.TestWorker__number_of_threads': [{ required: true, message: '并发数不能为空', trigger: 'blur' }],
+  'elementProps.TestWorker__main_controller.property.LoopController__loops': [
     { required: true, trigger: 'blur', validator: checkLoops }
   ]
 }
@@ -183,7 +187,7 @@ const elementData = ref({
     Worker__use_http_session: false,
     Worker__clear_http_session_each_iteration: false
   },
-  property: {
+  elementProps: {
     TestWorker__on_sample_error: 'start_next_thread',
     TestWorker__number_of_threads: '1',
     TestWorker__start_interval: '',

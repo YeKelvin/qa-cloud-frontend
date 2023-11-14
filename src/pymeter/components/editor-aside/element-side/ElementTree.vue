@@ -182,8 +182,7 @@ const handleNodeClick = (data) => {
         name: data.elementName,
         component: data.elementClass,
         rootNo: data.rootNo,
-        parentNo: data.parentNo,
-        elementNo: data.elementNo
+        parentNo: data.parentNo
       }
     })
   }, 200)

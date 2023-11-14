@@ -19,9 +19,9 @@
       </el-form-item>
 
       <!-- 循环延迟时间 -->
-      <el-form-item label="间隔时间：" prop="property.ForeachController__delay">
+      <el-form-item label="间隔时间：" prop="elementProps.ForeachController__delay">
         <el-input
-          v-model="elementData.property.ForeachController__delay"
+          v-model="elementData.elementProps.ForeachController__delay"
           placeholder="间隔时间(ms)"
           clearable
           :readonly="queryMode"
@@ -29,12 +29,12 @@
       </el-form-item>
 
       <!-- for变量 -->
-      <el-form-item prop="property.ForeachController__target">
+      <el-form-item prop="elementProps.ForeachController__target">
         <template #label>
           <span style="font-size: 16px">for：</span>
         </template>
         <el-input
-          v-model="elementData.property.ForeachController__target"
+          v-model="elementData.elementProps.ForeachController__target"
           placeholder="目标变量名称"
           clearable
           :readonly="queryMode"
@@ -42,12 +42,12 @@
       </el-form-item>
 
       <!-- in对象 -->
-      <el-form-item prop="property.ForeachController__iter">
+      <el-form-item prop="elementProps.ForeachController__iter">
         <template #label>
           <span style="font-size: 16px">in：</span>
         </template>
         <el-radio-group
-          v-model="elementData.property.ForeachController__type"
+          v-model="elementData.elementProps.ForeachController__type"
           style="margin-bottom: 10px"
           :disabled="queryMode"
         >
@@ -55,8 +55,8 @@
           <el-radio label="CUSTOM">自定义声明</el-radio>
         </el-radio-group>
         <el-input
-          v-if="elementData.property.ForeachController__type == 'OBJECT'"
-          v-model="elementData.property.ForeachController__iter"
+          v-if="elementData.elementProps.ForeachController__type == 'OBJECT'"
+          v-model="elementData.elementProps.ForeachController__iter"
           placeholder="可迭代对象名称"
           clearable
           :readonly="queryMode"
@@ -67,7 +67,7 @@
         <MonacoEditor
           v-else
           ref="editorRef"
-          v-model="elementData.property.ForeachController__iter"
+          v-model="elementData.elementProps.ForeachController__iter"
           language="python"
           line-numbers="off"
           style="height: 100px"
@@ -123,7 +123,7 @@ const elementData = ref({
   elementDesc: '',
   elementType: 'CONTROLLER',
   elementClass: 'ForeachController',
-  property: {
+  elementProps: {
     ForeachController__target: '',
     ForeachController__iter: '',
     ForeachController__type: 'OBJECT',
@@ -132,8 +132,8 @@ const elementData = ref({
 })
 const elementFormRules = reactive({
   elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }],
-  'property.ForeachController__target': [{ required: true, message: '目标变量不能为空', trigger: 'blur' }],
-  'property.ForeachController__iter': [{ required: true, message: '迭代对象或声明不能为空', trigger: 'blur' }]
+  'elementProps.ForeachController__target': [{ required: true, message: '目标变量不能为空', trigger: 'blur' }],
+  'elementProps.ForeachController__iter': [{ required: true, message: '迭代对象或声明不能为空', trigger: 'blur' }]
 })
 const editorRef = ref()
 
@@ -142,18 +142,18 @@ onMounted(() => {
   if (createMode.value) return
   ElementService.queryElementInfo({ elementNo: elementNo.value }).then((response) => {
     elementData.value = response.result
-    if (response.result.property.ForeachController__type === 'CUSTOM') {
-      editorRef.value.setValue(response.result.property.ForeachController__iter)
+    if (response.result.elementProps.ForeachController__type === 'CUSTOM') {
+      editorRef.value.setValue(response.result.elementProps.ForeachController__iter)
     }
   })
 })
 
 watch(
-  () => elementData.value.property.ForeachController__type,
+  () => elementData.value.elementProps.ForeachController__type,
   (val) => {
     if (val === 'OBJECT') return
     nextTick(() => {
-      editorRef.value.setValue(elementData.value.property.ForeachController__iter)
+      editorRef.value.setValue(elementData.value.elementProps.ForeachController__iter)
     })
   }
 )

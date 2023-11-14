@@ -47,7 +47,7 @@
               <!-- 删除按钮 -->
               <el-button
                 type="danger"
-                style="margin-right: 10px; font-size: 16px"
+                style="margin-right: 10px; font-size: 18px"
                 link
                 :icon="Delete"
                 @click.stop="remove(index)"
@@ -63,7 +63,7 @@
               :element-name="element.elementName"
               :element-type="element.elementType"
               :element-class="element.elementClass"
-              :element-property="element.property"
+              :element-props="element.elementProps"
             />
           </el-collapse-item>
         </template>
@@ -137,12 +137,12 @@ const addPythonPostProcessor = () => {
   activeNames.value.push(elementNo)
   // 添加新组件
   postProcessorList.value.push({
+    enabled: true,
     elementNo: elementNo,
     elementName: 'Python脚本',
     elementType: 'POST_PROCESSOR',
     elementClass: 'PythonPostProcessor',
-    enabled: true,
-    property: {
+    elementProps: {
       PythonPostProcessor__script: ''
     }
   })
@@ -157,12 +157,12 @@ const addJsonPathPostProcessor = () => {
   activeNames.value.push(elementNo)
   // 添加新组件
   postProcessorList.value.push({
+    enabled: true,
     elementNo: elementNo,
     elementName: 'Json提取器',
     elementType: 'POST_PROCESSOR',
     elementClass: 'JsonPathPostProcessor',
-    enabled: true,
-    property: {
+    elementProps: {
       JsonPathPostProcessor__variable_scope: 'LOCAL',
       JsonPathPostProcessor__variable_name: '',
       JsonPathPostProcessor__jsonpath: '',
@@ -181,12 +181,12 @@ const addSleepPostProcessor = () => {
   activeNames.value.push(elementNo)
   // 添加新组件
   postProcessorList.value.push({
+    enabled: true,
     elementNo: elementNo,
     elementName: '固定定时器',
     elementType: 'POST_PROCESSOR',
     elementClass: 'SleepPostProcessor',
-    enabled: true,
-    property: {
+    elementProps: {
       SleepPostProcessor__delay: '0'
     }
   })

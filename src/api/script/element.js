@@ -41,11 +41,3 @@ export const pasteElement = (data) => request.post('/script/element/paste', data
 export const copyRootToWorkspace = (data) => request.post('/script/element/root/copy/to/workspace', data)
 
 export const moveRootToWorkspace = (data) => request.post('/script/element/root/move/to/workspace', data)
-
-export const queryWorkspaceComponents = (params) => request.get('/script/element/workspace/components', { params })
-
-export const setWorkspaceComponents = (data) => request.post('/script/element/workspace/components', data)
-
-export const queryWorkspaceSettings = (params) => request.get('/script/element/workspace/settings', { params })
-
-export const setWorkspaceSettings = (data) => request.post('/script/element/workspace/settings', data)

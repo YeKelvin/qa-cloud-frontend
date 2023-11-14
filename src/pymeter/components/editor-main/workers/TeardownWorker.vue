@@ -19,9 +19,9 @@
       </el-form-item>
 
       <!-- 元素属性 -->
-      <el-form-item label="失败处理：" prop="property.TeardownWorker__on_sample_error">
+      <el-form-item label="失败处理：" prop="elementProps.TeardownWorker__on_sample_error">
         <el-select
-          v-model="elementData.property.TeardownWorker__on_sample_error"
+          v-model="elementData.elementProps.TeardownWorker__on_sample_error"
           :disabled="queryMode"
           style="width: 100%"
         >
@@ -147,7 +147,7 @@ const elementData = ref({
     Worker__use_http_session: false,
     Worker__clear_http_session_each_iteration: false
   },
-  property: {
+  elementProps: {
     TeardownWorker__on_sample_error: 'start_next_thread',
     TeardownWorker__number_of_threads: '1',
     TeardownWorker__start_interval: '',
@@ -162,9 +162,9 @@ const elementData = ref({
 })
 const elementFormRules = reactive({
   elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }],
-  'property.TeardownWorker__on_sample_error': [{ required: true, message: '失败处理不能为空', trigger: 'blur' }],
-  'property.TeardownWorker__number_of_threads': [{ required: true, message: '并发数不能为空', trigger: 'blur' }],
-  'property.TeardownWorker__main_controller.property.LoopController__loops': [
+  'elementProps.TeardownWorker__on_sample_error': [{ required: true, message: '失败处理不能为空', trigger: 'blur' }],
+  'elementProps.TeardownWorker__number_of_threads': [{ required: true, message: '并发数不能为空', trigger: 'blur' }],
+  'elementProps.TeardownWorker__main_controller.property.LoopController__loops': [
     { required: true, message: '循环次数不能为空', trigger: 'blur' }
   ]
 })

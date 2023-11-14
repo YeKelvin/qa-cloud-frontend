@@ -19,18 +19,18 @@
       </el-form-item>
 
       <!-- URL = 请求方法 + 请求方法-->
-      <el-form-item id="url" label="地址：" prop="property.HTTPSampler__url">
+      <el-form-item id="url" label="地址：" prop="elementProps.HTTPSampler__url">
         <span style="display: flex; flex: 1">
           <!-- 请求方法 -->
           <el-input
-            v-model="elementData.property.HTTPSampler__url"
+            v-model="elementData.elementProps.HTTPSampler__url"
             placeholder="请求地址"
             clearable
             :readonly="queryMode"
           >
             <template #prepend>
               <!-- 请求方法 -->
-              <HTTPMethodSelect v-model="elementData.property.HTTPSampler__method" :disabled="queryMode" />
+              <HTTPMethodSelect v-model="elementData.elementProps.HTTPSampler__method" :disabled="queryMode" />
             </template>
           </el-input>
           <!-- 运行按钮 -->
@@ -158,7 +158,7 @@
           <!-- 重定向 -->
           <el-form-item label="重定向：">
             <el-switch
-              v-model="elementData.property.HTTPSampler__follow_redirects"
+              v-model="elementData.elementProps.HTTPSampler__follow_redirects"
               active-value="true"
               inactive-value="false"
               inline-prompt
@@ -171,7 +171,7 @@
           <!-- 编码 -->
           <el-form-item label="编码：">
             <el-input
-              v-model="elementData.property.HTTPSampler__encoding"
+              v-model="elementData.elementProps.HTTPSampler__encoding"
               style="width: 300px"
               placeholder="UTF-8"
               clearable
@@ -182,7 +182,7 @@
           <!-- 连接超时时间 -->
           <el-form-item label="连接超时：">
             <el-input
-              v-model="elementData.property.HTTPSampler__connect_timeout"
+              v-model="elementData.elementProps.HTTPSampler__connect_timeout"
               style="width: 300px"
               placeholder="超时时长"
               clearable
@@ -195,7 +195,7 @@
           <!-- 响应超时时间 -->
           <el-form-item label="响应超时：">
             <el-input
-              v-model="elementData.property.HTTPSampler__response_timeout"
+              v-model="elementData.elementProps.HTTPSampler__response_timeout"
               style="width: 300px"
               placeholder="超时时长"
               clearable
@@ -324,8 +324,8 @@ provide('queryMode', queryMode)
 const elementFormRef = ref()
 const elementFormRules = {
   elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }],
-  'property.HTTPSampler__url': [{ required: true, message: '请求地址不能为空', trigger: 'blur' }],
-  'property.HTTPSampler__method': [{ required: true, message: '请求方法不能为空', trigger: 'blur' }]
+  'elementProps.HTTPSampler__url': [{ required: true, message: '请求地址不能为空', trigger: 'blur' }],
+  'elementProps.HTTPSampler__method': [{ required: true, message: '请求方法不能为空', trigger: 'blur' }]
 }
 const elementNo = ref(props.editorNo)
 const elementData = ref({
@@ -337,7 +337,7 @@ const elementData = ref({
   elementAttrs: {
     HTTPSampler__header_template_refs: []
   },
-  property: {
+  elementProps: {
     HTTPSampler__url: '',
     HTTPSampler__method: 'GET',
     HTTPSampler__headers: '',
@@ -458,12 +458,12 @@ const hiddenBodyDot = computed(() => {
   return false
 })
 const hiddenConfigDot = computed(() => {
-  const elProps = elementData.value.property
+  const elementProps = elementData.value.elementProps
   return (
-    elProps.HTTPSampler__encoding === '' &&
-    elProps.HTTPSampler__connect_timeout === '' &&
-    elProps.HTTPSampler__response_timeout === '' &&
-    elProps.HTTPSampler__follow_redirects === 'false'
+    elementProps.HTTPSampler__encoding === '' &&
+    elementProps.HTTPSampler__connect_timeout === '' &&
+    elementProps.HTTPSampler__response_timeout === '' &&
+    elementProps.HTTPSampler__follow_redirects === 'false'
   )
 })
 const hiddenSettingsDot = computed(() => {
@@ -556,7 +556,7 @@ const sortComponents = () => {
  * 初始化 headers
  */
 const setHeaderItems = () => {
-  const headers = elementData.value.property.HTTPSampler__headers
+  const headers = elementData.value.elementProps.HTTPSampler__headers
   if (!isEmpty(headerItems.value)) {
     headerItems.value = [] // 表格不为空时，清空数组
   }
@@ -574,7 +574,7 @@ const setHeaderItems = () => {
  * 初始化 params
  */
 const setQueryItems = () => {
-  const querys = elementData.value.property.HTTPSampler__params
+  const querys = elementData.value.elementProps.HTTPSampler__params
   if (!isEmpty(queryItems.value)) {
     queryItems.value = [] // 表格不为空时，清空数组
   }
@@ -593,7 +593,7 @@ const setQueryItems = () => {
  * 初始化 forms
  */
 const setFormItems = () => {
-  const forms = elementData.value.property.HTTPSampler__data
+  const forms = elementData.value.elementProps.HTTPSampler__data
   if (!isEmpty(formItems.value)) {
     formItems.value = [] // 表格不为空时，清空数组
   }
@@ -612,7 +612,7 @@ const setFormItems = () => {
  * 初始化 files
  */
 const setFileItems = () => {
-  const files = elementData.value.property.HTTPSampler__data
+  const files = elementData.value.elementProps.HTTPSampler__data
   if (!isEmpty(fileItems.value)) {
     fileItems.value = [] // 表格不为空时，清空数组
   }
@@ -648,14 +648,14 @@ const setAboutBody = () => {
  * 设置body编辑器的内容
  */
 const setBodyData = () => {
-  bodyCodeEditorRef.value && bodyCodeEditorRef.value.setValue(elementData.value.property.HTTPSampler__data)
+  bodyCodeEditorRef.value && bodyCodeEditorRef.value.setValue(elementData.value.elementProps.HTTPSampler__data)
 }
 
 /**
  * 设置运行策略
  */
 const setRunningStrategy = () => {
-  const strategyProp = elementData.value.property.HTTPSampler__running_strategy
+  const strategyProp = elementData.value.elementProps.HTTPSampler__running_strategy
   if (isEmpty(strategyProp)) return
   runningStrategy.value.filter = strategyProp.filter || {}
   runningStrategy.value.reverse = strategyProp.reverse || []
@@ -676,9 +676,9 @@ const focusActiveTab = () => {
  * 更新元素属性
  */
 const updateElementProperty = () => {
-  const elProps = elementData.value.property
+  const elementProps = elementData.value.elementProps
   // 合并请求头、query参数和body参数
-  assign(elProps, {
+  assign(elementProps, {
     HTTPSampler__headers: headerData.value,
     HTTPSampler__params: queryData.value,
     HTTPSampler__data: bodyData.value
@@ -687,11 +687,11 @@ const updateElementProperty = () => {
   if (
     isEmpty(runningStrategy.value.filter) &&
     isEmpty(runningStrategy.value.reverse) &&
-    'HTTPSampler__running_strategy' in elProps
+    'HTTPSampler__running_strategy' in elementProps
   ) {
-    elProps.HTTPSampler__running_strategy = null
+    elementProps.HTTPSampler__running_strategy = null
   } else {
-    elProps.HTTPSampler__running_strategy = runningStrategy.value
+    elementProps.HTTPSampler__running_strategy = runningStrategy.value
   }
 }
 

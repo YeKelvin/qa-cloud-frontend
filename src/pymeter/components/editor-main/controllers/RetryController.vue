@@ -19,16 +19,21 @@
       </el-form-item>
 
       <!-- 重试次数 -->
-      <el-form-item label="重试次数：" prop="property.RetryController__retries">
-        <el-input v-model="elementData.property.RetryController__retries" maxlength="2" clearable :readonly="queryMode">
+      <el-form-item label="重试次数：" prop="elementProps.RetryController__retries">
+        <el-input
+          v-model="elementData.elementProps.RetryController__retries"
+          maxlength="2"
+          clearable
+          :readonly="queryMode"
+        >
           <template #append>次</template>
         </el-input>
       </el-form-item>
 
       <!-- 重试间隔时间 -->
-      <el-form-item label="重试间隔：" prop="property.RetryController__intervals">
+      <el-form-item label="重试间隔：" prop="elementProps.RetryController__intervals">
         <el-input
-          v-model="elementData.property.RetryController__intervals"
+          v-model="elementData.elementProps.RetryController__intervals"
           placeholder="重试间隔时间"
           clearable
           :readonly="queryMode"
@@ -38,9 +43,9 @@
       </el-form-item>
 
       <!-- 标识前缀 -->
-      <el-form-item label="标识前缀：" prop="property.RetryController__flag_prefix">
+      <el-form-item label="标识前缀：" prop="elementProps.RetryController__flag_prefix">
         <el-input
-          v-model="elementData.property.RetryController__flag_prefix"
+          v-model="elementData.elementProps.RetryController__flag_prefix"
           placeholder="重试标识前缀，用于标识当前取样器正在重试和重试的次数"
           clearable
           :readonly="queryMode"
@@ -94,7 +99,7 @@ const elementData = ref({
   elementDesc: '',
   elementType: 'CONTROLLER',
   elementClass: 'RetryController',
-  property: {
+  elementProps: {
     RetryController__retries: '1',
     RetryController__intervals: '',
     RetryController__flag_prefix: 'rc:'
@@ -102,7 +107,7 @@ const elementData = ref({
 })
 const elementFormRules = reactive({
   elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }],
-  'property.RetryController__retries': [{ required: true, message: '重试次数不能为空', trigger: 'blur' }]
+  'elementProps.RetryController__retries': [{ required: true, message: '重试次数不能为空', trigger: 'blur' }]
 })
 
 onMounted(() => {

@@ -71,8 +71,7 @@ const openDataset = (datasetNo, datasetName) => {
     metadata: {
       sn: datasetNo,
       name: datasetName,
-      component: 'VariableDataset',
-      datasetNo: datasetNo
+      component: 'VariableDataset'
     }
   })
 }
