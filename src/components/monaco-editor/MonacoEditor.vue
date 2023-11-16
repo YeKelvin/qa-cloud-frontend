@@ -9,6 +9,7 @@ import { debounce } from 'lodash-es'
 import monaco from './monaco.base'
 import monacoOptions from './monaco.options'
 
+let instance
 const editorRef = ref()
 const emit = defineEmits(['update:modelValue'])
 const props = defineProps({
@@ -50,8 +51,7 @@ watch(
   (val) => instance.updateOptions({ wordWrap: val })
 )
 
-let instance
-onMounted(() => {
+onMounted(async () => {
   instance = monaco.editor.create(editorRef.value, {
     fontSize: props.fontSize,
     language: props.language,
@@ -73,13 +73,47 @@ onUnmounted(() => {
   instance && instance.dispose()
 })
 
-const removeKeybinding = (id) => {
-  instance._standaloneKeybindingService.addDynamicKeybinding(`-${id}`, monaco.KeyCode.Unknown, () => {})
+const createEditor = async () => {
+  instance = monaco.editor.create(editorRef.value, {
+    fontSize: props.fontSize,
+    language: props.language,
+    readOnly: props.readonly,
+    wordWrap: props.wordWrap,
+    lineNumbers: props.lineNumbers,
+    theme: props.theme,
+    value: props.modelValue,
+    ...options.value
+  })
+  await waitingCreated()
+  return instance
+}
+
+const waitingCreated = (tab) => {
+  let timeoutId = null
+  let intervalId = null
+
+  return new Promise((resolve, reject) => {
+    if (instance) resolve()
+
+    timeoutId = setTimeout(() => {
+      clearInterval(intervalId)
+      ElMessage({ message: '创建MonacoEditor超时，请刷新重试!', type: 'error', duration: 2 * 1000 })
+      reject(new Error('fail'))
+    }, 5000)
+
+    intervalId = setInterval(() => {
+      if (instance) {
+        clearInterval(intervalId)
+        clearTimeout(timeoutId)
+        resolve()
+      }
+    }, 100)
+  })
 }
 
 const removeDefaultKeybindings = () => {
   // 移除 CtrlCmd + E 快捷键
-  removeKeybinding('actions.findWithSelection')
+  // removeKeybinding('actions.findWithSelection')
   // 移除 CtrlCmd + K 快捷键
   removeKeybinding('deleteAllRight')
   removeKeybinding('editor.action.setSelectionAnchor')
@@ -110,6 +144,13 @@ const removeDefaultKeybindings = () => {
   removeKeybinding('editor.action.deleteLines')
   removeKeybinding('editor.action.moveSelectionToNextFindMatch')
   removeKeybinding('togglePeekWidgetFocus')
+}
+
+/**
+ * 移除快捷键
+ */
+const removeKeybinding = (id) => {
+  instance._standaloneKeybindingService.addDynamicKeybinding(`-${id}`, monaco.KeyCode.Unknown, () => {})
 }
 
 /**

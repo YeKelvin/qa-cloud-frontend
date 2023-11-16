@@ -63,7 +63,7 @@
               size="large"
               placement="top"
             >
-              <el-card>
+              <el-card shadow="hover">
                 <!-- 新增 -->
                 <template v-if="activity.operationType === 'INSERT'">
                   <div class="flexbox" style="flex-wrap: wrap; align-items: center">

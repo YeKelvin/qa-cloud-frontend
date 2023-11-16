@@ -5,6 +5,7 @@ import { isEmpty } from 'lodash-es'
  * 移除 keepalive 缓存
  */
 export const removeCache = (keepAlive, cacheKey) => {
+  if (!keepAlive) return
   const keepAliveComponent = keepAlive.$
   const cacheMap = keepAliveComponent.__v_cache
   const cachedVnode = cacheMap.get(cacheKey)

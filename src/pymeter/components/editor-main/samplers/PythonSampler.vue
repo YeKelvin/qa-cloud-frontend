@@ -42,7 +42,7 @@
       />
 
       <!-- 操作按钮 -->
-      <template v-if="unsaved">
+      <template v-if="creation || unsaved">
         <SaveButton :tips="shortcutKeyName" @click="save()" />
       </template>
     </el-form>
@@ -61,21 +61,14 @@ import { usePyMeterDB } from '@/store/pymeter-db'
 import { toHashCode } from '@/utils/object-util'
 import { ElMessage } from 'element-plus'
 import { debounce } from 'lodash-es'
+import useElement from '@/pymeter/composables/useElement'
 
 const props = defineProps(EditorProps)
 const emit = defineEmits(EditorEmits)
 const { executeSampler } = useRunnableElement()
-const {
-  unsaved,
-  metadata,
-  creation,
-  localkey,
-  shortcutKeyName,
-  updateTabName,
-  updateTabMeta,
-  expandParentNode,
-  refreshElementTree
-} = useEditor()
+const { assignElement, assignMetadata } = useElement()
+const { unsaved, metadata, creation, localkey, shortcutKeyName, updateTabName, expandParentNode, refreshElementTree } =
+  useEditor()
 const offlineDB = usePyMeterDB().offlineDB
 const elementData = ref({
   elementNo: props.metadata.sn,
@@ -119,12 +112,15 @@ onMounted(async () => {
   // 优先查询离线数据
   if (unsaved.value) {
     queryOfflineData()
-  } else {
-    // 新增模式无需读取任何数据
-    if (creation.value) return
-    // 查询后端数据
-    queryBackendData()
+    return
   }
+  // 新增模式计算HashCode并存储
+  if (creation.value) {
+    metadata.value.hashcode = toHashCode(elementData.value)
+    return
+  }
+  // 最后才查询后端数据
+  queryBackendData()
 })
 
 /**
@@ -132,8 +128,8 @@ onMounted(async () => {
  */
 const queryOfflineData = async () => {
   const offline = await offlineDB.getItem(localkey.value)
-  Object.assign(elementData.value, offline.data)
-  Object.assign(metadata.value, offline.meta)
+  assignElement(elementData.value, offline.data)
+  assignMetadata(metadata.value, offline.meta)
   codeEditorRef.value.setValue(offline.data.elementProps.PythonSampler__script)
 }
 
@@ -142,21 +138,20 @@ const queryOfflineData = async () => {
  */
 const queryBackendData = async () => {
   const response = await ElementService.queryElementInfo({ elementNo: elementData.value.elementNo })
-  Object.assign(elementData.value, response.result)
-  Object.assign(metadata.value, { hashcode: toHashCode(elementData.value) })
+  assignElement(elementData.value, response.result)
+  assignMetadata(metadata.value, { hashcode: toHashCode(elementData.value) })
   codeEditorRef.value.setValue(response.result.elementProps.PythonSampler__script)
 }
 
 /**
- * 修改元素信息
+ * 修改元素
  */
 const modifyElement = async () => {
-  // 修改元素
   await ElementService.modifyElement(elementData.value)
 }
 
 /**
- * 创建元素
+ * 新增元素
  */
 const createElement = async () => {
   // 新增元素
@@ -165,12 +160,14 @@ const createElement = async () => {
     parentNo: props.metadata.parentNo,
     ...elementData.value
   })
+  // 移除离线数据
+  offlineDB.removeItem(props.editorNo)
   // 提取元素编号
   const elementNo = response.result.elementNo
+  // 更新Tab序列号
+  metadata.value.sn = elementNo
   // 更新元素编号
   elementData.value.elementNo = elementNo
-  // 更新 tab 元数据
-  updateTabMeta({ sn: elementNo, elementNo: elementNo })
   // 展开父节点
   expandParentNode()
 }
@@ -192,7 +189,9 @@ const save = async () => {
   creation.value ? await createElement() : await modifyElement()
   // 标记数据已保存
   unsaved.value = false
-  // 保存成功后移除离线数据
+  // 更新HashCode
+  metadata.value.hashcode = toHashCode(elementData.value)
+  // 移除离线数据
   offlineDB.removeItem(localkey.value)
   // 重新查询侧边栏的元素列表
   refreshElementTree()

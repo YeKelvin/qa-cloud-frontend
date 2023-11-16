@@ -129,7 +129,7 @@ const updateElementNo = (val) => {
 /**
  * 修改元素信息
  */
-const modifyElement = async (close = false) => {
+const modifyElement = async () => {
   // 表单校验
   const error = await elformRef.value
     .validate()
@@ -161,7 +161,7 @@ const modifyElement = async (close = false) => {
 /**
  * 创建元素
  */
-const createElement = async (close = false) => {
+const createElement = async () => {
   // 表单校验
   const error = await elformRef.value
     .validate()

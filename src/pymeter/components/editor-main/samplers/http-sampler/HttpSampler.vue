@@ -769,7 +769,7 @@ const checkForm = async () => {
 /**
  * 修改元素
  */
-const modifyElement = async (close = false) => {
+const modifyElement = async () => {
   // 表单校验
   let error = false
   error = await checkForm()
@@ -807,7 +807,7 @@ const modifyElement = async (close = false) => {
 /**
  * 创建元素
  */
-const createElement = async (close = false) => {
+const createElement = async () => {
   // 表单校验
   const error = await checkForm()
   if (error) return

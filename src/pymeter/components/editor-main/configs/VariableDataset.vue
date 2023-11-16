@@ -64,14 +64,16 @@ import SaveButton from '@/pymeter/components/editor-main/common/SaveButton.vue'
 import EditorEmits from '@/pymeter/composables/editor.emits'
 import EditorProps from '@/pymeter/composables/editor.props'
 import useEditor from '@/pymeter/composables/useEditor'
+import useElement from '@/pymeter/composables/useElement'
 import { usePyMeterDB } from '@/store/pymeter-db'
 import { toHashCode } from '@/utils/object-util'
 import { Check, Close, Delete } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { has, isEmpty, debounce } from 'lodash-es'
 
-const props = defineProps(EditorProps)
 const emit = defineEmits(EditorEmits)
+const props = defineProps(EditorProps)
+const { assignElement, assignMetadata } = useElement()
 const { unsaved, metadata, localkey, shortcutKeyName } = useEditor()
 const offlineDB = usePyMeterDB().offlineDB
 const configData = ref({
@@ -130,8 +132,8 @@ onMounted(async () => {
  */
 const queryOfflineData = async () => {
   const offline = await offlineDB.getItem(localkey.value)
-  Object.assign(configData.value, offline.data)
-  Object.assign(metadata.value, offline.meta)
+  assignElement(configData.value, offline.data)
+  assignMetadata(metadata.value, offline.meta)
 }
 
 /**
@@ -143,7 +145,7 @@ const queryBackendData = async () => {
   backendData.push({ variableName: '', variableDesc: '', initialValue: '', currentValue: '', enabled: true })
   configData.value.variableList = backendData
   configData.value.deletionList = []
-  Object.assign(metadata.value, { hashcode: toHashCode(configData.value) })
+  assignMetadata(metadata.value, { hashcode: toHashCode(configData.value) })
 }
 
 /**
@@ -240,7 +242,9 @@ const save = async () => {
     (await VariablesService.modifyVariables({ datasetNo: configData.value.datasetNo, variableList: vars }))
   // 标记数据已保存
   unsaved.value = false
-  // 保存成功后移除离线数据
+  // 更新HashCode
+  metadata.value.hashcode = toHashCode(configData.value)
+  // 移除离线数据
   offlineDB.removeItem(localkey.value)
   // 重新查询变量
   queryBackendData()

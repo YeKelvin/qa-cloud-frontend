@@ -1,4 +1,22 @@
-export default function useEditor(props) {
+import { isArray as _isArray, isObject as _isObject } from 'lodash-es'
+
+export default function useEditor() {
+  const isObject = (obj) => {
+    return !_isArray(obj) && _isObject()
+  }
+
+  const deepAssign = (target, source) => {
+    Object.keys(source).forEach((key) => {
+      const value = source[key]
+      if (key in target && (value === undefined || value === null)) return
+      if (isObject(value)) {
+        deepAssign(target[key], value)
+      } else {
+        target[key] = value
+      }
+    })
+  }
+
   /**
    * 合并元素
    */
@@ -9,11 +27,15 @@ export default function useEditor(props) {
     target.elementType = source.elementType
     target.elementClass = source.elementClass
     if ('elementAttrs' in target) {
-      Object.assign(target.elementAttrs, source.elementAttrs)
+      deepAssign(target.elementAttrs, source.elementAttrs)
     }
     if ('elementProps' in target) {
-      Object.assign(target.elementProps, source.elementProps)
+      deepAssign(target.elementProps, source.elementProps)
     }
+  }
+
+  const assignMetadata = (target, source) => {
+    deepAssign(target, source)
   }
 
   const assignComponent = (target, source) => {
@@ -24,6 +46,7 @@ export default function useEditor(props) {
 
   return {
     assignElement,
+    assignMetadata,
     assignComponent
   }
 }

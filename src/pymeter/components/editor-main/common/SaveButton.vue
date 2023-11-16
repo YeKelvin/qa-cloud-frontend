@@ -1,9 +1,9 @@
 <template>
   <el-affix target=".pymeter-component-container" position="bottom" :offset="60">
     <div class="flexbox-center">
-      <el-tooltip effect="light" placement="right" :content="props.tips">
+      <el-tooltip effect="light" placement="top" :content="props.tips">
         <el-button type="danger" @click="emit('click')">
-          <SvgIcon icon-name="pymeter-save" style="margin-right: 5px; font-size: 20px" />
+          <SvgIcon icon-name="pymeter-save" style="margin-right: 5px; font-size: 22px" />
           <span>保 存</span>
         </el-button>
       </el-tooltip>

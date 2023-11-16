@@ -1,20 +1,41 @@
 <template>
   <div class="post-processor-pane">
-    <template v-if="!isEmpty(postProcessorList)">
-      <!-- 操作按钮 -->
-      <div style="padding-left: 30px; margin-bottom: 10px">
-        <!-- 全部展开按钮 -->
-        <el-button type="primary" link @click="expandAll">
-          <SvgIcon icon-name="pymeter-expand-all" style="margin-right: 5px" />
-          全部展开
-        </el-button>
-        <!-- 全部收起按钮 -->
-        <el-button type="primary" link @click="collapseAll">
-          <SvgIcon icon-name="pymeter-collapse-all" style="margin-right: 5px" />
-          全部收起
-        </el-button>
+    <!-- 操作按钮 -->
+    <el-affix target=".pymeter-component-container" position="top" :offset="150">
+      <div style="display: flex; justify-content: space-between; padding: 0 5px 0 30px; margin-bottom: 10px">
+        <span>
+          <!-- 添加按钮 -->
+          <el-popover
+            v-model:visible="menuVisible"
+            trigger="click"
+            placement="bottom-start"
+            transition="el-zoom-in-top"
+            :teleported="false"
+          >
+            <template #reference>
+              <el-button type="primary" link :icon="Plus">添加处理器</el-button>
+            </template>
+            <el-button link @click="addPythonPostProcessor">Python脚本</el-button>
+            <el-button link @click="addJsonPathPostProcessor">Json提取器</el-button>
+            <el-button link @click="addSleepPostProcessor">固定定时器</el-button>
+          </el-popover>
+        </span>
+        <span v-if="!isEmpty(postProcessorList)">
+          <!-- 全部展开按钮 -->
+          <el-button type="primary" link @click="expandAll">
+            <SvgIcon icon-name="pymeter-expand-all" style="margin-right: 5px" />
+            全部展开
+          </el-button>
+          <!-- 全部收起按钮 -->
+          <el-button type="primary" link @click="collapseAll">
+            <SvgIcon icon-name="pymeter-collapse-all" style="margin-right: 5px" />
+            全部收起
+          </el-button>
+        </span>
       </div>
+    </el-affix>
 
+    <template v-if="!isEmpty(postProcessorList)">
       <!-- 可拖拽排序列表 -->
       <draggable
         ref="draggableRef"
@@ -69,24 +90,6 @@
         </template>
       </draggable>
     </template>
-
-    <!-- 添加按钮 -->
-    <div style="padding-left: 30px; margin: 15px 0">
-      <el-popover
-        v-model:visible="menuVisible"
-        trigger="click"
-        placement="right-start"
-        transition="el-zoom-in-top"
-        :teleported="false"
-      >
-        <template #reference>
-          <el-button type="primary" link :icon="Plus">添加处理器</el-button>
-        </template>
-        <el-button link @click="addPythonPostProcessor">Python脚本</el-button>
-        <el-button link @click="addJsonPathPostProcessor">Json提取器</el-button>
-        <el-button link @click="addSleepPostProcessor">固定定时器</el-button>
-      </el-popover>
-    </div>
   </div>
 </template>
 
@@ -139,7 +142,7 @@ const addPythonPostProcessor = () => {
   postProcessorList.value.push({
     enabled: true,
     elementNo: elementNo,
-    elementName: 'Python脚本',
+    elementName: 'Python后置处理器',
     elementType: 'POST_PROCESSOR',
     elementClass: 'PythonPostProcessor',
     elementProps: {

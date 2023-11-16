@@ -236,7 +236,7 @@ const checkParameter = () => {
 /**
  * 修改元素信息
  */
-const modifyElement = async (close = false) => {
+const modifyElement = async () => {
   // 表单校验
   const error = await elformRef.value
     .validate()
@@ -276,7 +276,7 @@ const modifyElement = async (close = false) => {
 /**
  * 创建元素
  */
-const createElement = async (close = false) => {
+const createElement = async () => {
   // 工作空间非空校验
   if (isEmpty(workspaceStore.workspaceNo)) {
     ElMessage({ message: '请先选择工作空间', type: 'error', duration: 2 * 1000 })

@@ -1,21 +1,21 @@
 <template>
   <div class="pymeter-component-container" tabindex="-1">
     <el-form
-      ref="elementFormRef"
+      ref="elformRef"
       label-position="right"
       label-width="120px"
       inline-message
       :model="elementData"
-      :rules="elementFormRules"
+      :rules="elementRules"
     >
       <!-- 元素名称 -->
       <el-form-item label="名称：" prop="elementName">
-        <el-input v-model="elementData.elementName" placeholder="元素名称" clearable :readonly="queryMode" />
+        <el-input v-model="elementData.elementName" placeholder="元素名称" clearable />
       </el-form-item>
 
       <!-- 元素备注 -->
       <el-form-item label="备注：" prop="elementDesc">
-        <el-input v-model="elementData.elementDesc" placeholder="元素备注" clearable :readonly="queryMode" />
+        <el-input v-model="elementData.elementDesc" placeholder="元素备注" clearable />
       </el-form-item>
 
       <!-- 串行执行 -->
@@ -37,7 +37,6 @@
           v-model="elementData.elementProps.TestCollection__delay"
           placeholder="间隔运行时间"
           clearable
-          :readonly="true"
         >
           <template #append>ms</template>
         </el-input>
@@ -45,30 +44,30 @@
 
       <!-- 配置tab -->
       <el-tabs v-model="activeTabName">
-        <el-tab-pane name="SETTINGS">
+        <el-tab-pane name="COMPO_SETTINGS">
           <template #label>
-            <el-badge :hidden="hiddenSettingsDot" type="success" is-dot>组件设置</el-badge>
+            <el-badge :hidden="hiddenCompoSettingsDot" type="success" is-dot>组件设置</el-badge>
           </template>
         </el-tab-pane>
         <el-tab-pane name="PREV_PROCESSOR">
           <template #label>
-            <el-badge :hidden="isEmpty(prevProcessorComponentList)" type="success" is-dot>前置处理器</el-badge>
+            <el-badge :hidden="isEmpty(elementData.elementCompos.prevList)" type="success" is-dot>前置处理器</el-badge>
           </template>
         </el-tab-pane>
         <el-tab-pane name="POST_PROCESSOR">
           <template #label>
-            <el-badge :hidden="isEmpty(postProcessorComponentList)" type="success" is-dot>后置处理器</el-badge>
+            <el-badge :hidden="isEmpty(elementData.elementCompos.postList)" type="success" is-dot>后置处理器</el-badge>
           </template>
         </el-tab-pane>
         <el-tab-pane name="TEST_ASSERTION">
           <template #label>
-            <el-badge :hidden="isEmpty(testAssertionComponentList)" type="success" is-dot>测试断言器</el-badge>
+            <el-badge :hidden="isEmpty(elementData.elementCompos.testList)" type="success" is-dot>测试断言器</el-badge>
           </template>
         </el-tab-pane>
       </el-tabs>
 
       <!-- 组件设置 -->
-      <div v-if="showSettingsTab" class="tab-pane">
+      <div v-if="showCompoSettingsTab" class="tab-pane">
         <el-form label-position="right" label-width="140px">
           <!-- 是否排除空间组件 -->
           <el-form-item>
@@ -95,7 +94,6 @@
               :inactive-icon="Close"
               :active-value="true"
               :inactive-value="false"
-              :disabled="queryMode"
             />
           </el-form-item>
           <!-- 倒序执行 -->
@@ -118,7 +116,12 @@
                 </el-tooltip>
               </div>
             </template>
-            <el-select v-model="runningStrategy.reverse" style="width: 300px" multiple clearable :disabled="queryMode">
+            <el-select
+              v-model="elementData.elementProps.TestCollection__running_strategy.reverse"
+              style="width: 300px"
+              multiple
+              clearable
+            >
               <el-option label="前置" value="PREV" />
               <el-option label="后置" value="POST" />
               <el-option label="断言" value="ASSERT" />
@@ -129,55 +132,54 @@
 
       <!-- 前置处理器 -->
       <div v-if="showPrevProcessorTab" class="tab-pane">
-        <PrevProcessorPane v-model="prevProcessorComponentList" :edit-mode="editMode" owner-type="HTTP" />
+        <PrevProcessorPane v-model="elementData.elementCompos.prevList" owner-type="HTTP" />
       </div>
 
       <!-- 后置处理器 -->
       <div v-if="showPostProcessorTab" class="tab-pane">
-        <PostProcessorPane v-model="postProcessorComponentList" :edit-mode="editMode" owner-type="HTTP" />
+        <PostProcessorPane v-model="elementData.elementCompos.postList" owner-type="HTTP" />
       </div>
 
       <!-- 测试断言器 -->
       <div v-if="showTestAssertionTab" class="tab-pane">
-        <TestAssertionPane v-model="testAssertionComponentList" :edit-mode="editMode" owner-type="HTTP" />
+        <TestAssertionPane v-model="elementData.elementCompos.testList" owner-type="HTTP" />
       </div>
 
       <!-- 操作按钮 -->
-      <el-form-item v-if="queryMode">
-        <el-button :icon="Edit" type="primary" @click="editNow()">编 辑</el-button>
-        <el-button :icon="Close" @click="closeTab()">关 闭</el-button>
-        <el-dropdown
-          split-button
-          trigger="click"
-          type="danger"
-          placement="bottom"
-          style="margin-left: 10px"
-          @click="executeTestCollection(elementNo)"
-        >
-          <SvgIcon icon-name="pymeter-send" style="margin-right: 5px" />
-          <span>运 行</span>
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item @click="queryCollectionJson()">查询脚本(JSON)</el-dropdown-item>
-            </el-dropdown-menu>
+      <el-affix target=".pymeter-component-container" position="bottom" :offset="60">
+        <div class="flexbox-center">
+          <template v-if="!creation">
+            <el-dropdown
+              split-button
+              type="primary"
+              trigger="click"
+              placement="bottom-end"
+              @click="executeTestCollection(elementData.elementNo)"
+            >
+              <SvgIcon icon-name="pymeter-send" style="margin-right: 5px; font-size: 18px" />
+              <span>运 行</span>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item @click="queryCollectionScript()">查询脚本</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
           </template>
-        </el-dropdown>
-      </el-form-item>
-      <el-form-item v-else-if="modifyMode">
-        <el-button :icon="Check" type="danger" @click="modifyElement()">保 存</el-button>
-        <el-button :icon="Check" @click="modifyElement(true)">保存并关闭</el-button>
-        <el-button :icon="Close" @click="closeTab()">关 闭</el-button>
-      </el-form-item>
-      <el-form-item v-else-if="createMode">
-        <el-button :icon="Check" type="primary" @click="createElement()">保 存</el-button>
-        <el-button :icon="Check" @click="createElement(true)">保存并关闭</el-button>
-        <el-button :icon="Close" @click="closeTab()">关 闭</el-button>
-      </el-form-item>
-    </el-form>
+          <template v-if="creation || unsaved">
+            <el-tooltip effect="light" placement="top" :content="shortcutKeyName">
+              <el-button type="danger" style="width: 120px; margin-left: 20px" @click="save()">
+                <SvgIcon icon-name="pymeter-save" style="margin-right: 5px; font-size: 22px" />
+                <span>保 存</span>
+              </el-button>
+            </el-tooltip>
+          </template>
+        </div>
+      </el-affix>
 
-    <el-dialog v-model="showJsonScriptDialog" center title="Json脚本" width="80%">
-      <MonacoEditor ref="jsonEditorRef" language="json" style="height: 400px" :readonly="true" />
-    </el-dialog>
+      <el-dialog v-model="showJsonScriptDialog" center title="Json脚本" width="80%">
+        <MonacoEditor ref="jsonEditorRef" language="json" style="height: 400px" :readonly="true" />
+      </el-dialog>
+    </el-form>
   </div>
 </template>
 
@@ -188,30 +190,29 @@ import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
 import PostProcessorPane from '@/pymeter/components/editor-main/component-panes/PostProcessorPane.vue'
 import PrevProcessorPane from '@/pymeter/components/editor-main/component-panes/PrevProcessorPane.vue'
 import TestAssertionPane from '@/pymeter/components/editor-main/component-panes/TestAssertionPane.vue'
+import EditorEmits from '@/pymeter/composables/editor.emits'
 import EditorProps from '@/pymeter/composables/editor.props'
 import useEditor from '@/pymeter/composables/useEditor'
 import useElement from '@/pymeter/composables/useElement'
 import useRunnableElement from '@/pymeter/composables/useRunnableElement'
 import { usePyMeterStore } from '@/store/pymeter'
+import { usePyMeterDB } from '@/store/pymeter-db'
 import { useWorkspaceStore } from '@/store/workspace'
-import { Check, Close, Edit, Warning } from '@element-plus/icons-vue'
+import { toHashCode } from '@/utils/object-util'
+import { Check, Close, Warning } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
-import { isEmpty } from 'lodash-es'
+import { debounce, isEmpty } from 'lodash-es'
 
+const emit = defineEmits(EditorEmits)
 const props = defineProps(EditorProps)
 const pymeterStore = usePyMeterStore()
 const workspaceStore = useWorkspaceStore()
-const { assignElement } = useElement()
 const { executeTestCollection } = useRunnableElement()
-const { editMode, queryMode, modifyMode, createMode, functions, editNow, setReadonly, updateTab, closeTab } =
-  useEditor(props)
-
-const elementFormRef = ref()
-const elementFormRules = {
-  elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }]
-}
+const { assignElement, assignMetadata, assignComponent } = useElement()
+const { unsaved, metadata, creation, localkey, shortcutKeyName, updateTabName } = useEditor()
+const offlineDB = usePyMeterDB().offlineDB
 const elementData = ref({
-  elementNo: props.editorNo,
+  elementNo: props.metadata.sn,
   elementName: '测试集合',
   elementDesc: '',
   elementType: 'COLLECTION',
@@ -221,7 +222,10 @@ const elementData = ref({
   },
   elementProps: {
     TestCollection__serialize_workers: 'true',
-    TestCollection__delay: '0'
+    TestCollection__delay: '0',
+    TestCollection__running_strategy: {
+      reverse: []
+    }
   },
   elementCompos: {
     confList: [],
@@ -230,207 +234,137 @@ const elementData = ref({
     testList: []
   }
 })
-const elementNo = computed(() => elementData.value.elementNo)
-const elementName = computed(() => elementData.value.elementName)
-// 运行策略
-const runningStrategy = ref({
-  reverse: []
-})
-const activeTabName = ref('SETTINGS')
-const showSettingsTab = computed(() => activeTabName.value === 'SETTINGS')
+const elementRules = {
+  elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }]
+}
+const excludeWorkspace = computed(() => elementData.value.elementAttrs.TestCollection__exclude_workspace)
+const runningReverse = computed(() => elementData.value.elementProps.TestCollection__running_strategy.reverse)
+
+const activeTabName = ref('COMPO_SETTINGS')
+const showCompoSettingsTab = computed(() => activeTabName.value === 'COMPO_SETTINGS')
 const showPrevProcessorTab = computed(() => activeTabName.value === 'PREV_PROCESSOR')
 const showPostProcessorTab = computed(() => activeTabName.value === 'POST_PROCESSOR')
 const showTestAssertionTab = computed(() => activeTabName.value === 'TEST_ASSERTION')
-const hiddenSettingsDot = computed(() => {
-  return !elementData.value.elementAttrs.TestCollection__exclude_workspace && isEmpty(runningStrategy.value.reverse)
-})
+const hiddenCompoSettingsDot = computed(() => !excludeWorkspace.value && isEmpty(runningReverse.value))
 
-const componentList = ref([])
-const prevProcessorComponentList = ref([])
-const postProcessorComponentList = ref([])
-const testAssertionComponentList = ref([])
-const pendingSubmitComponentList = computed(() => {
-  // 添加 elementIndex 属性
-  prevProcessorComponentList.value.forEach((item, index) => (item.elementIndex = index + 1))
-  postProcessorComponentList.value.forEach((item, index) => (item.elementIndex = index + 1))
-  testAssertionComponentList.value.forEach((item, index) => (item.elementIndex = index + 1))
-  // 组合成一个数组
-  return [...prevProcessorComponentList.value, ...postProcessorComponentList.value, ...testAssertionComponentList.value]
-})
-
+const elformRef = ref()
 const jsonEditorRef = ref()
 const showJsonScriptDialog = ref(false)
 
-onMounted(() => {
-  // 查询或更新模式时，先拉取元素信息
-  if (createMode.value) return
-  query()
+watch(
+  elementData,
+  debounce((localdata) => {
+    console.log('watch')
+    // 添加组件索引
+    localdata.elementCompos.prevList.forEach((item, index) => (item.elementIndex = index + 1))
+    localdata.elementCompos.postList.forEach((item, index) => (item.elementIndex = index + 1))
+    localdata.elementCompos.testList.forEach((item, index) => (item.elementIndex = index + 1))
+    // 如果前后端数据一致则代表数据未更改
+    if (metadata.value.hashcode === toHashCode(localdata)) {
+      // 数据一致则表示数据未变更
+      unsaved.value = false
+      // 数据未变更，移除离线数据
+      offlineDB.removeItem(localkey.value)
+      return
+    }
+    console.log('存离线')
+    // 标记数据未保存
+    unsaved.value = true
+    // 存储离线数据
+    offlineDB.setItem(localkey.value, JSON.parse(JSON.stringify({ data: localdata, meta: metadata.value })))
+  }, 250),
+  { deep: true, flush: 'sync' }
+)
+
+onMounted(async () => {
+  // 优先查询离线数据
+  if (unsaved.value) {
+    queryOfflineData()
+    return
+  }
+  // 新增模式计算HashCode并存储
+  if (creation.value) {
+    metadata.value.hashcode = toHashCode(elementData.value)
+    return
+  }
+  // 最后才查询后端数据
+  queryBackendData()
 })
 
 /**
- * 查询元素信息及内置元素
+ * 查询离线数据
  */
-const query = (_elementNo_ = elementNo.value) => {
+const queryOfflineData = async () => {
+  const offline = await offlineDB.getItem(localkey.value)
+  assignElement(elementData.value, offline.data)
+  assignMetadata(metadata.value, offline.meta)
+}
+
+/**
+ * 查询后端数据
+ */
+const queryBackendData = async () => {
+  let response = null
   // 查询元素信息
-  ElementService.queryElementInfo({ elementNo: _elementNo_ }).then((response) => {
-    assignElement(elementData.value, response.result)
-    setRunningStrategy()
-  })
-  // 查询内置元素
-  ElementService.queryElementComponents({ elementNo: _elementNo_ }).then((response) => {
-    componentList.value = response.result
-    setComponentsByType()
-    sortComponents()
-  })
-}
-
-/**
- * 根据类型分别存储内置元素
- */
-const setComponentsByType = () => {
-  // 先清空原有列表
-  prevProcessorComponentList.value = []
-  postProcessorComponentList.value = []
-  testAssertionComponentList.value = []
-  // 根据类型存储至列表
-  componentList.value.forEach((item) => {
-    if (item.elementType === 'PREV_PROCESSOR') {
-      prevProcessorComponentList.value.push(item)
-    } else if (item.elementType === 'POST_PROCESSOR') {
-      postProcessorComponentList.value.push(item)
-    } else if (item.elementType === 'ASSERTION') {
-      testAssertionComponentList.value.push(item)
-    } else {
-      return
-    }
-  })
-}
-
-/**
- * 设置运行策略
- */
-const setRunningStrategy = () => {
-  const strategyProp = elementData.value.elementProps.TestCollection__running_strategy
-  if (isEmpty(strategyProp)) return
-  runningStrategy.value.reverse = strategyProp.reverse || []
-}
-
-/**
- * 根据 elementIndex 排序
- */
-const sortComponents = () => {
-  prevProcessorComponentList.value.sort((a, b) => a.elementIndex - b.elementIndex)
-  postProcessorComponentList.value.sort((a, b) => a.elementIndex - b.elementIndex)
-  testAssertionComponentList.value.sort((a, b) => a.elementIndex - b.elementIndex)
-}
-
-/**
- * 更新元素属性
- */
-const updateElementProperty = () => {
-  const elProps = elementData.value.elementProps
-  // 设置运行策略
-  if (isEmpty(runningStrategy.value.reverse) && 'TestCollection__running_strategy' in elProps) {
-    elProps.TestCollection__running_strategy = null
-  } else {
-    elProps.TestCollection__running_strategy = runningStrategy.value
-  }
+  response = await ElementService.queryElementInfo({ elementNo: elementData.value.elementNo })
+  assignElement(elementData.value, response.result)
+  // 查询元素组件
+  response = await ElementService.queryElementComponents({ elementNo: elementData.value.elementNo })
+  assignComponent(elementData.value, response.result)
+  // 计算HashCode并存储
+  assignMetadata(metadata.value, { hashcode: toHashCode(elementData.value) })
 }
 
 /**
  * 修改元素
  */
-const modifyElement = async (close = false) => {
-  // 表单校验
-  const error = await elementFormRef.value
-    .validate()
-    .then(() => false)
-    .catch(() => true)
-  if (error) {
-    ElMessage({ message: '数据校验失败', type: 'error', duration: 2 * 1000 })
-    return
-  }
-  // 更新元素属性
-  updateElementProperty()
+const modifyElement = async () => {
   // 修改元素
-  await ElementService.modifyElement({
-    ...elementData.value,
-    componentList: pendingSubmitComponentList.value
-  })
-  // 无需关闭 tab
-  if (!close) {
-    // 设置为只读模式
-    setReadonly()
-    // 更新 tab 标题
-    updateTab(elementName.value)
-    // 重新查询元素信息及内置元素
-    query()
-  }
-  // 重新查询集合列表
+  await ElementService.modifyElement(elementData.value)
+  // 刷新集合列表
   pymeterStore.refreshCollections()
-  // 成功提示
-  ElMessage({ message: '修改元素成功', type: 'info', duration: 2 * 1000 })
-  // 关闭 tab
-  if (close) {
-    closeTab()
-  }
+  // 刷新元素列表
+  pymeterStore.refreshElementTree()
 }
 
 /**
- * 创建元素
+ * 新增元素
  */
-const createElement = async (close = false) => {
+const createElement = async () => {
   // 工作空间非空校验
   if (isEmpty(workspaceStore.workspaceNo)) {
     ElMessage({ message: '请先选择工作空间', type: 'error', duration: 2 * 1000 })
     return
   }
-  // 表单校验
-  const error = await elementFormRef.value
-    .validate()
-    .then(() => false)
-    .catch(() => true)
-  if (error) {
-    ElMessage({ message: '数据校验失败', type: 'error', duration: 2 * 1000 })
-    return
-  }
-  // 更新元素属性
-  updateElementProperty()
   // 新增元素
   const response = await ElementService.createElementRoot({
     workspaceNo: workspaceStore.workspaceNo,
-    ...elementData.value,
-    componentList: pendingSubmitComponentList.value
+    ...elementData.value
   })
-  // 无需关闭 tab
-  if (!close) {
-    // 设置为只读模式
-    setReadonly()
-    // 更新 tab 标题和编号
-    updateTab(elementName.value, response.result.elementNo)
-    // 重新查询元素信息及内置元素
-    query(response.result.elementNo)
-  }
-  // 重新查询集合列表
+  // 移除离线数据
+  offlineDB.removeItem(props.editorNo)
+  // 提取元素编号
+  const elementNo = response.result.elementNo
+  // 更新Tab序列号
+  metadata.value.sn = elementNo
+  // 更新元素编号
+  elementData.value.elementNo = elementNo
+  // 刷新集合列表
   pymeterStore.refreshCollections()
-  // 新增成功后立即在列表中展示
-  pymeterStore.addSelectedCollection(response.result.elementNo)
+  // 刷新元素列表
+  pymeterStore.refreshElementTree()
+  // 添加至已选列表中
+  pymeterStore.addSelectedCollection(elementNo)
   // 滚动至底部
   pymeterStore.scrollToElementTreeBottom()
-  // 成功提示
-  ElMessage({ message: '新增元素成功', type: 'info', duration: 2 * 1000 })
-  // 关闭 tab
-  if (close) {
-    closeTab()
-  }
 }
 
 /**
  * 查看 Json 脚本
  */
-const queryCollectionJson = () => {
+const queryCollectionScript = () => {
   ExecutionService.queryCollectionJson({
-    collectionNo: elementNo.value,
+    collectionNo: elementData.value.elementNo,
     datasets: pymeterStore.selectedDatasets,
     useCurrentValue: pymeterStore.useCurrentValue
   }).then((response) => {
@@ -444,9 +378,36 @@ const queryCollectionJson = () => {
   })
 }
 
-// 暂存函数，给 useEditor 使用
-functions.createFn = createElement
-functions.modifyFn = modifyElement
+/**
+ * 提交数据
+ */
+const save = async () => {
+  // 表单校验
+  const error = await elformRef.value
+    .validate()
+    .then(() => false)
+    .catch(() => true)
+  if (error) {
+    ElMessage({ message: '数据校验失败', type: 'error', duration: 2 * 1000 })
+    return
+  }
+  // 保存元素
+  creation.value ? await createElement() : await modifyElement()
+  // 标记数据已保存
+  unsaved.value = false
+  // 更新HashCode
+  metadata.value.hashcode = toHashCode(elementData.value)
+  // 移除离线数据
+  offlineDB.removeItem(localkey.value)
+  // 更新 tab 标题
+  updateTabName(elementData.value.elementName)
+  // 成功提示
+  ElMessage({ message: '保存成功', type: 'info', duration: 2 * 1000 })
+}
+
+defineExpose({
+  save
+})
 </script>
 
 <style lang="scss" scoped>
@@ -460,5 +421,9 @@ functions.modifyFn = modifyElement
 
 :deep(.el-badge__content.is-fixed.is-dot) {
   right: -4px;
+}
+
+:deep(.el-button-group .el-button:first-child) {
+  width: 90px;
 }
 </style>

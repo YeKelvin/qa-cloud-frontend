@@ -100,12 +100,12 @@ import { usePyMeterDB } from '@/store/pymeter-db'
 import { toHashCode } from '@/utils/object-util'
 import { Warning } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
-import { debounce, isEmpty } from 'lodash-es'
+import { isEmpty, debounce } from 'lodash-es'
 
-const props = defineProps(EditorProps)
 const emit = defineEmits(EditorEmits)
-const { assignElement, assignComponent } = useElement()
+const props = defineProps(EditorProps)
 const { unsaved, metadata, localkey, shortcutKeyName } = useEditor()
+const { assignElement, assignMetadata, assignComponent } = useElement()
 const offlineDB = usePyMeterDB().offlineDB
 const elementData = ref({
   elementNo: props.metadata.sn,
@@ -160,8 +160,8 @@ watch(
 )
 
 onMounted(async () => {
-  // 优先查询离线数据
   if (unsaved.value) {
+    // 查询离线数据
     queryOfflineData()
   } else {
     // 查询后端数据
@@ -174,8 +174,8 @@ onMounted(async () => {
  */
 const queryOfflineData = async () => {
   const offline = await offlineDB.getItem(localkey.value)
-  Object.assign(elementData.value, offline.data)
-  Object.assign(metadata.value, offline.meta)
+  assignElement(elementData.value, offline.data)
+  assignMetadata(metadata.value, offline.meta)
 }
 
 /**
@@ -189,25 +189,8 @@ const queryBackendData = async () => {
   // 查询空间元素组件
   response = await ElementService.queryElementComponents({ elementNo: elementData.value.elementNo })
   assignComponent(elementData.value, response.result)
-  // 初始化空间设置
-  initAttrs()
   // 计算HashCode并存储
-  Object.assign(metadata.value, { hashcode: toHashCode(elementData.value) })
-}
-
-/**
- * 初始化空间属性
- */
-const initAttrs = () => {
-  if (!elementData.value.elementAttrs) {
-    elementData.value.elementAttrs = { running_strategy: { reverse: [] } }
-  }
-  if (!elementData.value.elementAttrs.running_strategy) {
-    elementData.value.elementAttrs.running_strategy = { reverse: [] }
-  }
-  if (!elementData.value.elementAttrs.running_strategy.reverse) {
-    elementData.value.elementAttrs.running_strategy.reverse = []
-  }
+  assignMetadata(metadata.value, { hashcode: toHashCode(elementData.value) })
 }
 
 /**
@@ -218,7 +201,9 @@ const save = async () => {
   await ElementService.modifyElement(elementData.value)
   // 标记数据已保存
   unsaved.value = false
-  // 保存成功后移除离线数据
+  // 更新HashCode
+  metadata.value.hashcode = toHashCode(elementData.value)
+  // 移除离线数据
   offlineDB.removeItem(localkey.value)
   // 成功提示
   ElMessage({ message: '设置成功', type: 'info', duration: 2 * 1000 })

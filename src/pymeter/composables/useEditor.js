@@ -8,12 +8,6 @@ export default function useEditor() {
   const creation = computed(() => isEmpty(instance.props.metadata.sn))
   const localkey = computed(() => (creation.value ? instance.props.editorNo : instance.props.metadata.sn))
 
-  const { editorNo, editorMode } = toRefs(instance.props) // TODO: delete
-  const editMode = ref(editorMode.value) // TODO: delete
-  const queryMode = computed(() => editMode.value === 'QUERY') // TODO: delete
-  const modifyMode = computed(() => editMode.value === 'MODIFY') // TODO: delete
-  const createMode = computed(() => editMode.value === 'CREATE') // TODO: delete
-
   const unsaved = computed({
     get: () => instance.props.unsaved,
     set: (val) => instance.emit('update:unsaved', val)
@@ -29,48 +23,11 @@ export default function useEditor() {
     return onMacOS.value ? '⌘+S' : 'Ctrl+S'
   })
 
-  const functions = reactive({}) // TODO: delete
-
-  /**
-   * 开启编辑模式
-   */
-  const editNow = () => {
-    editMode.value = 'MODIFY' // TODO: delete
-  }
-
-  /**
-   * 设为只读模式
-   */
-  const setReadonly = () => {
-    editMode.value = 'QUERY' // TODO: delete
-  }
-
-  /**
-   * 更新 tab
-   */
-  const updateTab = (name, number = null) => {
-    // TODO: delete
-    pymeterStore.updateTab({
-      editorNo: editorNo.value,
-      editorName: name,
-      metadata: number ? { sn: number, elementNo: number } : null
-    })
-  }
-
   const updateTabName = (name) => {
     pymeterStore.updateTab({
-      editorNo: editorNo.value,
-      editorName: name,
-      metadata: {
-        name: name
-      }
-    })
-  }
-
-  const updateTabMeta = (metadata) => {
-    pymeterStore.updateTab({
-      editorNo: editorNo.value,
-      metadata: metadata
+      metadata: { name: name },
+      editorNo: instance.props.editorNo,
+      editorName: name
     })
   }
 
@@ -78,7 +35,7 @@ export default function useEditor() {
    * 关闭 tab
    */
   const closeTab = () => {
-    pymeterStore.removeTab({ editorNo: editorNo.value })
+    pymeterStore.removeTab({ editorNo: instance.props.editorNo })
   }
 
   /**
@@ -142,17 +99,8 @@ export default function useEditor() {
     creation,
     localkey,
     shortcutKeyName,
-    editMode,
-    queryMode,
-    modifyMode,
-    createMode,
-    functions,
-    editNow,
-    setReadonly,
-    updateTab,
     closeTab,
     updateTabName,
-    updateTabMeta,
     expandParentNode,
     refreshElementTree
   }

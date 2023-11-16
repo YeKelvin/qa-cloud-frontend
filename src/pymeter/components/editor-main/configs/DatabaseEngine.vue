@@ -177,7 +177,7 @@ const updateConfigNo = (val) => {
 /**
  * 修改元素
  */
-const modifyConfigurator = async (close = false) => {
+const modifyConfigurator = async () => {
   // 表单校验
   const error = await elformRef.value
     .validate()
@@ -209,7 +209,7 @@ const modifyConfigurator = async (close = false) => {
 /**
  * 创建元素
  */
-const createConfigurator = async (close = false) => {
+const createConfigurator = async () => {
   // 工作空间非空校验
   if (isEmpty(workspaceStore.workspaceNo)) {
     ElMessage({ message: '请先选择工作空间', type: 'error', duration: 2 * 1000 })
