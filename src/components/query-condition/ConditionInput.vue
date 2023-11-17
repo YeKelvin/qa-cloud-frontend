@@ -29,17 +29,16 @@ export default {
 .condition-item {
   display: inline-flex;
   align-items: center;
-
-  color: #909399;
-  font-size: 14px;
   width: 20rem;
   padding-right: 24px;
   padding-bottom: 12px;
+  font-size: 14px;
+  color: #909399;
 }
 
 .condition-label {
-  margin-right: 6px;
   width: fit-content;
+  margin-right: 6px;
   white-space: nowrap;
 }
 </style>

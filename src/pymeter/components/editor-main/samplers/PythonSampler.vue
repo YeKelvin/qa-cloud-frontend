@@ -40,12 +40,12 @@
         runnable
         @run="executeSampler(metadata.rootNo, elementData.elementNo)"
       />
-
-      <!-- 操作按钮 -->
-      <template v-if="creation || unsaved">
-        <SaveButton :tips="shortcutKeyName" @click="save()" />
-      </template>
     </el-form>
+
+    <!-- 操作按钮 -->
+    <template v-if="creation || unsaved">
+      <SaveButton :tips="shortcutKeyName" @click="save()" />
+    </template>
   </div>
 </template>
 
@@ -56,15 +56,15 @@ import SaveButton from '@/pymeter/components/editor-main/common/SaveButton.vue'
 import EditorEmits from '@/pymeter/composables/editor.emits'
 import EditorProps from '@/pymeter/composables/editor.props'
 import useEditor from '@/pymeter/composables/useEditor'
+import useElement from '@/pymeter/composables/useElement'
 import useRunnableElement from '@/pymeter/composables/useRunnableElement'
 import { usePyMeterDB } from '@/store/pymeter-db'
 import { toHashCode } from '@/utils/object-util'
 import { ElMessage } from 'element-plus'
 import { debounce } from 'lodash-es'
-import useElement from '@/pymeter/composables/useElement'
 
-const props = defineProps(EditorProps)
 const emit = defineEmits(EditorEmits)
+const props = defineProps(EditorProps)
 const { executeSampler } = useRunnableElement()
 const { assignElement, assignMetadata } = useElement()
 const { unsaved, metadata, creation, localkey, shortcutKeyName, updateTabName, expandParentNode, refreshElementTree } =
@@ -147,6 +147,7 @@ const queryBackendData = async () => {
  * 修改元素
  */
 const modifyElement = async () => {
+  // 修改元素
   await ElementService.modifyElement(elementData.value)
 }
 

@@ -49,6 +49,17 @@ let modifiedModel
 onMounted(() => {
   originalModel = monaco.editor.createModel(props.oldValue, props.language)
   modifiedModel = monaco.editor.createModel(props.newValue, props.language)
+  instance = createDiffEditor()
+  instance.setModel({
+    original: originalModel,
+    modified: modifiedModel
+  })
+})
+onUnmounted(() => {
+  instance && instance.dispose()
+})
+
+const createDiffEditor = async () => {
   instance = monaco.editor.createDiffEditor(editorRef.value, {
     theme: props.theme,
     fontSize: props.fontSize,
@@ -58,15 +69,32 @@ onMounted(() => {
     lineNumbers: props.lineNumbers,
     ...options.value
   })
-  instance.setModel({
-    original: originalModel,
-    modified: modifiedModel
-  })
-})
+  await waitingCreated()
+  return instance
+}
 
-onUnmounted(() => {
-  instance && instance.dispose()
-})
+const waitingCreated = () => {
+  let timeoutId = null
+  let intervalId = null
+
+  return new Promise((resolve, reject) => {
+    if (instance) resolve()
+
+    timeoutId = setTimeout(() => {
+      clearInterval(intervalId)
+      ElMessage({ message: '创建MonacoEditor超时，请刷新重试!', type: 'error', duration: 2 * 1000 })
+      reject(new Error('fail'))
+    }, 5000)
+
+    intervalId = setInterval(() => {
+      if (instance) {
+        clearInterval(intervalId)
+        clearTimeout(timeoutId)
+        resolve()
+      }
+    }, 100)
+  })
+}
 
 const setOldValue = (val) => {
   originalModel.setValue(prettyData(val))

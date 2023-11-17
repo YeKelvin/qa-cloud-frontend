@@ -33,28 +33,28 @@ const resizeTextarea = () => {
 
 <style lang="scss" scoped>
 .autosize-textarea {
-  display: table-cell;
-  vertical-align: middle;
   position: relative;
-  overflow: hidden;
-  resize: None;
-  padding: 0 10px;
-  outline: 0;
   box-sizing: border-box;
-  color: #606266;
-  font-size: inherit;
-  font-family: inherit;
-  letter-spacing: 0.6px;
-  line-height: 32px;
-  height: 32px;
+  display: table-cell;
   width: 100%;
-  background-color: #ffffff;
+  height: 32px;
+  padding: 0 10px;
+  overflow: hidden;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: 32px;
+  color: #606266;
+  letter-spacing: 0.6px;
+  vertical-align: middle;
+  resize: None;
+  background-color: #fff;
   background-image: none;
   border: 0;
   border-bottom: 1px solid #dcdfe6;
   border-radius: 4px;
-  border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  outline: 0;
   transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
 
   &::placeholder {
@@ -66,8 +66,8 @@ const resizeTextarea = () => {
   }
 
   &:focus {
-    outline: none;
     border-color: #409eff;
+    outline: none;
   }
 }
 </style>

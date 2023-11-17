@@ -1,7 +1,7 @@
 <template>
   <el-table style="width: 100%" stripe>
     <!-- 参数名称 -->
-    <el-table-column label="参数名称" width="auto">
+    <el-table-column label="参数名" width="auto">
       <template #default="{ row }">
         <span>{{ row.name }}</span>
       </template>

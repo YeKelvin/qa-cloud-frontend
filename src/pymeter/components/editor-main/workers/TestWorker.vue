@@ -74,42 +74,43 @@
           />
         </el-form-item>
       </div>
-
-      <!-- 操作按钮 -->
-      <el-affix target=".pymeter-component-container" position="bottom" :offset="60">
-        <div class="flexbox-center">
-          <template v-if="!creation">
-            <el-dropdown
-              split-button
-              type="primary"
-              trigger="click"
-              placement="bottom-end"
-              @click="executeTestWorker(metadata.rootNo, elementData.elementNo)"
-            >
-              <SvgIcon icon-name="pymeter-send" style="margin-right: 5px; font-size: 18px" />
-              <span>运 行</span>
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item @click="queryWorkerScript()">查询脚本</el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
-          </template>
-          <template v-if="creation || unsaved">
-            <el-tooltip effect="light" placement="top" :content="shortcutKeyName">
-              <el-button type="danger" style="width: 120px; margin-left: 20px" @click="save()">
-                <SvgIcon icon-name="pymeter-save" style="margin-right: 5px; font-size: 22px" />
-                <span>保 存</span>
-              </el-button>
-            </el-tooltip>
-          </template>
-        </div>
-      </el-affix>
-
-      <el-dialog v-model="showJsonScriptDialog" center title="Json脚本" width="80%">
-        <MonacoEditor ref="jsonEditorRef" language="json" style="height: 400px" :readonly="true" />
-      </el-dialog>
     </el-form>
+
+    <!-- 操作按钮 -->
+    <el-affix target=".pymeter-component-container" position="bottom" :offset="60">
+      <div class="flexbox-center">
+        <template v-if="!creation">
+          <el-dropdown
+            split-button
+            type="primary"
+            trigger="click"
+            placement="bottom-end"
+            @click="executeTestWorker(metadata.rootNo, elementData.elementNo)"
+          >
+            <SvgIcon icon-name="pymeter-send" style="margin-right: 5px; font-size: 18px" />
+            <span>运 行</span>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item @click="queryWorkerScript()">查询脚本</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </template>
+        <template v-if="creation || unsaved">
+          <el-tooltip effect="light" placement="top" :content="shortcutKeyName">
+            <el-button type="danger" style="width: 120px; margin-left: 20px" @click="save()">
+              <SvgIcon icon-name="pymeter-save" style="margin-right: 5px; font-size: 22px" />
+              <span>保 存</span>
+            </el-button>
+          </el-tooltip>
+        </template>
+      </div>
+    </el-affix>
+
+    <!-- JSON脚本 -->
+    <el-dialog v-model="showJsonScriptDialog" center title="Json脚本" width="80%">
+      <MonacoEditor ref="jsonEditorRef" language="json" style="height: 400px" :readonly="true" />
+    </el-dialog>
   </div>
 </template>
 

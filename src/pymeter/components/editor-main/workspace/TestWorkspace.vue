@@ -100,7 +100,7 @@ import { usePyMeterDB } from '@/store/pymeter-db'
 import { toHashCode } from '@/utils/object-util'
 import { Warning } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
-import { isEmpty, debounce } from 'lodash-es'
+import { debounce, isEmpty } from 'lodash-es'
 
 const emit = defineEmits(EditorEmits)
 const props = defineProps(EditorProps)

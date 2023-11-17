@@ -52,16 +52,7 @@ watch(
 )
 
 onMounted(async () => {
-  instance = monaco.editor.create(editorRef.value, {
-    fontSize: props.fontSize,
-    language: props.language,
-    readOnly: props.readonly,
-    wordWrap: props.wordWrap,
-    lineNumbers: props.lineNumbers,
-    theme: props.theme,
-    value: props.modelValue,
-    ...options.value
-  })
+  instance = await createEditor()
   // 设置行尾符合为\n
   instance.getModel().setEOL(monaco.editor.EndOfLinePreference.LF)
   // 双向绑定
@@ -88,7 +79,7 @@ const createEditor = async () => {
   return instance
 }
 
-const waitingCreated = (tab) => {
+const waitingCreated = () => {
   let timeoutId = null
   let intervalId = null
 
