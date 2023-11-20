@@ -1,15 +1,11 @@
 <template>
-  <div :class="{ 'show-border': !queryMode }">
-    <div v-if="!queryMode" style="display: flex; align-items: center">
-      <SimpleTextarea v-model="name" style="border-radius: 0; border-bottom: 0" />
+  <div class="show-border">
+    <div style="display: flex; align-items: center">
+      <SimpleTextarea v-model="name" style="border-bottom: 0; border-radius: 0" />
       <el-select v-model="argtype" class="argument-type-select">
         <el-option label="text" value="text" />
         <el-option label="file" value="file" disabled />
       </el-select>
-    </div>
-    <div v-else style="display: flex; align-items: center; justify-content: space-between">
-      <span class="argument-name">{{ name }}</span>
-      <span class="argument-type">{{ argtype }}</span>
     </div>
   </div>
 </template>
@@ -30,7 +26,6 @@ const argtype = computed({
   get: () => props.argtype,
   set: (val) => emit('update:argtype', val)
 })
-const queryMode = inject('queryMode')
 </script>
 
 <style lang="scss" scoped>
@@ -44,7 +39,8 @@ const queryMode = inject('queryMode')
 }
 
 .argument-type-select {
-  width: 90px;
+  width: 68px;
+  min-width: 68px;
   height: 100%;
 
   &.el-select {
@@ -54,26 +50,26 @@ const queryMode = inject('queryMode')
   }
 
   :deep(.el-input__inner) {
+    background-color: #fff;
     box-shadow: none;
-    background-color: #ffffff;
   }
 
   :deep(.el-input__wrapper) {
+    background-color: #fff;
     box-shadow: none;
-    background-color: #ffffff;
   }
 }
 
 .argument-name {
-  white-space: pre-wrap;
-  letter-spacing: 0.6px;
   text-overflow: ellipsis;
+  letter-spacing: 0.6px;
+  white-space: pre-wrap;
 }
 
 .argument-type {
-  padding: 0 5px;
   width: 40px;
   min-width: 40px;
+  padding: 0 5px;
   color: var(--el-disabled-text-color);
 }
 </style>

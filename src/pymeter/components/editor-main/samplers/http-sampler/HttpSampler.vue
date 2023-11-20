@@ -1,41 +1,40 @@
 <template>
   <div class="pymeter-component-container" tabindex="-1">
     <el-form
-      ref="elementFormRef"
+      ref="elformRef"
       label-position="right"
       label-width="80px"
       inline-message
       :model="elementData"
-      :rules="elementFormRules"
+      :rules="elementRules"
     >
       <!-- 元素名称 -->
       <el-form-item label="名称：" prop="elementName">
-        <el-input v-model="elementData.elementName" placeholder="元素名称" clearable :readonly="queryMode" />
+        <el-input v-model="elementData.elementName" placeholder="元素名称" clearable />
       </el-form-item>
 
       <!-- 元素备注 -->
       <el-form-item label="备注：" prop="elementDesc">
-        <el-input v-model="elementData.elementDesc" placeholder="元素备注" clearable :readonly="queryMode" />
+        <el-input v-model="elementData.elementDesc" placeholder="元素备注" clearable />
       </el-form-item>
 
       <!-- URL = 请求方法 + 请求方法-->
       <el-form-item id="url" label="地址：" prop="elementProps.HTTPSampler__url">
         <span style="display: flex; flex: 1">
           <!-- 请求方法 -->
-          <el-input
-            v-model="elementData.elementProps.HTTPSampler__url"
-            placeholder="请求地址"
-            clearable
-            :readonly="queryMode"
-          >
+          <el-input v-model="elementData.elementProps.HTTPSampler__url" placeholder="请求地址" clearable>
             <template #prepend>
               <!-- 请求方法 -->
-              <HTTPMethodSelect v-model="elementData.elementProps.HTTPSampler__method" :disabled="queryMode" />
+              <HTTPMethodSelect v-model="elementData.elementProps.HTTPSampler__method" />
             </template>
           </el-input>
           <!-- 运行按钮 -->
-          <el-button v-show="queryMode" type="danger" style="margin-left: 10px" @click="executeSampler(elementNo)">
-            <SvgIcon icon-name="pymeter-send" style="margin-right: 5px" />
+          <el-button
+            type="primary"
+            style="margin-left: 10px"
+            @click="executeSampler(metadata.rootNo, elementData.elementNo)"
+          >
+            <SvgIcon icon-name="pymeter-send" style="margin-right: 5px; font-size: 18px" />
             运 行
           </el-button>
         </span>
@@ -43,77 +42,74 @@
 
       <!-- 请求配置tab -->
       <el-tabs v-model="activeTabName">
-        <el-tab-pane name="HEADERS">
+        <el-tab-pane name="HTTP_HEADERS">
           <template #label>
-            <el-badge :hidden="hiddenHeadersDot" type="success" is-dot>请求头</el-badge>
+            <el-badge :hidden="hiddenHTTPHeadersDot" type="success" is-dot>请求头</el-badge>
           </template>
         </el-tab-pane>
-        <el-tab-pane name="PARAMS">
+        <el-tab-pane name="HTTP_QUERYS">
           <template #label>
-            <el-badge :hidden="hiddenQuerysDot" type="success" is-dot>查询参数</el-badge>
+            <el-badge :hidden="hiddenHTTPQuerysDot" type="success" is-dot>查询参数</el-badge>
           </template>
         </el-tab-pane>
-        <el-tab-pane name="BODY">
+        <el-tab-pane name="HTTP_BODY">
           <template #label>
-            <el-badge :hidden="hiddenBodyDot" type="success" is-dot>请求体</el-badge>
+            <el-badge :hidden="hiddenHTTPBodyDot" type="success" is-dot>请求体</el-badge>
           </template>
         </el-tab-pane>
         <el-tab-pane name="PREV_PROCESSOR">
           <template #label>
-            <el-badge :hidden="isEmpty(prevProcessorComponentList)" type="success" is-dot>前置处理器</el-badge>
+            <el-badge :hidden="isEmpty(elementData.elementCompos.prevList)" type="success" is-dot>前置处理器</el-badge>
           </template>
         </el-tab-pane>
         <el-tab-pane name="POST_PROCESSOR">
           <template #label>
-            <el-badge :hidden="isEmpty(postProcessorComponentList)" type="success" is-dot>后置处理器</el-badge>
+            <el-badge :hidden="isEmpty(elementData.elementCompos.postList)" type="success" is-dot>后置处理器</el-badge>
           </template>
         </el-tab-pane>
         <el-tab-pane name="TEST_ASSERTION">
           <template #label>
-            <el-badge :hidden="isEmpty(testAssertionComponentList)" type="success" is-dot>测试断言器</el-badge>
+            <el-badge :hidden="isEmpty(elementData.elementCompos.testList)" type="success" is-dot>测试断言器</el-badge>
           </template>
         </el-tab-pane>
-        <el-tab-pane name="HTTP_CONFIG">
+        <el-tab-pane name="HTTP_CONFIGS">
           <template #label>
-            <el-badge :hidden="hiddenConfigDot" type="success" is-dot>HTTP配置</el-badge>
+            <el-badge :hidden="hiddenHTTPConfigsDot" type="success" is-dot>HTTP配置</el-badge>
           </template>
         </el-tab-pane>
-        <el-tab-pane name="SETTINGS">
+        <el-tab-pane name="COMPO_SETTINGS">
           <template #label>
-            <el-badge :hidden="hiddenSettingsDot" type="success" is-dot>组件设置</el-badge>
+            <el-badge :hidden="hiddenCompoSettingsDot" type="success" is-dot>组件设置</el-badge>
           </template>
         </el-tab-pane>
       </el-tabs>
 
       <!-- 请求头 -->
-      <div v-if="showHeadersTab" class="tab-pane">
+      <div v-if="showHTTPHeadersTab" class="tab-pane">
         <!-- 请求头模板 -->
-        <HTTPHeaderTemplate
-          v-model="elementData.elementAttrs.HTTPSampler__header_template_refs"
-          :edit-mode="editMode"
-        />
+        <HTTPHeaderTemplate v-model="headerTemplateRefs" />
         <!-- 请求头表格 -->
-        <HTTPHeaderTable v-model:data="headerItems" :edit-mode="editMode" />
+        <HTTPHeaderTable v-model="headerData" />
       </div>
 
       <!-- 请求参数 -->
-      <div v-if="showParameterTab" class="tab-pane">
-        <HTTPQueryTable v-model:data="queryItems" :edit-mode="editMode" />
+      <div v-if="showHTTPQuerysTab" class="tab-pane">
+        <HTTPQueryTable v-model="queryData" />
       </div>
 
       <!-- 请求主体 -->
-      <div v-show="showBodyTab" class="tab-pane">
+      <div v-if="showHTTPBodyTab" class="tab-pane">
         <!-- 主体数据类型单选框 -->
-        <span class="body-mode-options-wrapper">
-          <el-radio-group v-model="bodyMode" :disabled="queryMode">
+        <span class="body-mode-options-wrapper" style="padding: 0 10px">
+          <el-radio-group v-model="bodyMode">
             <el-radio label="none">none</el-radio>
             <el-radio label="form-data">form-data</el-radio>
-            <el-radio label="x-www-form-urlencoded">x-www-form-urlencoded</el-radio>
+            <el-radio label="x-www-form-urlencoded">form-urlencoded</el-radio>
             <el-radio label="raw">raw</el-radio>
             <el-radio label="custom">自定义</el-radio>
           </el-radio-group>
           <!-- raw data type -->
-          <el-select v-if="bodyMode == 'raw'" v-model="bodyRawType" class="raw-type" :disabled="queryMode">
+          <el-select v-if="bodyMode == 'raw'" v-model="bodyRawType" class="raw-type">
             <el-option key="json" label="JSON" value="json" />
             <el-option key="xml" label="XML" value="xml" />
             <el-option key="text" label="TEXT" value="text" />
@@ -121,39 +117,38 @@
         </span>
 
         <!-- 表单 -->
-        <HTTPFileTable v-if="bodyMode == 'form-data'" v-model:data="fileItems" />
+        <template v-if="bodyMode == 'form-data'">
+          <HTTPFileTable v-model="fileData" />
+        </template>
 
         <!-- 表单 -->
-        <HTTPFormTable v-if="bodyMode == 'x-www-form-urlencoded'" v-model:data="formItems" :edit-mode="editMode" />
+        <template v-if="bodyMode == 'x-www-form-urlencoded'">
+          <HTTPFormTable v-model="formData" />
+        </template>
 
         <!-- 代码编辑器 -->
-        <MonacoEditor
-          v-if="bodyMode == 'raw' || bodyMode == 'custom'"
-          ref="bodyCodeEditorRef"
-          v-model="bodyCode"
-          language="json"
-          style="margin-bottom: 10px"
-          :readonly="queryMode"
-        />
+        <template v-if="bodyMode == 'raw' || bodyMode == 'custom'">
+          <MonacoEditor ref="bodyEditorRef" v-model="bodyData" language="json" style="margin-bottom: 10px" />
+        </template>
       </div>
 
       <!-- 前置处理器 -->
       <div v-if="showPrevProcessorTab" class="tab-pane">
-        <PrevProcessorPane v-model="prevProcessorComponentList" :edit-mode="editMode" owner-type="ALL" />
+        <PrevProcessorPane v-model="elementData.elementCompos.prevList" owner-type="ALL" />
       </div>
 
       <!-- 后置处理器 -->
       <div v-if="showPostProcessorTab" class="tab-pane">
-        <PostProcessorPane v-model="postProcessorComponentList" :edit-mode="editMode" owner-type="ALL" />
+        <PostProcessorPane v-model="elementData.elementCompos.postList" owner-type="ALL" />
       </div>
 
       <!-- 测试断言器 -->
       <div v-if="showTestAssertionTab" class="tab-pane">
-        <TestAssertionPane v-model="testAssertionComponentList" :edit-mode="editMode" owner-type="ALL" />
+        <TestAssertionPane v-model="elementData.elementCompos.testList" owner-type="ALL" />
       </div>
 
       <!-- HTTP配置 -->
-      <div v-if="showConfigTab" class="tab-pane">
+      <div v-if="showHTTPConfigsTab" class="tab-pane">
         <el-form label-position="right" label-width="100px">
           <!-- 重定向 -->
           <el-form-item label="重定向：">
@@ -164,7 +159,6 @@
               inline-prompt
               :active-icon="Check"
               :inactive-icon="Close"
-              :disabled="queryMode"
             />
           </el-form-item>
 
@@ -175,7 +169,6 @@
               style="width: 300px"
               placeholder="UTF-8"
               clearable
-              :readonly="queryMode"
             />
           </el-form-item>
 
@@ -186,7 +179,6 @@
               style="width: 300px"
               placeholder="超时时长"
               clearable
-              :readonly="queryMode"
             >
               <template #append>毫秒</template>
             </el-input>
@@ -199,7 +191,6 @@
               style="width: 300px"
               placeholder="超时时长"
               clearable
-              :readonly="queryMode"
             >
               <template #append>毫秒</template>
             </el-input>
@@ -208,7 +199,7 @@
       </div>
 
       <!-- 组件设置 -->
-      <div v-if="showSettingsTab" class="tab-pane">
+      <div v-if="showCompoSettingsTab" class="tab-pane">
         <el-form label-position="right" label-width="120px">
           <!-- 筛选规则 -->
           <el-form-item>
@@ -229,7 +220,10 @@
                 </el-tooltip>
               </div>
             </template>
-            <ComponentFilter v-model="runningStrategy.filter" :condition-data="conditionData" />
+            <ComponentFilter
+              v-model="elementData.elementProps.HTTPSampler__running_strategy.filter"
+              :condition-data="filterConditionData"
+            />
           </el-form-item>
           <!-- 倒序执行 -->
           <el-form-item>
@@ -251,7 +245,12 @@
                 </el-tooltip>
               </div>
             </template>
-            <el-select v-model="runningStrategy.reverse" style="width: 300px" multiple clearable :disabled="queryMode">
+            <el-select
+              v-model="elementData.elementProps.HTTPSampler__running_strategy.reverse"
+              style="width: 300px"
+              multiple
+              clearable
+            >
               <el-option label="前置" value="PREV" />
               <el-option label="后置" value="POST" />
               <el-option label="断言" value="ASSERT" />
@@ -259,25 +258,12 @@
           </el-form-item>
         </el-form>
       </div>
-
-      <!-- 操作按钮 -->
-      <el-affix target=".pymeter-component-container" position="bottom" :offset="60">
-        <el-form-item v-if="queryMode">
-          <el-button :icon="Edit" type="primary" @click="editNow()">编 辑</el-button>
-          <el-button :icon="Close" @click="closeTab()">关 闭</el-button>
-        </el-form-item>
-        <el-form-item v-else-if="modifyMode">
-          <el-button :icon="Check" type="danger" @click="modifyElement()">保 存</el-button>
-          <el-button :icon="Check" @click="modifyElement(true)">保存并关闭</el-button>
-          <el-button :icon="Close" @click="closeTab()">关 闭</el-button>
-        </el-form-item>
-        <el-form-item v-else-if="createMode">
-          <el-button :icon="Check" type="primary" @click="createElement()">保 存</el-button>
-          <el-button :icon="Check" @click="createElement(true)">保存并关闭</el-button>
-          <el-button :icon="Close" @click="closeTab()">关 闭</el-button>
-        </el-form-item>
-      </el-affix>
     </el-form>
+
+    <!-- 操作按钮 -->
+    <template v-if="creation || unsaved">
+      <SaveButton :tips="shortcutKeyName" @click="save()" />
+    </template>
   </div>
 </template>
 
@@ -285,569 +271,360 @@
 import * as ElementService from '@/api/script/element'
 import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
 import ComponentFilter from '@/pymeter/components/editor-main/common/ComponentFilter.vue'
-import TestAssertionPane from '@/pymeter/components/editor-main/component-panes/TestAssertionPane.vue'
+import SaveButton from '@/pymeter/components/editor-main/common/SaveButton.vue'
 import PostProcessorPane from '@/pymeter/components/editor-main/component-panes/PostProcessorPane.vue'
 import PrevProcessorPane from '@/pymeter/components/editor-main/component-panes/PrevProcessorPane.vue'
+import TestAssertionPane from '@/pymeter/components/editor-main/component-panes/TestAssertionPane.vue'
+import EditorEmits from '@/pymeter/composables/editor.emits'
 import EditorProps from '@/pymeter/composables/editor.props'
 import useEditor from '@/pymeter/composables/useEditor'
+import useElement from '@/pymeter/composables/useElement'
 import useRunnableElement from '@/pymeter/composables/useRunnableElement'
-import { isBlankAll } from '@/utils/string-util'
-import { Check, Close, Edit, Warning } from '@element-plus/icons-vue'
+import { usePyMeterDB } from '@/store/pymeter-db'
+import { toHashCode } from '@/utils/object-util'
+import { Check, Close, Warning } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
-import { assign, isEmpty } from 'lodash-es'
+import { debounce, isEmpty } from 'lodash-es'
 import HTTPFileTable from './HttpSamplerFileTable.vue'
 import HTTPFormTable from './HttpSamplerFormTable.vue'
 import HTTPHeaderTable from './HttpSamplerHeaderTable.vue'
 import HTTPHeaderTemplate from './HttpSamplerHeaderTemplate.vue'
 import HTTPMethodSelect from './HttpSamplerMethodSelect.vue'
 import HTTPQueryTable from './HttpSamplerQueryTable.vue'
-import useHTTPBody from './useHTTPBody'
-import useHTTPHeader from './useHTTPHeader'
-import useHTTPQuery from './useHTTPQuery'
+import useHTTP from './useHTTP'
 
+const emit = defineEmits(EditorEmits)
 const props = defineProps(EditorProps)
 const { executeSampler } = useRunnableElement()
-const {
-  editMode,
-  queryMode,
-  modifyMode,
-  createMode,
-  functions,
-  editNow,
-  setReadonly,
-  updateTab,
-  closeTab,
-  expandParentNode,
-  refreshElementTree
-} = useEditor(props)
-provide('queryMode', queryMode)
-const elementFormRef = ref()
-const elementFormRules = {
-  elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }],
-  'elementProps.HTTPSampler__url': [{ required: true, message: '请求地址不能为空', trigger: 'blur' }],
-  'elementProps.HTTPSampler__method': [{ required: true, message: '请求方法不能为空', trigger: 'blur' }]
-}
-const elementNo = ref(props.editorNo)
+const { assignElement, assignMetadata, assignComponent } = useElement()
+const { unsaved, metadata, creation, localkey, shortcutKeyName, updateTabName, expandParentNode, refreshElementTree } =
+  useEditor()
+const offlineDB = usePyMeterDB().offlineDB
 const elementData = ref({
-  elementNo: '',
+  elementNo: props.metadata.sn,
   elementName: 'HTTP请求',
   elementDesc: '',
   elementType: 'SAMPLER',
   elementClass: 'HTTPSampler',
   elementAttrs: {
-    HTTPSampler__header_template_refs: []
+    HTTPSampler__header_template_refs: [],
+    HTTPSampler__headers: [],
+    HTTPSampler__querys: [],
+    HTTPSampler__forms: [],
+    HTTPSampler__files: []
   },
   elementProps: {
     HTTPSampler__url: '',
     HTTPSampler__method: 'GET',
-    HTTPSampler__headers: '',
-    HTTPSampler__params: '',
     HTTPSampler__data: '',
     HTTPSampler__encoding: '',
     HTTPSampler__follow_redirects: 'false',
     HTTPSampler__connect_timeout: '',
-    HTTPSampler__response_timeout: ''
-  }
-})
-
-// 运行策略的逻辑条件数据
-const conditionData = [
-  {
-    field: { label: '类型', value: 'TYPE' },
-    options: [
-      { label: '前置', value: 'PREV' },
-      { label: '后置', value: 'POST' },
-      { label: '断言', value: 'ASSERT' }
-    ]
+    HTTPSampler__response_timeout: '',
+    HTTPSampler__running_strategy: {
+      filter: {},
+      reverse: []
+    }
   },
-  {
-    field: { label: '层级', value: 'LEVEL' },
-    options: [
-      { label: '空间', value: '0' },
-      { label: '集合', value: '1' },
-      { label: '线程', value: '2' },
-      { label: '控制器', value: '3' },
-      { label: '取样器', value: '4' }
-    ]
+  elementCompos: {
+    confList: [],
+    prevList: [],
+    postList: [],
+    testList: []
   }
-]
-// 运行策略
-const runningStrategy = ref({
-  filter: {},
-  reverse: []
 })
-
-// header相关属性
-const { headerItems, headerData, setContentType, getContentType, removeContentType } = useHTTPHeader()
-
-// query相关属性
-const { queryItems, queryData } = useHTTPQuery()
-
-// body相关属性
-const bodyCodeEditorRef = ref()
-const { bodyCode, bodyMode, bodyRawType, bodyRawTypeEnum, bodyData, formItems, fileItems, setBodyMode } = useHTTPBody()
-
-// 内置元素相关属性
-const componentList = ref([])
-const prevProcessorComponentList = ref([])
-const postProcessorComponentList = ref([])
-const testAssertionComponentList = ref([])
-const pendingSubmitComponentList = computed(() => {
-  // 添加 elementIndex 属性
-  prevProcessorComponentList.value.forEach((item, index) => (item.elementIndex = index + 1))
-  postProcessorComponentList.value.forEach((item, index) => (item.elementIndex = index + 1))
-  testAssertionComponentList.value.forEach((item, index) => (item.elementIndex = index + 1))
-  // 组合成一个数组
-  return [...prevProcessorComponentList.value, ...postProcessorComponentList.value, ...testAssertionComponentList.value]
+const elementRules = {
+  elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }],
+  'elementProps.HTTPSampler__url': [{ required: true, message: '请求地址不能为空', trigger: 'blur' }],
+  'elementProps.HTTPSampler__method': [{ required: true, message: '请求方法不能为空', trigger: 'blur' }]
+}
+const headerTemplateRefs = computed({
+  get: () => elementData.value.elementAttrs.HTTPSampler__header_template_refs,
+  set: (val) => (elementData.value.elementAttrs.HTTPSampler__header_template_refs = val)
 })
-
-const activeTabName = ref('PARAMS')
-const showHeadersTab = computed(() => activeTabName.value === 'HEADERS')
-const showParameterTab = computed(() => activeTabName.value === 'PARAMS')
-const showBodyTab = computed(() => activeTabName.value === 'BODY')
+const headerData = computed({
+  get: () => elementData.value.elementAttrs.HTTPSampler__headers,
+  set: (val) => (elementData.value.elementAttrs.HTTPSampler__headers = val)
+})
+const queryData = computed({
+  get: () => elementData.value.elementAttrs.HTTPSampler__querys,
+  set: (val) => (elementData.value.elementAttrs.HTTPSampler__querys = val)
+})
+const formData = computed({
+  get: () => elementData.value.elementAttrs.HTTPSampler__forms,
+  set: (val) => (elementData.value.elementAttrs.HTTPSampler__forms = val)
+})
+const fileData = computed({
+  get: () => elementData.value.elementAttrs.HTTPSampler__files,
+  set: (val) => (elementData.value.elementAttrs.HTTPSampler__files = val)
+})
+const bodyData = computed({
+  get: () => elementData.value.elementProps.HTTPSampler__data,
+  set: (val) => (elementData.value.elementProps.HTTPSampler__data = val)
+})
+const {
+  bodyMode,
+  bodyRawType,
+  filterConditionData,
+  hiddenHTTPBodyDot,
+  hiddenHTTPQuerysDot,
+  hiddenHTTPHeadersDot,
+  hiddenHTTPConfigsDot,
+  hiddenCompoSettingsDot,
+  setBodyMode,
+  checkRunningStrategy
+} = useHTTP(elementData)
+const elformRef = ref()
+const bodyEditorRef = ref()
+const activeTabName = ref('HTTP_QUERYS')
+const showHTTPBodyTab = computed(() => activeTabName.value === 'HTTP_BODY')
+const showHTTPQuerysTab = computed(() => activeTabName.value === 'HTTP_QUERYS')
+const showHTTPConfigsTab = computed(() => activeTabName.value === 'HTTP_CONFIGS')
+const showHTTPHeadersTab = computed(() => activeTabName.value === 'HTTP_HEADERS')
 const showPrevProcessorTab = computed(() => activeTabName.value === 'PREV_PROCESSOR')
 const showPostProcessorTab = computed(() => activeTabName.value === 'POST_PROCESSOR')
 const showTestAssertionTab = computed(() => activeTabName.value === 'TEST_ASSERTION')
-const showConfigTab = computed(() => activeTabName.value === 'HTTP_CONFIG')
-const showSettingsTab = computed(() => activeTabName.value === 'SETTINGS')
+const showCompoSettingsTab = computed(() => activeTabName.value === 'COMPO_SETTINGS')
 
-const hiddenHeadersDot = computed(() => {
-  const headers = headerItems.value
-  if (headers.length === 0) {
-    return isEmpty(elementData.value.elementAttrs.HTTPSampler__header_template_refs)
-  }
-  if (headers.length === 1) {
-    const item = headers[0]
-    if (isEmpty(item.name) && isEmpty(item.value)) {
-      return isEmpty(elementData.value.elementAttrs.HTTPSampler__header_template_refs)
-    }
-  }
-  return false
-})
-const hiddenQuerysDot = computed(() => {
-  const querys = queryItems.value
-  if (querys.length === 0) {
-    return true
-  }
-  if (querys.length === 1) {
-    const item = querys[0]
-    if (isEmpty(item.name) && isEmpty(item.value) && isEmpty(item.desc)) return true
-  }
-  return false
-})
-const hiddenBodyDot = computed(() => {
-  const mode = bodyMode.value
-  if ((mode === 'raw' || mode === 'custom') && isEmpty(bodyCode.value)) return true
-  if (mode === 'form-data') {
-    const files = fileItems.value
-    if (files.length === 0) return true
-    if (files.length === 1) {
-      const item = files[0]
-      if (isEmpty(item.name) && isEmpty(item.value) && isEmpty(item.desc)) return true
-    }
-  }
-  if (mode === 'x-www-form-urlencoded') {
-    const forms = formItems.value
-    if (forms.length === 0) return true
-    if (forms.length === 1) {
-      const item = forms[0]
-      if (isEmpty(item.name) && isEmpty(item.value) && isEmpty(item.desc)) return true
-    }
-  }
-  if (mode === 'none') return true
-  return false
-})
-const hiddenConfigDot = computed(() => {
-  const elementProps = elementData.value.elementProps
-  return (
-    elementProps.HTTPSampler__encoding === '' &&
-    elementProps.HTTPSampler__connect_timeout === '' &&
-    elementProps.HTTPSampler__response_timeout === '' &&
-    elementProps.HTTPSampler__follow_redirects === 'false'
-  )
-})
-const hiddenSettingsDot = computed(() => {
-  return isEmpty(runningStrategy.value.filter) && isEmpty(runningStrategy.value.reverse)
-})
-
-watch(bodyMode, () => {
-  if (queryMode.value) {
-    return
-  }
-  if (bodyMode.value === 'none' || bodyMode.value === 'custom') {
-    removeContentType()
-    return
-  }
-  if (bodyMode.value === 'form-data') {
-    setContentType('multipart/form-data')
-    return
-  }
-  if (bodyMode.value === 'x-www-form-urlencoded') {
-    setContentType('application/x-www-form-urlencoded')
-    return
-  }
-  if (bodyMode.value === 'raw') {
-    setContentType(bodyRawTypeEnum[bodyRawType.value])
-    return
-  }
-})
-watch(bodyRawType, () => {
-  if (queryMode.value) return
-  setContentType(bodyRawTypeEnum[bodyRawType.value])
-})
-
-onMounted(() => {
-  // 查询或更新模式时，先拉取元素信息
-  if (createMode.value) return
-  // 查询元素信息、内置元素和请求头模板
-  query()
-})
-
-const query = (_elementNo_ = elementNo.value, focus = true) => {
-  // 查询元素信息
-  ElementService.queryElementInfo({ elementNo: _elementNo_ }).then((response) => {
-    elementData.value = response.result
-    setHeaderItems()
-    setQueryItems()
-    setAboutBody()
-    setRunningStrategy()
-    focus && focusActiveTab()
-  })
-  // 查询并初始化内置元素
-  ElementService.queryElementComponents({ elementNo: _elementNo_ }).then((response) => {
-    componentList.value = response.result
-    setComponentsByType()
-    sortComponents()
-  })
-}
-
-/**
- * 根据类型分别存储内置元素
- */
-const setComponentsByType = () => {
-  // 先清空原有列表
-  prevProcessorComponentList.value = []
-  postProcessorComponentList.value = []
-  testAssertionComponentList.value = []
-  // 根据类型存储至列表
-  componentList.value.forEach((component) => {
-    if (component.elementType === 'PREV_PROCESSOR') {
-      prevProcessorComponentList.value.push(component)
-    } else if (component.elementType === 'POST_PROCESSOR') {
-      postProcessorComponentList.value.push(component)
-    } else if (component.elementType === 'ASSERTION') {
-      testAssertionComponentList.value.push(component)
-    } else {
+watch(
+  elementData,
+  debounce((localdata) => {
+    console.log('watch')
+    // 添加组件索引
+    localdata.elementCompos.prevList.forEach((item, index) => (item.elementIndex = index + 1))
+    localdata.elementCompos.postList.forEach((item, index) => (item.elementIndex = index + 1))
+    localdata.elementCompos.testList.forEach((item, index) => (item.elementIndex = index + 1))
+    // 如果前后端数据一致则代表数据未更改
+    if (metadata.value.hashcode === toHashCode(localdata)) {
+      // 数据一致则表示数据未变更
+      unsaved.value = false
+      // 数据未变更，移除离线数据
+      offlineDB.removeItem(localkey.value)
       return
     }
-  })
-}
+    console.log('存离线')
+    // 标记数据未保存
+    unsaved.value = true
+    // 存储离线数据
+    offlineDB.setItem(localkey.value, JSON.parse(JSON.stringify({ data: localdata, meta: metadata.value })))
+  }, 250),
+  { deep: true, flush: 'sync' }
+)
 
-/**
- * 根据 elementIndex 排序
- */
-const sortComponents = () => {
-  prevProcessorComponentList.value.sort((a, b) => a.elementIndex - b.elementIndex)
-  postProcessorComponentList.value.sort((a, b) => a.elementIndex - b.elementIndex)
-  testAssertionComponentList.value.sort((a, b) => a.elementIndex - b.elementIndex)
-}
-
-/**
- * 初始化 headers
- */
-const setHeaderItems = () => {
-  const headers = elementData.value.elementProps.HTTPSampler__headers
-  if (!isEmpty(headerItems.value)) {
-    headerItems.value = [] // 表格不为空时，清空数组
+onMounted(async () => {
+  // 优先查询离线数据
+  if (unsaved.value) {
+    queryOfflineData()
+    return
   }
-  if (!headers) return
-  headers.property.HeaderManager__headers.forEach((item) => {
-    headerItems.value.push({
-      enabled: item.enabled,
-      name: item.property.Header__name,
-      value: item.property.Header__value
+  // 新增模式计算HashCode并存储
+  if (creation.value) {
+    elementData.value.elementAttrs.HTTPSampler__headers.push({ enabled: true, name: '', value: '', desc: '' })
+    elementData.value.elementAttrs.HTTPSampler__querys.push({ enabled: true, name: '', value: '', desc: '' })
+    elementData.value.elementAttrs.HTTPSampler__forms.push({
+      enabled: true,
+      type: 'string',
+      name: '',
+      value: '',
+      desc: ''
     })
-  })
+    elementData.value.elementAttrs.HTTPSampler__files.push({
+      enabled: true,
+      argtype: 'text',
+      name: '',
+      value: '',
+      mimetype: '',
+      desc: ''
+    })
+    metadata.value.hashcode = toHashCode(elementData.value)
+    return
+  }
+  // 最后才查询后端数据
+  queryBackendData()
+})
+
+/**
+ * 查询离线数据
+ */
+const queryOfflineData = async () => {
+  const offline = await offlineDB.getItem(localkey.value)
+  assignElement(elementData.value, offline.data)
+  assignMetadata(metadata.value, offline.meta)
 }
 
 /**
- * 初始化 params
+ * 查询后端数据
  */
-const setQueryItems = () => {
-  const querys = elementData.value.elementProps.HTTPSampler__params
-  if (!isEmpty(queryItems.value)) {
-    queryItems.value = [] // 表格不为空时，清空数组
-  }
-  if (!querys) return
-  querys.property.Arguments__arguments.forEach((item) => {
-    queryItems.value.push({
-      enabled: item.enabled,
-      name: item.property.Argument__name,
-      value: item.property.Argument__value,
-      desc: item.property.Argument__desc
-    })
+const queryBackendData = async () => {
+  let response = null
+  // 查询元素信息
+  response = await ElementService.queryElementInfo({ elementNo: elementData.value.elementNo })
+  const backendData = response.result
+  backendData.elementAttrs.HTTPSampler__headers.push({ enabled: true, name: '', value: '', desc: '' })
+  backendData.elementAttrs.HTTPSampler__querys.push({ enabled: true, name: '', value: '', desc: '' })
+  backendData.elementAttrs.HTTPSampler__forms.push({ enabled: true, type: 'string', name: '', value: '', desc: '' })
+  backendData.elementAttrs.HTTPSampler__files.push({
+    enabled: true,
+    argtype: 'text',
+    name: '',
+    value: '',
+    mimetype: '',
+    desc: ''
   })
-}
-
-/**
- * 初始化 forms
- */
-const setFormItems = () => {
-  const forms = elementData.value.elementProps.HTTPSampler__data
-  if (!isEmpty(formItems.value)) {
-    formItems.value = [] // 表格不为空时，清空数组
-  }
-  if (!forms) return
-  forms.property.Arguments__arguments.forEach((item) => {
-    formItems.value.push({
-      enabled: item.enabled,
-      name: item.property.Argument__name,
-      value: item.property.Argument__value,
-      desc: item.property.Argument__desc
-    })
-  })
-}
-
-/**
- * 初始化 files
- */
-const setFileItems = () => {
-  const files = elementData.value.elementProps.HTTPSampler__data
-  if (!isEmpty(fileItems.value)) {
-    fileItems.value = [] // 表格不为空时，清空数组
-  }
-  if (!files) return
-  files.property.Arguments__arguments.forEach((item) => {
-    fileItems.value.push({
-      enabled: item.enabled,
-      name: item.property.Argument__name,
-      value: item.property.Argument__value,
-      argtype: item.property.Argument__argtype,
-      mimetype: item.property.Argument__mimetype,
-      desc: item.property.Argument__desc
-    })
-  })
+  assignElement(elementData.value, backendData)
+  setBodyData()
+  // 查询元素组件
+  response = await ElementService.queryElementComponents({ elementNo: elementData.value.elementNo })
+  assignComponent(elementData.value, response.result)
+  // 计算HashCode并存储
+  assignMetadata(metadata.value, { hashcode: toHashCode(elementData.value) })
 }
 
 /**
  * 设置 body 相关
  */
-const setAboutBody = () => {
-  setBodyMode(getContentType())
-  // 初始化 BodyData
-  if (bodyMode.value === 'form-data') {
-    setFileItems()
-  } else if (bodyMode.value === 'x-www-form-urlencoded') {
-    setFormItems()
-  } else {
-    nextTick(() => setBodyData())
-  }
-}
-
-/**
- * 设置body编辑器的内容
- */
 const setBodyData = () => {
-  bodyCodeEditorRef.value && bodyCodeEditorRef.value.setValue(elementData.value.elementProps.HTTPSampler__data)
-}
-
-/**
- * 设置运行策略
- */
-const setRunningStrategy = () => {
-  const strategyProp = elementData.value.elementProps.HTTPSampler__running_strategy
-  if (isEmpty(strategyProp)) return
-  runningStrategy.value.filter = strategyProp.filter || {}
-  runningStrategy.value.reverse = strategyProp.reverse || []
-}
-
-/**
- * 根据 http 参数激活对应的 tab
- */
-const focusActiveTab = () => {
-  if (!isEmpty(queryItems.value)) {
-    activeTabName.value = 'PARAMS'
+  // 设置主体模式
+  setBodyMode()
+  // 激活Tab
+  if (bodyMode.value !== 'none') {
+    activeTabName.value = 'HTTP_BODY'
   } else {
-    activeTabName.value = 'BODY'
+    activeTabName.value = 'HTTP_QUERYS'
+  }
+  // 初始化主体数据
+  if (!['form-data', 'x-www-form-urlencoded'].includes(bodyMode.value)) {
+    nextTick(
+      () => bodyEditorRef.value && bodyEditorRef.value.setValue(elementData.value.elementProps.HTTPSampler__data)
+    )
+  }
+}
+
+const isBlankAll = (...args) => {
+  for (let i = 0; i < args.length; i++) {
+    if (!isEmpty(args[i])) return false
+  }
+  return true
+}
+
+/**
+ * 移除请求头、查询参数和表单中的空行数据
+ */
+const removeBlankData = () => {
+  if (!isEmpty(headerData.value)) {
+    headerData.value = headerData.value.filter((row) => !isBlankAll(row.name, row.value, row.desc))
+  }
+  if (!isEmpty(queryData.value)) {
+    queryData.value = queryData.value.filter((row) => !isBlankAll(row.name, row.value, row.desc))
+  }
+  if (!isEmpty(formData.value)) {
+    formData.value = formData.value.filter((row) => !isBlankAll(row.name, row.value, row.desc))
+  }
+  if (!isEmpty(fileData.value)) {
+    fileData.value = fileData.value.filter((row) => !isBlankAll(row.name, row.value, row.desc))
   }
 }
 
 /**
- * 更新元素属性
+ * 清理无效数据
  */
-const updateElementProperty = () => {
-  const elementProps = elementData.value.elementProps
-  // 合并请求头、query参数和body参数
-  assign(elementProps, {
-    HTTPSampler__headers: headerData.value,
-    HTTPSampler__params: queryData.value,
-    HTTPSampler__data: bodyData.value
-  })
-  // 设置运行策略
-  if (
-    isEmpty(runningStrategy.value.filter) &&
-    isEmpty(runningStrategy.value.reverse) &&
-    'HTTPSampler__running_strategy' in elementProps
-  ) {
-    elementProps.HTTPSampler__running_strategy = null
-  } else {
-    elementProps.HTTPSampler__running_strategy = runningStrategy.value
+const cleanInvalidData = () => {
+  if (['raw', 'custom'].includes(bodyMode.value)) {
+    formData.value = []
+    fileData.value = []
+    return
   }
-}
-
-/**
- * 更新元素编号
- */
-const updateElementNo = (val) => {
-  elementNo.value = val
-  elementData.value.elementNo = val
-}
-
-/**
- * 校验逻辑条件
- */
-const checkRunningStrategyFilter = () => {
-  let error = false
-  // 过滤空白的逻辑条件
-  const filterRule = runningStrategy.value.filter
-  if (isEmpty(filterRule)) return
-  if ('logic' in filterRule) {
-    error = checkLogicalCondition(filterRule)
-  } else {
-    if ('field' in filterRule && isEmpty(filterRule.field)) {
-      error = true
-    }
+  if (bodyMode.value === 'none') {
+    bodyData.value = ''
+    formData.value = []
+    fileData.value = []
+    return
   }
-  if (error) {
-    ElMessage({ message: '条件关键字不能为空', type: 'error', duration: 2 * 1000 })
+  if (bodyMode.value === 'form-data') {
+    bodyData.value = ''
+    formData.value = []
+    return
   }
-  return error
-}
-
-/**
- * 校验条件的关键字是否为空
- */
-const checkLogicalCondition = (grouprule) => {
-  const rules = grouprule.rules
-  for (let i = 0; i < rules.length; i++) {
-    if ('logic' in rules[i]) {
-      if (checkLogicalCondition(rules[i])) return true
-    } else {
-      if (isEmpty(rules[i].field)) return true
-    }
+  if (bodyMode.value === 'x-www-form-urlencoded') {
+    bodyData.value = ''
+    fileData.value = []
+    return
   }
-}
-
-/**
- * 移除表格中的空行
- */
-const removeAllBlankRow = () => {
-  if (!isEmpty(headerItems.value)) {
-    headerItems.value = headerItems.value.filter((row) => !isBlankAll(row.name, row.value))
-  }
-  if (!isEmpty(queryItems.value)) {
-    queryItems.value = queryItems.value.filter((row) => !isBlankAll(row.name, row.value, row.desc))
-  }
-  if (!isEmpty(formItems.value)) {
-    formItems.value = formItems.value.filter((row) => !isBlankAll(row.name, row.value, row.desc))
-  }
-}
-
-const checkForm = async () => {
-  // 表单校验
-  const error = await elementFormRef.value
-    .validate()
-    .then(() => false)
-    .catch(() => true)
-  if (error) {
-    ElMessage({ message: '数据校验失败', type: 'error', duration: 2 * 1000 })
-  }
-
-  return error
 }
 
 /**
  * 修改元素
  */
 const modifyElement = async () => {
-  // 表单校验
-  let error = false
-  error = await checkForm()
-  if (error) return
-  error = checkRunningStrategyFilter()
-  if (error) return
-  // 更新元素属性
-  updateElementProperty()
-  // 更新元素
-  await ElementService.modifyElement({
-    ...elementData.value,
-    componentList: pendingSubmitComponentList.value
-  })
-  // 无需关闭 tab
-  if (!close) {
-    // 设置为只读模式
-    setReadonly()
-    // 移除所有表格里的空行
-    removeAllBlankRow()
-    // 更新 tab 标题
-    updateTab(elementData.value.elementName)
-    // 重新查询元素信息，内置元素和请求头模板
-    query(undefined, false)
-  }
-  // 重新查询侧边栏的元素列表
-  refreshElementTree()
-  // 成功提示
-  ElMessage({ message: '修改元素成功', type: 'info', duration: 2 * 1000 })
-  // 需要关闭 tab
-  if (close) {
-    closeTab()
-  }
+  // 修改元素
+  await ElementService.modifyElement(elementData.value)
 }
 
 /**
  * 创建元素
  */
 const createElement = async () => {
-  // 表单校验
-  const error = await checkForm()
-  if (error) return
-  // 更新元素属性
-  updateElementProperty()
   // 新增元素
   const response = await ElementService.createElementChild({
     rootNo: props.metadata.rootNo,
     parentNo: props.metadata.parentNo,
-    componentList: pendingSubmitComponentList.value,
     ...elementData.value
   })
-  // 无需关闭 tab
-  if (!close) {
-    // 设置为只读模式
-    setReadonly()
-    // 移除所有表格里的空行
-    removeAllBlankRow()
-    // 更新 tab 标题和编号
-    updateTab(elementData.value.elementName, response.result.elementNo)
-    // 更新元素编号
-    updateElementNo(response.result.elementNo)
-    // 重新查询元素信息，内置元素和请求头模板
-    query(response.result.elementNo, false)
-  }
+  // 移除离线数据
+  offlineDB.removeItem(props.editorNo)
+  // 提取元素编号
+  const elementNo = response.result.elementNo
+  // 更新Tab序列号
+  metadata.value.sn = elementNo
+  // 更新元素编号
+  elementData.value.elementNo = elementNo
   // 展开父节点
   expandParentNode()
-  // 重新查询侧边栏的元素列表
-  refreshElementTree()
-  // 成功提示
-  ElMessage({ message: '新增元素成功', type: 'info', duration: 2 * 1000 })
-  // 需要关闭 tab
-  if (close) {
-    closeTab()
-  }
 }
 
-// 暂存函数，给 useEditor 使用
-functions.createFn = createElement
-functions.modifyFn = modifyElement
+/**
+ * 提交数据
+ */
+const save = async () => {
+  let error = false
+  // 表单校验
+  error = await elformRef.value
+    .validate()
+    .then(() => false)
+    .catch(() => true)
+  if (error) {
+    ElMessage({ message: '数据校验失败', type: 'error', duration: 2 * 1000 })
+    return
+  }
+  // 运行策略校验
+  error = checkRunningStrategy()
+  if (error) {
+    ElMessage({ message: '运行策略校验失败，关键字不能为空', type: 'error', duration: 2 * 1000 })
+    return
+  }
+  // 移除请求头、查询参数和表单中的空行数据
+  removeBlankData()
+  // 清理无效数据
+  cleanInvalidData()
+  // 保存元素
+  creation.value ? await createElement() : await modifyElement()
+  // 标记数据已保存
+  unsaved.value = false
+  // 更新HashCode
+  metadata.value.hashcode = toHashCode(elementData.value)
+  // 移除离线数据
+  offlineDB.removeItem(localkey.value)
+  // 重新查询侧边栏的元素列表
+  refreshElementTree()
+  // 更新 tab 标题
+  updateTabName(elementData.value.elementName)
+  // 成功提示
+  ElMessage({ message: '保存成功', type: 'info', duration: 2 * 1000 })
+}
+
+defineExpose({
+  save
+})
 </script>
 
 <style lang="scss" scoped>
@@ -897,3 +674,4 @@ functions.modifyFn = modifyElement
   right: -4px;
 }
 </style>
+./useHTTP

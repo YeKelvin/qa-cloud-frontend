@@ -1,6 +1,6 @@
 <template>
   <!-- http请求方法列表 -->
-  <el-select v-model="localModelValue" style="width: 110px">
+  <el-select v-model="localValue" style="width: 110px">
     <el-option label="GET" value="GET" />
     <el-option label="POST" value="POST" />
     <el-option label="PUT" value="PUT" />
@@ -13,20 +13,13 @@
   </el-select>
 </template>
 
-<script>
-export default {
-  emits: ['update:modelValue'],
-  computed: {
-    localModelValue: {
-      get() {
-        return this.$attrs.modelValue
-      },
-      set(val) {
-        this.$emit('update:modelValue', val)
-      }
-    }
-  }
-}
+<script setup>
+const emit = defineEmits(['update:modelValue'])
+const props = defineProps({ modelValue: String })
+const localValue = computed({
+  get: () => props.modelValue,
+  set: (val) => emit('update:modelValue', val)
+})
 </script>
 
 <style lang="scss" scoped></style>

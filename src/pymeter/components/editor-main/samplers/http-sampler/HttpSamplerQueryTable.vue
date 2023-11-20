@@ -1,45 +1,42 @@
 <template>
-  <el-table ref="eltableRef" stripe style="width: 100%; margin-bottom: 10px" :data="rows">
+  <el-table ref="eltableRef" :data="rows" style="width: 100%; margin-bottom: 10px" stripe>
     <!-- 空表格 -->
     <template #empty>
       <el-empty :image-size="80" />
     </template>
 
     <!-- 排序图标 -->
-    <el-table-column v-if="!queryMode" align="center" width="40" min-width="40">
+    <el-table-column align="center" width="40" min-width="40">
       <template #default="{ $index }">
         <SvgIcon v-show="rows.length != $index + 1" icon-name="pymeter-move" class="sorted-handle" />
       </template>
     </el-table-column>
 
     <!-- 是否启用 -->
-    <el-table-column v-if="!queryMode" align="center" width="50" min-width="50">
+    <el-table-column align="center" width="50" min-width="50">
       <template #default="{ row }">
-        <el-checkbox v-model="row.enabled" size="large" :disabled="queryMode" />
+        <el-checkbox v-model="row.enabled" size="large" />
       </template>
     </el-table-column>
 
     <!-- 参数名称 -->
     <el-table-column label="名称" width="auto">
       <template #default="{ row }">
-        <SimpleTextarea v-if="!queryMode" v-model="row.name" />
-        <span v-else>{{ row.name }}</span>
+        <SimpleTextarea v-model="row.name" />
       </template>
     </el-table-column>
 
     <!-- 参数值 -->
     <el-table-column label="值" width="auto">
       <template #default="{ row }">
-        <SimpleTextarea v-if="!queryMode" v-model="row.value" />
-        <span v-else>{{ row.value }}</span>
+        <SimpleTextarea v-model="row.value" />
       </template>
     </el-table-column>
 
     <!-- 参数描述 -->
     <el-table-column v-if="showDesc" label="描述" width="auto">
       <template #default="{ row }">
-        <SimpleTextarea v-if="!queryMode" v-model="row.desc" />
-        <span v-else>{{ row.desc }}</span>
+        <SimpleTextarea v-model="row.desc" />
       </template>
     </el-table-column>
 
@@ -50,7 +47,7 @@
           <!-- label -->
           <span>操作</span>
           <!-- 更多操作按钮 -->
-          <el-dropdown trigger="click">
+          <el-dropdown trigger="click" placement="bottom-end">
             <el-button type="primary" link><SvgIcon icon-name="pymeter-more" /></el-button>
             <template #dropdown>
               <el-dropdown-menu>
@@ -62,7 +59,7 @@
       </template>
       <template #default="{ $index }">
         <!-- 删除按钮 -->
-        <el-button type="danger" link :icon="Delete" :disabled="queryMode" @click="delRow($index)" />
+        <el-button v-show="rows.length != $index + 1" type="danger" link :icon="Delete" @click="delRow($index)" />
       </template>
     </el-table-column>
   </el-table>
@@ -70,34 +67,25 @@
 
 <script setup>
 import SimpleTextarea from '@/components/simple-textarea/SimpleTextarea.vue'
-import { isBlankAll } from '@/utils/string-util'
 import { Delete } from '@element-plus/icons-vue'
 import { isEmpty } from 'lodash-es'
 import sortablejs from 'sortablejs'
 
 let sortable = null
-const emit = defineEmits(['update:data'])
-const props = defineProps({
-  data: { type: Array, required: true },
-  editMode: { type: String, default: 'QUERY' }
-})
-const eltableRef = ref()
-const showDesc = ref(false)
-const queryMode = computed(() => props.editMode === 'QUERY')
+
+const props = defineProps({ modelValue: Array })
+const emit = defineEmits(['update:modelValue'])
 const rows = computed({
-  get() {
-    return props.data
-  },
-  set(val) {
-    emit('update:data', val)
-  }
+  get: () => props.modelValue,
+  set: (val) => emit('update:modelValue', val)
 })
+const showDesc = ref(false)
+const eltableRef = ref()
 
 // 表格没有数据时自动添加一行
-watch(queryMode, () => autoNewRow())
-watch(rows, () => autoNewRow(), { deep: true })
+watch(rows, () => autoNewRow(), { deep: true, flush: 'sync' })
 onMounted(() => {
-  autoNewRow()
+  // autoNewRow()
   enableDrop()
 })
 onUnmounted(() => sortable.destroy())
@@ -106,11 +94,11 @@ onUnmounted(() => sortable.destroy())
  * 最后一行不为空时，自动添加一行
  */
 const autoNewRow = () => {
-  if (queryMode.value) return
-  if (isEmpty(rows.value)) {
+  const list = rows.value
+  if (isEmpty(list)) {
     newRow()
   } else {
-    const lastRow = rows.value[rows.value.length - 1]
+    const lastRow = list[list.length - 1]
     if (!isBlankRow(lastRow)) newRow()
   }
 }
@@ -122,7 +110,7 @@ const delRow = (index) => {
   rows.value.splice(index, 1)
 }
 const isBlankRow = (row) => {
-  return isBlankAll(row.name, row.value, row.desc)
+  return isEmpty(row.name) && isEmpty(row.value) && isEmpty(row.desc)
 }
 
 const enableDrop = () => {

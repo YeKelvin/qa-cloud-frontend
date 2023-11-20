@@ -1,12 +1,12 @@
 <template>
   <el-card shadow="never">
     <template #header>
-      <el-button v-show="!queryMode" :icon="CloseBold" link @click="$emit('remove-group')" />
+      <el-button :icon="CloseBold" link @click="$emit('remove-group')" />
     </template>
     <div class="group-wrapper">
       <div class="logic-wrapper">
         <div class="logic-top" />
-        <el-select v-model="logic" class="logic-select" :disabled="queryMode">
+        <el-select v-model="logic" class="logic-select">
           <el-option label="AND" value="AND" />
           <el-option label="OR" value="OR" />
         </el-select>
@@ -40,8 +40,8 @@
       </div>
     </div>
     <div style="padding-left: 80px">
-      <el-button v-show="!queryMode" type="primary" :icon="Plus" link @click="addRule">添加条件</el-button>
-      <el-button v-show="!queryMode" type="primary" :icon="Plus" link @click="$emit('add-group')">添加条件组</el-button>
+      <el-button type="primary" :icon="Plus" link @click="addRule">添加条件</el-button>
+      <el-button type="primary" :icon="Plus" link @click="$emit('add-group')">添加条件组</el-button>
     </div>
   </el-card>
 </template>
@@ -50,7 +50,6 @@
 import { Plus, CloseBold } from '@element-plus/icons-vue'
 import LogicalCondition from '@/pymeter/components/editor-main/common/LogicalCondition.vue'
 
-const queryMode = inject('queryMode')
 const emit = defineEmits(['add', 'remove', 'add-group', 'remove-group', 'auto-adjust', 'update:logic', 'update:rules'])
 const props = defineProps({
   logic: { type: String, required: true },
@@ -97,12 +96,11 @@ watch(
 }
 
 :deep(.el-card__body) {
-  height: 100%;
-  width: 100%;
-  padding: 10px;
-
   display: flex;
   flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
 }
 
 .group-wrapper {
@@ -114,23 +112,22 @@ watch(
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
   width: 80px;
   min-width: 80px;
   max-width: 80px;
 }
 
 .rules-wrapper {
-  height: 100%;
-  width: 100%;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  height: 100%;
 }
 
 .rule-wrapper {
-  height: 100%;
-  width: 100%;
   display: flex;
+  width: 100%;
+  height: 100%;
   margin-bottom: 5px;
 }
 
@@ -144,12 +141,12 @@ watch(
   }
 
   :deep(.el-input__inner) {
-    background-color: #ffffff;
+    background-color: #fff;
     box-shadow: none;
   }
 
   :deep(.el-input__wrapper) {
-    background-color: #ffffff;
+    background-color: #fff;
     box-shadow: none;
   }
 
@@ -161,20 +158,20 @@ watch(
 }
 
 .logic-top {
-  height: 100%;
   width: 30px;
-  margin-left: 20%;
+  height: 100%;
   margin-top: 20%;
-  border-left: 1px var(--el-border-color) var(--el-border-style);
+  margin-left: 20%;
   border-top: 1px var(--el-border-color) var(--el-border-style);
+  border-left: 1px var(--el-border-color) var(--el-border-style);
 }
 
 .logic-bottom {
-  height: 100%;
   width: 30px;
-  margin-left: 20%;
+  height: 100%;
   margin-bottom: 20%;
-  border-left: 1px var(--el-border-color) var(--el-border-style);
+  margin-left: 20%;
   border-bottom: 1px var(--el-border-color) var(--el-border-style);
+  border-left: 1px var(--el-border-color) var(--el-border-style);
 }
 </style>

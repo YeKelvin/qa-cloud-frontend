@@ -1,7 +1,7 @@
 <template>
   <template v-if="isEmpty(modelvalue)">
     <div>
-      <el-button type="primary" :icon="Plus" link :disabled="queryMode" @click="addRule">添加条件</el-button>
+      <el-button type="primary" :icon="Plus" link @click="addRule">添加条件</el-button>
     </div>
   </template>
   <template v-else-if="'logic' in modelvalue">
@@ -19,7 +19,7 @@
     <el-card shadow="never">
       <LogicalCondition :rule="modelvalue" style="margin-bottom: 5px" @add="addRule" @remove="removeRule" />
       <div>
-        <el-button v-show="!queryMode" type="primary" :icon="Plus" link @click="addRule">添加条件</el-button>
+        <el-button type="primary" :icon="Plus" link @click="addRule">添加条件</el-button>
       </div>
     </el-card>
   </template>
@@ -31,7 +31,6 @@ import { Plus } from '@element-plus/icons-vue'
 import LogicalCondition from '@/pymeter/components/editor-main/common/LogicalCondition.vue'
 import LogicalConditionGroup from '@/pymeter/components/editor-main/common/LogicalConditionGroup.vue'
 
-const queryMode = inject('queryMode')
 const attrs = useAttrs()
 const emit = defineEmits(['update:modelValue'])
 /**
@@ -107,10 +106,9 @@ provide('conditionData', props.conditionData)
 }
 
 :deep(.el-card__body) {
-  height: 100%;
-  width: 100%;
-  padding: 10px;
-
   display: flex;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
 }
 </style>

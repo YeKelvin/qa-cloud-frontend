@@ -13,6 +13,7 @@ let instance
 const editorRef = ref()
 const emit = defineEmits(['update:modelValue'])
 const props = defineProps({
+  modelValue: { type: String, default: '' },
   theme: { type: String, default: 'vs' },
   height: { type: [String, Number], default: '300px' },
   language: { type: String, required: true },
@@ -21,18 +22,22 @@ const props = defineProps({
   wordWrap: { type: String, default: 'on' },
   lineNumbers: { type: String, default: 'on' }
 })
+const localValue = computed({
+  get: () => props.modelValue,
+  set: (val) => emit('update:modelValue', val)
+})
 const styleHeight = computed(() => (isNaN(props.height) ? props.height : `${props.height}px`))
 const options = computed(() => {
   const opts = { ...monacoOptions }
   if (props.lineNumbers === 'off') {
     Object.assign(opts, {
-      lineNumbersMinChars: 0,
-      lineDecorationsWidth: 0,
+      links: false,
+      folding: false,
+      glyphMargin: false,
       overviewRulerLanes: 0,
       overviewRulerBorder: false,
-      glyphMargin: false,
-      folding: false,
-      links: false
+      lineNumbersMinChars: 0,
+      lineDecorationsWidth: 0
     })
   }
   return opts
@@ -72,7 +77,7 @@ const createEditor = async () => {
     wordWrap: props.wordWrap,
     lineNumbers: props.lineNumbers,
     theme: props.theme,
-    value: props.modelValue,
+    value: localValue.value,
     ...options.value
   })
   await waitingCreated()

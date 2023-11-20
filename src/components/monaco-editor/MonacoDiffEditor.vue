@@ -46,10 +46,10 @@ watch(
 let instance
 let originalModel
 let modifiedModel
-onMounted(() => {
+onMounted(async () => {
   originalModel = monaco.editor.createModel(props.oldValue, props.language)
   modifiedModel = monaco.editor.createModel(props.newValue, props.language)
-  instance = createDiffEditor()
+  instance = await createDiffEditor()
   instance.setModel({
     original: originalModel,
     modified: modifiedModel

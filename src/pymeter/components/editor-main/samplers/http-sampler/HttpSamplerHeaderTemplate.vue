@@ -14,7 +14,6 @@
       v-bind="$attrs"
       style="width: 100%; margin-bottom: 5px"
       multiple
-      :disabled="queryMode"
       @change="handleChange"
     >
       <el-option
@@ -52,20 +51,17 @@ import * as HeadersService from '@/api/script/headers'
 import { isEmpty } from 'lodash-es'
 import { ArrowDown } from '@element-plus/icons-vue'
 import { usePyMeterStore } from '@/store/pymeter'
-import { useWorkspaceStore } from '@/store/workspace'
 
-const emit = defineEmits(['update:modelValue'])
-const props = defineProps({
-  editMode: { type: String, default: 'QUERY' }
-})
-const attrs = useAttrs()
 const pymeterStore = usePyMeterStore()
-const workspaceStore = useWorkspaceStore()
-
+const emit = defineEmits(['update:modelValue'])
+const props = defineProps({ modelValue: Array })
+const localModel = computed({
+  get: () => props.modelValue,
+  set: (val) => emit('update:modelValue', val)
+})
 const rows = ref([])
-const showDetails = ref(false)
-const queryMode = computed(() => props.editMode === 'QUERY')
 const templates = computed(() => pymeterStore.httpheaderTemplateList.map((item) => item.templateNo))
+const showDetails = ref(false)
 const showWarning = computed(() => {
   const selectedList = localModel.value
   for (const templateNo of selectedList) {
@@ -74,14 +70,6 @@ const showWarning = computed(() => {
     }
   }
   return false
-})
-const localModel = computed({
-  get() {
-    return attrs.modelValue
-  },
-  set(val) {
-    emit('update:modelValue', val)
-  }
 })
 
 /**
@@ -114,7 +102,7 @@ const showHeaders = () => {
 
 <style lang="scss" scoped>
 :deep(.el-card__header) {
-  user-select: none;
   padding: 5px 10px;
+  user-select: none;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="condition-wrapper">
     <!-- 关键字 -->
-    <el-select v-model="rule.field" placeholder="关键字" :disabled="queryMode">
+    <el-select v-model="rule.field" placeholder="关键字">
       <el-option
         v-for="option in conditionData"
         :key="option.field.value"
@@ -11,7 +11,7 @@
     </el-select>
 
     <!-- 操作符 -->
-    <el-select v-model="rule.operator" placeholder="操作符" :disabled="queryMode">
+    <el-select v-model="rule.operator" placeholder="操作符">
       <el-option label="等于（==）" value="EQUAL" />
       <el-option label="不等于（!=）" value="NOT_EQUAL" />
       <el-option label="包含（in）" value="IN" />
@@ -19,17 +19,17 @@
     </el-select>
 
     <template v-if="options">
-      <el-select v-model="rule.value" :multiple="multiple" clearable :disabled="queryMode">
+      <el-select v-model="rule.value" :multiple="multiple" clearable>
         <el-option v-for="option in options" :key="option.value" :label="option.label" :value="option.value" />
       </el-select>
     </template>
     <template v-else>
-      <el-input v-model="rule.value" clearable :readonly="queryMode" />
+      <el-input v-model="rule.value" clearable />
     </template>
 
     <span style="display: flex">
-      <el-button v-show="!queryMode" :icon="Plus" link @click="$emit('add')" />
-      <el-button v-show="!queryMode" :icon="Minus" link @click="$emit('remove')" />
+      <el-button :icon="Plus" link @click="$emit('add')" />
+      <el-button :icon="Minus" link @click="$emit('remove')" />
     </span>
   </div>
 </template>
@@ -38,7 +38,6 @@
 import { Plus, Minus } from '@element-plus/icons-vue'
 
 const conditionData = inject('conditionData')
-const queryMode = inject('queryMode')
 const emit = defineEmits(['add', 'remove'])
 const props = defineProps({
   rule: { type: Object, required: true }

@@ -277,11 +277,6 @@ const onPageChange = (val) => {
   page.value = val
   query()
 }
-
-const onPageSizeChange = (val) => {
-  pageSize.value = val
-  query()
-}
 </script>
 
 <style lang="scss">
