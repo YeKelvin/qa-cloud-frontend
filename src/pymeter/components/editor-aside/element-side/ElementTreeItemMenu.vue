@@ -295,7 +295,6 @@ const openNewSnippetSamplerTab = () => {
     metadata: {
       name: '新建请求',
       component: 'SnippetSampler',
-      workspaceNo: workspaceStore.workspaceNo,
       rootNo: item.value.rootNo,
       parentNo: item.value.elementNo
     }

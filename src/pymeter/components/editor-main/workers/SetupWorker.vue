@@ -2,8 +2,8 @@
   <div class="pymeter-component-container" tabindex="-1">
     <el-form
       ref="elformRef"
-      label-position="right"
       label-width="140px"
+      label-position="right"
       inline-message
       :model="elementData"
       :rules="elementRules"
@@ -72,6 +72,7 @@
             type="primary"
             trigger="click"
             placement="bottom-end"
+            style="margin-right: 20px"
             @click="executeTestWorker(metadata.rootNo, elementData.elementNo)"
           >
             <SvgIcon icon-name="pymeter-send" style="margin-right: 5px; font-size: 18px" />
@@ -85,7 +86,7 @@
         </template>
         <template v-if="creation || unsaved">
           <el-tooltip effect="light" placement="top" :content="shortcutKeyName">
-            <el-button type="danger" style="width: 120px; margin-left: 20px" @click="save()">
+            <el-button type="danger" style="width: 120px" @click="save()">
               <SvgIcon icon-name="pymeter-save" style="margin-right: 5px; font-size: 22px" />
               <span>保 存</span>
             </el-button>
@@ -149,14 +150,14 @@ const elementData = ref({
     }
   }
 })
-const elementRules = reactive({
+const elementRules = {
   elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }],
   'elementProps.SetupWorker__on_sample_error': [{ required: true, message: '失败处理不能为空', trigger: 'blur' }],
   'elementProps.SetupWorker__number_of_threads': [{ required: true, message: '并发数不能为空', trigger: 'blur' }],
   'elementProps.SetupWorker__main_controller.property.LoopController__loops': [
     { required: true, message: '循环次数不能为空', trigger: 'blur' }
   ]
-})
+}
 
 const activeTabName = ref('HTTP')
 const showHTTPSettings = computed(() => activeTabName.value === 'HTTP')

@@ -3,9 +3,8 @@
     <MonacoEditor
       ref="pythonEditorRef"
       v-model="localValue"
-      class="python-editor"
-      style="margin-bottom: 10px"
       language="python"
+      class="python-editor"
       :height="props.height"
       :readonly="readonly"
     />
@@ -182,6 +181,7 @@ defineExpose({
 
 .python-editor {
   flex: 1;
+  margin-bottom: 10px;
 }
 
 .right-container {

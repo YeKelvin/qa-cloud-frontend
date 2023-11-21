@@ -2,8 +2,8 @@
   <div class="pymeter-component-container" tabindex="-1">
     <el-form
       ref="elformRef"
-      label-position="right"
       label-width="120px"
+      label-position="right"
       inline-message
       :model="elementData"
       :rules="elementRules"
@@ -34,7 +34,7 @@
       <el-form-item label="变量名称：" prop="elementProps.SQLSampler__result_name">
         <el-input
           v-model="elementData.elementProps.SQLSampler__result_name"
-          placeholder="用于存储查询结果集，默认=rows"
+          placeholder="用于存储查询结果集合的变量名称"
           clearable
         />
       </el-form-item>
@@ -58,7 +58,7 @@
         <el-button
           type="primary"
           style="height: 30px; border-bottom-right-radius: 0; border-bottom-left-radius: 0"
-          @click="executeSampler(elementNo)"
+          @click="executeSampler(metadata.rootNo, elementData.elementNo)"
         >
           <SvgIcon icon-name="pymeter-send" style="margin-right: 5px; font-size: 18px" />
           运 行
@@ -92,13 +92,8 @@
       </div>
 
       <!-- SQL语句 -->
-      <div v-show="showStatementTab">
-        <MonacoEditor
-          ref="codeEditorRef"
-          v-model="elementData.elementProps.SQLSampler__statement"
-          language="sql"
-          style="margin-bottom: 20px"
-        />
+      <div v-show="showStatementTab" style="margin-bottom: 20px">
+        <MonacoEditor ref="editorRef" v-model="elementData.elementProps.SQLSampler__statement" language="sql" />
       </div>
     </el-form>
 
@@ -133,8 +128,6 @@ const { assignElement, assignMetadata } = useElement()
 const { unsaved, metadata, creation, localkey, shortcutKeyName, updateTabName, expandParentNode, refreshElementTree } =
   useEditor()
 const offlineDB = usePyMeterDB().offlineDB
-
-const elementNo = ref(props.editorNo)
 const elementData = ref({
   elementNo: props.metadata.sn,
   elementName: 'SQL请求',
@@ -147,14 +140,15 @@ const elementData = ref({
   elementProps: {
     SQLSampler__statement: '',
     SQLSampler__limit: '',
-    SQLSampler__result_name: '',
+    SQLSampler__result_name: 'rows',
     SQLSampler__query_timeout: ''
   }
 })
 const elementRules = {
   elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }],
-  'elementAttrs.SQLSampler__engine_no': [{ required: true, message: '数据库编号不能为空', trigger: 'blur' }],
-  'elementProps.SQLSampler__statement': [{ required: true, message: 'SQL不能为空', trigger: 'blur' }]
+  'elementAttrs.SQLSampler__engine_no': [{ required: true, message: '数据库不能为空', trigger: 'blur' }],
+  'elementProps.SQLSampler__statement': [{ required: true, message: 'SQL不能为空', trigger: 'blur' }],
+  'elementProps.SQLSampler__result_name': [{ required: true, message: '变量名称不能为空', trigger: 'blur' }]
 }
 
 const activeTabName = ref('STATEMENT')
@@ -169,7 +163,7 @@ const hiddenSettingsDot = computed(
 
 const engineList = ref([])
 const elformRef = ref()
-const codeEditorRef = ref()
+const editorRef = ref()
 
 watch(
   elementData,
@@ -218,7 +212,7 @@ const queryOfflineData = async () => {
   const offline = await offlineDB.getItem(localkey.value)
   assignElement(elementData.value, offline.data)
   assignMetadata(metadata.value, offline.meta)
-  codeEditorRef.value.setValue(offline.data.elementProps.SQLSampler__statement)
+  editorRef.value.setValue(offline.data.elementProps.SQLSampler__statement)
 }
 
 /**
@@ -228,7 +222,7 @@ const queryBackendData = async () => {
   const response = await ElementService.queryElementInfo({ elementNo: elementData.value.elementNo })
   assignElement(elementData.value, response.result)
   assignMetadata(metadata.value, { hashcode: toHashCode(elementData.value) })
-  codeEditorRef.value.setValue(response.result.elementProps.SQLSampler__statement)
+  editorRef.value.setValue(response.result.elementProps.SQLSampler__statement)
 }
 
 /**

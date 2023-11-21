@@ -2,30 +2,25 @@
   <div class="pymeter-component-container" tabindex="-1">
     <el-form
       ref="elformRef"
-      label-position="right"
       label-width="100px"
+      label-position="right"
       inline-message
       :model="elementData"
-      :rules="elementFormRules"
+      :rules="elementRules"
     >
       <!-- 元素名称 -->
       <el-form-item label="名称：" prop="elementName">
-        <el-input v-model="elementData.elementName" placeholder="元素名称" clearable :readonly="queryMode" />
+        <el-input v-model="elementData.elementName" placeholder="元素名称" clearable />
       </el-form-item>
 
       <!-- 元素备注 -->
       <el-form-item label="备注：" prop="elementDesc">
-        <el-input v-model="elementData.elementDesc" placeholder="元素备注" clearable :readonly="queryMode" />
+        <el-input v-model="elementData.elementDesc" placeholder="元素备注" clearable />
       </el-form-item>
 
       <!-- 循环延迟时间 -->
       <el-form-item label="间隔时间：" prop="elementProps.ForeachController__delay">
-        <el-input
-          v-model="elementData.elementProps.ForeachController__delay"
-          placeholder="间隔时间(ms)"
-          clearable
-          :readonly="queryMode"
-        />
+        <el-input v-model="elementData.elementProps.ForeachController__delay" placeholder="间隔时间(ms)" clearable />
       </el-form-item>
 
       <!-- for变量 -->
@@ -33,12 +28,7 @@
         <template #label>
           <span style="font-size: 16px">for：</span>
         </template>
-        <el-input
-          v-model="elementData.elementProps.ForeachController__target"
-          placeholder="目标变量名称"
-          clearable
-          :readonly="queryMode"
-        />
+        <el-input v-model="elementData.elementProps.ForeachController__target" placeholder="目标变量名称" clearable />
       </el-form-item>
 
       <!-- in对象 -->
@@ -46,83 +36,61 @@
         <template #label>
           <span style="font-size: 16px">in：</span>
         </template>
-        <el-radio-group
-          v-model="elementData.elementProps.ForeachController__type"
-          style="margin-bottom: 10px"
-          :disabled="queryMode"
-        >
+        <el-radio-group v-model="elementData.elementProps.ForeachController__type" style="margin-bottom: 10px">
           <el-radio label="OBJECT">可迭代对象</el-radio>
           <el-radio label="CUSTOM">自定义声明</el-radio>
         </el-radio-group>
-        <el-input
-          v-if="elementData.elementProps.ForeachController__type == 'OBJECT'"
-          v-model="elementData.elementProps.ForeachController__iter"
-          placeholder="可迭代对象名称"
-          clearable
-          :readonly="queryMode"
-        >
-          <template #prepend>${</template>
-          <template #append>}</template>
-        </el-input>
-        <MonacoEditor
-          v-else
-          ref="editorRef"
-          v-model="elementData.elementProps.ForeachController__iter"
-          language="python"
-          line-numbers="off"
-          style="height: 100px"
-          :readonly="queryMode"
-        />
-      </el-form-item>
-
-      <!-- 操作按钮 -->
-      <el-form-item v-if="queryMode">
-        <el-button :icon="Edit" type="primary" @click="editNow()">编 辑</el-button>
-        <el-button :icon="Close" @click="closeTab()">关 闭</el-button>
-      </el-form-item>
-      <el-form-item v-else-if="modifyMode">
-        <el-button :icon="Check" type="danger" @click="modifyElement()">保 存</el-button>
-        <el-button :icon="Check" @click="modifyElement(true)">保存并关闭</el-button>
-        <el-button :icon="Close" @click="closeTab()">关 闭</el-button>
-      </el-form-item>
-      <el-form-item v-else-if="createMode">
-        <el-button :icon="Check" type="primary" @click="createElement()">保 存</el-button>
-        <el-button :icon="Check" @click="createElement(true)">保存并关闭</el-button>
-        <el-button :icon="Close" @click="closeTab()">关 闭</el-button>
+        <template v-if="elementData.elementProps.ForeachController__type == 'OBJECT'">
+          <el-input v-model="elementData.elementProps.ForeachController__iter" placeholder="对象名称" clearable>
+            <template #prepend>${</template>
+            <template #append>}</template>
+          </el-input>
+        </template>
+        <template v-else>
+          <MonacoEditor
+            ref="editorRef"
+            v-model="elementData.elementProps.ForeachController__iter"
+            language="python"
+            line-numbers="off"
+            style="height: 100px"
+          />
+        </template>
       </el-form-item>
     </el-form>
+
+    <!-- 操作按钮 -->
+    <template v-if="creation || unsaved">
+      <SaveButton :tips="shortcutKeyName" @click="save()" />
+    </template>
   </div>
 </template>
 
 <script setup>
 import * as ElementService from '@/api/script/element'
 import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
+import SaveButton from '@/pymeter/components/editor-main/common/SaveButton.vue'
+import EditorEmits from '@/pymeter/composables/editor.emits'
 import EditorProps from '@/pymeter/composables/editor.props'
 import useEditor from '@/pymeter/composables/useEditor'
-import { Check, Close, Edit } from '@element-plus/icons-vue'
+import useElement from '@/pymeter/composables/useElement'
+import { usePyMeterDB } from '@/store/pymeter-db'
+import { toHashCode } from '@/utils/object-util'
 import { ElMessage } from 'element-plus'
+import { debounce } from 'lodash-es'
 
+const emit = defineEmits(EditorEmits)
 const props = defineProps(EditorProps)
-const {
-  queryMode,
-  modifyMode,
-  createMode,
-  functions,
-  editNow,
-  setReadonly,
-  updateTab,
-  closeTab,
-  expandParentNode,
-  refreshElementTree
-} = useEditor(props)
-const elformRef = ref()
-const elementNo = ref(props.editorNo)
+const { assignElement, assignMetadata } = useElement()
+const { unsaved, metadata, creation, localkey, shortcutKeyName, updateTabName, expandParentNode, refreshElementTree } =
+  useEditor()
+const offlineDB = usePyMeterDB().offlineDB
 const elementData = ref({
-  elementNo: '',
+  elementNo: props.metadata.sn,
   elementName: '遍历控制器',
   elementDesc: '',
   elementType: 'CONTROLLER',
   elementClass: 'ForeachController',
+  elementAttrs: {},
   elementProps: {
     ForeachController__target: '',
     ForeachController__iter: '',
@@ -130,23 +98,67 @@ const elementData = ref({
     ForeachController__delay: ''
   }
 })
-const elementFormRules = reactive({
+const elementRules = {
   elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }],
   'elementProps.ForeachController__target': [{ required: true, message: '目标变量不能为空', trigger: 'blur' }],
-  'elementProps.ForeachController__iter': [{ required: true, message: '迭代对象或声明不能为空', trigger: 'blur' }]
-})
+  'elementProps.ForeachController__iter': [{ required: true, message: '迭代对象/声明不能为空', trigger: 'blur' }]
+}
+const elformRef = ref()
 const editorRef = ref()
 
-onMounted(() => {
-  // 查询或更新模式时，先拉取元素信息
-  if (createMode.value) return
-  ElementService.queryElementInfo({ elementNo: elementNo.value }).then((response) => {
-    elementData.value = response.result
-    if (response.result.elementProps.ForeachController__type === 'CUSTOM') {
-      editorRef.value.setValue(response.result.elementProps.ForeachController__iter)
+watch(
+  elementData,
+  debounce((localdata) => {
+    console.log('watch')
+    // 如果前后端数据一致则代表数据未更改
+    if (metadata.value.hashcode === toHashCode(localdata)) {
+      // 数据一致则表示数据未变更
+      unsaved.value = false
+      // 数据未变更，移除离线数据
+      offlineDB.removeItem(localkey.value)
+      return
     }
-  })
+    console.log('存离线')
+    // 标记数据未保存
+    unsaved.value = true
+    // 存储离线数据
+    offlineDB.setItem(localkey.value, JSON.parse(JSON.stringify({ data: localdata, meta: metadata.value })))
+  }, 250),
+  { deep: true, flush: 'sync' }
+)
+
+onMounted(async () => {
+  // 优先查询离线数据
+  if (unsaved.value) {
+    queryOfflineData()
+    return
+  }
+  // 新增模式计算HashCode并存储
+  if (creation.value) {
+    metadata.value.hashcode = toHashCode(elementData.value)
+    return
+  }
+  // 最后才查询后端数据
+  queryBackendData()
 })
+
+/**
+ * 查询离线数据
+ */
+const queryOfflineData = async () => {
+  const offline = await offlineDB.getItem(localkey.value)
+  assignElement(elementData.value, offline.data)
+  assignMetadata(metadata.value, offline.meta)
+}
+
+/**
+ * 查询后端数据
+ */
+const queryBackendData = async () => {
+  const response = await ElementService.queryElementInfo({ elementNo: elementData.value.elementNo })
+  assignElement(elementData.value, response.result)
+  assignMetadata(metadata.value, { hashcode: toHashCode(elementData.value) })
+}
 
 watch(
   () => elementData.value.elementProps.ForeachController__type,
@@ -159,88 +171,67 @@ watch(
 )
 
 /**
- * 更新元素编号
- */
-const updateElementNo = (val) => {
-  elementNo.value = val
-  elementData.value.elementNo = val
-}
-
-/**
  * 修改元素
  */
 const modifyElement = async () => {
-  // 表单校验
-  const error = await elformRef.value
-    .validate()
-    .then(() => false)
-    .catch(() => true)
-  if (error) {
-    ElMessage({ message: '数据校验失败', type: 'error', duration: 2 * 1000 })
-    return
-  }
   // 修改元素
-  await ElementService.modifyElement({ elementNo: elementNo.value, ...elementData.value })
-  // 无需关闭 tab
-  if (!close) {
-    // 设置为只读模式
-    setReadonly()
-    // 更新 tab 标题
-    updateTab(elementData.value.elementName)
-  }
-  // 重新查询侧边栏的元素列表
-  refreshElementTree()
-  // 成功提示
-  ElMessage({ message: '修改元素成功', type: 'info', duration: 2 * 1000 })
-  // 需要关闭 tab
-  if (close) {
-    closeTab()
-  }
+  await ElementService.modifyElement(elementData.value)
 }
 
 /**
- * 创建元素
+ * 新增元素
  */
 const createElement = async () => {
-  // 表单校验
-  const error = await elformRef.value
-    .validate()
-    .then(() => false)
-    .catch(() => true)
-  if (error) {
-    ElMessage({ message: '数据校验失败', type: 'error', duration: 2 * 1000 })
-    return
-  }
   // 新增元素
   const response = await ElementService.createElementChild({
     rootNo: props.metadata.rootNo,
     parentNo: props.metadata.parentNo,
     ...elementData.value
   })
-  // 无需关闭 tab
-  if (!close) {
-    // 设置为只读模式
-    setReadonly()
-    // 更新 tab 标题和编号
-    updateTab(elementData.value.elementName, response.result.elementNo)
-    // 更新元素编号
-    updateElementNo(response.result.elementNo)
-  }
+  // 移除离线数据
+  offlineDB.removeItem(props.editorNo)
+  // 提取元素编号
+  const elementNo = response.result.elementNo
+  // 更新Tab序列号
+  metadata.value.sn = elementNo
+  // 更新元素编号
+  elementData.value.elementNo = elementNo
   // 展开父节点
   expandParentNode()
-  // 重新查询侧边栏的元素列表
-  refreshElementTree()
-  // 成功提示
-  ElMessage({ message: '新增元素成功', type: 'info', duration: 2 * 1000 })
-  // 需要关闭 tab
-  if (close) {
-    closeTab()
-  }
 }
 
-// 暂存函数，给 useEditor 使用
-functions.createFn = createElement
-functions.modifyFn = modifyElement
+/**
+ * 提交数据
+ */
+const save = async () => {
+  // 表单校验
+  const error = await elformRef.value
+    .validate()
+    .then(() => false)
+    .catch(() => true)
+  if (error) {
+    ElMessage({ message: '数据校验失败', type: 'error', duration: 2 * 1000 })
+    return
+  }
+  // 保存元素
+  creation.value ? await createElement() : await modifyElement()
+  // 标记数据已保存
+  unsaved.value = false
+  // 更新HashCode
+  metadata.value.hashcode = toHashCode(elementData.value)
+  // 移除离线数据
+  offlineDB.removeItem(localkey.value)
+  // 重新查询侧边栏的元素列表
+  refreshElementTree()
+  // 更新 tab 标题
+  updateTabName(elementData.value.elementName)
+  // 成功提示
+  ElMessage({ message: '保存成功', type: 'info', duration: 2 * 1000 })
+}
+
+defineExpose({
+  save
+})
 </script>
 
 <style lang="scss" scoped>

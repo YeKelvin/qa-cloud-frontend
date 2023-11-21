@@ -2,8 +2,8 @@
   <div class="pymeter-component-container" tabindex="-1">
     <el-form
       ref="elformRef"
-      label-position="right"
       label-width="140px"
+      label-position="right"
       inline-message
       :model="elementData"
       :rules="elementRules"
@@ -85,6 +85,7 @@
             type="primary"
             trigger="click"
             placement="bottom-end"
+            style="margin-right: 20px"
             @click="executeTestWorker(metadata.rootNo, elementData.elementNo)"
           >
             <SvgIcon icon-name="pymeter-send" style="margin-right: 5px; font-size: 18px" />
@@ -98,7 +99,7 @@
         </template>
         <template v-if="creation || unsaved">
           <el-tooltip effect="light" placement="top" :content="shortcutKeyName">
-            <el-button type="danger" style="width: 120px; margin-left: 20px" @click="save()">
+            <el-button type="danger" style="width: 120px" @click="save()">
               <SvgIcon icon-name="pymeter-save" style="margin-right: 5px; font-size: 22px" />
               <span>保 存</span>
             </el-button>

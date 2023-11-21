@@ -2,8 +2,8 @@
   <div class="pymeter-component-container" tabindex="-1">
     <el-form
       ref="elformRef"
-      label-position="right"
       label-width="80px"
+      label-position="right"
       inline-message
       :model="elementData"
       :rules="elementRules"

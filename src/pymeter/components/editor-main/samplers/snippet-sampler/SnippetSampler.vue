@@ -2,30 +2,25 @@
   <div class="pymeter-component-container" tabindex="-1">
     <el-form
       ref="elformRef"
-      label-position="right"
       label-width="120px"
+      label-position="right"
       inline-message
       :model="elementData"
-      :rules="elementFormRules"
+      :rules="elementRules"
     >
       <!-- 元素名称 -->
       <el-form-item label="名称：" prop="elementName">
-        <el-input v-model="elementData.elementName" placeholder="元素名称" clearable :readonly="queryMode" />
+        <el-input v-model="elementData.elementName" placeholder="元素名称" clearable />
       </el-form-item>
 
       <!-- 元素备注 -->
       <el-form-item label="备注：" prop="elementDesc">
-        <el-input v-model="elementData.elementDesc" placeholder="元素备注" clearable :readonly="queryMode" />
+        <el-input v-model="elementData.elementDesc" placeholder="元素备注" clearable />
       </el-form-item>
 
       <!-- 片段列表 -->
       <el-form-item label="片段引用：" prop="elementAttrs.SnippetSampler__snippet_no" class="snippets-item">
-        <el-select
-          v-model="elementData.elementAttrs.SnippetSampler__snippet_no"
-          placeholder="脚本片段"
-          style="width: 100%"
-          :disabled="queryMode"
-        >
+        <el-select v-model="snippetNo" placeholder="脚本片段" style="width: 100%">
           <el-option
             v-for="snippet in snippetList"
             :key="snippet.elementNo"
@@ -34,9 +29,9 @@
           />
         </el-select>
         <el-button
-          v-show="!isBlank(elementData.elementAttrs.SnippetSampler__snippet_no)"
-          style="margin-left: 10px"
+          v-show="!isEmpty(snippetNo)"
           type="primary"
+          style="margin-left: 10px"
           plain
           :icon="View"
           @click="openTestSnippet()"
@@ -45,28 +40,16 @@
         </el-button>
       </el-form-item>
 
-      <!-- 变更警告 -->
-      <template v-if="showWarning && !elementData.elementAttrs.SnippetSampler__use_default">
-        <el-tag type="danger" style="margin-bottom: 10px" disable-transitions>
-          重要提醒：片段参数定义已发生变更，请重新编辑
-        </el-tag>
-      </template>
-
       <!-- 标签栏 -->
       <div style="display: flex; align-items: center; justify-content: space-between">
         <!-- 标签页头 -->
         <el-tabs v-model="activeTabName" style="width: 100%">
           <el-tab-pane name="PARAMS">
             <template #label>
-              <el-badge :hidden="isEmpty(argumentsData)" type="success" is-dot>请求参数</el-badge>
+              <el-badge :hidden="isEmpty(argumentData)" type="success" is-dot>请求参数</el-badge>
             </template>
           </el-tab-pane>
         </el-tabs>
-        <!-- 运行按钮 -->
-        <el-button v-show="queryMode" type="danger" style="margin-left: 10px" @click="executeSampler(elementNo)">
-          <SvgIcon icon-name="pymeter-send" style="margin-right: 5px" />
-          运 行
-        </el-button>
       </div>
 
       <!-- 请求参数 -->
@@ -74,73 +57,65 @@
         <!-- 形参 -->
         <ArgumentTable
           v-model:use-default="elementData.elementAttrs.SnippetSampler__use_default"
-          :data="argumentsData"
-          :edit-mode="editMode"
+          :data="argumentData"
         />
       </div>
-
-      <!-- 操作按钮 -->
-      <el-affix target=".pymeter-component-container" position="bottom" :offset="60">
-        <el-form-item v-if="queryMode">
-          <el-button :icon="Edit" type="primary" @click="editNow()">编 辑</el-button>
-          <el-button :icon="Close" @click="closeTab()">关 闭</el-button>
-        </el-form-item>
-        <el-form-item v-else-if="modifyMode">
-          <el-button :icon="Check" type="danger" @click="modifyElement()">保 存</el-button>
-          <el-button :icon="Check" @click="modifyElement(true)">保存并关闭</el-button>
-          <el-button :icon="Close" @click="closeTab()">关 闭</el-button>
-        </el-form-item>
-        <el-form-item v-else-if="createMode">
-          <el-button :icon="Check" type="primary" @click="createElement()">保 存</el-button>
-          <el-button :icon="Check" @click="createElement(true)">保存并关闭</el-button>
-          <el-button :icon="Close" @click="closeTab()">关 闭</el-button>
-        </el-form-item>
-      </el-affix>
     </el-form>
+
+    <!-- 操作按钮 -->
+    <el-affix target=".pymeter-component-container" position="bottom" :offset="60">
+      <div class="flexbox-center">
+        <template v-if="!creation">
+          <!-- 运行按钮 -->
+          <el-button
+            type="primary"
+            style="margin-left: 20px"
+            @click="executeSampler(metadata.rootNo, elementData.elementNo)"
+          >
+            <SvgIcon icon-name="pymeter-send" style="margin-right: 5px; font-size: 18px" />
+            运 行
+          </el-button>
+        </template>
+        <template v-if="creation || unsaved">
+          <el-tooltip effect="light" placement="top" :content="shortcutKeyName">
+            <el-button type="danger" @click="save()">
+              <SvgIcon icon-name="pymeter-save" style="margin-right: 5px; font-size: 22px" />
+              <span>保 存</span>
+            </el-button>
+          </el-tooltip>
+        </template>
+      </div>
+    </el-affix>
   </div>
 </template>
 
 <script setup>
 import * as ElementService from '@/api/script/element'
-import { isBlank } from '@/utils/string-util'
-import { isEmpty, differenceBy } from 'lodash-es'
-import { ElMessage } from 'element-plus'
-import { Check, Close, Edit, View } from '@element-plus/icons-vue'
-import { usePyMeterStore } from '@/store/pymeter'
-import { useWorkspaceStore } from '@/store/workspace'
+import EditorEmits from '@/pymeter/composables/editor.emits'
+import EditorProps from '@/pymeter/composables/editor.props'
 import useEditor from '@/pymeter/composables/useEditor'
 import useElement from '@/pymeter/composables/useElement'
 import useRunnableElement from '@/pymeter/composables/useRunnableElement'
-import EditorProps from '@/pymeter/composables/editor.props'
+import { usePyMeterStore } from '@/store/pymeter'
+import { usePyMeterDB } from '@/store/pymeter-db'
+import { useWorkspaceStore } from '@/store/workspace'
+import { toHashCode } from '@/utils/object-util'
+import { View } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { debounce, isEmpty } from 'lodash-es'
 import ArgumentTable from './SnippetSamplerArgumentTable.vue'
 
-const elementFormRules = {
-  elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }],
-  'elementAttrs.SnippetSampler__snippet_no': [{ required: true, message: '片段不能为空', trigger: 'blur' }]
-}
-
+const emit = defineEmits(EditorEmits)
 const props = defineProps(EditorProps)
 const pymeterStore = usePyMeterStore()
 const workspaceStore = useWorkspaceStore()
-const { assignElement } = useElement()
 const { executeSampler } = useRunnableElement()
-const {
-  editMode,
-  queryMode,
-  modifyMode,
-  createMode,
-  functions,
-  editNow,
-  setReadonly,
-  updateTab,
-  closeTab,
-  expandParentNode,
-  refreshElementTree
-} = useEditor(props)
-const elformRef = ref()
-const elementNo = ref(props.editorNo)
+const { assignElement, assignMetadata } = useElement()
+const { unsaved, metadata, creation, localkey, shortcutKeyName, updateTabName, expandParentNode, refreshElementTree } =
+  useEditor()
+const offlineDB = usePyMeterDB().offlineDB
 const elementData = ref({
-  elementNo: '',
+  elementNo: props.metadata.sn,
   elementName: 'Snippet请求',
   elementDesc: '',
   elementType: 'SAMPLER',
@@ -149,83 +124,130 @@ const elementData = ref({
     SnippetSampler__snippet_no: '',
     SnippetSampler__arguments: [],
     SnippetSampler__use_default: false
-  }
+  },
+  elementProps: {}
 })
-const activeTabName = ref('PARAMS')
+const elementRules = {
+  elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }],
+  'elementAttrs.SnippetSampler__snippet_no': [{ required: true, message: '片段不能为空', trigger: 'blur' }]
+}
+const snippetNo = computed({
+  get: () => elementData.value.elementAttrs.SnippetSampler__snippet_no,
+  set: (val) => (elementData.value.elementAttrs.SnippetSampler__snippet_no = val)
+})
+const argumentData = computed({
+  get: () => elementData.value.elementAttrs.SnippetSampler__arguments,
+  set: (val) => (elementData.value.elementAttrs.SnippetSampler__arguments = val)
+})
+const elformRef = ref()
 const snippetList = ref([])
-const argumentsData = ref([])
-const showWarning = ref(false)
+const activeTabName = ref('PARAMS')
 const showParams = computed(() => activeTabName.value === 'PARAMS')
 
 watch(
   () => elementData.value.elementAttrs.SnippetSampler__snippet_no,
   (val) => {
-    if (!val) return
-    // 清空原有的参数
-    argumentsData.value = []
     // 查询选中的片段信息
-    querySnippet(val)
+    if (!val) return
+    argumentData.value = []
+    querySnippetInfo(val)
   }
 )
 
-onMounted(() => {
-  querySnippets()
-  // 查询或更新模式时，先拉取元素信息
-  if (createMode.value) return
-  ElementService.queryElementInfo({ elementNo: elementNo.value }).then((response) => {
-    assignElement(elementData.value, response.result)
-  })
+watch(
+  elementData,
+  debounce((localdata) => {
+    console.log('watch')
+    // 如果前后端数据一致则代表数据未更改
+    if (metadata.value.hashcode === toHashCode(localdata)) {
+      // 数据一致则表示数据未变更
+      unsaved.value = false
+      // 数据未变更，移除离线数据
+      offlineDB.removeItem(localkey.value)
+      return
+    }
+    console.log('存离线')
+    // 标记数据未保存
+    unsaved.value = true
+    // 存储离线数据
+    offlineDB.setItem(localkey.value, JSON.parse(JSON.stringify({ data: localdata, meta: metadata.value })))
+  }, 250),
+  { deep: true, flush: 'sync' }
+)
+
+onMounted(async () => {
+  // 查询空间下所有可用的片段
+  queryTestSnippetAll()
+  // 优先查询离线数据
+  if (unsaved.value) {
+    queryOfflineData()
+    return
+  }
+  // 新增模式计算HashCode并存储
+  if (creation.value) {
+    metadata.value.hashcode = toHashCode(elementData.value)
+    return
+  }
+  // 最后才查询后端数据
+  queryBackendData()
 })
 
 /**
- * 根据工作空间编号查询所有片段
+ * 查询离线数据
  */
-const querySnippets = () => {
-  ElementService.queryElementAll({
-    workspaceNo: props.metadata.workspaceNo,
+const queryOfflineData = async () => {
+  const offline = await offlineDB.getItem(localkey.value)
+  assignElement(elementData.value, offline.data)
+  assignMetadata(metadata.value, offline.meta)
+}
+
+/**
+ * 查询后端数据
+ */
+const queryBackendData = async () => {
+  const response = await ElementService.queryElementInfo({ elementNo: elementData.value.elementNo })
+  assignElement(elementData.value, response.result)
+  assignMetadata(metadata.value, { hashcode: toHashCode(elementData.value) })
+}
+
+/**
+ * 查询所有片段
+ */
+const queryTestSnippetAll = async () => {
+  const response = await ElementService.queryElementAll({
+    workspaceNo: workspaceStore.workspaceNo,
     elementType: 'SNIPPET',
     elementClass: 'TestSnippet'
-  }).then((response) => {
-    snippetList.value = response.result
   })
+  snippetList.value = response.result
 }
 
 /**
  * 根据元素编号查询片段详情
  */
-const querySnippet = (snippetNo) => {
-  ElementService.queryElementInfo({ elementNo: snippetNo }).then((response) => {
-    // 将片段参数定义添加至表格
-    response.result.elementAttrs.parameters.forEach((item) => {
-      argumentsData.value.push({
+const querySnippetInfo = async (snippetNo) => {
+  const response = await ElementService.queryElementInfo({ elementNo: snippetNo })
+  if (creation.value) {
+    response.result.elementAttrs.TestSnippet__parameters.forEach((item) => {
+      argumentData.value.push({
         name: item.name,
         value: item.default,
         desc: item.desc,
         default: item.default
       })
     })
-    // 非新增模式下，将请求参数合并至表格中，如果请求参数不在片段参数定义中，则丢弃
-    const attributes = elementData.value.elementAttrs
-    if (!createMode.value) {
-      argumentsData.value.forEach((item) => {
-        const arg = attributes.SnippetSampler__arguments.find((i) => i.name === item.name)
-        if (arg) {
-          item.value = arg.value
-        }
+  } else {
+    const argumentList = elementData.value.elementAttrs.SnippetSampler__arguments
+    response.result.elementAttrs.TestSnippet__parameters.forEach((item) => {
+      const arg = argumentList.find((i) => i.name === item.name)
+      argumentData.value.push({
+        name: item.name,
+        value: arg ? arg.value : item.default,
+        desc: item.desc,
+        default: item.default
       })
-    }
-    // 将请求参数合并至表格中，如果片段参数定义（对称差集）有变更，则给出提示
-    if (queryMode.value) {
-      if (argumentsData.value.length !== attributes.SnippetSampler__arguments.length) {
-        showWarning.value = true
-      }
-      const leftDiff = differenceBy(argumentsData.value, attributes.SnippetSampler__arguments, 'name')
-      const rightDiff = differenceBy(attributes.SnippetSampler__arguments, argumentsData.value, 'name')
-      if (leftDiff.length > 0 || rightDiff.length > 0) {
-        showWarning.value = true
-      }
-    }
-  })
+    })
+  }
 }
 
 /**
@@ -247,120 +269,82 @@ const openTestSnippet = () => {
 }
 
 // 校验参数值是否为空
-const checkParameter = () => {
-  let pass = true
-  elementData.value.elementAttrs.SnippetSampler__arguments.forEach((item) => {
-    if (isBlank(item.value)) {
-      pass = false
-      return
-    }
-  })
-  if (!pass) ElMessage({ message: '参数值不能为空', type: 'error' })
-  return pass
-}
-
-// 设置元素属性
-const setElementProperty = () => {
-  if (elementData.value.elementAttrs.SnippetSampler__use_default) return
-  elementData.value.elementAttrs.SnippetSampler__arguments = argumentsData.value.map((item) => ({
-    name: item.name,
-    value: item.value
-  }))
-}
-
-/**
- * 更新元素编号
- */
-const updateElementNo = (val) => {
-  elementNo.value = val
-  elementData.value.elementNo = val
+const checkArguments = () => {
+  const args = argumentData.value
+  for (let i = 0; i < args.length; i++) {
+    if (isEmpty(args[i].value)) return true
+  }
+  return false
 }
 
 /**
  * 修改元素
  */
 const modifyElement = async () => {
-  // 表单校验
-  const error = await elformRef.value
-    .validate()
-    .then(() => false)
-    .catch(() => true)
-  if (error) {
-    ElMessage({ message: '数据校验失败', type: 'error', duration: 2 * 1000 })
-    return
-  }
-  // 设置元素属性
-  setElementProperty()
-  // 校验参数
-  if (!checkParameter()) return
   // 修改元素
-  await ElementService.modifyElement({ elementNo: elementNo.value, ...elementData.value })
-  // 无需关闭 tab
-  if (!close) {
-    // 设置为只读模式
-    setReadonly()
-    // 更新 tab 标题
-    updateTab(elementData.value.elementName)
-    // 隐藏警告
-    showWarning.value = false
-  }
-  // 重新查询侧边栏的元素列表
-  refreshElementTree()
-  // 成功提示
-  ElMessage({ message: '修改元素成功', type: 'info', duration: 2 * 1000 })
-  // 需要关闭 tab
-  if (close) {
-    closeTab()
-  }
+  await ElementService.modifyElement(elementData.value)
 }
 
 /**
- * 创建元素
+ * 新增元素
  */
 const createElement = async () => {
-  // 表单校验
-  const error = await elformRef.value
-    .validate()
-    .then(() => false)
-    .catch(() => true)
-  if (error) {
-    ElMessage({ message: '数据校验失败', type: 'error', duration: 2 * 1000 })
-    return
-  }
-  // 设置元素属性
-  setElementProperty()
-  // 校验参数
-  if (!checkParameter()) return
   // 新增元素
   const response = await ElementService.createElementChild({
     rootNo: props.metadata.rootNo,
     parentNo: props.metadata.parentNo,
     ...elementData.value
   })
-  // 无需关闭 tab
-  if (!close) {
-    // 设置为只读模式
-    setReadonly()
-    // 更新 tab 标题和编号
-    updateTab(elementData.value.elementName, response.result.elementNo)
-    // 更新元素编号
-    updateElementNo(response.result.elementNo)
-  }
+  // 移除离线数据
+  offlineDB.removeItem(props.editorNo)
+  // 提取元素编号
+  const elementNo = response.result.elementNo
+  // 更新Tab序列号
+  metadata.value.sn = elementNo
+  // 更新元素编号
+  elementData.value.elementNo = elementNo
   // 展开父节点
   expandParentNode()
-  // 重新查询侧边栏的元素列表
-  refreshElementTree()
-  // 成功提示
-  ElMessage({ message: '新增元素成功', type: 'info', duration: 2 * 1000 })
-  // 需要关闭 tab
-  if (close) {
-    closeTab()
-  }
 }
 
-// 暂存函数，给 useEditor 使用
-functions.createFn = createElement
-functions.modifyFn = modifyElement
+/**
+ * 提交数据
+ */
+const save = async () => {
+  let error
+  // 表单校验
+  error = await elformRef.value
+    .validate()
+    .then(() => false)
+    .catch(() => true)
+  if (error) {
+    ElMessage({ message: '数据校验失败', type: 'error', duration: 2 * 1000 })
+    return
+  }
+  error = checkArguments()
+  if (error) {
+    ElMessage({ message: '参数值不能为空', type: 'error', duration: 2 * 1000 })
+    return
+  }
+  // 保存元素
+  creation.value ? await createElement() : await modifyElement()
+  // 标记数据已保存
+  unsaved.value = false
+  // 更新HashCode
+  metadata.value.hashcode = toHashCode(elementData.value)
+  // 移除离线数据
+  offlineDB.removeItem(localkey.value)
+  // 重新查询侧边栏的元素列表
+  refreshElementTree()
+  // 更新 tab 标题
+  updateTabName(elementData.value.elementName)
+  // 成功提示
+  ElMessage({ message: '保存成功', type: 'info', duration: 2 * 1000 })
+}
+
+defineExpose({
+  save
+})
 </script>
 
 <style lang="scss" scoped>
