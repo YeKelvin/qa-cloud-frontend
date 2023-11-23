@@ -1,10 +1,11 @@
-import * as DatabaseService from '@/api/script/database'
+import * as ElementService from '@/api/script/element'
 import * as HttpHeadersService from '@/api/script/headers'
 import * as VariablesService from '@/api/script/variables'
+import { usePyMeterDB } from '@/store/pymeter-db'
 import { useWorkspaceStore } from '@/store/workspace'
 import { isEmpty } from 'lodash-es'
 import { defineStore } from 'pinia'
-import { removeCache, confirmClose } from './pymeter-tools'
+import { confirmClose, removeCache } from './pymeter-tools'
 
 export const usePyMeterStore = defineStore('pymeter', {
   state: () => {
@@ -190,9 +191,25 @@ export const usePyMeterStore = defineStore('pymeter', {
      * 关闭所有已打开的 tab 页
      */
     removeAllTab() {
-      // TODO: 这里应该有问题
-      this.tabs.forEach((tab) => this.removeTab(tab))
+      this.tabs = []
       this.activeTabNo = ''
+    },
+
+    async openOfflineTab() {
+      const pymeterDB = usePyMeterDB()
+      await pymeterDB.offlineDB.iterate((offline, key) => {
+        this.pushTab({
+          editorNo: isEmpty(offline.meta.sn) ? key : offline.meta.sn,
+          editorName: offline.meta.name,
+          editorComponent: offline.meta.component,
+          unsaved: true,
+          metadata: offline.meta
+        })
+      })
+      const tabs = this.tabs
+      if (tabs.length > 0) {
+        this.activeTabNo = tabs[tabs.length - 1].editorNo
+      }
     },
 
     /**
@@ -372,7 +389,7 @@ export const usePyMeterStore = defineStore('pymeter', {
      * 查询所有数据库配置
      */
     queryDatabaseEngineAll() {
-      DatabaseService.queryDatabaseEngineAll({ workspaceNo: useWorkspaceStore().workspaceNo }).then((response) => {
+      ElementService.queryDatabaseEngineAll({ workspaceNo: useWorkspaceStore().workspaceNo }).then((response) => {
         this.databaseEngineList = response.result
       })
     }

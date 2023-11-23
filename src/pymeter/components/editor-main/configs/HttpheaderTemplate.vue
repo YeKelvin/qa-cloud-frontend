@@ -66,7 +66,7 @@ import { debounce, has, isEmpty } from 'lodash-es'
 
 const emit = defineEmits(EditorEmits)
 const props = defineProps(EditorProps)
-const { assignElement, assignMetadata } = useElement()
+const { assignConfig, assignMetadata } = useElement()
 const { unsaved, metadata, localkey, shortcutKeyName } = useEditor()
 const offlineDB = usePyMeterDB().offlineDB
 const configData = ref({
@@ -124,7 +124,7 @@ onMounted(async () => {
  */
 const queryOfflineData = async () => {
   const offline = await offlineDB.getItem(localkey.value)
-  assignElement(configData.value, offline.data)
+  assignConfig(configData.value, offline.data)
   assignMetadata(metadata.value, offline.meta)
 }
 

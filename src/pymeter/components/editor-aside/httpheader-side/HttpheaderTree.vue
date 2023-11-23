@@ -50,13 +50,14 @@
 
 <script lang="jsx" setup>
 import * as HeadersService from '@/api/script/headers'
-import { More } from '@element-plus/icons-vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
-import { usePyMeterStore } from '@/store/pymeter'
-import { useWorkspaceStore } from '@/store/workspace'
 import useElTree from '@/composables/useElTree'
 import NameInput from '@/pymeter/components/editor-aside/common/NameInput.vue'
 import WorkspaceTree from '@/pymeter/components/editor-aside/common/WorkspaceTree.vue'
+import { usePyMeterStore } from '@/store/pymeter'
+import { usePyMeterDB } from '@/store/pymeter-db'
+import { useWorkspaceStore } from '@/store/workspace'
+import { More } from '@element-plus/icons-vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 const {
   eltreeRef,
@@ -70,6 +71,7 @@ const {
   triggerButtonMouseenter,
   handleMenuHide
 } = useElTree()
+const offlineDB = usePyMeterDB().offlineDB
 const pymeterStore = usePyMeterStore()
 const workspaceStore = useWorkspaceStore()
 
@@ -106,6 +108,12 @@ const renameTemplate = async () => {
   if (cancelled) return
   // 修改请求头模板
   await HeadersService.modifyHttpheaderTemplate({ templateNo: data.templateNo, templateName: newName })
+  // 修改离线数据中的tab名称
+  const offline = await offlineDB.getItem(data.templateNo)
+  if (offline) {
+    offline.meta.name = newName
+    offlineDB.setItem(data.templateNo, offline)
+  }
   // 重新查询列表
   queryHttpheaderTemplateAll()
   // 重命名tab

@@ -43,8 +43,6 @@
 </template>
 
 <script setup>
-import { isEmpty } from 'lodash-es'
-import { usePyMeterDB } from '@/store/pymeter-db'
 import { usePyMeterStore } from '@/store/pymeter'
 import Toolbar from './toolbar/Toolbar.vue'
 import Mousetrap from 'mousetrap'
@@ -103,29 +101,13 @@ watch(keepAliveRef, (val) => {
 onMounted(async () => {
   // 注册快捷键
   Mousetrap.bind('mod+k', () => pymeterStore.removeTab({ editorNo: pymeterStore.activeTabNo }))
-  // 打开离线数据对应的tab
-  await openOfflineTab()
+  // 打开离线数据
+  await pymeterStore.openOfflineTab()
 })
 onBeforeUnmount(() => {
   // 移除快捷键
   Mousetrap.unbind('mod+k')
 })
-
-const openOfflineTab = async () => {
-  const pymeterDB = usePyMeterDB()
-  await pymeterDB.offlineDB.iterate((offline, key) => {
-    pymeterStore.pushTab({
-      editorNo: isEmpty(offline.meta.sn) ? key : offline.meta.sn,
-      editorName: offline.meta.name,
-      editorComponent: offline.meta.component,
-      unsaved: true,
-      metadata: offline.meta
-    })
-  })
-  if (pymeterStore.tabs.length > 0) {
-    pymeterStore.activeTabNo = pymeterStore.tabs[pymeterStore.tabs.length - 1].editorNo
-  }
-}
 </script>
 
 <style lang="scss" scoped>

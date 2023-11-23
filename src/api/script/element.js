@@ -18,7 +18,7 @@ export const queryElementTreeByRoots = (params) =>
 
 export const queryElementComponents = (params) => request.get('/script/element/components', { params })
 
-export const createElementRoot = (data) => request.post('/script/element/root', data)
+export const createElement = (data) => request.post('/script/element', data)
 
 export const createElementChild = (data) => request.post('/script/element/child', data)
 
@@ -38,6 +38,8 @@ export const duplicateElement = (data) => request.post('/script/element/duplicat
 
 export const pasteElement = (data) => request.post('/script/element/paste', data)
 
-export const copyRootToWorkspace = (data) => request.post('/script/element/root/copy/to/workspace', data)
+export const copyElementToWorkspace = (data) => request.post('/script/element/copy/to/workspace', data)
 
-export const moveRootToWorkspace = (data) => request.post('/script/element/root/move/to/workspace', data)
+export const moveElementToWorkspace = (data) => request.post('/script/element/move/to/workspace', data)
+
+export const queryDatabaseEngineAll = (params) => request.get('/script/element/database/engine/all', { params })

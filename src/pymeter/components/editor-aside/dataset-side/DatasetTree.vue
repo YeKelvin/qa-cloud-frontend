@@ -51,7 +51,7 @@
     @hide="handleMenuHide"
   >
     <div style="display: flex; flex-direction: column">
-      <el-button link :disabled="disabledOperation" @click="modifyDataset">编辑</el-button>
+      <el-button link :disabled="disabledOperation" @click="modifyDataset">重命名</el-button>
       <el-button link :disabled="disabledOperation" @click="duplicateDataset">复制</el-button>
       <el-button link :disabled="disabledOperation" @click="copyDatasetToWorkspace">复制空间</el-button>
       <el-button link :disabled="disabledOperation" @click="moveDatasetToWorkspace">移动空间</el-button>
@@ -67,6 +67,7 @@ import EnvDatasetSelect from '@/pymeter/components/editor-aside/common/EnvDatase
 import NameInput from '@/pymeter/components/editor-aside/common/NameInput.vue'
 import WorkspaceTree from '@/pymeter/components/editor-aside/common/WorkspaceTree.vue'
 import { usePyMeterStore } from '@/store/pymeter'
+import { usePyMeterDB } from '@/store/pymeter-db'
 import { useWorkspaceStore } from '@/store/workspace'
 import { More } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -83,6 +84,7 @@ const {
   triggerButtonMouseenter,
   handleMenuHide
 } = useElTree()
+const offlineDB = usePyMeterDB().offlineDB
 const pymeterStore = usePyMeterStore()
 const workspaceStore = useWorkspaceStore()
 const operatingDatasetType = computed(() => operatingNode.value?.data?.datasetType)
@@ -140,6 +142,12 @@ const renameAndRebindDataset = async () => {
     datasetName: newName,
     datasetBinding: newBinding
   })
+  // 修改离线数据中的tab名称
+  const offline = await offlineDB.getItem(data.datasetNo)
+  if (offline) {
+    offline.meta.name = newName
+    offlineDB.setItem(data.datasetNo, offline)
+  }
   // 重新查询列表
   pymeterStore.queryDatasetAll()
   // 重命名tab
@@ -170,6 +178,12 @@ const renameDataset = async () => {
     datasetNo: data.datasetNo,
     datasetName: newName
   })
+  // 修改离线数据中的tab名称
+  const offline = await offlineDB.getItem(data.datasetNo)
+  if (offline) {
+    offline.meta.name = newName
+    offlineDB.setItem(data.datasetNo, offline)
+  }
   // 重新查询列表
   pymeterStore.queryDatasetAll()
   // 重命名tab

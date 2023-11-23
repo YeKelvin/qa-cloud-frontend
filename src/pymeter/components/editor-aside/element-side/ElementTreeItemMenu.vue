@@ -82,8 +82,8 @@
 
       <template v-if="item?.elementType == 'COLLECTION'">
         <el-divider />
-        <el-button link @click="copyRootToWorkspace">复制空间</el-button>
-        <el-button link @click="moveRootToWorkspace">移动空间</el-button>
+        <el-button link @click="copyElementToWorkspace">复制空间</el-button>
+        <el-button link @click="moveElementToWorkspace">移动空间</el-button>
       </template>
       <template v-else>
         <el-divider v-if="item?.elementType != 'SAMPLER'" />
@@ -456,7 +456,7 @@ const duplicateElement = () => {
 /**
  * 复制元素至指定空间
  */
-const copyRootToWorkspace = async () => {
+const copyElementToWorkspace = async () => {
   const data = item.value
   closeMenu()
   let workspaceNo = null
@@ -477,7 +477,7 @@ const copyRootToWorkspace = async () => {
     .catch(() => true)
   if (cancelled) return
   // 复制元素到指定的空间
-  await ElementService.copyRootToWorkspace({ elementNo: data.elementNo, workspaceNo: workspaceNo })
+  await ElementService.copyElementToWorkspace({ elementNo: data.elementNo, workspaceNo: workspaceNo })
   // 成功提示
   ElMessage({ message: '复制成功', type: 'info', duration: 1 * 1000 })
 }
@@ -485,7 +485,7 @@ const copyRootToWorkspace = async () => {
 /**
  * 移动元素至指定空间
  */
-const moveRootToWorkspace = async () => {
+const moveElementToWorkspace = async () => {
   const data = item.value
   closeMenu()
   let workspaceNo = null
@@ -506,7 +506,7 @@ const moveRootToWorkspace = async () => {
     .catch(() => true)
   if (cancelled) return
   // 移动元素到指定空间
-  await ElementService.moveRootToWorkspace({ elementNo: data.elementNo, workspaceNo: workspaceNo })
+  await ElementService.moveElementToWorkspace({ elementNo: data.elementNo, workspaceNo: workspaceNo })
   // 关闭tab
   pymeterStore.removeTab({ editorNo: data.elementNo })
   // 从已选中的集合列表中移除该集合

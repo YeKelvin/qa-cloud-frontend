@@ -339,14 +339,11 @@ const createElement = async () => {
     return
   }
   // 新增元素
-  const response = await ElementService.createElementRoot({
-    workspaceNo: workspaceStore.workspaceNo,
-    ...elementData.value
-  })
-  // 移除离线数据
-  offlineDB.removeItem(props.editorNo)
+  const response = await ElementService.createElement(elementData.value)
   // 提取元素编号
   const elementNo = response.result.elementNo
+  // 移除离线数据
+  offlineDB.removeItem(props.editorNo)
   // 更新Tab序列号
   metadata.value.sn = elementNo
   // 更新元素编号

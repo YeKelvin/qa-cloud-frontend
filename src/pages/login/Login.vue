@@ -9,7 +9,7 @@
       :rules="loginRules"
     >
       <div class="title-container">
-        <h3 class="title">Quality Assurance Cloud</h3>
+        <h3 class="title">QA Cloud</h3>
       </div>
 
       <el-tabs v-model="accountType" class="account-type-tabs">
@@ -146,8 +146,8 @@ const loginHandler = async () => {
 
 <style lang="scss" scoped>
 $bg: #2d3a4b;
-$dark_gray: #889aa4;
-$light_gray: #eee;
+$dark-gray: #889aa4;
+$light-gray: #eee;
 
 .login-container {
   width: 100%;
@@ -170,7 +170,7 @@ $light_gray: #eee;
       margin: 0 auto 40px;
       font-size: 28px;
       font-weight: bold;
-      color: $light_gray;
+      color: $light-gray;
       text-align: center;
     }
   }
@@ -183,7 +183,7 @@ $light_gray: #eee;
 :deep(.el-tabs__item) {
   font-size: 18px;
   font-weight: 400;
-  color: $light_gray;
+  color: $light-gray;
 }
 
 :deep(.el-tabs__nav-wrap::after) {
@@ -193,7 +193,7 @@ $light_gray: #eee;
 
 <style lang="scss">
 $bg: #283443;
-$light_gray: #fff;
+$light-gray: #fff;
 $cursor: #fff;
 
 .login-container {
@@ -210,7 +210,7 @@ $cursor: #fff;
     input {
       height: 47px;
       padding: 12px 5px 12px 15px;
-      color: $light_gray;
+      color: $light-gray;
       caret-color: $cursor;
       background: transparent;
       border: 0;

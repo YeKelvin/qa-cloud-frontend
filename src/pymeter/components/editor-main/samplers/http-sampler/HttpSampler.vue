@@ -570,10 +570,10 @@ const createElement = async () => {
     parentNo: props.metadata.parentNo,
     ...elementData.value
   })
-  // 移除离线数据
-  offlineDB.removeItem(props.editorNo)
   // 提取元素编号
   const elementNo = response.result.elementNo
+  // 移除离线数据
+  offlineDB.removeItem(props.editorNo)
   // 更新Tab序列号
   metadata.value.sn = elementNo
   // 更新元素编号

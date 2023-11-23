@@ -37,14 +37,16 @@ export const useWorkspaceStore = defineStore('workspace', {
       this.workspaceName = workspaceName
       this.workspaceScope = workspaceScope
       const pymeterStore = usePyMeterStore()
-      // 关闭所有在 PyMeter 编辑器中打开的 tab 页
+      // 关闭所有 tab 页
       pymeterStore.removeAllTab()
-      // 重新查询变量集列表
-      pymeterStore.queryDatasetAll()
       // 清空已选择的变量集列表
       pymeterStore.clearSelectedDataset()
+      // 重新查询变量集列表
+      pymeterStore.queryDatasetAll()
       // 重新查询 http 请求头模板列表
       pymeterStore.queryHttpheaderTemplateAll()
+      // 打开空间的离线数据
+      pymeterStore.openOfflineTab()
     },
 
     /**

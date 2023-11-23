@@ -16,7 +16,7 @@
       </template>
 
       <!-- 筛选输入框 -->
-      <el-input v-model="filterText" style="padding: 10px" placeholder="搜索变量" clearable />
+      <el-input v-model="filteredText" style="padding: 10px" placeholder="搜索变量" clearable />
       <!-- 滚动条 -->
       <el-scrollbar
         id="variables-view__scrollbar"
@@ -25,7 +25,7 @@
         view-style="padding: 0 10px 10px 10px;"
       >
         <!-- 变量表格 -->
-        <el-table :data="filterTableData" border fit stripe highlight-current-row>
+        <el-table :data="filteredData" fit border stripe highlight-current-row>
           <!-- 空表格 -->
           <template #empty><el-empty /></template>
 
@@ -56,12 +56,12 @@
               <div
                 class="variable-item-wrapper"
                 @dblclick="copy(row.initialValue)"
-                @mouseenter="row.hoverInitialValue = true"
-                @mouseleave="row.hoverInitialValue = false"
+                @mouseenter="row.initValHovered = true"
+                @mouseleave="row.initValHovered = false"
               >
                 <span>{{ row.initialValue || '-' }}</span>
                 <el-button
-                  v-show="row.hoverInitialValue"
+                  v-show="row.initValHovered"
                   type="primary"
                   link
                   :icon="CopyDocument"
@@ -88,35 +88,26 @@
             </template>
             <!-- 单元格 -->
             <template #default="{ row }">
-              <div @mouseenter="row.hoverCurrentValue = true" @mouseleave="row.hoverCurrentValue = false">
-                <span v-if="row.editing" class="current-value__editing">
-                  <el-input
-                    :ref="(el) => (cellInputRef = el)"
-                    v-model="row.currentValue"
-                    type="textarea"
-                    size="small"
-                    autosize
-                    clearable
-                    :rows="1"
-                    @blur="updateCurrentValue(row)"
-                  />
-                  <span id="current-value-button" style="display: flex; justify-content: flex-end">
-                    <el-button type="danger" link :icon="Check" @click="updateCurrentValue(row)" />
-                    <el-button type="primary" link :icon="Close" @click="row.editing = false" />
-                  </span>
-                </span>
-                <span v-else class="current-value-wrapper" @dblclick="row.editing = true">
-                  <span>{{ row.currentValue || '-' }}</span>
-                  <span v-show="row.hoverCurrentValue">
-                    <el-button type="primary" link :icon="Edit" @click="row.editing = true" />
-                    <el-button type="primary" link :icon="CopyDocument" @click="copy(row.currentValue)" />
-                  </span>
-                </span>
+              <div
+                class="variable-item-wrapper"
+                @dblclick="copy(row.currentValue)"
+                @mouseenter="row.currValHovered = true"
+                @mouseleave="row.currValHovered = false"
+              >
+                <span>{{ row.currentValue || '-' }}</span>
+                <el-button
+                  v-show="row.currValHovered"
+                  type="primary"
+                  link
+                  :icon="CopyDocument"
+                  @click="copy(row.currentValue)"
+                />
               </div>
             </template>
           </el-table-column>
         </el-table>
       </el-scrollbar>
+      <!-- 编辑按钮 -->
       <div class="flexbox-center">
         <el-button type="primary" plain :icon="Edit" @click="openDatasetEditor()">批量编辑</el-button>
       </div>
@@ -134,26 +125,26 @@
 import * as VariablesService from '@/api/script/variables'
 import useClipboard from '@/composables/useClipboard'
 import { usePyMeterStore } from '@/store/pymeter'
+import { usePyMeterDB } from '@/store/pymeter-db'
 import { Check, Close, CopyDocument, Edit } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { isEmpty } from 'lodash-es'
 
 const { toClipboard } = useClipboard()
-const emit = defineEmits(['update:model-value'])
 const pymeterStore = usePyMeterStore()
-const cellInputRef = ref()
-const activeTabNo = ref('')
+const offlineDB = usePyMeterDB().offlineDB
+
+const emit = defineEmits(['update:model-value'])
 const rows = ref([])
-const backtop = reactive({
-  right: 40,
-  bottom: 40
-})
-const filterText = ref('')
-const filterTableData = computed(() => {
-  if (isEmpty(filterText.value)) {
+const activeTabNo = ref('')
+const cellInputRef = ref()
+
+const filteredText = ref('')
+const filteredData = computed(() => {
+  const text = filteredText.value.trim()
+  if (isEmpty(text)) {
     return rows.value
   } else {
-    const text = filterText.value.trim()
     return rows.value.filter(
       (item) =>
         (item.variableName && item.variableName.indexOf(text) !== -1) ||
@@ -165,6 +156,10 @@ const filterTableData = computed(() => {
 const selectedDatasetList = computed(() =>
   pymeterStore.datasetList.filter((item) => pymeterStore.selectedDatasets.indexOf(item.datasetNo) > -1)
 )
+const backtop = reactive({
+  right: 40,
+  bottom: 40
+})
 
 watch(cellInputRef, (input) => {
   if (!input) return
@@ -199,22 +194,26 @@ const closeDialog = () => {
 }
 
 /**
- * 查询变量集下的所有变量
+ * 判断是否为空行
  */
-const queryVariables = () => {
-  if (isEmpty(pymeterStore.selectedDatasets) || activeTabNo.value === '') return
-  VariablesService.queryVariablesByDataset({ datasetNo: activeTabNo.value }).then((response) => {
-    rows.value = response.result
-  })
+const isBlankRow = (row) => {
+  return isEmpty(row.variableName) && isEmpty(row.initialValue) && isEmpty(row.currentValue)
 }
 
 /**
- * 更新变量的当前值
+ * 查询变量集下的所有变量
  */
-const updateCurrentValue = (row) => {
-  VariablesService.updateCurrentValue({ variableNo: row.variableNo, value: row.currentValue }).then(() => {
-    queryVariables()
-  })
+const queryVariables = async () => {
+  if (isEmpty(pymeterStore.selectedDatasets) || isEmpty(activeTabNo.value)) return
+  // 查询离线数据
+  const offline = await offlineDB.getItem(activeTabNo.value)
+  if (offline) {
+    rows.value = offline.data.variableList.filter((row) => !isBlankRow(row))
+  } else {
+    // 查询后端数据
+    const response = await VariablesService.queryVariablesByDataset({ datasetNo: activeTabNo.value })
+    rows.value = response.result
+  }
 }
 
 /**
@@ -250,18 +249,6 @@ const openDatasetEditor = () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-
-.current-value-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.current-value__editing {
-  display: flex;
-  flex-direction: column;
-  padding-top: 10px;
 }
 
 :deep(.el-dialog__header) {

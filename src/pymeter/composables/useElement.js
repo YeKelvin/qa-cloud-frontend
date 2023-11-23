@@ -44,7 +44,12 @@ export default function useEditor() {
     }
   }
 
+  const assignConfig = (target, source) => {
+    Object.assign(target, source)
+  }
+
   return {
+    assignConfig,
     assignElement,
     assignMetadata,
     assignComponent

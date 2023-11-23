@@ -21,9 +21,14 @@
       <!-- 数据库选择框 -->
       <el-form-item label="数据库：" prop="elementAttrs.SQLSampler__engine_no">
         <el-select v-model="elementData.elementAttrs.SQLSampler__engine_no" style="width: 100%">
-          <el-option v-for="item in engineList" :key="item.dbNo" :label="item.dbName" :value="item.dbNo">
+          <el-option
+            v-for="item in engineList"
+            :key="item.databaseNo"
+            :label="item.databaseName"
+            :value="item.databaseNo"
+          >
             <span class="database-type-option">
-              <span>{{ item.dbName }}</span>
+              <span>{{ item.databaseName }}</span>
               <el-tag type="danger" size="small" disable-transitions>{{ DatabaseType[item.dbType] }}</el-tag>
             </span>
           </el-option>
@@ -106,7 +111,6 @@
 
 <script setup>
 import { DatabaseType } from '@/api/enum'
-import * as DatabaseService from '@/api/script/database'
 import * as ElementService from '@/api/script/element'
 import SaveButton from '@/pymeter/components/editor-main/common/SaveButton.vue'
 import EditorEmits from '@/pymeter/composables/editor.emits'
@@ -188,7 +192,7 @@ watch(
 
 onMounted(async () => {
   // 查询所有数据库
-  const response = await DatabaseService.queryDatabaseEngineAll({ workspaceNo: workspaceStore.workspaceNo })
+  const response = await ElementService.queryDatabaseEngineAll({ workspaceNo: workspaceStore.workspaceNo })
   engineList.value = response.result
 
   // 优先查询离线数据
@@ -243,10 +247,10 @@ const createElement = async () => {
     parentNo: props.metadata.parentNo,
     ...elementData.value
   })
-  // 移除离线数据
-  offlineDB.removeItem(props.editorNo)
   // 提取元素编号
   const elementNo = response.result.elementNo
+  // 移除离线数据
+  offlineDB.removeItem(props.editorNo)
   // 更新Tab序列号
   metadata.value.sn = elementNo
   // 更新元素编号

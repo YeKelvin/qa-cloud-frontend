@@ -1,8 +1,8 @@
 <template>
   <el-tree
     ref="eltreeRef"
-    node-key="dbNo"
-    :props="{ label: 'dbName' }"
+    node-key="databaseNo"
+    :props="{ label: 'databaseName' }"
     :data="pymeterStore.databaseEngineList"
     :filter-node-method="filterNode"
     @node-click="handleNodeClick"
@@ -53,7 +53,7 @@
 </template>
 
 <script lang="jsx" setup>
-import * as DatabaseService from '@/api/script/database'
+import * as ElementService from '@/api/script/element'
 import useElTree from '@/composables/useElTree'
 import WorkspaceTree from '@/pymeter/components/editor-aside/common/WorkspaceTree.vue'
 import { usePyMeterStore } from '@/store/pymeter'
@@ -100,14 +100,16 @@ const duplicateDatabaseEngine = async () => {
     cancelButtonText: '取消',
     title: '警告',
     message: (
-      <span style="white-space:normal; overflow:hidden; text-overflow:ellipsis;">确认复制 {data.dbName} 吗？</span>
+      <span style="white-space:normal; overflow:hidden; text-overflow:ellipsis;">
+        确认复制 {data.databaseName} 吗？
+      </span>
     )
   })
     .then(() => false)
     .catch(() => true)
   if (cancelled) return
   // 复制数据库
-  await DatabaseService.duplicateDatabaseEngine({ dbNo: data.dbNo })
+  await ElementService.duplicateElement({ elementNo: data.databaseNo })
   // 重新查询列表
   pymeterStore.queryDatabaseEngineAll()
   // 成功提示
@@ -126,7 +128,7 @@ const copyDatabaseEngineToWorkspace = async () => {
     title: '请选择复制的工作空间',
     message: (
       <WorkspaceTree
-        key={data.dbNo}
+        key={data.databaseNo}
         data={workspaceStore.workspaceList}
         onNodeClick={(data) => (workspaceNo = data.workspaceNo)}
       />
@@ -138,7 +140,10 @@ const copyDatabaseEngineToWorkspace = async () => {
     .catch(() => true)
   if (cancelled) return
   // 复制数据库到指定的空间
-  await DatabaseService.copyDatabaseEngineToWorkspace({ dbNo: data.dbNo, workspaceNo })
+  await ElementService.copyElementToWorkspace({
+    workspaceNo: workspaceNo,
+    databaseNo: data.databaseNo
+  })
   // 成功提示
   ElMessage({ message: '复制成功', type: 'info', duration: 2 * 1000 })
 }
@@ -155,7 +160,7 @@ const moveDatabaseEngineToWorkspace = async () => {
     title: '请选择移动的工作空间',
     message: (
       <WorkspaceTree
-        key={data.dbNo}
+        key={data.databaseNo}
         data={workspaceStore.workspaceList}
         onNodeClick={(data) => (workspaceNo = data.workspaceNo)}
       />
@@ -167,7 +172,10 @@ const moveDatabaseEngineToWorkspace = async () => {
     .catch(() => true)
   if (cancelled) return
   // 移动数据库到指定的空间
-  await DatabaseService.moveDatabaseEngineToWorkspace({ dbNo: data.dbNo, workspaceNo })
+  await ElementService.moveElementToWorkspace({
+    workspaceNo: workspaceNo,
+    databaseNo: data.databaseNo
+  })
   // 重新查询列表
   pymeterStore.queryDatabaseEngineAll()
   // 成功提示
@@ -187,14 +195,16 @@ const deleteDatabaseEngine = async () => {
     cancelButtonText: '取消',
     title: '警告',
     message: (
-      <span style="white-space:normal; overflow:hidden; text-overflow:ellipsis;">确认删除 {data.dbName} 吗？</span>
+      <span style="white-space:normal; overflow:hidden; text-overflow:ellipsis;">
+        确认删除 {data.databaseName} 吗？
+      </span>
     )
   })
     .then(() => false)
     .catch(() => true)
   if (cancelled) return
   // 删除数据库
-  await DatabaseService.deleteDatabaseEngine({ dbNo: data.dbNo })
+  await ElementService.removeElement({ elementNo: data.databaseNo })
   // 重新查询列表
   pymeterStore.queryDatabaseEngineAll()
   // 成功提示
@@ -206,13 +216,13 @@ const deleteDatabaseEngine = async () => {
  */
 const handleNodeClick = (data) => {
   pymeterStore.addTab({
-    editorNo: data.dbNo,
-    editorName: data.dbName,
+    editorNo: data.databaseNo,
+    editorName: data.databaseName,
     editorComponent: 'DatabaseEngine',
     editorMode: 'QUERY',
     metadata: {
-      sn: data.dbNo,
-      name: data.dbName,
+      sn: data.databaseNo,
+      name: data.databaseName,
       component: 'DatabaseEngine'
     }
   })
@@ -223,7 +233,7 @@ const handleNodeClick = (data) => {
  */
 const filterNode = (value, data) => {
   if (!value) return true
-  return data.dbName.indexOf(value) !== -1
+  return data.databaseName.indexOf(value) !== -1
 }
 
 /**

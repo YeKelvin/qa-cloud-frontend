@@ -277,12 +277,21 @@ const checkArguments = () => {
   return false
 }
 
+const getSubmitData = () => {
+  const submitData = { ...elementData.value }
+  submitData.elementAttrs.SnippetSampler__arguments = argumentData.value.map((arg) => ({
+    name: arg.name,
+    value: arg.value
+  }))
+  return submitData
+}
+
 /**
  * 修改元素
  */
 const modifyElement = async () => {
   // 修改元素
-  await ElementService.modifyElement(elementData.value)
+  await ElementService.modifyElement(getSubmitData())
 }
 
 /**
@@ -293,12 +302,12 @@ const createElement = async () => {
   const response = await ElementService.createElementChild({
     rootNo: props.metadata.rootNo,
     parentNo: props.metadata.parentNo,
-    ...elementData.value
+    ...getSubmitData()
   })
-  // 移除离线数据
-  offlineDB.removeItem(props.editorNo)
   // 提取元素编号
   const elementNo = response.result.elementNo
+  // 移除离线数据
+  offlineDB.removeItem(props.editorNo)
   // 更新Tab序列号
   metadata.value.sn = elementNo
   // 更新元素编号
