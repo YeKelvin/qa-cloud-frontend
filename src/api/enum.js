@@ -247,13 +247,11 @@ export const PropertyDefinition = {
   // HTTPSampler
   HTTPSampler__url: '请求地址',
   HTTPSampler__method: '请求方法',
-  HTTPSampler__headers: '请求头',
-  HTTPSampler__params: 'Query参数',
   HTTPSampler__data: 'Body数据',
   HTTPSampler__encoding: '请求编码',
-  HTTPSampler__follow_redirects: '跟随重定向',
   HTTPSampler__connect_timeout: '连接超时时间',
   HTTPSampler__response_timeout: '响应超时时间',
+  HTTPSampler__follow_redirects: '跟随重定向',
   HTTPSampler__running_strategy: '运行策略',
 
   // PythonSampler
@@ -280,9 +278,9 @@ export const PropertyDefinition = {
   PythonPostProcessor__script: 'Python脚本',
 
   // JsonPathPostProcessor
-  JsonPathPostProcessor__variable_scope: '变量作用域',
-  JsonPathPostProcessor__variable_name: '变量名称',
   JsonPathPostProcessor__jsonpath: 'JsonPath表达式',
+  JsonPathPostProcessor__variable_name: '变量名称',
+  JsonPathPostProcessor__variable_scope: '变量作用域',
   JsonPathPostProcessor__list_random: '列表随机',
   JsonPathPostProcessor__default_value: '变量默认值',
 
@@ -308,7 +306,11 @@ export const AttributeDefinition = {
   Worker__clear_http_session_each_iteration: '迭代时刷新会话',
 
   // HTTPSampler
-  HTTPSampler__header_template_refs: '请求头模板',
+  HTTPSampler__header_templates: '请求头模板',
+  HTTPSampler__headers: '请求头',
+  HTTPSampler__querys: '查询参数',
+  HTTPSampler__forms: '表单参数',
+  HTTPSampler__files: '文件参数',
 
   // SQLSampler
   SQLSampler__engine_no: '数据库引擎',

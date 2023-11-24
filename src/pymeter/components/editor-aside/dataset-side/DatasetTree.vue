@@ -51,7 +51,7 @@
     @hide="handleMenuHide"
   >
     <div style="display: flex; flex-direction: column">
-      <el-button link :disabled="disabledOperation" @click="modifyDataset">重命名</el-button>
+      <el-button link :disabled="disabledOperation" @click="modifyDataset">编辑</el-button>
       <el-button link :disabled="disabledOperation" @click="duplicateDataset">复制</el-button>
       <el-button link :disabled="disabledOperation" @click="copyDatasetToWorkspace">复制空间</el-button>
       <el-button link :disabled="disabledOperation" @click="moveDatasetToWorkspace">移动空间</el-button>
@@ -120,7 +120,7 @@ const renameAndRebindDataset = async () => {
   const data = operatingNode.value.data
   closeMenu()
   let newName = data.datasetName
-  let newBinding = data.datasetBinding?.datasetNo
+  let newBinding = data.datasetBinding
   // 弹出名称对话框
   const cancelled = await ElMessageBox.confirm(null, {
     title: '编辑变量集',

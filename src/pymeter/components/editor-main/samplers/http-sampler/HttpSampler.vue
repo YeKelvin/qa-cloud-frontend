@@ -303,7 +303,7 @@ const elementData = ref({
   elementType: 'SAMPLER',
   elementClass: 'HTTPSampler',
   elementAttrs: {
-    HTTPSampler__header_template_refs: [],
+    HTTPSampler__header_templates: [],
     HTTPSampler__headers: [],
     HTTPSampler__querys: [],
     HTTPSampler__forms: [],
@@ -335,8 +335,8 @@ const elementRules = {
   'elementProps.HTTPSampler__method': [{ required: true, message: '请求方法不能为空', trigger: 'blur' }]
 }
 const headerTemplateRefs = computed({
-  get: () => elementData.value.elementAttrs.HTTPSampler__header_template_refs,
-  set: (val) => (elementData.value.elementAttrs.HTTPSampler__header_template_refs = val)
+  get: () => elementData.value.elementAttrs.HTTPSampler__header_templates,
+  set: (val) => (elementData.value.elementAttrs.HTTPSampler__header_templates = val)
 })
 const headerData = computed({
   get: () => elementData.value.elementAttrs.HTTPSampler__headers,

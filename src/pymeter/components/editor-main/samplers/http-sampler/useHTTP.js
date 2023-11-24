@@ -181,7 +181,7 @@ export default function useHTTP(elementData) {
   })
   const hiddenHTTPHeadersDot = computed(() => {
     const headers = elementData.value.elementAttrs.HTTPSampler__headers
-    const refs = elementData.value.elementAttrs.HTTPSampler__header_template_refs
+    const refs = elementData.value.elementAttrs.HTTPSampler__header_templates
     if (headers.length === 0) {
       return isEmpty(refs)
     }
