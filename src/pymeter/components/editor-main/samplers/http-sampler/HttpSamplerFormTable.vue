@@ -108,7 +108,7 @@ const newRow = () => {
   // object
   // liststr
   // listobj
-  rows.value.push({ enabled: true, type: 'string', name: '', value: '', desc: '' })
+  rows.value.push({ enabled: true, type: 'string', name: '', desc: '', value: '' })
 }
 const delRow = (index) => {
   rows.value.splice(index, 1)

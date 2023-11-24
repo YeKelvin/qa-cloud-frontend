@@ -415,22 +415,22 @@ onMounted(async () => {
   }
   // 新增模式计算HashCode并存储
   if (creation.value) {
-    elementData.value.elementAttrs.HTTPSampler__headers.push({ enabled: true, name: '', value: '', desc: '' })
-    elementData.value.elementAttrs.HTTPSampler__querys.push({ enabled: true, name: '', value: '', desc: '' })
+    elementData.value.elementAttrs.HTTPSampler__headers.push({ enabled: true, name: '', desc: '', value: '' })
+    elementData.value.elementAttrs.HTTPSampler__querys.push({ enabled: true, name: '', desc: '', value: '' })
     elementData.value.elementAttrs.HTTPSampler__forms.push({
       enabled: true,
       type: 'string',
       name: '',
-      value: '',
-      desc: ''
+      desc: '',
+      value: ''
     })
     elementData.value.elementAttrs.HTTPSampler__files.push({
       enabled: true,
-      argtype: 'text',
       name: '',
+      desc: '',
       value: '',
-      mimetype: '',
-      desc: ''
+      argtype: 'text',
+      mimetype: ''
     })
     metadata.value.hashcode = toHashCode(elementData.value)
     return

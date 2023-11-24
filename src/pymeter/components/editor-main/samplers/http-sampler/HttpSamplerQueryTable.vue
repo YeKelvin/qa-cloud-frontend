@@ -104,7 +104,7 @@ const autoNewRow = () => {
 }
 
 const newRow = () => {
-  rows.value.push({ enabled: true, name: '', value: '', desc: '' })
+  rows.value.push({ enabled: true, name: '', desc: '', value: '' })
 }
 const delRow = (index) => {
   rows.value.splice(index, 1)
