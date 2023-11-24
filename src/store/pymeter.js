@@ -137,8 +137,7 @@ export const usePyMeterStore = defineStore('pymeter', {
     /**
      * 关闭 tab 并移除 keep-alive 缓存
      */
-    async removeTab({ editorNo }) {
-      // TODO: 删除已打开tab的元素且数据已变更，怎么处理
+    async removeTab({ editorNo, force = false }) {
       let closingTab = null
       let closingIndex = null
       // 获取需要关闭的tab对象
@@ -149,8 +148,9 @@ export const usePyMeterStore = defineStore('pymeter', {
           closingIndex = i
         }
       }
+      // 强制关闭，主要用于删除元素
       // 如果tab数据未保存，则添加一个关闭中的标识并激活tab
-      if (closingTab && closingTab.unsaved) {
+      if (!force && closingTab && closingTab.unsaved) {
         // 激活tab
         this.activeTabNo = editorNo
         // 二次确认

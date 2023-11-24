@@ -38,7 +38,7 @@
         phase="SAMPLER"
         height="400px"
         runnable
-        @run="executeSampler(metadata.rootNo, elementData.elementNo)"
+        @run="run()"
       />
     </el-form>
 
@@ -65,7 +65,7 @@ import { debounce } from 'lodash-es'
 
 const emit = defineEmits(EditorEmits)
 const props = defineProps(EditorProps)
-const { executeSampler } = useRunnableElement()
+const { runSampler, runOffline } = useRunnableElement()
 const { assignElement, assignMetadata } = useElement()
 const { unsaved, metadata, creation, localkey, shortcutKeyName, updateTabName, expandParentNode, refreshElementTree } =
   useEditor()
@@ -141,6 +141,17 @@ const queryBackendData = async () => {
   assignElement(elementData.value, response.result)
   assignMetadata(metadata.value, { hashcode: toHashCode(elementData.value) })
   codeEditorRef.value.setValue(response.result.elementProps.PythonSampler__script)
+}
+
+/**
+ * 运行元素
+ */
+const run = () => {
+  if (creation.value) {
+    runOffline(metadata.value.rootNo, metadata.value.parentNo, props.editorNo)
+  } else {
+    runSampler(metadata.value.rootNo, elementData.value.elementNo)
+  }
 }
 
 /**

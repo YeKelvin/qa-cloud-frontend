@@ -67,11 +67,7 @@
       <div class="flexbox-center">
         <template v-if="!creation">
           <!-- 运行按钮 -->
-          <el-button
-            type="primary"
-            style="margin-left: 20px"
-            @click="executeSampler(metadata.rootNo, elementData.elementNo)"
-          >
+          <el-button type="primary" style="margin-left: 20px" @click="run()">
             <SvgIcon icon-name="pymeter-send" style="margin-right: 5px; font-size: 18px" />
             运 行
           </el-button>
@@ -109,7 +105,7 @@ const emit = defineEmits(EditorEmits)
 const props = defineProps(EditorProps)
 const pymeterStore = usePyMeterStore()
 const workspaceStore = useWorkspaceStore()
-const { executeSampler } = useRunnableElement()
+const { runSampler, runOffline } = useRunnableElement()
 const { assignElement, assignMetadata } = useElement()
 const { unsaved, metadata, creation, localkey, shortcutKeyName, updateTabName, expandParentNode, refreshElementTree } =
   useEditor()
@@ -266,6 +262,17 @@ const openTestSnippet = () => {
   pymeterStore.addSelectedCollection(elementData.value.elementAttrs.SnippetSampler__snippet_no)
   // 滚动至底部
   pymeterStore.scrollToElementTreeBottom()
+}
+
+/**
+ * 运行元素
+ */
+const run = () => {
+  if (creation.value) {
+    runOffline(metadata.value.rootNo, metadata.value.parentNo, props.editorNo)
+  } else {
+    runSampler(metadata.value.rootNo, elementData.value.elementNo)
+  }
 }
 
 // 校验参数值是否为空

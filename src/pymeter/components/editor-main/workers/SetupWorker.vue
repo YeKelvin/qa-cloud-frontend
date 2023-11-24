@@ -73,7 +73,7 @@
             trigger="click"
             placement="bottom-end"
             style="margin-right: 20px"
-            @click="executeTestWorker(metadata.rootNo, elementData.elementNo)"
+            @click="runWorker(metadata.rootNo, elementData.elementNo)"
           >
             <SvgIcon icon-name="pymeter-send" style="margin-right: 5px; font-size: 18px" />
             <span>运 行</span>
@@ -122,7 +122,7 @@ import { debounce } from 'lodash-es'
 const emit = defineEmits(EditorEmits)
 const props = defineProps(EditorProps)
 const pymeterStore = usePyMeterStore()
-const { executeTestWorker } = useRunnableElement()
+const { runWorker } = useRunnableElement()
 const { assignElement, assignMetadata } = useElement()
 const { unsaved, metadata, creation, localkey, shortcutKeyName, updateTabName, expandParentNode, refreshElementTree } =
   useEditor()

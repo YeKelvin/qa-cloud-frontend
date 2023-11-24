@@ -12,14 +12,14 @@ export default function useRunnableElement() {
 
   const getOfflineData = async (rootNo) => {
     const offlines = new Map()
-    await pymeterDB.offlineDB.iterate((offline) => {
-      console.log('off-el: ', offline)
+    await pymeterDB.offlineDB.iterate((offline, key) => {
       if ('rootNo' in offline.meta) {
-        offline.meta.rootNo === rootNo && offlines.set(offline.meta.sn, offline.data)
+        offline.meta.rootNo === rootNo && offlines.set(offline.meta.sn || key, offline.data)
       } else {
-        offlines.set(offline.meta.sn, offline.data)
+        offlines.set(offline.meta.sn || key, offline.data)
       }
     })
+    console.log('offlines: ', offlines)
     return Object.fromEntries(offlines)
   }
 
@@ -37,9 +37,9 @@ export default function useRunnableElement() {
   }
 
   /**
-   * 执行集合
+   * 运行集合
    */
-  const executeTestCollection = async (collectionNo) => {
+  const runTestCollection = async (collectionNo) => {
     try {
       // 没有选择变量集时给出提示
       await confirmWithoutDataset()
@@ -48,7 +48,7 @@ export default function useRunnableElement() {
       // 等待获取 sid，后再执行脚本
       const sid = await socketio.getId()
       // 后端异步执行脚本
-      await ExecutionService.executeCollection({
+      await ExecutionService.runCollection({
         socketId: sid,
         collectionNo: collectionNo,
         offlines: await getOfflineData(collectionNo),
@@ -64,9 +64,9 @@ export default function useRunnableElement() {
   }
 
   /**
-   * 执行片段
+   * 运行片段
    */
-  const executeTestSnippet = async (snippetNo, addition) => {
+  const runTestSnippet = async (snippetNo, addition) => {
     try {
       // 没有选择变量集时给出提示
       await confirmWithoutDataset()
@@ -75,7 +75,7 @@ export default function useRunnableElement() {
       // 等待获取 sid，后再执行脚本
       const sid = await socketio.getId()
       // 后端异步执行脚本
-      await ExecutionService.executeSnippet({
+      await ExecutionService.runSnippet({
         socketId: sid,
         snippetNo: snippetNo,
         offlines: await getOfflineData(snippetNo),
@@ -92,9 +92,9 @@ export default function useRunnableElement() {
   }
 
   /**
-   * 执行脚本
+   * 运行用例
    */
-  const executeTestWorker = async (rootNo, elementNo) => {
+  const runWorker = async (rootNo, elementNo) => {
     try {
       if (isEmpty(rootNo)) {
         ElMessage({ message: '根元素编号不能为空', type: 'error', duration: 2 * 1000 })
@@ -107,7 +107,7 @@ export default function useRunnableElement() {
       // 等待获取 sid，后再执行脚本
       const sid = await socketio.getId()
       // 后端异步执行脚本
-      await ExecutionService.executeWorker({
+      await ExecutionService.runWorker({
         socketId: sid,
         workerNo: elementNo,
         offlines: await getOfflineData(rootNo),
@@ -123,9 +123,9 @@ export default function useRunnableElement() {
   }
 
   /**
-   * 执行请求
+   * 运行请求
    */
-  const executeSampler = async (rootNo, elementNo) => {
+  const runSampler = async (rootNo, elementNo) => {
     if (isEmpty(rootNo)) {
       ElMessage({ message: '根元素编号不能为空', type: 'error', duration: 2 * 1000 })
       return
@@ -138,7 +138,7 @@ export default function useRunnableElement() {
       // 等待获取 sid，后再执行脚本
       const sid = await socketio.getId()
       // 后端异步执行脚本
-      await ExecutionService.executeSampler({
+      await ExecutionService.runSampler({
         samplerNo: elementNo,
         socketId: sid,
         offlines: await getOfflineData(rootNo),
@@ -153,10 +153,44 @@ export default function useRunnableElement() {
     }
   }
 
+  /**
+   * 运行离线请求
+   */
+  const runOffline = async (rootNo, parentNo, offlineNo) => {
+    if (isEmpty(rootNo)) {
+      ElMessage({ message: '根元素编号不能为空', type: 'error', duration: 2 * 1000 })
+      return
+    }
+    try {
+      // 没有选择变量集时给出提示
+      await confirmWithoutDataset()
+      // 连接 socket
+      socketio.connect()
+      // 等待获取 sid，后再执行脚本
+      const sid = await socketio.getId()
+      // 后端异步执行脚本
+      await ExecutionService.runOffline({
+        rootNo: rootNo,
+        parentNo: parentNo,
+        offlineNo: offlineNo,
+        offlines: await getOfflineData(rootNo),
+        socketId: sid,
+        datasets: pymeterStore.selectedDatasets,
+        useCurrentValue: pymeterStore.useCurrentValue
+      })
+      // 打开结果面板
+      pymeterStore.openResultDrawer()
+    } catch {
+      // 异常时断开 socket 连接
+      socketio.disconnect()
+    }
+  }
+
   return {
-    executeTestCollection,
-    executeTestSnippet,
-    executeTestWorker,
-    executeSampler
+    runTestCollection,
+    runTestSnippet,
+    runWorker,
+    runSampler,
+    runOffline
   }
 }

@@ -29,11 +29,7 @@
             </template>
           </el-input>
           <!-- 运行按钮 -->
-          <el-button
-            type="primary"
-            style="margin-left: 10px"
-            @click="executeSampler(metadata.rootNo, elementData.elementNo)"
-          >
+          <el-button type="primary" style="margin-left: 10px" @click="run()">
             <SvgIcon icon-name="pymeter-send" style="margin-right: 5px; font-size: 18px" />
             运 行
           </el-button>
@@ -295,7 +291,7 @@ import useHTTP from './useHTTP'
 
 const emit = defineEmits(EditorEmits)
 const props = defineProps(EditorProps)
-const { executeSampler } = useRunnableElement()
+const { runSampler, runOffline } = useRunnableElement()
 const { assignElement, assignMetadata, assignComponent } = useElement()
 const { unsaved, metadata, creation, localkey, shortcutKeyName, updateTabName, expandParentNode, refreshElementTree } =
   useEditor()
@@ -549,6 +545,17 @@ const cleanInvalidData = () => {
     bodyData.value = ''
     fileData.value = []
     return
+  }
+}
+
+/**
+ * 运行元素
+ */
+const run = () => {
+  if (creation.value) {
+    runOffline(metadata.value.rootNo, metadata.value.parentNo, props.editorNo)
+  } else {
+    runSampler(metadata.value.rootNo, elementData.value.elementNo)
   }
 }
 

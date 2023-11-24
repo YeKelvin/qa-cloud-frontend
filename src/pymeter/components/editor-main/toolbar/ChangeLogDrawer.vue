@@ -2,10 +2,12 @@
   <el-drawer class="pymeter-toolbar__changelog-drawer" direction="rtl" size="35%" @open="onOpen">
     <template #header>
       <div class="flexbox-between">
+        <!-- 标题 -->
         <span style="font-size: 16px; color: var(--el-text-color-regular)">变更日志</span>
+        <!-- 全部还是仅元素的按钮 -->
         <span style="display: flex; align-items: center">
           <el-dropdown
-            v-if="currentElementNo"
+            v-if="showOnlyselfButton"
             trigger="click"
             style="margin-right: 20px"
             :show-timeout="0.25"
@@ -19,9 +21,11 @@
               </el-dropdown-menu>
             </template>
           </el-dropdown>
+          <!-- 排序按钮 -->
           <el-button type="primary" link style="margin-right: 10px" @click="toggleOrder()">
             <SvgIcon icon-name="common-sort" style="font-size: 16px; transition: 0.25s" :class="{ asc: !desc }" />
           </el-button>
+          <!-- 刷新按钮 -->
           <el-button link style="margin-right: 10px" @click="query()">
             <SvgIcon icon-name="common-refresh" />
           </el-button>
@@ -203,26 +207,29 @@ import MonacoDiffEditor from '@/components/monaco-editor/MonacoDiffEditor.vue'
 import { usePyMeterStore } from '@/store/pymeter'
 
 const pymeterStore = usePyMeterStore()
+
+const currentElementNo = computed(() => currentTab.value?.metadata?.sn)
 const currentTab = computed(() => {
   const result = pymeterStore.tabs.filter((tab) => tab.editorNo === pymeterStore.activeTabNo)
   if (!result) return
   return result[0]
 })
-const currentElementNo = computed(() => {
-  const tab = currentTab.value
-  if (!tab) return
-  return tab.metadata.elementNo
-})
-const loading = ref(false)
+
 const activities = ref([])
-const onlyself = ref(true)
+const loading = ref(false)
 const desc = ref(true)
 const total = ref(0)
 const page = ref(1)
 const pageSize = ref(10)
 const diffEditorRef = ref()
 const showDiffDialog = ref()
+const showOnlyselfButton = computed(() => {
+  const tab = currentTab.value
+  if (!tab) return
+  return !['TestWorkspace', 'DatabaseEngine', 'VariableDataset', 'HttpHeadersTemplate'].includes(tab.metadata.component)
+})
 
+const onlyself = ref(true)
 watch(onlyself, () => query())
 
 const getModifiedPreDesc = (val) => {

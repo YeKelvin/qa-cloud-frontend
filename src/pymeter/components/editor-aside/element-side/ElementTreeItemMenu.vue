@@ -120,11 +120,13 @@
 import * as ElementService from '@/api/script/element'
 import { ArrowRight } from '@element-plus/icons-vue'
 import { ElMessageBox, ElMessage } from 'element-plus'
+import { usePyMeterDB } from '@/store/pymeter-db'
 import { usePyMeterStore } from '@/store/pymeter'
 import { useWorkspaceStore } from '@/store/workspace'
 import WorkspaceTree from '@/pymeter/components/editor-aside/common/WorkspaceTree.vue'
 
 const attrs = useAttrs()
+const offlineDB = usePyMeterDB().offlineDB
 const pymeterStore = usePyMeterStore()
 const workspaceStore = useWorkspaceStore()
 
@@ -562,6 +564,8 @@ const removeElement = async () => {
   if (cancelled) return
   // 删除元素
   await ElementService.removeElement({ elementNo: data.elementNo })
+  // 删除离线数据
+  offlineDB.removeItem(data.elementNo)
   // 集合元素特殊处理
   if (data.elementType === 'COLLECTION') {
     // 从已选中的集合列表中移除该集合
@@ -570,7 +574,7 @@ const removeElement = async () => {
     pymeterStore.refreshCollections()
   }
   // 关闭tab
-  pymeterStore.removeTab({ editorNo: data.elementNo })
+  pymeterStore.removeTab({ editorNo: data.elementNo, force: true })
   // 重新查询列表
   pymeterStore.refreshElementTree()
 }

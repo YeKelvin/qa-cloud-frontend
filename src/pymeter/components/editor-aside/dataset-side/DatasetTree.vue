@@ -66,8 +66,8 @@ import useElTree from '@/composables/useElTree'
 import EnvDatasetSelect from '@/pymeter/components/editor-aside/common/EnvDatasetSelect.vue'
 import NameInput from '@/pymeter/components/editor-aside/common/NameInput.vue'
 import WorkspaceTree from '@/pymeter/components/editor-aside/common/WorkspaceTree.vue'
-import { usePyMeterStore } from '@/store/pymeter'
 import { usePyMeterDB } from '@/store/pymeter-db'
+import { usePyMeterStore } from '@/store/pymeter'
 import { useWorkspaceStore } from '@/store/workspace'
 import { More } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -302,6 +302,10 @@ const deleteDataset = async () => {
   if (cancelled) return
   // 删除变量集
   await VariablesService.deleteVariableDataset({ datasetNo: data.datasetNo })
+  // 删除离线数据
+  offlineDB.removeItem(data.datasetNo)
+  // 关闭tab
+  pymeterStore.removeTab({ editorNo: data.datasetNo, force: true })
   // 重新查询列表
   pymeterStore.queryDatasetAll()
   // 成功提示

@@ -7,8 +7,14 @@
 
       <!-- 右侧：操作区域 -->
       <div class="l-container">
-        <!-- 元素变更历史按钮 -->
-        <el-button style="padding-right: 20px" type="primary" link @click="showChangelog = true">
+        <!-- 元素历史按钮 -->
+        <el-button
+          v-show="showhistoryBTN"
+          style="padding-right: 20px"
+          type="primary"
+          link
+          @click="showChangelog = true"
+        >
           <SvgIcon icon-name="common-changelog" style="font-size: 20px" />
         </el-button>
         <!-- 变量集 -->
@@ -41,7 +47,8 @@ import DatasetDialog from './DatasetDialog.vue'
 import ChangeLogDrawer from './ChangeLogDrawer.vue'
 
 const props = defineProps({
-  component: { type: String, default: '' }
+  component: { type: String, default: '' },
+  metadata: { type: Object, default: () => {} }
 })
 // 组件名称
 const componentNames = {
@@ -67,10 +74,12 @@ const componentNames = {
 const componentName = computed(() => componentNames[props.component])
 // 是否显示操作栏的标识
 const showToolBar = computed(() => !isEmpty(componentName.value))
-// 是否显示变量详情视图
-const showDatasetDialog = ref(false)
+// 是否显示元素历史按钮
+const showhistoryBTN = computed(() => !isEmpty(props.metadata?.sn))
 // 是否显示变更日志
 const showChangelog = ref(false)
+// 是否显示变量详情视图
+const showDatasetDialog = ref(false)
 </script>
 
 <style lang="scss" scoped>

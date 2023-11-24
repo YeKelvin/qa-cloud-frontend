@@ -15,9 +15,9 @@
       </el-table-column>
 
       <!-- 是否启用 -->
-      <el-table-column align="center" width="50" min-width="50">
+      <el-table-column align="center" width="60" min-width="60">
         <template #default="{ row }">
-          <el-checkbox v-model="row.enabled" size="large" />
+          <el-switch v-model="row.enabled" size="small" :active-icon="Check" :inactive-icon="Close" inline-prompt />
         </template>
       </el-table-column>
 
@@ -48,7 +48,7 @@
 
 <script setup>
 import SimpleTextarea from '@/components/simple-textarea/SimpleTextarea.vue'
-import { Delete } from '@element-plus/icons-vue'
+import { Check, Close, Delete } from '@element-plus/icons-vue'
 import { isEmpty } from 'lodash-es'
 import sortablejs from 'sortablejs'
 

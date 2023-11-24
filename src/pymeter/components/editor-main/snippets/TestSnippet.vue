@@ -68,7 +68,7 @@
               type="primary"
               style="margin-left: 10px"
               placement="bottom-end"
-              @click="executeTestSnippet(elementData.elementNo)"
+              @click="runTestSnippet(elementData.elementNo)"
             >
               <SvgIcon icon-name="pymeter-send" style="margin-right: 5px; font-size: 18px" />
               <span style="margin-left: 5px">运 行</span>
@@ -101,7 +101,7 @@
         <el-tag type="danger" style="margin-top: 10px" disable-transitions>注意：片段参数不支持函数</el-tag>
       </template>
       <template #footer>
-        <el-dropdown trigger="click" type="danger" placement="bottom-end" split-button @click="executeSnippet()">
+        <el-dropdown trigger="click" type="danger" placement="bottom-end" split-button @click="runSnippet()">
           <SvgIcon icon-name="pymeter-send" style="margin-right: 5px; font-size: 18px" />
           <span>运 行</span>
           <template #dropdown>
@@ -143,7 +143,7 @@ const emit = defineEmits(EditorEmits)
 const props = defineProps(EditorProps)
 const pymeterStore = usePyMeterStore()
 const workspaceStore = useWorkspaceStore()
-const { executeTestSnippet } = useRunnableElement()
+const { runTestSnippet } = useRunnableElement()
 const { assignElement, assignMetadata } = useElement()
 const { unsaved, metadata, creation, localkey, shortcutKeyName, updateTabName } = useEditor()
 const offlineDB = usePyMeterDB().offlineDB
@@ -328,11 +328,11 @@ const createElement = async () => {
 /**
  * 执行脚本
  */
-const executeSnippet = async () => {
+const runSnippet = async () => {
   // 打开对话框
   showArgumentsDialog.value = false
   // 运行
-  await executeTestSnippet(elementData.value.elementNo, additionalVariables.value)
+  await runTestSnippet(elementData.value.elementNo, additionalVariables.value)
 }
 
 /**

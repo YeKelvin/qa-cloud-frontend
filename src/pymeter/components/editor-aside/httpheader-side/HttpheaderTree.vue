@@ -234,6 +234,10 @@ const deleteTemplate = async () => {
   if (cancelled) return
   // 删除请求头模板
   await HeadersService.deleteHttpheaderTemplate({ templateNo: data.templateNo })
+  // 删除离线数据
+  offlineDB.removeItem(data.templateNo)
+  // 关闭tab
+  pymeterStore.removeTab({ editorNo: data.templateNo, force: true })
   // 重新查询列表
   queryHttpheaderTemplateAll()
   // 成功提示

@@ -46,12 +46,14 @@ import * as ElementService from '@/api/script/element'
 import { isEmpty, debounce } from 'lodash-es'
 import { More } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
+import { usePyMeterDB } from '@/store/pymeter-db'
 import { usePyMeterStore } from '@/store/pymeter'
 import useElTree from '@/composables/useElTree'
 import ElementTreeItemName from './ElementTreeItemName.vue'
 import ElementTreeItemMenu from './ElementTreeItemMenu.vue'
 
 let clickTimer = null
+const offlineDB = usePyMeterDB().offlineDB
 const pymeterStore = usePyMeterStore()
 const props = defineProps({
   collections: { type: Array, default: () => [] }
@@ -492,6 +494,8 @@ const deleteElement = debounce(
     if (cancelled) return
     // 删除元素
     await ElementService.removeElement({ elementNo: data.elementNo })
+    // 删除离线数据
+    offlineDB.removeItem(data.elementNo)
     // 集合元素特殊处理
     if (data.elementType === 'COLLECTION') {
       // 从已选中的集合列表中移除该集合
@@ -500,7 +504,7 @@ const deleteElement = debounce(
       pymeterStore.refreshCollections()
     }
     // 关闭tab
-    pymeterStore.removeTab({ editorNo: data.elementNo })
+    pymeterStore.removeTab({ editorNo: data.elementNo, force: true })
     // 重新查询列表
     queryElementsTree()
   },

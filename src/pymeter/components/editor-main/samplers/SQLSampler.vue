@@ -63,7 +63,7 @@
         <el-button
           type="primary"
           style="height: 30px; border-bottom-right-radius: 0; border-bottom-left-radius: 0"
-          @click="executeSampler(metadata.rootNo, elementData.elementNo)"
+          @click="run()"
         >
           <SvgIcon icon-name="pymeter-send" style="margin-right: 5px; font-size: 18px" />
           运 行
@@ -127,7 +127,7 @@ import { debounce, isEmpty } from 'lodash-es'
 const emit = defineEmits(EditorEmits)
 const props = defineProps(EditorProps)
 const workspaceStore = useWorkspaceStore()
-const { executeSampler } = useRunnableElement()
+const { runSampler, runOffline } = useRunnableElement()
 const { assignElement, assignMetadata } = useElement()
 const { unsaved, metadata, creation, localkey, shortcutKeyName, updateTabName, expandParentNode, refreshElementTree } =
   useEditor()
@@ -227,6 +227,17 @@ const queryBackendData = async () => {
   assignElement(elementData.value, response.result)
   assignMetadata(metadata.value, { hashcode: toHashCode(elementData.value) })
   editorRef.value.setValue(response.result.elementProps.SQLSampler__statement)
+}
+
+/**
+ * 运行元素
+ */
+const run = () => {
+  if (creation.value) {
+    runOffline(metadata.value.rootNo, metadata.value.parentNo, props.editorNo)
+  } else {
+    runSampler(metadata.value.rootNo, elementData.value.elementNo)
+  }
 }
 
 /**

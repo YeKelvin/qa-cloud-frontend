@@ -62,7 +62,7 @@ const tabs = computed({
 const collectorRef = ref()
 const activeTabNo = ref(null)
 const activeTabData = ref(null)
-const activeTabDetails = computed(() => (!isEmpty(activeTabData.value) ? activeTabData.value.details : []))
+const activeTabDetails = computed(() => (!isEmpty(activeTabData.value) ? activeTabData.value.details || [] : []))
 const activeTabLoading = computed(() => (!isEmpty(activeTabData.value) ? activeTabData.value.loading : false))
 const activeTabRunning = computed(() => (!isEmpty(activeTabData.value) ? activeTabData.value.running : false))
 

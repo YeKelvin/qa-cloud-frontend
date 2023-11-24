@@ -3,8 +3,8 @@
     <template v-if="collections.length > 0">
       <!-- 按钮 -->
       <div style="display: flex; justify-content: flex-end">
-        <el-button type="primary" link :disabled="readonly" @click="setAllChecked">全选</el-button>
-        <el-button type="primary" link :disabled="readonly" @click="resetChecked">清空</el-button>
+        <el-button type="primary" link @click="setAllChecked">全选</el-button>
+        <el-button type="primary" link @click="resetChecked">清空</el-button>
       </div>
 
       <!-- 搜索 -->
@@ -47,14 +47,12 @@
 import * as ElementService from '@/api/script/element'
 import { useWorkspaceStore } from '@/store/workspace'
 
-const workspaceStore = useWorkspaceStore()
-const props = defineProps({
-  readonly: { type: Boolean, default: true }
-})
-const collections = ref([])
-const filterText = ref('')
 const eltreeRef = ref()
+const collections = ref([])
+const workspaceStore = useWorkspaceStore()
 
+const filterText = ref('')
+watch(filterText, (val) => eltreeRef.value.filter(val))
 watch(
   () => workspaceStore.workspaceNo,
   (val) => {
@@ -62,22 +60,6 @@ watch(
     queryCollections()
   }
 )
-watch(filterText, (val) => eltreeRef.value.filter(val))
-watch(
-  () => props.readonly,
-  (val) => {
-    if (val) {
-      collections.value.forEach((item) => {
-        item.disabled = true
-      })
-    } else {
-      collections.value.forEach((item) => {
-        item.disabled = false
-      })
-    }
-  }
-)
-
 onMounted(() => {
   if (workspaceStore.workspaceNo) queryCollections()
 })
@@ -92,9 +74,6 @@ const queryCollections = () => {
     elementClass: 'TestCollection'
   }).then((response) => {
     collections.value = response.result
-    if (props.readonly) {
-      collections.value.forEach((item) => (item.disabled = true))
-    }
   })
 }
 
@@ -110,7 +89,6 @@ const allowDrop = (draggingNode, dropNode, type) => {
 }
 
 const handleNodeClick = (data, node) => {
-  if (props.readonly) return
   // 点击节点勾选 checkbox
   node.checked = !node.checked
 }

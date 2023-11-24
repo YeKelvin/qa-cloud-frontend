@@ -12,7 +12,7 @@
       </el-tabs>
 
       <!-- 顶栏 -->
-      <Toolbar :component="activeTab.editorComponent" />
+      <Toolbar :component="activeTab.editorComponent" :metadata="activeTab.metadata" />
 
       <!-- pymeter 组件 -->
       <el-scrollbar id="editor-main-scrollbar" style="width: 100%; height: 100%" wrap-style="overflow-x:auto;">

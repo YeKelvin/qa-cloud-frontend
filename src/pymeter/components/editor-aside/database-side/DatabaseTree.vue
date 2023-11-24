@@ -56,6 +56,7 @@
 import * as ElementService from '@/api/script/element'
 import useElTree from '@/composables/useElTree'
 import WorkspaceTree from '@/pymeter/components/editor-aside/common/WorkspaceTree.vue'
+import { usePyMeterDB } from '@/store/pymeter-db'
 import { usePyMeterStore } from '@/store/pymeter'
 import { useWorkspaceStore } from '@/store/workspace'
 import { More } from '@element-plus/icons-vue'
@@ -73,6 +74,7 @@ const {
   triggerButtonMouseenter,
   handleMenuHide
 } = useElTree()
+const offlineDB = usePyMeterDB().offlineDB
 const pymeterStore = usePyMeterStore()
 const workspaceStore = useWorkspaceStore()
 
@@ -205,6 +207,10 @@ const deleteDatabaseEngine = async () => {
   if (cancelled) return
   // 删除数据库
   await ElementService.removeElement({ elementNo: data.databaseNo })
+  // 删除离线数据
+  offlineDB.removeItem(data.databaseNo)
+  // 关闭tab
+  pymeterStore.removeTab({ editorNo: data.databaseNo, force: true })
   // 重新查询列表
   pymeterStore.queryDatabaseEngineAll()
   // 成功提示

@@ -156,7 +156,7 @@
             trigger="click"
             placement="bottom-end"
             style="margin-right: 20px"
-            @click="executeTestCollection(elementData.elementNo)"
+            @click="runTestCollection(elementData.elementNo)"
           >
             <SvgIcon icon-name="pymeter-send" style="margin-right: 5px; font-size: 18px" />
             <span>运 行</span>
@@ -209,7 +209,7 @@ const emit = defineEmits(EditorEmits)
 const props = defineProps(EditorProps)
 const pymeterStore = usePyMeterStore()
 const workspaceStore = useWorkspaceStore()
-const { executeTestCollection } = useRunnableElement()
+const { runTestCollection } = useRunnableElement()
 const { assignElement, assignMetadata, assignComponent } = useElement()
 const { unsaved, metadata, creation, localkey, shortcutKeyName, updateTabName } = useEditor()
 const offlineDB = usePyMeterDB().offlineDB

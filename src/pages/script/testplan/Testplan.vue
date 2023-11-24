@@ -5,8 +5,8 @@
       <div class="conditions-container">
         <ConditionInput v-model="queryConditions.planNo" label="计划编号" />
         <ConditionInput v-model="queryConditions.planName" label="计划名称" />
-        <ConditionInput v-model="queryConditions.scrumVersion" label="版本" />
-        <ConditionInput v-model="queryConditions.scrumSprint" label="迭代" />
+        <ConditionInput v-model="queryConditions.scrumVersion" label="版本编号" />
+        <ConditionInput v-model="queryConditions.scrumSprint" label="迭代编号" />
         <ConditionSelect v-model="queryConditions.testPhase" :options="TestPhase" label="测试阶段" />
         <ConditionSelect v-model="queryConditions.planState" :options="TestplanState" label="计划状态" />
       </div>
@@ -16,7 +16,7 @@
           <el-button type="primary" :icon="Search" @click="queryList()">查询</el-button>
           <el-button :icon="Refresh" @click="resetQueryConditions()">重置</el-button>
         </div>
-        <el-button type="primary" :icon="Plus" @click="gotoTestplanEditor(null)">创建测试计划</el-button>
+        <el-button type="primary" :icon="Plus" @click="gotoTestplanEditor(null)">新增计划</el-button>
       </div>
     </el-card>
 
@@ -30,8 +30,8 @@
         <el-table-column prop="planName" label="计划名称" min-width="150">
           <template #default="{ row }">{{ row.planName }} ({{ row.collectionTotal }})</template>
         </el-table-column>
-        <el-table-column prop="scrumVersion" label="版本" min-width="150" />
-        <el-table-column prop="scrumSprint" label="迭代" min-width="150" />
+        <el-table-column prop="scrumVersion" label="版本编号" min-width="150" />
+        <el-table-column prop="scrumSprint" label="迭代编号" min-width="150" />
         <el-table-column prop="testPhase" label="测试阶段" min-width="150" width="150">
           <template #default="{ row }">
             <span style="display: flex; align-items: center; justify-content: space-between">
@@ -118,13 +118,13 @@
           </template>
         </el-table-column>
         <el-table-column prop="createdBy" label="创建人" min-width="150" width="150" />
-        <el-table-column fixed="right" label="操作" min-width="250" width="250">
+        <el-table-column fixed="right" label="操作" min-width="200" width="200">
           <template #default="{ row }">
             <template v-if="row.planState != 'COMPLETED'">
-              <el-button type="primary" link style="margin-left: 12px" @click="gotoTestplanEditor(row.planNo, 'QUERY')">
-                查看详情
+              <el-button type="primary" link style="margin-left: 12px" @click="gotoTestplanEditor(row.planNo)">
+                编辑
               </el-button>
-              <el-button type="primary" link @click="openExecutionRecordDialog(row)">历史记录</el-button>
+              <el-button type="primary" link @click="openExecutionRecordDialog(row)">历史</el-button>
               <el-button type="primary" link style="font-weight: bold; color: #f56c6c" @click="executeTestplan(row)">
                 立即执行
               </el-button>
@@ -307,13 +307,12 @@ const modifyTestplanState = ({ planNo, tobeModifiedState }) => {
 /**
  * 跳转至测试计划 新增/编辑 页
  */
-const gotoTestplanEditor = (planNo, editorMode) => {
+const gotoTestplanEditor = (planNo) => {
   router.push({
     name: 'TestplanEditor',
     path: 'testplan/editor',
     query: {
-      planNo: planNo,
-      editorMode: planNo ? editorMode : 'CREATE'
+      planNo: planNo
     }
   })
 }

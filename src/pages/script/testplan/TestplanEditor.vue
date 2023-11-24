@@ -7,7 +7,7 @@
 
     <div class="testplan-body">
       <!-- 脚本列表 -->
-      <TestplanCollectionTree ref="collectionTreeRef" style="width: 50%" :readonly="queryMode" />
+      <TestplanCollectionTree ref="collectionTreeRef" style="width: 50%" />
 
       <!-- 设置表单 -->
       <div style="width: 50%" class="settings-container">
@@ -23,22 +23,22 @@
           >
             <!-- 计划名称 -->
             <el-form-item label="计划名称：" prop="planName">
-              <el-input v-model="formData.planName" clearable :readonly="queryMode" />
+              <el-input v-model="formData.planName" clearable />
             </el-form-item>
 
             <!-- 计划描述 -->
             <el-form-item label="计划描述：" prop="planDesc">
-              <el-input v-model="formData.planDesc" clearable :readonly="queryMode" />
+              <el-input v-model="formData.planDesc" clearable />
             </el-form-item>
 
             <!-- 版本 -->
             <el-form-item label="版本：" prop="scrumVersion">
-              <el-input v-model="formData.scrumVersion" clearable :readonly="queryMode" />
+              <el-input v-model="formData.scrumVersion" clearable />
             </el-form-item>
 
             <!-- 迭代 -->
             <el-form-item label="迭代：" prop="scrumSprint">
-              <el-input v-model="formData.scrumSprint" clearable :readonly="queryMode" />
+              <el-input v-model="formData.scrumSprint" clearable />
             </el-form-item>
 
             <!-- 并发数 -->
@@ -50,27 +50,21 @@
 
             <!-- 迭代次数 -->
             <el-form-item label="迭代次数：" prop="iterations">
-              <el-input v-model="formData.iterations" clearable :readonly="queryMode">
+              <el-input v-model="formData.iterations" clearable>
                 <template #append>次</template>
               </el-input>
             </el-form-item>
 
             <!-- 迭代间隔时间 -->
             <el-form-item label="迭代间隔：" prop="delay">
-              <el-input v-model="formData.delay" clearable :readonly="queryMode">
+              <el-input v-model="formData.delay" clearable>
                 <template #append>ms</template>
               </el-input>
             </el-form-item>
 
             <!-- 保存结果 -->
             <el-form-item label="保存结果：" prop="save">
-              <el-switch
-                v-model="formData.save"
-                inline-prompt
-                :active-icon="Check"
-                :inactive-icon="Close"
-                :disabled="queryMode"
-              />
+              <el-switch v-model="formData.save" inline-prompt :active-icon="Check" :inactive-icon="Close" />
             </el-form-item>
 
             <!-- 仅保存失败结果 -->
@@ -86,14 +80,7 @@
 
             <!-- 通知机器人 -->
             <el-form-item label="结果通知：" prop="noticeRobots">
-              <el-select
-                v-model="formData.noticeRobots"
-                filterable
-                multiple
-                style="width: 100%"
-                tag-type="danger"
-                :disabled="queryMode"
-              >
+              <el-select v-model="formData.noticeRobots" filterable multiple style="width: 100%" tag-type="danger">
                 <el-option
                   v-for="item in noticeRobotList"
                   :key="item.robotNo"
@@ -109,16 +96,12 @@
             </el-form-item>
 
             <!-- 操作按钮 -->
-            <el-form-item v-if="queryMode">
-              <el-button :icon="Edit" type="primary" @click="editorMode = 'MODIFY'">编 辑</el-button>
+            <el-form-item v-if="creation">
+              <el-button :icon="Check" type="primary" @click="createTestplan()">创 建</el-button>
               <el-button :icon="Close" @click="goBack()">关 闭</el-button>
             </el-form-item>
-            <el-form-item v-else-if="modifyMode">
+            <el-form-item v-else>
               <el-button :icon="Check" type="danger" @click="modifyTestplan()">保 存</el-button>
-              <el-button :icon="Close" @click="goBack()">关 闭</el-button>
-            </el-form-item>
-            <el-form-item v-else-if="createMode">
-              <el-button :icon="Check" type="primary" @click="createTestplan()">创建计划</el-button>
               <el-button :icon="Close" @click="goBack()">关 闭</el-button>
             </el-form-item>
           </el-form>
@@ -135,7 +118,7 @@ import * as TestplanService from '@/api/script/testplan'
 import { useWorkspaceStore } from '@/store/workspace'
 import { Check, Close, Edit } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
-import { assign } from 'lodash-es'
+import { assign, isEmpty } from 'lodash-es'
 import TestplanCollectionTree from './TestplanCollectionTree.vue'
 
 const checkIterations = (_, value, callback) => {
@@ -162,7 +145,7 @@ const elformRef = ref()
 const collectionTreeRef = ref()
 
 const planNo = ref(route.query.planNo)
-const editorMode = ref(route.query.editorMode)
+const creation = computed(() => isEmpty(route.query.planNo))
 const noticeRobotList = ref([])
 const formData = reactive({
   planName: '',
@@ -182,10 +165,6 @@ const formRules = reactive({
   iterations: [{ required: true, message: '迭代次数不能为空', validator: checkIterations, trigger: 'blur' }],
   concurrency: [{ required: true, message: '并发数量不能为空', trigger: 'blur' }]
 })
-
-const queryMode = computed(() => editorMode.value === 'QUERY')
-const modifyMode = computed(() => editorMode.value === 'MODIFY')
-const createMode = computed(() => editorMode.value === 'CREATE')
 
 watch(
   () => formData.iterations,
@@ -208,12 +187,7 @@ watch(
 
 onMounted(() => {
   queryNoticeRobotAll()
-  if (createMode.value) return
-  if (!planNo.value) {
-    editorMode.value = 'CREATE'
-    return
-  }
-  editorMode.value = 'QUERY'
+  if (creation.value) return
   queryTestplan()
 })
 
