@@ -89,7 +89,6 @@ const filteredData = computed(() => {
 watch(
   configData,
   debounce((localdata) => {
-    console.log('watch')
     // 底部自动新加一行
     autoNewRow()
     // 如果前后端数据一致则代表数据未更改
@@ -100,7 +99,6 @@ watch(
       offlineDB.removeItem(localkey.value)
       return
     }
-    console.log('存离线')
     // 标记数据未保存
     unsaved.value = true
     // 存储离线数据

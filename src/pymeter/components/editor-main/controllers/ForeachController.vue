@@ -109,7 +109,6 @@ const editorRef = ref()
 watch(
   elementData,
   debounce((localdata) => {
-    console.log('watch')
     // 如果前后端数据一致则代表数据未更改
     if (metadata.value.hashcode === toHashCode(localdata)) {
       // 数据一致则表示数据未变更
@@ -118,7 +117,6 @@ watch(
       offlineDB.removeItem(localkey.value)
       return
     }
-    console.log('存离线')
     // 标记数据未保存
     unsaved.value = true
     // 存储离线数据

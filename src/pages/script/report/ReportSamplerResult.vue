@@ -250,7 +250,6 @@ const copyRequest = async () => {
 
 const copyRequestData = async () => {
   const text = requestDataType.value === 'source' ? sampler.value.requestData : sampler.value.requestDecoded
-  console.log('text: ', text)
   await toClipboard(text)
   ElMessage({ message: '复制成功', type: 'info', duration: 1 * 1000 })
 }

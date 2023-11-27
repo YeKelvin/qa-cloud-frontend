@@ -19,7 +19,6 @@ export default function useRunnableElement() {
         offlines.set(offline.meta.sn || key, offline.data)
       }
     })
-    console.log('offlines: ', offlines)
     return Object.fromEntries(offlines)
   }
 

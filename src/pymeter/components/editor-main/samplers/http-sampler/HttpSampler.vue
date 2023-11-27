@@ -385,7 +385,6 @@ const showCompoSettingsTab = computed(() => activeTabName.value === 'COMPO_SETTI
 watch(
   elementData,
   debounce((localdata) => {
-    console.log('watch')
     // 添加组件索引
     localdata.elementCompos.prevList.forEach((item, index) => (item.elementIndex = index + 1))
     localdata.elementCompos.postList.forEach((item, index) => (item.elementIndex = index + 1))
@@ -398,7 +397,6 @@ watch(
       offlineDB.removeItem(localkey.value)
       return
     }
-    console.log('存离线')
     // 标记数据未保存
     unsaved.value = true
     // 存储离线数据

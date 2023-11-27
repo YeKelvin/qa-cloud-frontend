@@ -196,7 +196,6 @@ const jsonEditorRef = ref()
 watch(
   elementData,
   debounce((localdata) => {
-    console.log('watch')
     // 更新实参数据
     argumentData.value = parameterData.value
     // 如果前后端数据一致则代表数据未更改
@@ -207,7 +206,6 @@ watch(
       offlineDB.removeItem(localkey.value)
       return
     }
-    console.log('存离线')
     // 标记数据未保存
     unsaved.value = true
     // 存储离线数据
