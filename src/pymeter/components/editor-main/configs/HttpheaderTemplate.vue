@@ -15,8 +15,15 @@
 
       <!-- 是否启用 -->
       <el-table-column label="启用" align="center" width="80" min-width="80">
-        <template #default="{ row }">
-          <el-switch v-model="row.enabled" size="small" :active-icon="Check" :inactive-icon="Close" inline-prompt />
+        <template #default="{ row, $index }">
+          <el-switch
+            v-show="isEmpty(filteredText) && configData.variableList.length != $index + 1"
+            v-model="row.enabled"
+            size="small"
+            inline-prompt
+            :active-icon="Check"
+            :inactive-icon="Close"
+          />
         </template>
       </el-table-column>
 
@@ -38,7 +45,13 @@
       <el-table-column label="操作" fixed="right" align="center" width="80" min-width="80">
         <template #default="{ row, $index }">
           <!-- 删除请求头按钮 -->
-          <el-button type="primary" link :icon="Delete" @click="removeHeader(row, $index)" />
+          <el-button
+            v-show="isEmpty(filteredText) && configData.variableList.length != $index + 1"
+            type="danger"
+            link
+            :icon="Delete"
+            @click="removeHeader(row, $index)"
+          />
         </template>
       </el-table-column>
     </el-table>

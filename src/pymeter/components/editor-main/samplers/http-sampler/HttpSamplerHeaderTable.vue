@@ -16,8 +16,15 @@
 
       <!-- 是否启用 -->
       <el-table-column align="center" width="60" min-width="60">
-        <template #default="{ row }">
-          <el-switch v-model="row.enabled" size="small" :active-icon="Check" :inactive-icon="Close" inline-prompt />
+        <template #default="{ row, $index }">
+          <el-switch
+            v-show="rows.length != $index + 1"
+            v-model="row.enabled"
+            size="small"
+            inline-prompt
+            :active-icon="Check"
+            :inactive-icon="Close"
+          />
         </template>
       </el-table-column>
 

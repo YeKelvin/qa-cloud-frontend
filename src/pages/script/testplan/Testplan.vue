@@ -131,7 +131,7 @@
             </template>
             <template v-else>
               <el-button type="primary" link style="margin-left: 12px" @click="openExecutionRecordDialog(row)">
-                历史记录
+                历史
               </el-button>
             </template>
           </template>
