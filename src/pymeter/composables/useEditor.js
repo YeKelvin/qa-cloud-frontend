@@ -59,7 +59,9 @@ export default function useEditor() {
     if (e.repeat) return
     if (e.key === 's' && (onMacOS.value ? e.metaKey : e.ctrlKey)) {
       e.preventDefault()
-      unsaved.value && instance.exposed.save()
+      if (creation.value || unsaved.value) {
+        instance.exposed.save()
+      }
     }
   }
 
@@ -68,7 +70,7 @@ export default function useEditor() {
    */
   const closeByShortcut = async (e) => {
     if (e.repeat) return
-    if (e.key === 'k' && (onMacOS.value ? e.metaKey : e.ctrlKey)) {
+    if (e.key === 'e' && (onMacOS.value ? e.metaKey : e.ctrlKey)) {
       e.preventDefault()
       closeTab()
     }

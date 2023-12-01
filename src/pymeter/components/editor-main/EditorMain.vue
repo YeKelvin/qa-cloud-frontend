@@ -100,13 +100,13 @@ watch(keepAliveRef, (val) => {
 
 onMounted(async () => {
   // 注册快捷键
-  Mousetrap.bind('mod+k', () => pymeterStore.removeTab({ editorNo: pymeterStore.activeTabNo }))
+  Mousetrap.bind('mod+e', () => pymeterStore.removeTab({ editorNo: pymeterStore.activeTabNo }))
   // 打开离线数据
   await pymeterStore.openOfflineTab()
 })
 onBeforeUnmount(() => {
   // 移除快捷键
-  Mousetrap.unbind('mod+k')
+  Mousetrap.unbind('mod+e')
 })
 </script>
 
