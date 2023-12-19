@@ -15,7 +15,7 @@
       <Toolbar :component="activeTab.editorComponent" :metadata="activeTab.metadata" />
 
       <!-- pymeter 组件 -->
-      <el-scrollbar id="editor-main-scrollbar" style="width: 100%; height: 100%" wrap-style="overflow-x:auto;">
+      <el-scrollbar class="editor-main-scrollbar" style="width: 100%; height: 100%" wrap-style="overflow-x:auto;">
         <keep-alive ref="keepAliveRef">
           <component
             :is="components[activeTab.editorComponent]"
@@ -30,7 +30,7 @@
       </el-scrollbar>
 
       <!-- 回到顶部按钮 -->
-      <el-backtop target="#editor-main-scrollbar .el-scrollbar__wrap" :right="20" :bottom="60" />
+      <el-backtop target=".editor-main-scrollbar .el-scrollbar__wrap" :right="20" :bottom="60" />
     </template>
 
     <!-- 占位图 -->
