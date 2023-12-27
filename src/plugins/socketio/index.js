@@ -37,18 +37,26 @@ export default {
      * 在连接成功时触发
      */
     // socket.on('connect', () => {
-    //   console.debug(`sid:[ ${socket.id} ] event:[ connect ]`)
+    //   console.debug(`event:[ connect ] sid:[ ${socket.id} ] `)
     // })
 
     /**
      * 断开连接时触发
      */
     // socket.on('disconnect', () => {
-    //   console.debug(`sid:[ ${socket.id} ] event:[ disconnect ]`)
+    //   console.debug(`event:[ disconnect ] sid:[ ${socket.id} ] `)
     // })
 
     /**
-     * 在连接错误时触发
+     * 连接错误时触发
+     */
+    socket.on('connect_error', (error) => {
+      console.error(`event:[ connect_error ]\n${error}`)
+      socket.close()
+    })
+
+    /**
+     * 发生错误时触发
      */
     socket.on('error', (error) => {
       console.error(`event:[ error ] sid:[ ${socket.id} ]\n${error}`)
