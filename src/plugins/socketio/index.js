@@ -50,9 +50,9 @@ export default {
     /**
      * 在连接错误时触发
      */
-    // socket.on('error', (error) => {
-    //   console.error(`sid:[ ${socket.id} ] event:[ error ] error:[ ${error} ]`)
-    //   socket.close()
-    // })
+    socket.on('error', (error) => {
+      console.error(`event:[ error ] sid:[ ${socket.id} ]\n${error}`)
+      socket.close()
+    })
   }
 }
