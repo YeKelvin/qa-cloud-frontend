@@ -33,6 +33,10 @@ const asideComponents = reactive({
     --el-select-input-focus-border-color: none;
   }
 
+  .el-select__wrapper {
+    box-shadow: none;
+  }
+
   .select-trigger {
     padding: 0 10px;
   }

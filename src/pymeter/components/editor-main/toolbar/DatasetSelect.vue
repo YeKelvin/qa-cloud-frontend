@@ -110,6 +110,10 @@ const getBoundDatasetName = (datasetNo) => {
   --el-select-border-color-hover: none;
   --el-select-input-focus-border-color: none;
 
+  :deep(.el-select__wrapper) {
+    box-shadow: none;
+  }
+
   :deep(.el-select__tags-text) {
     display: inline-block;
     max-width: 100px;

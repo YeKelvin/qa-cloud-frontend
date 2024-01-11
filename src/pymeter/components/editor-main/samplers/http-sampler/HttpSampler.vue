@@ -653,6 +653,10 @@ defineExpose({
     --el-select-disabled-border: none;
     --el-select-border-color-hover: none;
     --el-select-input-focus-border-color: none;
+
+    :deep(.el-select__wrapper) {
+      box-shadow: none;
+    }
   }
 
   :deep(.el-input__inner) {
