@@ -1,6 +1,5 @@
 import { defineConfig, loadEnv } from 'vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
-import { visualizer } from 'rollup-plugin-visualizer'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 import path from 'path'
 import vue from '@vitejs/plugin-vue'
@@ -57,8 +56,7 @@ export default ({ mode }) =>
       createSvgIconsPlugin({
         iconDirs: [path.resolve(process.cwd(), 'src/assets/icons')],
         symbolId: 'icon-[dir]-[name]'
-      }),
-      visualizer()
+      })
     ],
     server: {
       // host: '0.0.0.0', // 设置外网访问

@@ -11,7 +11,7 @@
     "eslint": "eslint --ext .js,.jsx,.vue src/",
     "stylelint": "stylelint **/*.{css,less,scss,vue} --fix",
     "dev": "vite --mode development",
-    "build": "node ./build/modify-keepalive.js && vite build --mode production",
+    "build": "node ./build/modify-keepalive.cjs && vite build --mode production",
     "preview": "pnpm run build && vite preview",
     "prepare": "husky install"
   },
@@ -76,7 +76,7 @@
     "husky": "8.0.3",
     "lint-staged": "15.2.0",
     "prettier": "3.2.2",
-    "rollup-plugin-visualizer": "5.12.0",
+    "rollup": "4.9.5",
     "sass": "1.69.7",
     "stylelint": "16.1.0",
     "stylelint-config-recess-order": "4.4.0",
