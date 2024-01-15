@@ -409,6 +409,8 @@ defineExpose({
 }
 
 .tree-item-name {
+  display: flex;
+  align-items: center;
   margin-left: 10px;
   overflow: hidden;
   text-overflow: ellipsis;
