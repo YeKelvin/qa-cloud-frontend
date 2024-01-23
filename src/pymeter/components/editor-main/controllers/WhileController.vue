@@ -84,7 +84,7 @@ const { unsaved, metadata, creation, localkey, shortcutKeyName, updateTabName, e
 const offlineDB = usePyMeterDB().offlineDB
 const elementData = ref({
   elementNo: props.metadata.sn,
-  elementName: 'WHILE控制器',
+  elementName: 'While循环',
   elementDesc: '',
   elementType: 'CONTROLLER',
   elementClass: 'WhileController',

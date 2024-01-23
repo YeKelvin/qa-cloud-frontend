@@ -112,7 +112,7 @@ const { unsaved, metadata, creation, localkey, shortcutKeyName, updateTabName, e
 const offlineDB = usePyMeterDB().offlineDB
 const elementData = ref({
   elementNo: props.metadata.sn,
-  elementName: 'Snippet请求',
+  elementName: '片段请求',
   elementDesc: '',
   elementType: 'SAMPLER',
   elementClass: 'SnippetSampler',

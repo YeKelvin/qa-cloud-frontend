@@ -51,8 +51,8 @@
         </template>
         <el-button link @click="openNewHttpSamplerTab">HTTP请求</el-button>
         <el-button link @click="openNewPythonSamplerTab">Python请求</el-button>
-        <el-button link @click="openNewSQLSamplerTab">SQL请求</el-button>
-        <el-button link @click="openNewSnippetSamplerTab">Snippet请求</el-button>
+        <el-button link @click="openNewSQLSamplerTab">数据库请求</el-button>
+        <el-button link @click="openNewSnippetSamplerTab">片段请求</el-button>
       </el-popover>
 
       <!-- controllers -->
@@ -72,12 +72,12 @@
             <el-icon><ArrowRight /></el-icon>
           </el-button>
         </template>
-        <el-button link @click="openNewIfControllerTab">IF控制器</el-button>
-        <el-button link @click="openNewWhileControllerTab">WHILE控制器</el-button>
-        <el-button link @click="openNewForeachControllerTab">遍历控制器</el-button>
-        <el-button link @click="openNewLoopControllerTab">循环控制器</el-button>
-        <el-button link @click="openNewRetryControllerTab">重试控制器</el-button>
-        <el-button link @click="openNewTransactionControllerTab">事务控制器</el-button>
+        <el-button link @click="openNewIfControllerTab">IF分支</el-button>
+        <el-button link @click="openNewLoopControllerTab">Loop循环</el-button>
+        <el-button link @click="openNewWhileControllerTab">While循环</el-button>
+        <el-button link @click="openNewForeachControllerTab">Foreach循环</el-button>
+        <el-button link @click="openNewRetryControllerTab">重试循环</el-button>
+        <el-button link @click="openNewTransactionControllerTab">事务</el-button>
       </el-popover>
 
       <template v-if="item?.elementType == 'COLLECTION'">
@@ -135,6 +135,7 @@ const props = defineProps({
   node: Object
 })
 
+const node = computed(() => props.node)
 const item = computed(() => props.node?.data)
 const elpopoverRef = ref()
 const visible = computed({
@@ -170,6 +171,19 @@ const closeMenu = () => {
   visible.value = false
 }
 
+const getElementPath = (node) => {
+  if (!node) return
+  if (node.level === 1) return node.label
+
+  let parent = node.parent
+  const paths = [node.label]
+  while (parent.level > 0) {
+    paths.push(parent.label)
+    parent = parent.parent
+  }
+  return `/ ${paths.reverse().join(' / ')}`
+}
+
 /**
  * 打开新增 TestWorker 的标签页
  */
@@ -177,14 +191,15 @@ const openNewWorkerTab = () => {
   closeMenu()
   pymeterStore.addTab({
     editorNo: Date.now().toString(),
-    editorName: '新建用例',
+    editorName: '测试用例',
     editorComponent: 'TestWorker',
     editorMode: 'CREATE',
     metadata: {
-      name: '新建用例',
-      component: 'TestWorker',
+      name: '测试用例',
+      path: getElementPath(node.value),
       rootNo: item.value.rootNo,
-      parentNo: item.value.elementNo
+      parentNo: item.value.elementNo,
+      component: 'TestWorker'
     }
   })
 }
@@ -196,14 +211,15 @@ const openNewSetupWorkerTab = () => {
   closeMenu()
   pymeterStore.addTab({
     editorNo: Date.now().toString(),
-    editorName: '新建用例',
+    editorName: '前置用例',
     editorComponent: 'SetupWorker',
     editorMode: 'CREATE',
     metadata: {
-      name: '新建用例',
-      component: 'SetupWorker',
+      name: '前置用例',
+      path: getElementPath(node.value),
       rootNo: item.value.rootNo,
-      parentNo: item.value.elementNo
+      parentNo: item.value.elementNo,
+      component: 'SetupWorker'
     }
   })
 }
@@ -215,14 +231,15 @@ const openNewTeardownWorkerTab = () => {
   closeMenu()
   pymeterStore.addTab({
     editorNo: Date.now().toString(),
-    editorName: '新建用例',
+    editorName: '后置用例',
     editorComponent: 'TeardownWorker',
     editorMode: 'CREATE',
     metadata: {
-      name: '新建用例',
-      component: 'TeardownWorker',
+      name: '后置用例',
+      path: getElementPath(node.value),
       rootNo: item.value.rootNo,
-      parentNo: item.value.elementNo
+      parentNo: item.value.elementNo,
+      component: 'TeardownWorker'
     }
   })
 }
@@ -234,14 +251,15 @@ const openNewHttpSamplerTab = () => {
   closeMenu()
   pymeterStore.addTab({
     editorNo: Date.now().toString(),
-    editorName: '新建请求',
+    editorName: 'HTTP请求',
     editorComponent: 'HTTPSampler',
     editorMode: 'CREATE',
     metadata: {
-      name: '新建请求',
-      component: 'HTTPSampler',
+      name: 'HTTP请求',
+      path: getElementPath(node.value),
       rootNo: item.value.rootNo,
-      parentNo: item.value.elementNo
+      parentNo: item.value.elementNo,
+      component: 'HTTPSampler'
     }
   })
 }
@@ -253,14 +271,15 @@ const openNewPythonSamplerTab = () => {
   closeMenu()
   pymeterStore.addTab({
     editorNo: Date.now().toString(),
-    editorName: '新建请求',
+    editorName: 'Python请求',
     editorComponent: 'PythonSampler',
     editorMode: 'CREATE',
     metadata: {
-      name: '新建请求',
-      component: 'PythonSampler',
+      name: 'Python请求',
+      path: getElementPath(node.value),
       rootNo: item.value.rootNo,
-      parentNo: item.value.elementNo
+      parentNo: item.value.elementNo,
+      component: 'PythonSampler'
     }
   })
 }
@@ -272,14 +291,15 @@ const openNewSQLSamplerTab = () => {
   closeMenu()
   pymeterStore.addTab({
     editorNo: Date.now().toString(),
-    editorName: '新建请求',
+    editorName: '数据库请求',
     editorComponent: 'SQLSampler',
     editorMode: 'CREATE',
     metadata: {
-      name: '新建请求',
-      component: 'SQLSampler',
+      name: '数据库请求',
+      path: getElementPath(node.value),
       rootNo: item.value.rootNo,
-      parentNo: item.value.elementNo
+      parentNo: item.value.elementNo,
+      component: 'SQLSampler'
     }
   })
 }
@@ -291,14 +311,15 @@ const openNewSnippetSamplerTab = () => {
   closeMenu()
   pymeterStore.addTab({
     editorNo: Date.now().toString(),
-    editorName: '新建请求',
+    editorName: '片段请求',
     editorComponent: 'SnippetSampler',
     editorMode: 'CREATE',
     metadata: {
-      name: '新建请求',
-      component: 'SnippetSampler',
+      name: '片段请求',
+      path: getElementPath(node.value),
       rootNo: item.value.rootNo,
-      parentNo: item.value.elementNo
+      parentNo: item.value.elementNo,
+      component: 'SnippetSampler'
     }
   })
 }
@@ -310,14 +331,15 @@ const openNewIfControllerTab = () => {
   closeMenu()
   pymeterStore.addTab({
     editorNo: Date.now().toString(),
-    editorName: '新建控制器',
+    editorName: 'IF分支',
     editorComponent: 'IfController',
     editorMode: 'CREATE',
     metadata: {
-      name: '新建控制器',
-      component: 'IfController',
+      name: 'IF分支',
+      path: getElementPath(node.value),
       rootNo: item.value.rootNo,
-      parentNo: item.value.elementNo
+      parentNo: item.value.elementNo,
+      component: 'IfController'
     }
   })
 }
@@ -329,14 +351,15 @@ const openNewForeachControllerTab = () => {
   closeMenu()
   pymeterStore.addTab({
     editorNo: Date.now().toString(),
-    editorName: '新建控制器',
+    editorName: 'Foreach循环',
     editorComponent: 'ForeachController',
     editorMode: 'CREATE',
     metadata: {
-      name: '新建控制器',
-      component: 'ForeachController',
+      name: 'Foreach循环',
+      path: getElementPath(node.value),
       rootNo: item.value.rootNo,
-      parentNo: item.value.elementNo
+      parentNo: item.value.elementNo,
+      component: 'ForeachController'
     }
   })
 }
@@ -348,14 +371,15 @@ const openNewLoopControllerTab = () => {
   closeMenu()
   pymeterStore.addTab({
     editorNo: Date.now().toString(),
-    editorName: '新建控制器',
+    editorName: 'Loop循环',
     editorComponent: 'LoopController',
     editorMode: 'CREATE',
     metadata: {
-      name: '新建控制器',
-      component: 'LoopController',
+      name: 'Loop循环',
+      path: getElementPath(node.value),
       rootNo: item.value.rootNo,
-      parentNo: item.value.elementNo
+      parentNo: item.value.elementNo,
+      component: 'LoopController'
     }
   })
 }
@@ -367,14 +391,15 @@ const openNewRetryControllerTab = () => {
   closeMenu()
   pymeterStore.addTab({
     editorNo: Date.now().toString(),
-    editorName: '新建控制器',
+    editorName: '重试循环',
     editorComponent: 'RetryController',
     editorMode: 'CREATE',
     metadata: {
-      name: '新建控制器',
-      component: 'RetryController',
+      name: '重试循环',
+      path: getElementPath(node.value),
       rootNo: item.value.rootNo,
-      parentNo: item.value.elementNo
+      parentNo: item.value.elementNo,
+      component: 'RetryController'
     }
   })
 }
@@ -386,14 +411,15 @@ const openNewTransactionControllerTab = () => {
   closeMenu()
   pymeterStore.addTab({
     editorNo: Date.now().toString(),
-    editorName: '新建事务',
+    editorName: '事务',
     editorComponent: 'TransactionController',
     editorMode: 'CREATE',
     metadata: {
-      name: '新建事务',
-      component: 'TransactionController',
+      name: '事务',
+      path: getElementPath(node.value),
       rootNo: item.value.rootNo,
-      parentNo: item.value.elementNo
+      parentNo: item.value.elementNo,
+      component: 'TransactionController'
     }
   })
 }
@@ -405,14 +431,15 @@ const openNewWhileControllerTab = () => {
   closeMenu()
   pymeterStore.addTab({
     editorNo: Date.now().toString(),
-    editorName: '新建控制器',
+    editorName: 'While循环',
     editorComponent: 'WhileController',
     editorMode: 'CREATE',
     metadata: {
-      name: '新建控制器',
-      component: 'WhileController',
+      name: 'While循环',
+      path: getElementPath(node.value),
       rootNo: item.value.rootNo,
-      parentNo: item.value.elementNo
+      parentNo: item.value.elementNo,
+      component: 'WhileController'
     }
   })
 }

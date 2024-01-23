@@ -59,7 +59,7 @@ const { unsaved, metadata, creation, localkey, shortcutKeyName, updateTabName, e
 const offlineDB = usePyMeterDB().offlineDB
 const elementData = ref({
   elementNo: props.metadata.sn,
-  elementName: 'IF控制器',
+  elementName: 'IF分支',
   elementDesc: '',
   elementType: 'CONTROLLER',
   elementClass: 'IfController',

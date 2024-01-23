@@ -154,10 +154,10 @@ export const ElementClass = {
   // snippet
   TestSnippet: '测试片段',
   // sampler
-  HTTPSampler: 'HTTP取样器',
-  PythonSampler: 'Python取样器',
-  SnippetSampler: '片段取样器',
-  SQLSampler: 'SQL取样器',
+  SQLSampler: '数据库请求',
+  HTTPSampler: 'HTTP请求',
+  PythonSampler: 'Python请求',
+  SnippetSampler: '片段请求',
   // config
   HTTPHeaderManager: 'HTTP-Header配置器',
   HTTPCookieManager: 'HTTP-Cookie配置器',
@@ -165,12 +165,12 @@ export const ElementClass = {
   VariableDataset: '变量配置器',
   DatabaseEngine: '数据库配置器',
   // controller
-  IfController: 'IF控制器',
-  LoopController: '循环控制器',
-  WhileController: 'WHILE控制器',
-  RetryController: '重试控制器',
-  ForeachController: '遍历控制器',
-  TransactionController: '事务控制器',
+  IfController: 'IF分支',
+  LoopController: 'Loop循环',
+  WhileController: 'While循环',
+  ForeachController: 'Foreach循环',
+  RetryController: '重试循环',
+  TransactionController: '事务',
   // prev:
   PythonPrevProcessor: 'Python前置处理器',
   SleepPrevProcessor: '固定定时器',

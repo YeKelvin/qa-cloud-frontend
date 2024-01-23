@@ -15,7 +15,7 @@
     "defineExpose": true,
     "defineOptions": true
   },
-  "plugins": ["prettier", "import", "promise"],
+  "plugins": ["prettier", "import", "promise", "oxlint"],
   "extends": [
     "./.eslintrc-auto-import.json",
     "standard",

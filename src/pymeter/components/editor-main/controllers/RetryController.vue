@@ -69,7 +69,7 @@ const { unsaved, metadata, creation, localkey, shortcutKeyName, updateTabName, e
 const offlineDB = usePyMeterDB().offlineDB
 const elementData = ref({
   elementNo: props.metadata.sn,
-  elementName: '重试控制器',
+  elementName: '重试循环',
   elementDesc: '',
   elementType: 'CONTROLLER',
   elementClass: 'RetryController',

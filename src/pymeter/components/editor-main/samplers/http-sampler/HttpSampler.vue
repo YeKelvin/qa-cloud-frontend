@@ -675,6 +675,10 @@ defineExpose({
   }
 }
 
+:deep(.el-input-group__prepend) {
+  background-color: var(--el-fill-color-blank);
+}
+
 :deep(.el-badge__content) {
   top: 10px;
 }

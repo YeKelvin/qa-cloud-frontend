@@ -169,7 +169,7 @@ const addTreeNodePaddingBottom = (collectionNo) => {
 /**
  * el-tree handler
  */
-const handleNodeClick = (data) => {
+const handleNodeClick = (data, node) => {
   // 存储当前节点，用于刷新时保持高亮
   currentKey.value = data.elementNo
   clearTimeout(clickTimer) // 清除计时器
@@ -182,9 +182,10 @@ const handleNodeClick = (data) => {
       metadata: {
         sn: data.elementNo,
         name: data.elementName,
-        component: data.elementClass,
+        path: getElementPath(node),
         rootNo: data.rootNo,
-        parentNo: data.parentNo
+        parentNo: data.parentNo,
+        component: data.elementClass
       }
     })
   }, 200)
@@ -521,6 +522,19 @@ const deleteByShortcut = async (e) => {
     e.preventDefault()
     deleteElement()
   }
+}
+
+const getElementPath = (node) => {
+  if (!node) return
+  if (node.level === 1) return
+
+  const paths = []
+  let parent = node.parent
+  while (parent.level > 0) {
+    paths.push(parent.label)
+    parent = parent.parent
+  }
+  return `/ ${paths.reverse().join(' / ')}`
 }
 
 defineExpose({

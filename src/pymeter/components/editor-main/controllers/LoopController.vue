@@ -51,7 +51,7 @@ const { unsaved, metadata, creation, localkey, shortcutKeyName, updateTabName, e
 const offlineDB = usePyMeterDB().offlineDB
 const elementData = ref({
   elementNo: props.metadata.sn,
-  elementName: '循环控制器',
+  elementName: 'Loop循环',
   elementDesc: '',
   elementType: 'CONTROLLER',
   elementClass: 'LoopController',

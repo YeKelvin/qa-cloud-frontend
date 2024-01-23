@@ -233,11 +233,11 @@ const queryElementsTree = () => {
 const openNewCollectionTab = () => {
   pymeterStore.addTab({
     editorNo: Date.now().toString(),
-    editorName: '新建集合',
+    editorName: '测试集合',
     editorComponent: 'TestCollection',
     editorMode: 'CREATE',
     metadata: {
-      name: '新建集合',
+      name: '测试集合',
       component: 'TestCollection'
     }
   })
@@ -249,11 +249,11 @@ const openNewCollectionTab = () => {
 const openNewSnippetTab = () => {
   pymeterStore.addTab({
     editorNo: Date.now().toString(),
-    editorName: '新建片段',
+    editorName: '测试片段',
     editorComponent: 'TestSnippet',
     editorMode: 'CREATE',
     metadata: {
-      name: '新建片段',
+      name: '测试片段',
       component: 'TestSnippet'
     }
   })

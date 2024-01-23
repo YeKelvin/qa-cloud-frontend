@@ -3,13 +3,21 @@
     <!-- 操作栏 -->
     <div class="toolbar-main">
       <!-- 左侧：组件名称 -->
-      <div class="r-container component-name">{{ componentName }}</div>
+      <div class="l-container">
+        <span class="component-name">{{ componentName }}</span>
+        <template v-if="showElementPath">
+          <span class="element-path">
+            <b>：</b>
+            {{ props.metadata.path }} / {{ props.metadata.name }}
+          </span>
+        </template>
+      </div>
 
       <!-- 右侧：操作区域 -->
-      <div class="l-container">
+      <div class="r-container">
         <!-- 元素历史按钮 -->
         <el-button
-          v-show="showhistoryBTN"
+          v-show="showHistoryBTN"
           style="padding-right: 20px"
           type="primary"
           link
@@ -58,16 +66,16 @@ const componentNames = {
   TestWorker: '测试用例',
   SetupWorker: '前置用例',
   TeardownWorker: '后置用例',
-  IfController: 'IF控制器',
-  WhileController: 'WHILE控制器',
-  LoopController: '循环控制器',
-  ForeachController: '遍历控制器',
-  RetryController: '重试控制器',
-  TransactionController: '事务控制器',
+  IfController: 'IF分支',
+  WhileController: 'While循环',
+  LoopController: 'Loop循环',
+  ForeachController: 'Foreach循环',
+  RetryController: '重试循环',
+  TransactionController: '事务',
+  SQLSampler: '数据库请求',
   HTTPSampler: 'HTTP请求',
   PythonSampler: 'Python请求',
-  SnippetSampler: 'Snippet请求',
-  SQLSampler: 'SQL请求',
+  SnippetSampler: '片段请求',
   DatabaseEngine: '数据库配置器'
 }
 // 组件名称
@@ -75,7 +83,9 @@ const componentName = computed(() => componentNames[props.component])
 // 是否显示操作栏的标识
 const showToolBar = computed(() => !isEmpty(componentName.value))
 // 是否显示元素历史按钮
-const showhistoryBTN = computed(() => !isEmpty(props.metadata?.sn))
+const showHistoryBTN = computed(() => !isEmpty(props.metadata?.sn))
+// 是否显示元素路径
+const showElementPath = computed(() => !isEmpty(props.metadata?.path))
 // 是否显示变更日志
 const showChangelog = ref(false)
 // 是否显示变量详情视图
@@ -98,25 +108,32 @@ const showDatasetDialog = ref(false)
   width: 100%;
 }
 
+.l-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  margin-left: 4px;
+  box-shadow: -4px 0 0 0 #f56c6c;
+}
+
 .r-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.l-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.element-path {
+  margin-right: 10px;
+  font-size: 16px;
+  user-select: none;
 }
 
 .component-name {
-  padding: 0 10px;
-  margin-left: 4px;
   font-size: 16px;
   font-weight: bold;
   user-select: none;
-  box-shadow: -4px 0 0 0 #f56c6c;
 }
 
 .dataset-container {

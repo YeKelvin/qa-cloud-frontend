@@ -33,11 +33,11 @@ watch(filterText, (val) => {
 const createDatabaseEngine = () => {
   pymeterStore.addTab({
     editorNo: Date.now().toString(),
-    editorName: '新建数据库',
+    editorName: '数据库连接',
     editorComponent: 'DatabaseEngine',
     editorMode: 'CREATE',
     metadata: {
-      name: '新建数据库',
+      name: '数据库连接',
       component: 'DatabaseEngine'
     }
   })
