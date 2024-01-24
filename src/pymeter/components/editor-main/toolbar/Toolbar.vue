@@ -6,10 +6,7 @@
       <div class="l-container">
         <span class="component-name">{{ componentName }}</span>
         <template v-if="showElementPath">
-          <span class="element-path">
-            <b>：</b>
-            {{ props.metadata.path }} / {{ props.metadata.name }}
-          </span>
+          <div class="element-path">{{ props.metadata.path }} / {{ props.metadata.name }}</div>
         </template>
       </div>
 
@@ -110,9 +107,7 @@ const showDatasetDialog = ref(false)
 
 .l-container {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
   padding: 0 10px;
   margin-left: 4px;
   box-shadow: -4px 0 0 0 #f56c6c;
@@ -125,13 +120,12 @@ const showDatasetDialog = ref(false)
 }
 
 .element-path {
-  margin-right: 10px;
-  font-size: 16px;
+  font-size: 12px;
   user-select: none;
 }
 
 .component-name {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
   user-select: none;
 }
