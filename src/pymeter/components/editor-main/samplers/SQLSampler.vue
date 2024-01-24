@@ -36,7 +36,7 @@
       </el-form-item>
 
       <!-- 变量名称 -->
-      <el-form-item label="变量名称：" prop="elementProps.SQLSampler__result_name">
+      <el-form-item label="变量名：" prop="elementProps.SQLSampler__result_name">
         <el-input
           v-model="elementData.elementProps.SQLSampler__result_name"
           placeholder="用于存储查询结果集合的变量名称"
@@ -59,15 +59,6 @@
             </template>
           </el-tab-pane>
         </el-tabs>
-        <!-- 运行按钮 -->
-        <el-button
-          type="primary"
-          style="height: 30px; border-bottom-right-radius: 0; border-bottom-left-radius: 0"
-          @click="run()"
-        >
-          <SvgIcon icon-name="pymeter-send" style="margin-right: 5px; font-size: 18px" />
-          运 行
-        </el-button>
       </div>
 
       <div v-show="showSettingsTab">
@@ -103,9 +94,25 @@
     </el-form>
 
     <!-- 操作按钮 -->
-    <template v-if="creation || unsaved">
-      <SaveButton :tips="shortcutKeyName" @click="save()" />
-    </template>
+    <div style="display: flex; justify-content: center">
+      <!-- 保存按钮 -->
+      <template v-if="creation || unsaved">
+        <SaveButton style="margin-right: 10px" :tips="shortcutKeyName" @click="save()" />
+      </template>
+      <!-- 运行按钮 -->
+      <el-dropdown split-button type="primary" trigger="click" placement="bottom-end" @click="sendRequest()">
+        <SvgIcon icon-name="pymeter-send" style="margin-right: 5px; font-size: 18px" />
+        <span>运 行</span>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item @click="runTestCase()">
+              <SvgIcon icon-name="pymeter-send" style="margin-right: 5px; font-size: 18px" />
+              <span>运行用例</span>
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
+    </div>
   </div>
 </template>
 
@@ -127,7 +134,7 @@ import { debounce, isEmpty } from 'lodash-es'
 const emit = defineEmits(EditorEmits)
 const props = defineProps(EditorProps)
 const workspaceStore = useWorkspaceStore()
-const { runSampler, runOffline } = useRunnableElement()
+const { runSampler, runOffline, runWorkerBySampler } = useRunnableElement()
 const { assignElement, assignMetadata } = useElement()
 const { unsaved, metadata, creation, localkey, shortcutKeyName, updateTabName, expandParentNode, refreshElementTree } =
   useEditor()
@@ -230,11 +237,26 @@ const queryBackendData = async () => {
 /**
  * 运行元素
  */
-const run = () => {
+const sendRequest = () => {
+  if (isEmpty(elementData.value.elementProps.SQLSampler__statement)) {
+    ElMessage({ message: '运行无效，SQL语句为空', type: 'error', duration: 2 * 1000 })
+    return
+  }
+  if (creation.value) {
+    runOffline(metadata.value.rootNo, metadata.value.parentNo, props.editorNo, { aloneness: true })
+  } else {
+    runSampler(metadata.value.rootNo, elementData.value.elementNo)
+  }
+}
+
+/**
+ * 运行用例
+ */
+const runTestCase = () => {
   if (creation.value) {
     runOffline(metadata.value.rootNo, metadata.value.parentNo, props.editorNo)
   } else {
-    runSampler(metadata.value.rootNo, elementData.value.elementNo)
+    runWorkerBySampler(metadata.value.rootNo, elementData.value.elementNo)
   }
 }
 
@@ -323,5 +345,9 @@ defineExpose({
 
 :deep(.el-badge__content.is-fixed.is-dot) {
   right: -4px;
+}
+
+:deep(.el-button-group) {
+  display: flex;
 }
 </style>

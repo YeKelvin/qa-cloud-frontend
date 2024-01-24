@@ -19,7 +19,7 @@
       </el-form-item>
 
       <!-- 片段列表 -->
-      <el-form-item label="片段引用：" prop="elementAttrs.SnippetSampler__snippet_no" class="snippets-item">
+      <el-form-item label="片段：" prop="elementAttrs.SnippetSampler__snippet_no" class="snippets-item">
         <el-select v-model="snippetNo" placeholder="脚本片段" style="width: 100%">
           <el-option
             v-for="snippet in snippetList"
@@ -28,16 +28,32 @@
             :value="snippet.elementNo"
           />
         </el-select>
-        <el-button
-          v-show="!isEmpty(snippetNo)"
-          type="primary"
-          style="margin-left: 10px"
-          plain
-          :icon="View"
-          @click="openTestSnippet()"
-        >
-          查 看
-        </el-button>
+        <!-- 运行按钮 -->
+        <template v-if="!isEmpty(snippetNo)">
+          <el-dropdown
+            split-button
+            type="primary"
+            trigger="click"
+            placement="bottom-end"
+            style="margin-left: 10px"
+            @click="sendRequest()"
+          >
+            <SvgIcon icon-name="pymeter-send" style="margin-right: 5px; font-size: 18px" />
+            <span>运 行</span>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item @click="runTestCase()">
+                  <SvgIcon icon-name="pymeter-send" style="margin-right: 5px; font-size: 18px" />
+                  <span>运行用例</span>
+                </el-dropdown-item>
+                <el-dropdown-item @click="openTestSnippet()">
+                  <el-icon style="font-size: 18px"><View /></el-icon>
+                  <span>打开片段</span>
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </template>
       </el-form-item>
 
       <!-- 标签栏 -->
@@ -65,13 +81,6 @@
     <!-- 操作按钮 -->
     <el-affix target=".pymeter-component-container" position="bottom" :offset="60">
       <div class="flexbox-center">
-        <template v-if="!creation">
-          <!-- 运行按钮 -->
-          <el-button type="primary" style="margin-left: 20px" @click="run()">
-            <SvgIcon icon-name="pymeter-send" style="margin-right: 5px; font-size: 18px" />
-            运 行
-          </el-button>
-        </template>
         <template v-if="creation || unsaved">
           <el-tooltip effect="light" placement="top" :content="shortcutKeyName">
             <el-button type="danger" @click="save()">
@@ -105,7 +114,7 @@ const emit = defineEmits(EditorEmits)
 const props = defineProps(EditorProps)
 const pymeterStore = usePyMeterStore()
 const workspaceStore = useWorkspaceStore()
-const { runSampler, runOffline } = useRunnableElement()
+const { runSampler, runOffline, runWorkerBySampler } = useRunnableElement()
 const { assignElement, assignMetadata } = useElement()
 const { unsaved, metadata, creation, localkey, shortcutKeyName, updateTabName, expandParentNode, refreshElementTree } =
   useEditor()
@@ -265,11 +274,22 @@ const openTestSnippet = () => {
 /**
  * 运行元素
  */
-const run = () => {
+const sendRequest = () => {
+  if (creation.value) {
+    runOffline(metadata.value.rootNo, metadata.value.parentNo, props.editorNo, { aloneness: true })
+  } else {
+    runSampler(metadata.value.rootNo, elementData.value.elementNo)
+  }
+}
+
+/**
+ * 运行用例
+ */
+const runTestCase = () => {
   if (creation.value) {
     runOffline(metadata.value.rootNo, metadata.value.parentNo, props.editorNo)
   } else {
-    runSampler(metadata.value.rootNo, elementData.value.elementNo)
+    runWorkerBySampler(metadata.value.rootNo, elementData.value.elementNo)
   }
 }
 
@@ -374,5 +394,9 @@ defineExpose({
 
 :deep(.el-badge__content.is-fixed.is-dot) {
   right: -4px;
+}
+
+:deep(.el-button-group) {
+  display: flex;
 }
 </style>

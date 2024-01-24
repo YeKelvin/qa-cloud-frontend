@@ -4,6 +4,8 @@ export const runCollection = (data) => request.post('/script/element/collection/
 
 export const runWorker = (data) => request.post('/script/element/worker/run', data)
 
+export const runWorkerBySampler = (data) => request.post('/script/element/worker/run-by-sampler', data)
+
 export const runSampler = (data) => request.post('/script/element/sampler/run', data)
 
 export const runSnippet = (data) => request.post('/script/element/snippet/run', data)

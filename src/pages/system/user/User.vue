@@ -6,7 +6,7 @@
         <ConditionInput v-model="queryConditions.userNo" label="用户编号" />
         <ConditionInput v-model="queryConditions.userName" label="用户名称" />
         <ConditionInput v-model="queryConditions.loginName" label="登录账号" />
-        <ConditionInput v-model="queryConditions.mobile" label="手机号" />
+        <ConditionInput v-model="queryConditions.mobile" label="手机号码" />
         <ConditionInput v-model="queryConditions.email" label="邮箱地址" />
         <ConditionSelect v-model="queryConditions.state" :options="UserState" label="用户状态" />
       </div>
@@ -29,9 +29,9 @@
         <el-table-column prop="userNo" label="用户编号" min-width="180" width="180" />
         <el-table-column prop="userName" label="用户名称" min-width="150" />
         <el-table-column prop="loginName" label="登录账号" min-width="150" />
-        <el-table-column prop="mobile" label="手机号" min-width="150" />
-        <el-table-column prop="email" label="邮箱" min-width="150" />
-        <el-table-column prop="roles" label="角色" min-width="150">
+        <el-table-column prop="mobile" label="手机号码" min-width="150" />
+        <el-table-column prop="email" label="邮箱地址" min-width="150" />
+        <el-table-column prop="roles" label="用户角色" min-width="150">
           <template #default="{ row }">
             <div class="tags-wrapper">
               <el-tag v-for="role in row.roles" :key="role.roleNo" type="danger" disable-transitions>

@@ -17,10 +17,10 @@
       <el-form-item label="登录密码：" prop="password">
         <el-input v-model="formData.password" clearable />
       </el-form-item>
-      <el-form-item label="手机号：" prop="mobile">
+      <el-form-item label="手机号码：" prop="mobile">
         <el-input v-model="formData.mobile" clearable />
       </el-form-item>
-      <el-form-item label="邮箱：" prop="email">
+      <el-form-item label="邮箱地址：" prop="email">
         <el-input v-model="formData.email" clearable />
       </el-form-item>
       <el-form-item label="用户角色：" prop="roles">

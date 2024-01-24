@@ -11,10 +11,18 @@
     <div class="right-container">
       <!-- 运行按钮 -->
       <div v-if="runnable" style="padding-left: 10px; margin-bottom: 10px">
-        <el-button type="primary" style="width: 100%" @click="emit('run')">
-          <SvgIcon icon-name="pymeter-send" style="margin-right: 5px" />
-          运 行
-        </el-button>
+        <el-dropdown split-button type="primary" trigger="click" placement="bottom-end" @click="emit('run')">
+          <SvgIcon icon-name="pymeter-send" style="margin-right: 5px; font-size: 18px" />
+          <span>运 行</span>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item @click="emit('runcase')">
+                <SvgIcon icon-name="pymeter-send" style="margin-right: 5px; font-size: 18px" />
+                <span>运行用例</span>
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
       </div>
       <!-- 片段列表 -->
       <span class="snippet-title">代码片段</span>
@@ -47,7 +55,7 @@
 <script setup>
 import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
 
-const emit = defineEmits(['update:modelValue', 'run'])
+const emit = defineEmits(['update:modelValue', 'run', 'runcase'])
 const attrs = useAttrs()
 const props = defineProps({
   readonly: { type: Boolean, default: false },

@@ -22,17 +22,30 @@
       <el-form-item id="url" label="地址：" prop="elementProps.HTTPSampler__url">
         <span style="display: flex; flex: 1">
           <!-- 请求方法 -->
-          <el-input v-model="elementData.elementProps.HTTPSampler__url" placeholder="请求地址" clearable>
+          <el-input
+            v-model="elementData.elementProps.HTTPSampler__url"
+            placeholder="请求地址"
+            style="margin-right: 10px"
+            clearable
+          >
             <template #prepend>
               <!-- 请求方法 -->
               <HTTPMethodSelect v-model="elementData.elementProps.HTTPSampler__method" />
             </template>
           </el-input>
           <!-- 运行按钮 -->
-          <el-button type="primary" style="margin-left: 10px" @click="run()">
+          <el-dropdown split-button type="primary" trigger="click" placement="bottom-end" @click="sendRequest()">
             <SvgIcon icon-name="pymeter-send" style="margin-right: 5px; font-size: 18px" />
-            运 行
-          </el-button>
+            <span>运 行</span>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item @click="runTestCase()">
+                  <SvgIcon icon-name="pymeter-send" style="margin-right: 5px; font-size: 18px" />
+                  <span>运行用例</span>
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
         </span>
       </el-form-item>
 
@@ -291,7 +304,7 @@ import useHTTP from './useHTTP'
 
 const emit = defineEmits(EditorEmits)
 const props = defineProps(EditorProps)
-const { runSampler, runOffline } = useRunnableElement()
+const { runSampler, runOffline, runWorkerBySampler } = useRunnableElement()
 const { assignElement, assignMetadata, assignComponent } = useElement()
 const { unsaved, metadata, creation, localkey, shortcutKeyName, updateTabName, expandParentNode, refreshElementTree } =
   useEditor()
@@ -443,6 +456,7 @@ onMounted(async () => {
 const queryOfflineData = async () => {
   const offline = await offlineDB.getItem(localkey.value)
   assignElement(elementData.value, offline.data)
+  setBodyData()
   assignMetadata(metadata.value, offline.meta)
 }
 
@@ -466,6 +480,7 @@ const queryBackendData = async () => {
     desc: ''
   })
   assignElement(elementData.value, backendData)
+  // 初始化主体数据
   setBodyData()
   // 查询元素组件
   response = await ElementService.queryElementComponents({ elementNo: elementData.value.elementNo })
@@ -549,11 +564,26 @@ const cleanInvalidData = () => {
 /**
  * 运行元素
  */
-const run = () => {
+const sendRequest = () => {
+  if (isEmpty(elementData.value.elementProps.HTTPSampler__url)) {
+    ElMessage({ message: '运行无效，请求地址为空', type: 'error', duration: 2 * 1000 })
+    return
+  }
+  if (creation.value) {
+    runOffline(metadata.value.rootNo, metadata.value.parentNo, props.editorNo, { aloneness: true })
+  } else {
+    runSampler(metadata.value.rootNo, elementData.value.elementNo)
+  }
+}
+
+/**
+ * 运行用例
+ */
+const runTestCase = () => {
   if (creation.value) {
     runOffline(metadata.value.rootNo, metadata.value.parentNo, props.editorNo)
   } else {
-    runSampler(metadata.value.rootNo, elementData.value.elementNo)
+    runWorkerBySampler(metadata.value.rootNo, elementData.value.elementNo)
   }
 }
 
@@ -646,7 +676,7 @@ defineExpose({
 }
 
 .raw-type {
-  width: 90px;
+  width: 80px;
   margin-left: 40px;
 
   &.el-select {
@@ -659,13 +689,8 @@ defineExpose({
     }
   }
 
-  :deep(.el-input__inner) {
+  :deep(.el-select__selected-item) {
     color: #409eff;
-    background-color: #fff;
-    box-shadow: none;
-  }
-
-  :deep(.el-input__wrapper) {
     background-color: #fff;
     box-shadow: none;
   }
@@ -685,6 +710,10 @@ defineExpose({
 
 :deep(.el-badge__content.is-fixed.is-dot) {
   right: -4px;
+}
+
+:deep(.el-button-group) {
+  display: flex;
 }
 </style>
 ./useHTTP

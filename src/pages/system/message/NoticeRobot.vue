@@ -7,7 +7,7 @@
         <ConditionInput v-model="queryConditions.robotName" label="机器人名称" />
         <ConditionInput v-model="queryConditions.robotDesc" label="机器人描述" />
         <ConditionSelect v-model="queryConditions.robotType" :options="RobotType" label="机器人类型" />
-        <ConditionSelect v-model="queryConditions.state" :options="RobotState" label="状态" />
+        <ConditionSelect v-model="queryConditions.state" :options="RobotState" label="机器人状态" />
       </div>
       <div style="display: flex; justify-content: space-between">
         <div />

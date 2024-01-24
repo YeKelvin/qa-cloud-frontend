@@ -38,7 +38,8 @@
         phase="SAMPLER"
         height="400px"
         runnable
-        @run="run()"
+        @run="sendRequest()"
+        @runcase="runTestCase()"
       />
     </el-form>
 
@@ -61,11 +62,11 @@ import useRunnableElement from '@/pymeter/composables/useRunnableElement'
 import { usePyMeterDB } from '@/store/pymeter-db'
 import { toHashCode } from '@/utils/object-util'
 import { ElMessage } from 'element-plus'
-import { debounce } from 'lodash-es'
+import { debounce, isEmpty } from 'lodash-es'
 
 const emit = defineEmits(EditorEmits)
 const props = defineProps(EditorProps)
-const { runSampler, runOffline } = useRunnableElement()
+const { runSampler, runOffline, runWorkerBySampler } = useRunnableElement()
 const { assignElement, assignMetadata } = useElement()
 const { unsaved, metadata, creation, localkey, shortcutKeyName, updateTabName, expandParentNode, refreshElementTree } =
   useEditor()
@@ -144,11 +145,26 @@ const queryBackendData = async () => {
 /**
  * 运行元素
  */
-const run = () => {
+const sendRequest = () => {
+  if (isEmpty(elementData.value.elementProps.PythonSampler__script)) {
+    ElMessage({ message: '运行无效，脚本内容为空', type: 'error', duration: 2 * 1000 })
+    return
+  }
+  if (creation.value) {
+    runOffline(metadata.value.rootNo, metadata.value.parentNo, props.editorNo, { aloneness: true })
+  } else {
+    runSampler(metadata.value.rootNo, elementData.value.elementNo)
+  }
+}
+
+/**
+ * 运行用例
+ */
+const runTestCase = () => {
   if (creation.value) {
     runOffline(metadata.value.rootNo, metadata.value.parentNo, props.editorNo)
   } else {
-    runSampler(metadata.value.rootNo, elementData.value.elementNo)
+    runWorkerBySampler(metadata.value.rootNo, elementData.value.elementNo)
   }
 }
 

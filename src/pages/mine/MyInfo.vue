@@ -13,7 +13,7 @@
     <el-form-item label="用户名称：" prop="userName">
       <el-input v-model="formData.userName" clearable :disabled="userStore.sso" />
     </el-form-item>
-    <el-form-item label="手机号：" prop="mobile">
+    <el-form-item label="手机号码：" prop="mobile">
       <el-input v-model="formData.mobile" clearable :disabled="userStore.sso" />
     </el-form-item>
     <el-form-item label="邮箱地址：" prop="email">

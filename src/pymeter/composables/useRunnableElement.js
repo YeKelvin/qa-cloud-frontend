@@ -122,6 +122,37 @@ export default function useRunnableElement() {
   }
 
   /**
+   * 根据请求编号运行用例
+   */
+  const runWorkerBySampler = async (rootNo, elementNo) => {
+    try {
+      if (isEmpty(rootNo)) {
+        ElMessage({ message: '根元素编号不能为空', type: 'error', duration: 2 * 1000 })
+        return
+      }
+      // 没有选择变量集时给出提示
+      await confirmWithoutDataset()
+      // 连接 socket
+      socketio.connect()
+      // 等待获取 sid，后再执行脚本
+      const sid = await socketio.getId()
+      // 后端异步执行脚本
+      await ExecutionService.runWorkerBySampler({
+        socketId: sid,
+        samplerNo: elementNo,
+        offlines: await getOfflineData(rootNo),
+        datasets: pymeterStore.selectedDatasets,
+        useCurrentValue: pymeterStore.useCurrentValue
+      })
+      // 打开结果面板
+      pymeterStore.openResultDrawer()
+    } catch {
+      // 异常时断开 socket 连接
+      socketio.disconnect()
+    }
+  }
+
+  /**
    * 运行请求
    */
   const runSampler = async (rootNo, elementNo) => {
@@ -155,7 +186,7 @@ export default function useRunnableElement() {
   /**
    * 运行离线请求
    */
-  const runOffline = async (rootNo, parentNo, offlineNo) => {
+  const runOffline = async (rootNo, parentNo, offlineNo, opts = { aloneness: false }) => {
     if (isEmpty(rootNo)) {
       ElMessage({ message: '根元素编号不能为空', type: 'error', duration: 2 * 1000 })
       return
@@ -171,6 +202,7 @@ export default function useRunnableElement() {
       await ExecutionService.runOffline({
         rootNo: rootNo,
         parentNo: parentNo,
+        aloneness: opts.aloneness,
         offlineNo: offlineNo,
         offlines: await getOfflineData(rootNo),
         socketId: sid,
@@ -189,6 +221,7 @@ export default function useRunnableElement() {
     runTestCollection,
     runTestSnippet,
     runWorker,
+    runWorkerBySampler,
     runSampler,
     runOffline
   }
