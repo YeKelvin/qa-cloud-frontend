@@ -9,6 +9,7 @@
     clearable
     collapse-tags
     collapse-tags-tooltip
+    :max-collapse-tags="2"
   >
     <!-- 自定义变量 -->
     <el-option-group v-if="!isEmpty(filteredCustomDatasetList)" key="custom" label="自定义">
