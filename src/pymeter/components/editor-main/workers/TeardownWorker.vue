@@ -128,7 +128,7 @@ const { unsaved, metadata, creation, localkey, shortcutKeyName, updateTabName, e
   useEditor()
 const offlineDB = usePyMeterDB().offlineDB
 const elementData = ref({
-  elementNo: '',
+  elementNo: props.metadata.sn,
   elementName: '后置用例',
   elementDesc: '',
   elementType: 'WORKER',
