@@ -136,7 +136,7 @@ const duplicateTemplate = async () => {
     title: '警告',
     message: (
       <span style="white-space:normal; overflow:hidden; text-overflow:ellipsis;">
-        确认复制 {data.templateName} 吗？
+        是否确定复制 <b style="font-size: 16px">{data.templateName}</b> ？
       </span>
     )
   })

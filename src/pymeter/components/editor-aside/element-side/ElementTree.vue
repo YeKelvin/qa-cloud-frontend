@@ -405,7 +405,7 @@ const debouncedDuplicateElement = debounce(
         title: '警告',
         message: (
           <span style="white-space:normal; overflow:hidden; text-overflow:ellipsis;">
-            确认复制 {target.elementName} 吗？
+            是否确定复制 <b style="font-size: 16px">{target.elementName}</b> ？
           </span>
         )
       })

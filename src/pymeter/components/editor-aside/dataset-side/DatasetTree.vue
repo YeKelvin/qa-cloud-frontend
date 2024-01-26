@@ -206,7 +206,7 @@ const duplicateDataset = async () => {
     title: '警告',
     message: (
       <span style="white-space:normal; overflow:hidden; text-overflow:ellipsis;">
-        是否确定复制 {data.datasetName} ？
+        是否确定复制 <b style="font-size: 16px">{data.datasetName}</b> ？
       </span>
     )
   })
