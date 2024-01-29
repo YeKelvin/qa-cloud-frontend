@@ -19,13 +19,13 @@
       </el-descriptions-item>
     </el-descriptions>
 
-    <div style="display: flex; align-content: center; justify-content: space-between">
-      <el-table :data="totalData" highlight-current-row style="width: 50%; height: 400px">
+    <div style="display: flex; align-items: center; padding: 0 10px">
+      <el-table :data="totalData" highlight-current-row style="width: 45%">
         <el-table-column prop="totalType" label="统计" />
         <el-table-column prop="samplerTotal" label="请求" />
       </el-table>
 
-      <div ref="pieChartRef" style="width: 50%; height: 400px" />
+      <div ref="pieChartRef" style="width: 55%; height: 400px" />
     </div>
   </div>
 </template>
@@ -54,7 +54,7 @@ const pieChartOption = reactive({
   },
   legend: {
     orient: 'vertical',
-    left: 'left',
+    left: 'right',
     top: '60',
     data: ['成功', '失败']
   },

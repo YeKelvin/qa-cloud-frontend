@@ -130,6 +130,11 @@ onMounted(() => {
   pieChart.value.setOption(pieChartOption, true)
   // 添加窗口尺寸变更事件
   window.addEventListener('resize', pieChart.value.resize)
+  // 设置饼图数据
+  setPieChartData([
+    { value: props.overview.successfulCollectionTotal, name: '成功', itemStyle: { color: '#44B197' } },
+    { value: props.overview.failedCollectionTotal, name: '失败', itemStyle: { color: '#FF7676' } }
+  ])
 })
 
 onUnmounted(() => {
@@ -163,10 +168,11 @@ const successRate = (successfulTotal, failedTotal) => {
 
 .el-descriptions {
   :deep(.el-descriptions__label) {
-    color: #606266;
-    font-weight: bold;
     margin-right: 0;
+    font-weight: bold;
+    color: #606266;
   }
+
   :deep(.el-descriptions-item__container) {
     display: inline-flex;
     align-items: center;
