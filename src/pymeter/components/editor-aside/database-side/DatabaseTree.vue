@@ -198,7 +198,7 @@ const deleteDatabaseEngine = async () => {
     title: '警告',
     message: (
       <span style="white-space:normal; overflow:hidden; text-overflow:ellipsis;">
-        确认删除 {data.databaseName} 吗？
+        是否确定删除 <b style="font-size: 16px">{data.databaseName}</b> ？
       </span>
     )
   })

@@ -51,8 +51,8 @@
         </template>
         <el-button link @click="openNewHttpSamplerTab">HTTP请求</el-button>
         <el-button link @click="openNewPythonSamplerTab">Python请求</el-button>
-        <el-button link @click="openNewSQLSamplerTab">数据库请求</el-button>
         <el-button link @click="openNewSnippetSamplerTab">片段请求</el-button>
+        <el-button link @click="openNewSQLSamplerTab">数据库请求</el-button>
       </el-popover>
 
       <!-- controllers -->
@@ -77,7 +77,7 @@
         <el-button link @click="openNewWhileControllerTab">While循环</el-button>
         <el-button link @click="openNewForeachControllerTab">Foreach循环</el-button>
         <el-button link @click="openNewRetryControllerTab">重试循环</el-button>
-        <el-button link @click="openNewTransactionControllerTab">事务</el-button>
+        <el-button link @click="openNewTransactionControllerTab">事务控制</el-button>
       </el-popover>
 
       <template v-if="item?.elementType == 'COLLECTION'">
@@ -583,7 +583,9 @@ const removeElement = async () => {
     cancelButtonText: '取消',
     title: '警告',
     message: (
-      <span style="white-space:normal; overflow:hidden; text-overflow:ellipsis;">确认删除 {data.elementName} 吗？</span>
+      <span style="white-space:normal; overflow:hidden; text-overflow:ellipsis;">
+        是否确定删除 <b style="font-size: 16px">{data.elementName}</b> ？
+      </span>
     )
   })
     .then(() => false)

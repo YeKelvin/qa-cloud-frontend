@@ -140,7 +140,7 @@ const modifyAppState = async (row, state) => {
  */
 const resetSecret = async (row) => {
   // 二次确认
-  const cancelled = await ElMessageBox.confirm(`确认重置吗？`, '警告', {
+  const cancelled = await ElMessageBox.confirm(`是否确定重置？`, '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
@@ -161,7 +161,7 @@ const resetSecret = async (row) => {
  */
 const deleteApp = async (row) => {
   // 二次确认
-  const cancelled = await ElMessageBox.confirm('确定删除吗？', '警告', {
+  const cancelled = await ElMessageBox.confirm('是否确定删除？', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'

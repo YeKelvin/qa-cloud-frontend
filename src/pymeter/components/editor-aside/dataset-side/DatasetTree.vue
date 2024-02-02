@@ -294,7 +294,9 @@ const deleteDataset = async () => {
     cancelButtonText: '取消',
     title: '警告',
     message: (
-      <span style="white-space:normal; overflow:hidden; text-overflow:ellipsis;">确认删除 {data.datasetName} 吗？</span>
+      <span style="white-space:normal; overflow:hidden; text-overflow:ellipsis;">
+        是否确定删除 <b style="font-size: 16px">{data.datasetName}</b> ？
+      </span>
     )
   })
     .then(() => false)

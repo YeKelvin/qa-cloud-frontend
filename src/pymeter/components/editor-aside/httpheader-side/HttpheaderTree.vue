@@ -225,7 +225,7 @@ const deleteTemplate = async () => {
     title: '警告',
     message: (
       <span style="white-space:normal; overflow:hidden; text-overflow:ellipsis;">
-        确认删除 {data.templateName} 吗？
+        是否确定删除 <b style="font-size: 16px">{data.templateName}</b> ？
       </span>
     )
   })

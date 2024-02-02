@@ -151,7 +151,7 @@ const modifyRobotState = async (row, state) => {
  */
 const removeRobot = async (row) => {
   // 二次确认
-  const cancelled = await ElMessageBox.confirm('确定删除吗？', '警告', {
+  const cancelled = await ElMessageBox.confirm('是否确定删除？', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'

@@ -486,7 +486,7 @@ const deleteElement = debounce(
       title: '警告',
       message: (
         <span style="white-space:normal; overflow:hidden; text-overflow:ellipsis;">
-          确认删除 {data.elementName} 吗？
+          是否确定删除 <b style="font-size: 16px">{data.elementName}</b> ？
         </span>
       )
     })
@@ -518,7 +518,7 @@ const deleteElement = debounce(
  */
 const deleteByShortcut = async (e) => {
   if (e.repeat) return
-  if (e.key === 'Delete') {
+  if (isMacOS.value ? e.key === 'Backspace' : e.key === 'Delete') {
     e.preventDefault()
     deleteElement()
   }
