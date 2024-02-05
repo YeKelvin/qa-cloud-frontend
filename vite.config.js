@@ -1,15 +1,16 @@
 import { defineConfig, loadEnv } from 'vite'
+import { vitePluginForArco } from '@arco-plugins/vite-vue'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
-import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import { ElementPlusResolver, ArcoResolver } from 'unplugin-vue-components/resolvers'
 import path from 'path'
 import vue from '@vitejs/plugin-vue'
 import jsx from '@vitejs/plugin-vue-jsx'
+import Icons from 'unplugin-icons/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
-import Icons from 'unplugin-icons/vite'
+import VueDevTools from 'vite-plugin-vue-devtools'
 import IconsResolver from 'unplugin-icons/resolver'
 import DefineOptions from 'unplugin-vue-define-options/vite'
-import VueDevTools from 'vite-plugin-vue-devtools'
 
 export default ({ mode }) =>
   defineConfig({
@@ -23,18 +24,17 @@ export default ({ mode }) =>
       // VueDevTools(),
       vue(),
       jsx(),
-      Icons({
-        autoInstall: true
-      }),
+      vitePluginForArco({ style: 'css' }),
+      Icons({ autoInstall: true }),
       AutoImport({
         imports: ['vue', 'vue-router', 'pinia'],
         resolvers: [
-          // 自动导入 Element Plus 函数 ( ElMessage, ElMessageBox )
-          ElementPlusResolver(),
-          // 自动导入图标组件
-          IconsResolver({
-            prefix: 'Icon'
-          })
+          // 按需加载 Arco
+          ArcoResolver(),
+          // 按需加载 Icons
+          IconsResolver({ prefix: 'Icon' }),
+          // 按需加载 ElementPlus
+          ElementPlusResolver()
         ],
         eslintrc: {
           enabled: true,
@@ -44,12 +44,12 @@ export default ({ mode }) =>
       }),
       Components({
         resolvers: [
-          // 自动注册图标组件
-          IconsResolver({
-            enabledCollections: ['ep']
-          })
-          // 自动导入 Element Plus 组件
-          // ElementPlusResolver()
+          // 按需加载 Arco
+          ArcoResolver({ sideEffect: true }),
+          // 按需加载 Icons
+          IconsResolver({ enabledCollections: ['ep'] }),
+          // 按需加载 ElementPlus
+          ElementPlusResolver()
         ]
       }),
       DefineOptions(),
