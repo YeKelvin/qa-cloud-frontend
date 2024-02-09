@@ -21,7 +21,7 @@
           link
           @click="openTestWorkspace()"
         >
-          <SvgIcon icon-name="navbar-workspace-settings" style="width: 1.5em; height: 1.5em" />
+          <SvgIcon icon-name="navbar-workspace-console" style="font-size: 22px" />
         </el-button>
       </el-tag>
     </div>
@@ -74,6 +74,7 @@ const workspaceStore = useWorkspaceStore()
 const displayWorkspaceWhitelist = [
   '/script/editor',
   '/script/testplan',
+  '/script/workspace/setting',
   '/system/workspace',
   '/system/notice/robot',
   '/schedule/task'

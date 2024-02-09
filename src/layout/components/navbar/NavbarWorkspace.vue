@@ -3,6 +3,7 @@
     <!-- 切换工作空间的按钮 -->
     <template #reference>
       <el-button link>
+        <SvgIcon icon-name="navbar-switch" style="font-size: 16px" />
         <span style="margin-left: 10px">{{ workspaceStore.workspaceName }}</span>
         <el-icon style="margin-left: 5px"><caret-bottom /></el-icon>
       </el-button>
