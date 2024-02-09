@@ -23,6 +23,9 @@ import components from '@/components'
 // 自定义指令
 import directive from '@/directives'
 
+// 国际化
+import 'dayjs/locale/zh-cn'
+
 // 全局样式
 import '@/styles/index.scss'
 
