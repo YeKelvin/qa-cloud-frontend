@@ -42,9 +42,13 @@
             <span>运 行</span>
             <template #dropdown>
               <el-dropdown-menu>
+                <el-dropdown-item @click="runAll()">
+                  <SvgIcon icon-name="pymeter-send" style="margin-right: 5px; font-size: 18px" />
+                  <span>完整运行</span>
+                </el-dropdown-item>
                 <el-dropdown-item @click="runTestCase()">
                   <SvgIcon icon-name="pymeter-send" style="margin-right: 5px; font-size: 18px" />
-                  <span>运行用例</span>
+                  <span>用例运行</span>
                 </el-dropdown-item>
                 <el-dropdown-item @click="openTestSnippet()">
                   <el-icon style="font-size: 18px"><View /></el-icon>
@@ -283,7 +287,18 @@ const sendRequest = () => {
 }
 
 /**
- * 运行用例
+ * 完整运行
+ */
+const runAll = () => {
+  if (creation.value) {
+    runOffline(metadata.value.rootNo, metadata.value.parentNo, props.editorNo, { aloneness: false })
+  } else {
+    runSampler(metadata.value.rootNo, elementData.value.elementNo, { aloneness: false })
+  }
+}
+
+/**
+ * 用例运行
  */
 const runTestCase = () => {
   if (creation.value) {

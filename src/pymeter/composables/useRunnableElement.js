@@ -155,7 +155,7 @@ export default function useRunnableElement() {
   /**
    * 运行请求
    */
-  const runSampler = async (rootNo, elementNo) => {
+  const runSampler = async (rootNo, elementNo, opts = { aloneness: true }) => {
     if (isEmpty(rootNo)) {
       ElMessage({ message: '根元素编号不能为空', type: 'error', duration: 2 * 1000 })
       return
@@ -170,6 +170,7 @@ export default function useRunnableElement() {
       // 后端异步执行脚本
       await ExecutionService.runSampler({
         samplerNo: elementNo,
+        aloneness: opts.aloneness,
         socketId: sid,
         offlines: await getOfflineData(rootNo),
         datasets: pymeterStore.selectedDatasets,

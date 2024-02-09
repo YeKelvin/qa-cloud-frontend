@@ -39,6 +39,7 @@
         height="400px"
         runnable
         @run="sendRequest()"
+        @runall="runAll()"
         @runcase="runTestCase()"
       />
     </el-form>
@@ -158,7 +159,18 @@ const sendRequest = () => {
 }
 
 /**
- * 运行用例
+ * 完整运行
+ */
+const runAll = () => {
+  if (creation.value) {
+    runOffline(metadata.value.rootNo, metadata.value.parentNo, props.editorNo, { aloneness: false })
+  } else {
+    runSampler(metadata.value.rootNo, elementData.value.elementNo, { aloneness: false })
+  }
+}
+
+/**
+ * 用例运行
  */
 const runTestCase = () => {
   if (creation.value) {

@@ -16,9 +16,13 @@
           <span>运 行</span>
           <template #dropdown>
             <el-dropdown-menu>
+              <el-dropdown-item @click="emit('runall')">
+                <SvgIcon icon-name="pymeter-send" style="margin-right: 5px; font-size: 18px" />
+                <span>完整运行</span>
+              </el-dropdown-item>
               <el-dropdown-item @click="emit('runcase')">
                 <SvgIcon icon-name="pymeter-send" style="margin-right: 5px; font-size: 18px" />
-                <span>运行用例</span>
+                <span>用例运行</span>
               </el-dropdown-item>
             </el-dropdown-menu>
           </template>
@@ -55,7 +59,7 @@
 <script setup>
 import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
 
-const emit = defineEmits(['update:modelValue', 'run', 'runcase'])
+const emit = defineEmits(['update:modelValue', 'run', 'runall', 'runcase'])
 const attrs = useAttrs()
 const props = defineProps({
   readonly: { type: Boolean, default: false },
