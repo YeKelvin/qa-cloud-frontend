@@ -62,7 +62,14 @@
                 {{ ElementClass[element.elementClass] }}
               </el-tag>
               <!-- 组件名称 -->
-              <el-input v-model="element.elementName" style="margin-right: 10px" @click.stop @keypress.space.stop />
+              <el-input
+                v-model="element.elementName"
+                style="margin-right: 10px"
+                @click.stop
+                @keydown.space.stop
+                @keyup.space.prevent
+                @keydown.enter.stop.prevent
+              />
               <!-- 组件状态 -->
               <el-switch v-model="element.enabled" style="margin-right: 10px" size="small" @click.stop />
               <!-- 删除按钮 -->
