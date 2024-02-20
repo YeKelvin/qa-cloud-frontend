@@ -1,0 +1,196 @@
+<template>
+  <div>
+    <div class="flexbox-between" style="margin-bottom: 20px">
+      <el-input v-model="filteredText" :prefix-icon="Search" style="width: 300px" placeholder="搜索数据库" clearable />
+      <el-button type="primary" :icon="Plus" @click="createDatabase()">新增</el-button>
+    </div>
+
+    <!-- 表格 -->
+    <el-table :data="filteredData" style="width: 100%; height: 100%" fit border stripe highlight-current-row>
+      <!-- 空数据提示 -->
+      <template #empty><a-empty /></template>
+      <!-- 列定义 -->
+      <el-table-column prop="databaseName" label="数据库名称" />
+      <el-table-column prop="databaseType" label="数据库类型" />
+      <el-table-column prop="createdTime" label="创建时间" />
+      <el-table-column prop="updatedTime" label="更新时间" />
+      <el-table-column fixed="right" label="操作" width="260" min-width="260">
+        <template #default="{ row }">
+          <el-button type="primary" link @click="modifyDatabase(row)">编辑</el-button>
+          <el-button type="primary" link @click="duplicateDatabase(row)">复制</el-button>
+          <el-button type="primary" link @click="cloneDatabase(row)">克隆</el-button>
+          <el-button type="primary" link @click="moveDatabase(row)">移动</el-button>
+          <el-button type="primary" link @click="removeDatabase(row)">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
+</template>
+
+<script lang="jsx" setup>
+import * as ElementService from '@/api/script/element'
+import WorkspaceTree from '@/pymeter/components/editor-aside/common/WorkspaceTree.vue'
+import { usePyMeterStore } from '@/store/pymeter'
+import { useWorkspaceStore } from '@/store/workspace'
+import { Plus, Search } from '@element-plus/icons-vue'
+import { isEmpty } from 'lodash-es'
+
+const router = useRouter()
+const pymeterStore = usePyMeterStore()
+const workspaceStore = useWorkspaceStore()
+const tableData = computed(() => pymeterStore.databaseEngineList)
+const filteredText = ref('')
+const filteredData = computed(() => {
+  const filterKey = filteredText.value
+  if (isEmpty(filterKey)) return tableData.value
+  return tableData.value.filter((item) => item.databaseName && item.databaseName.indexOf(filterKey.trim()) !== -1)
+})
+
+onMounted(() => {
+  query()
+})
+
+watch(
+  () => workspaceStore.workspaceNo,
+  () => query()
+)
+
+/**
+ * 查询数据库连接列表
+ */
+const query = () => {
+  pymeterStore.queryDatabaseEngineAll()
+}
+
+/**
+ * 新增数据库连接
+ */
+const createDatabase = () => {
+  router.replace({ query: { item: 'DatabaseConnection' } })
+}
+
+/**
+ * 编辑数据库连接
+ */
+const modifyDatabase = ({ databaseNo }) => {
+  router.replace({ query: { item: 'DatabaseConnection', databaseNo: databaseNo } })
+}
+
+/**
+ * 复制数据库连接
+ */
+const duplicateDatabase = async ({ databaseNo, databaseName }) => {
+  // 二次确认
+  const cancelled = await ElMessageBox.confirm(null, {
+    type: 'warning',
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    title: '警告',
+    message: (
+      <span style="white-space:normal; overflow:hidden; text-overflow:ellipsis;">
+        是否确定复制 <b style="font-size: 16px">{databaseName}</b> ？
+      </span>
+    )
+  })
+    .then(() => false)
+    .catch(() => true)
+  if (cancelled) return
+  // 复制数据库连接
+  await ElementService.duplicateElement({ elementNo: databaseNo })
+  //  重新查询列表
+  query()
+  // 成功提示
+  ElMessage({ message: '复制成功', type: 'info', duration: 2 * 1000 })
+}
+
+/**
+ * 复制数据库连接到指定空间
+ */
+const cloneDatabase = async ({ databaseNo }) => {
+  let workspaceNo = null
+  // 弹出选择空间的对话框
+  const cancelled = await ElMessageBox.confirm(null, {
+    title: '请选择工作空间',
+    message: (
+      <WorkspaceTree
+        key={databaseNo}
+        data={workspaceStore.workspaceList.filter((item) => item.workspaceNo !== workspaceStore.workspaceNo)}
+        onNodeClick={(data) => (workspaceNo = data.workspaceNo)}
+      />
+    ),
+    confirmButtonText: '确定',
+    cancelButtonText: '取消'
+  })
+    .then(() => false)
+    .catch(() => true)
+  if (cancelled) return
+  // 复制数据库连接到指定空间
+  await ElementService.copyElementToWorkspace({
+    workspaceNo: workspaceNo,
+    elementNo: databaseNo
+  })
+  //  成功提示
+  ElMessage({ message: '复制成功', type: 'info', duration: 1 * 1000 })
+}
+
+/**
+ * 移动数据库连接到指定空间
+ */
+const moveDatabase = async ({ databaseNo }) => {
+  let workspaceNo = null
+  // 弹出选择空间的对话框
+  const cancelled = await ElMessageBox.confirm(null, {
+    title: '请选择工作空间',
+    message: (
+      <WorkspaceTree
+        key={databaseNo}
+        data={workspaceStore.workspaceList.filter((item) => item.workspaceNo !== workspaceStore.workspaceNo)}
+        onNodeClick={(data) => (workspaceNo = data.workspaceNo)}
+      />
+    ),
+    confirmButtonText: '确定',
+    cancelButtonText: '取消'
+  })
+    .then(() => false)
+    .catch(() => true)
+  if (cancelled) return
+  // 移动数据库连接到指定空间
+  await ElementService.moveElementToWorkspace({
+    workspaceNo: workspaceNo,
+    elementNo: databaseNo
+  })
+  // 重新查询列表
+  query()
+  // 成功提示
+  ElMessage({ message: '移动成功', type: 'info', duration: 1 * 1000 })
+}
+
+/**
+ * 删除数据库连接
+ */
+const removeDatabase = async ({ databaseNo, databaseName }) => {
+  // 二次确认
+  const cancelled = await ElMessageBox.confirm(null, {
+    type: 'warning',
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    title: '警告',
+    message: (
+      <span style="white-space:normal; overflow:hidden; text-overflow:ellipsis;">
+        是否确定删除 <b style="font-size: 16px">{databaseName}</b> ？
+      </span>
+    )
+  })
+    .then(() => false)
+    .catch(() => true)
+  if (cancelled) return
+  // 删除数据库连接
+  await ElementService.removeElement({ elementNo: databaseNo })
+  // 重新查询列表
+  query()
+  // 成功提示
+  ElMessage({ message: '删除成功', type: 'info', duration: 1 * 1000 })
+}
+</script>
+
+<style lang="scss" scoped></style>

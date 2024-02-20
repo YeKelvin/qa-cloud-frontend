@@ -82,8 +82,8 @@ export const constantRoutes = [
       {
         component: () => import('@/pages/script/testplan/Testplan.vue'),
         path: 'testplan',
-        name: 'TestplanManager',
-        meta: { title: '计划管理', icon: 'sidebar-testplan' }
+        name: 'Testplan',
+        meta: { title: '测试计划', icon: 'sidebar-testplan' }
       },
       {
         component: () => import('@/pages/script/testplan/TestplanEditor.vue'),
@@ -96,7 +96,7 @@ export const constantRoutes = [
         component: () => import('@/pages/script/testplan/TestplanExecutionDetails.vue'),
         path: 'testplan/execution/details',
         name: 'ExecutionDetails',
-        meta: { title: '计划详情', activeMenu: '/script/testplan' },
+        meta: { title: '执行详情', activeMenu: '/script/testplan' },
         hidden: true
       },
       {
@@ -105,6 +105,12 @@ export const constantRoutes = [
         name: 'TestReport',
         meta: { title: '测试报告', activeMenu: '/script/testplan' },
         hidden: true
+      },
+      {
+        component: () => import('@/pages/script/workspace/WorkspaceSettings.vue'),
+        path: 'workspace/setting',
+        name: 'WorkspaceSettings',
+        meta: { title: '空间设置', icon: 'sidebar-config' }
       }
     ]
   },

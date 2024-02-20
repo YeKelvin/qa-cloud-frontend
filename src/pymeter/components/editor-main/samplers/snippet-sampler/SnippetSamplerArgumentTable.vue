@@ -14,7 +14,7 @@
       <template #header>
         <span style="display: flex; align-items: center; justify-content: space-between">
           <span>参数值</span>
-          <span style="font-size: 12px">
+          <span style="display: flex; font-size: 12px">
             <span>默认值</span>
             <el-switch v-model="useDefault" size="small" inline-prompt :active-icon="Check" :inactive-icon="Close" />
           </span>

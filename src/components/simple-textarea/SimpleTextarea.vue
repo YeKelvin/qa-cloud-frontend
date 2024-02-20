@@ -1,5 +1,11 @@
 <template>
-  <textarea ref="textareaRef" class="autosize-textarea" :value="attrs.modelValue" @input="handleInput" />
+  <textarea
+    ref="textareaRef"
+    class="autosize-textarea"
+    placeholder=" "
+    :value="attrs.modelValue"
+    @input="handleInput"
+  />
 </template>
 
 <script setup>
@@ -43,31 +49,38 @@ const resizeTextarea = () => {
   font-family: inherit;
   font-size: inherit;
   line-height: 32px;
-  color: #606266;
+  color: var(--el-text-color-primary);
   letter-spacing: 0.6px;
   vertical-align: middle;
   resize: None;
-  background-color: #fff;
+  background-color: inherit;
   background-image: none;
-  border: 0;
-  border-bottom: 1px solid #dcdfe6;
+  border: None;
+  border-color: var(--el-border-color);
   border-radius: 4px;
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
-  outline: 0;
+  outline: None;
   transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
 
   &::placeholder {
-    color: #a8abb2;
+    color: var(--el-text-color-placeholder);
   }
 
   &:hover {
-    border-color: #a8abb2;
+    border-bottom: 1px solid var(--el-border-color);
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  &:placeholder-shown {
+    border-bottom: 1px solid var(--el-border-color);
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
   }
 
   &:focus {
-    border-color: #409eff;
-    outline: none;
+    border-color: var(--el-color-primary);
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
   }
 }
 </style>
