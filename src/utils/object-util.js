@@ -3,6 +3,7 @@
  */
 export const toHashCode = (obj) => {
   const jsonString = JSON.stringify(obj)
+  if (!jsonString) return
   let hash = 0
   for (let i = 0; i < jsonString.length; i++) {
     const char = jsonString.charCodeAt(i)

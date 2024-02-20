@@ -146,6 +146,7 @@ onBeforeUnmount(() => {
 }
 
 :deep(.el-badge__content) {
+  top: 0;
   display: flex;
 }
 </style>

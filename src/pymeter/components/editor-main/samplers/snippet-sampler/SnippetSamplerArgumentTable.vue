@@ -41,7 +41,6 @@ import { Check, Close } from '@element-plus/icons-vue'
 
 const emit = defineEmits(['update:useDefault'])
 const props = defineProps({
-  editMode: { type: String, default: 'QUERY' },
   useDefault: Boolean
 })
 const useDefault = computed({

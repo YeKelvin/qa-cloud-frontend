@@ -20,7 +20,7 @@
 
       <!-- 片段列表 -->
       <el-form-item label="片段：" prop="elementAttrs.SnippetSampler__snippet_no" class="snippets-item">
-        <el-select v-model="snippetNo" placeholder="脚本片段" style="width: 100%">
+        <el-select v-model="snippetNo" placeholder="脚本片段" style="width: 100%" @change="querySnippetInfo()">
           <el-option
             v-for="snippet in snippetList"
             :key="snippet.elementNo"
@@ -154,16 +154,6 @@ const activeTabName = ref('PARAMS')
 const showParams = computed(() => activeTabName.value === 'PARAMS')
 
 watch(
-  () => elementData.value.elementAttrs.SnippetSampler__snippet_no,
-  (val) => {
-    // 查询选中的片段信息
-    if (!val) return
-    argumentData.value = []
-    querySnippetInfo(val)
-  }
-)
-
-watch(
   elementData,
   debounce((localdata) => {
     // 如果前后端数据一致则代表数据未更改
@@ -214,6 +204,7 @@ const queryOfflineData = async () => {
 const queryBackendData = async () => {
   const response = await ElementService.queryElementInfo({ elementNo: elementData.value.elementNo })
   assignElement(elementData.value, response.result)
+  await querySnippetInfo()
   assignMetadata(metadata.value, { hashcode: toHashCode(elementData.value) })
 }
 
@@ -232,10 +223,14 @@ const queryTestSnippetAll = async () => {
 /**
  * 根据元素编号查询片段详情
  */
-const querySnippetInfo = async (snippetNo) => {
+const querySnippetInfo = async () => {
+  const snippetNo = elementData.value.elementAttrs.SnippetSampler__snippet_no
+  if (!snippetNo) return
+  argumentData.value = []
   const response = await ElementService.queryElementInfo({ elementNo: snippetNo })
+  const parameters = response.result.elementAttrs.TestSnippet__parameters
   if (creation.value) {
-    response.result.elementAttrs.TestSnippet__parameters.forEach((item) => {
+    parameters.forEach((item) => {
       argumentData.value.push({
         name: item.name,
         value: item.default,
@@ -245,7 +240,7 @@ const querySnippetInfo = async (snippetNo) => {
     })
   } else {
     const argumentList = elementData.value.elementAttrs.SnippetSampler__arguments
-    response.result.elementAttrs.TestSnippet__parameters.forEach((item) => {
+    parameters.forEach((item) => {
       const arg = argumentList.find((i) => i.name === item.name)
       argumentData.value.push({
         name: item.name,

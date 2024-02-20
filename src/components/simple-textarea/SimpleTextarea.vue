@@ -44,12 +44,12 @@ const resizeTextarea = () => {
   display: table-cell;
   width: 100%;
   height: 32px;
-  padding: 0 10px;
+  padding: 0;
   overflow: hidden;
   font-family: inherit;
   font-size: inherit;
   line-height: 32px;
-  color: var(--el-text-color-primary);
+  color: var(--el-text-color-regular);
   letter-spacing: 0.6px;
   vertical-align: middle;
   resize: None;
@@ -57,7 +57,8 @@ const resizeTextarea = () => {
   background-image: none;
   border: None;
   border-color: var(--el-border-color);
-  border-radius: 4px;
+
+  /* border-radius: 4px; */
   outline: None;
   transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
 
@@ -67,20 +68,26 @@ const resizeTextarea = () => {
 
   &:hover {
     border-bottom: 1px solid var(--el-border-color);
-    border-bottom-right-radius: 0;
-    border-bottom-left-radius: 0;
+
+    /* border-bottom-right-radius: 0; */
+
+    /* border-bottom-left-radius: 0; */
   }
 
   &:placeholder-shown {
     border-bottom: 1px solid var(--el-border-color);
-    border-bottom-right-radius: 0;
-    border-bottom-left-radius: 0;
+
+    /* border-bottom-right-radius: 0; */
+
+    /* border-bottom-left-radius: 0; */
   }
 
   &:focus {
     border-color: var(--el-color-primary);
-    border-bottom-right-radius: 0;
-    border-bottom-left-radius: 0;
+
+    /* border-bottom-right-radius: 0; */
+
+    /* border-bottom-left-radius: 0; */
   }
 }
 </style>
