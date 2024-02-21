@@ -71,9 +71,7 @@ const components = reactive({
   ForeachController: markRaw(defineAsyncComponent(() => import('./controllers/ForeachController.vue'))),
   TransactionController: markRaw(defineAsyncComponent(() => import('./controllers/TransactionController.vue'))),
   // config
-  DatabaseEngine: markRaw(defineAsyncComponent(() => import('./configs/DatabaseEngine.vue'))),
   VariableDataset: markRaw(defineAsyncComponent(() => import('./configs/VariableDataset.vue'))),
-  HttpHeadersTemplate: markRaw(defineAsyncComponent(() => import('./configs/HttpheaderTemplate.vue'))),
   // timer
   ConstantTimer: markRaw(defineAsyncComponent(() => import('./timers/ConstantTimer.vue')))
 })

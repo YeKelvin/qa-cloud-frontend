@@ -82,8 +82,8 @@
 
       <template v-if="item?.elementType == 'COLLECTION'">
         <el-divider />
-        <el-button link @click="copyElementToWorkspace">复制空间</el-button>
-        <el-button link @click="moveElementToWorkspace">移动空间</el-button>
+        <el-button link @click="copyElementToWorkspace">克隆</el-button>
+        <el-button link @click="moveElementToWorkspace">移动</el-button>
       </template>
       <template v-else>
         <el-divider v-if="item?.elementType != 'SAMPLER'" />
@@ -483,7 +483,7 @@ const duplicateElement = () => {
 }
 
 /**
- * 复制元素至指定空间
+ * 克隆元素至指定空间
  */
 const copyElementToWorkspace = async () => {
   const data = item.value
@@ -508,7 +508,7 @@ const copyElementToWorkspace = async () => {
   // 复制元素到指定的空间
   await ElementService.copyElementToWorkspace({ elementNo: data.elementNo, workspaceNo: workspaceNo })
   // 成功提示
-  ElMessage({ message: '复制成功', type: 'info', duration: 1 * 1000 })
+  ElMessage({ message: '克隆成功', type: 'info', duration: 1 * 1000 })
 }
 
 /**

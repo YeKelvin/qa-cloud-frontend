@@ -324,7 +324,7 @@ defineExpose({
 
 <style lang="scss" scoped>
 :deep(.el-badge__content) {
-  top: 10px;
+  top: 8px;
 }
 
 :deep(.el-badge__content.is-fixed.is-dot) {

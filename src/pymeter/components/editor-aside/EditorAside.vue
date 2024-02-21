@@ -1,12 +1,16 @@
 <template>
   <el-card shadow="hover" style="width: 100%">
     <template #header>
-      <el-select v-model="asideName" size="large" style="flex-grow: 1">
-        <el-option label="测试脚本" value="ELEMENT" />
-        <el-option label="环境/变量" value="DATASET" />
-        <el-option label="HTTP请求头" value="HTTPHEADER" />
-        <el-option label="数据库" value="DATABASE" />
-      </el-select>
+      <a-radio-group v-model="asideName" type="button" size="large" style="flex-grow: 1">
+        <a-radio value="ELEMENTS">
+          <SvgIcon icon-name="pymeter-script3" style="margin-right: 5px; font-size: 20px" />
+          <span>测试脚本</span>
+        </a-radio>
+        <a-radio value="VARIABLES">
+          <SvgIcon icon-name="pymeter-variable" style="margin-right: 5px; font-size: 20px" />
+          <span>环境变量</span>
+        </a-radio>
+      </a-radio-group>
     </template>
 
     <component :is="asideComponents[asideName]" />
@@ -14,12 +18,10 @@
 </template>
 
 <script setup>
-const asideName = ref('ELEMENT')
+const asideName = ref('ELEMENTS')
 const asideComponents = reactive({
-  ELEMENT: markRaw(defineAsyncComponent(() => import('./element-side/ElementSide.vue'))),
-  DATASET: markRaw(defineAsyncComponent(() => import('./dataset-side/DatasetSide.vue'))),
-  HTTPHEADER: markRaw(defineAsyncComponent(() => import('./httpheader-side/HttpheaderSide.vue'))),
-  DATABASE: markRaw(defineAsyncComponent(() => import('./database-side/DatabaseSide.vue')))
+  ELEMENTS: markRaw(defineAsyncComponent(() => import('./element-side/ElementSide.vue'))),
+  VARIABLES: markRaw(defineAsyncComponent(() => import('./dataset-side/DatasetSide.vue')))
 })
 </script>
 
@@ -27,29 +29,6 @@ const asideComponents = reactive({
 :deep(.el-card__header) {
   display: flex;
   padding: 0;
-
-  .el-select {
-    --el-select-border-color-hover: none;
-    --el-select-input-focus-border-color: none;
-  }
-
-  .el-select__wrapper {
-    box-shadow: none;
-  }
-
-  .select-trigger {
-    padding: 0 10px;
-  }
-
-  .el-input__inner {
-    font-size: 16px;
-    font-weight: bold;
-    box-shadow: none;
-  }
-
-  .el-input__wrapper {
-    box-shadow: none;
-  }
 }
 
 :deep(.el-card__body) {
@@ -57,5 +36,20 @@ const asideComponents = reactive({
   height: 100%;
   padding: 0;
   padding-bottom: 50px;
+}
+
+:deep(.arco-radio-button) {
+  flex: 1;
+}
+
+:deep(.arco-radio-button-content) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+:deep(.arco-radio-button.arco-radio-checked) {
+  font-size: 16px;
+  color: var(--el-color-primary);
 }
 </style>

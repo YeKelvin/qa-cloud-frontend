@@ -53,8 +53,8 @@
     <div style="display: flex; flex-direction: column">
       <el-button link :disabled="disabledOperation" @click="modifyDataset">编辑</el-button>
       <el-button link :disabled="disabledOperation" @click="duplicateDataset">复制</el-button>
-      <el-button link :disabled="disabledOperation" @click="copyDatasetToWorkspace">复制空间</el-button>
-      <el-button link :disabled="disabledOperation" @click="moveDatasetToWorkspace">移动空间</el-button>
+      <el-button link :disabled="disabledOperation" @click="copyDatasetToWorkspace">克隆</el-button>
+      <el-button link :disabled="disabledOperation" @click="moveDatasetToWorkspace">移动</el-button>
       <el-button link :disabled="disabledOperation" @click="deleteDataset">删除</el-button>
     </div>
   </el-popover>
@@ -230,7 +230,7 @@ const copyDatasetToWorkspace = async () => {
   let workspaceNo = null
   // 弹出选择空间的对话框
   const cancelled = await ElMessageBox.confirm(null, {
-    title: '请选择复制的工作空间',
+    title: '请选择克隆的工作空间',
     message: (
       <WorkspaceTree
         key={data.datasetNo}
@@ -247,7 +247,7 @@ const copyDatasetToWorkspace = async () => {
   // 复制变量集到指定的空间
   await VariablesService.copyVariableDatasetToWorkspace({ datasetNo: data.datasetNo, workspaceNo })
   // 成功提示
-  ElMessage({ message: '复制成功', type: 'info', duration: 2 * 1000 })
+  ElMessage({ message: '克隆成功', type: 'info', duration: 2 * 1000 })
 }
 
 /**
@@ -428,5 +428,9 @@ defineExpose({
 :deep(.el-tree-node__content) {
   height: 100%;
   min-height: 30px;
+
+  .el-tree-node__expand-icon {
+    display: none;
+  }
 }
 </style>
