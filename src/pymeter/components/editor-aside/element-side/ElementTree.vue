@@ -24,8 +24,25 @@
         <!-- 元素名称 -->
         <ElementTreeItemName :data="data" @dblclick="handleNodeDBClick(node)" />
         <!-- 操作菜单按钮 -->
-        <span v-show="hoveredNode === node" @mouseenter="triggerButtonMouseenter" @click.stop="operatingNode = node">
-          <el-button type="primary" link :icon="More" />
+        <span v-show="hoveredNode === node">
+          <!-- 关闭按钮 -->
+          <el-button
+            v-if="['COLLECTION', 'SNIPPET'].includes(data.elementType)"
+            type="primary"
+            link
+            :icon="Close"
+            style="font-size: 16px"
+            @click.stop="pymeterStore.removeSelectedCollection(data.elementNo)"
+          />
+          <!-- 更多按钮 -->
+          <el-button
+            type="primary"
+            link
+            :icon="MoreFilled"
+            style="font-size: 16px"
+            @click.stop="operatingNode = node"
+            @mouseenter="triggerButtonMouseenter"
+          />
         </span>
       </span>
     </template>
@@ -44,7 +61,7 @@
 <script lang="jsx" setup>
 import * as ElementService from '@/api/script/element'
 import { isEmpty, debounce } from 'lodash-es'
-import { More } from '@element-plus/icons-vue'
+import { Close, MoreFilled } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { usePyMeterDB } from '@/store/pymeter-db'
 import { usePyMeterStore } from '@/store/pymeter'
@@ -556,5 +573,9 @@ defineExpose({
 :deep(.el-tree-node__content) {
   height: 100%;
   min-height: 26px;
+}
+
+:deep(.el-button + .el-button) {
+  margin-left: 5px;
 }
 </style>

@@ -17,21 +17,16 @@
         collapse-tags
         collapse-tags-tooltip
         :teleported="false"
-        :max-collapse-tags="3"
+        :max-collapse-tags="2"
+        @change="() => elSelectRef.blur()"
       >
-        <!-- 下拉框顶部的新增脚本按钮 -->
-        <el-option-group key="new-operation" label="新增">
-          <el-option value="NEW_COLLECTION">
-            <el-button type="primary" link :icon="Plus" style="width: 100%" @click.stop="openNewCollectionTab()">
-              新增集合
-            </el-button>
-          </el-option>
-          <el-option value="NEW_SNIPPET">
-            <el-button type="primary" link :icon="Plus" style="width: 100%" @click.stop="openNewSnippetTab()">
-              新增片段
-            </el-button>
-          </el-option>
-        </el-option-group>
+        <!-- 下拉框底部的操作按钮 -->
+        <template #footer>
+          <div class="flexbox-center">
+            <el-button type="primary" plain :icon="Plus" @click.stop="openNewCollectionTab()">新增集合</el-button>
+            <el-button type="primary" plain :icon="Plus" @click.stop="openNewSnippetTab()">新增片段</el-button>
+          </div>
+        </template>
 
         <!-- 脚本集合 -->
         <el-option-group v-if="!isEmpty(collectionList)" key="collections" label="集合">
@@ -231,6 +226,7 @@ const queryElementsTree = () => {
  * 打开新增 TestCollection 的标签页
  */
 const openNewCollectionTab = () => {
+  // 打开新的标签页
   pymeterStore.addTab({
     editorNo: Date.now().toString(),
     editorName: '测试集合',
@@ -241,12 +237,15 @@ const openNewCollectionTab = () => {
       component: 'TestCollection'
     }
   })
+  // 隐藏下拉菜单
+  elSelectRef.value.blur()
 }
 
 /**
  * 打开新增 TestSnippet 的标签页
  */
 const openNewSnippetTab = () => {
+  // 打开新的标签页
   pymeterStore.addTab({
     editorNo: Date.now().toString(),
     editorName: '测试片段',
@@ -257,6 +256,8 @@ const openNewSnippetTab = () => {
       component: 'TestSnippet'
     }
   })
+  // 隐藏下拉菜单
+  elSelectRef.value.blur()
 }
 
 /**

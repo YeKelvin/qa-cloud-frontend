@@ -20,12 +20,15 @@ export const usePyMeterStore = defineStore('pymeter', {
       activeTabNo: '',
 
       // 刷新集合列表
+      // TODO: 改名：flagAsRefreshElementRootList
       refreshCollectionsFlag: 0,
 
       // 刷新脚本元素
+      // TODO: 改名：flagAsRefreshElementTree
       refreshElementTreeFlag: 0,
 
       // 滚动至脚本列表底部
+      // TODO: 改名：flagAsScrollToElementTreeBottom
       scrollToElementTreeBottomFlag: 0,
 
       // 待展开节点的元素编号
@@ -50,10 +53,12 @@ export const usePyMeterStore = defineStore('pymeter', {
       useCurrentValue: true,
 
       // 当前选中的集合编号列表（缓存）
+      // TODO: 改名：selectedScripts
       selectedCollections: [],
 
       // 显示底部抽屉窗口
       showingFooterDrawer: false,
+      // TODO: 改名：activeFooterViewer
       activeFooterViewName: 'RESULT',
 
       // 请求头模板列表
@@ -214,6 +219,7 @@ export const usePyMeterStore = defineStore('pymeter', {
 
     /**
      * 立即刷新集合列表
+     * TODO: 改名：refreshElementRootList
      */
     refreshCollections() {
       this.refreshCollectionsFlag += 1
@@ -242,17 +248,19 @@ export const usePyMeterStore = defineStore('pymeter', {
 
     /**
      * 添加已选择的集合元素
+     * TODO: 改名：openScript
      */
-    addSelectedCollection(collectionNo) {
-      if (this.selectedCollections.includes(collectionNo)) return
-      this.selectedCollections.push(collectionNo)
+    addSelectedCollection(rootNo) {
+      if (this.selectedCollections.includes(rootNo)) return
+      this.selectedCollections.push(rootNo)
     },
 
     /**
      * 移除已选择的集合元素
+     * TODO: 改名：closeScript
      */
-    removeSelectedCollection(collectionNo) {
-      this.selectedCollections = this.selectedCollections.filter((item) => item !== collectionNo)
+    removeSelectedCollection(rootNo) {
+      this.selectedCollections = this.selectedCollections.filter((item) => item !== rootNo)
     },
 
     /**

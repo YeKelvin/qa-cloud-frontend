@@ -30,7 +30,7 @@
 
         <!-- 操作菜单按钮 -->
         <span v-show="hoveredNode === node" @mouseenter="triggerButtonMouseenter" @click.stop="operatingNode = node">
-          <el-button type="primary" link :icon="More" />
+          <el-button type="primary" link :icon="MoreFilled" style="font-size: 16px" />
         </span>
       </span>
     </template>
@@ -69,7 +69,7 @@ import WorkspaceTree from '@/pymeter/components/editor-aside/common/WorkspaceTre
 import { usePyMeterDB } from '@/store/pymeter-db'
 import { usePyMeterStore } from '@/store/pymeter'
 import { useWorkspaceStore } from '@/store/workspace'
-import { More } from '@element-plus/icons-vue'
+import { MoreFilled } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const {
