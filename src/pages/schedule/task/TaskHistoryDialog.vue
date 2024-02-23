@@ -31,8 +31,8 @@
 </template>
 
 <script setup>
-import * as ScheduleService from '@/api/schedule/task'
 import { TaskOperationType } from '@/api/enum'
+import * as ScheduleService from '@/api/schedule/task'
 import useQueryConditions from '@/composables/useQueryConditions'
 import dayjs from 'dayjs'
 

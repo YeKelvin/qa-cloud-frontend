@@ -12,8 +12,16 @@
       <!-- 列定义 -->
       <el-table-column prop="templateName" label="模板名称" />
       <el-table-column prop="templateDesc" label="模板描述" />
-      <el-table-column prop="createdTime" label="创建时间" />
-      <el-table-column prop="updatedTime" label="更新时间" />
+      <el-table-column prop="createdTime" label="创建时间">
+        <template #default="{ row }">
+          {{ row.createdTime ? dayjs(row.createdTime).format('YYYY-MM-DD HH:mm:ss') : '' }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="updatedTime" label="更新时间">
+        <template #default="{ row }">
+          {{ row.updatedTime ? dayjs(row.updatedTime).format('YYYY-MM-DD HH:mm:ss') : '' }}
+        </template>
+      </el-table-column>
       <el-table-column fixed="right" label="操作" width="260" min-width="260">
         <template #default="{ row }">
           <el-button type="primary" link @click="modifyTemplate(row)">编辑</el-button>
@@ -33,6 +41,7 @@ import WorkspaceTree from '@/pymeter/components/editor-aside/common/WorkspaceTre
 import { usePyMeterStore } from '@/store/pymeter'
 import { useWorkspaceStore } from '@/store/workspace'
 import { Plus, Search } from '@element-plus/icons-vue'
+import dayjs from 'dayjs'
 import { isEmpty } from 'lodash-es'
 
 const router = useRouter()
@@ -66,14 +75,14 @@ const query = () => {
  * 新增请求头模板
  */
 const createTemplate = () => {
-  router.replace({ query: { item: 'HTTPHeaderTemplate' } })
+  router.replace({ params: { item: 'httpheader-template' } })
 }
 
 /**
  * 编辑请求头模板
  */
 const modifyTemplate = ({ templateNo }) => {
-  router.replace({ query: { item: 'HTTPHeaderTemplate', templateNo: templateNo } })
+  router.replace({ params: { item: 'httpheader-template' }, query: { templateNo: templateNo } })
 }
 
 /**

@@ -52,21 +52,23 @@ const mainTitle = ref('空间信息')
 const mainComponent = ref('WorkspaceInfo')
 
 const components = reactive({
-  WorkspaceInfo: markRaw(defineAsyncComponent(() => import('./WorkspaceInfo.vue'))),
-  HTTPHeaderTemplate: markRaw(defineAsyncComponent(() => import('./HTTPHeaderTemplate.vue'))),
-  HTTPHeaderTemplateManager: markRaw(defineAsyncComponent(() => import('./HTTPHeaderTemplateManager.vue'))),
-  DatabaseConnection: markRaw(defineAsyncComponent(() => import('./DatabaseConnection.vue'))),
-  DatabaseConnectionManager: markRaw(defineAsyncComponent(() => import('./DatabaseConnectionManager.vue')))
+  'workspace-info': markRaw(defineAsyncComponent(() => import('./WorkspaceInfo.vue'))),
+  'httpheader-template': markRaw(defineAsyncComponent(() => import('./HTTPHeaderTemplate.vue'))),
+  'httpheader-template-manager': markRaw(defineAsyncComponent(() => import('./HTTPHeaderTemplateManager.vue'))),
+  'database-connection': markRaw(defineAsyncComponent(() => import('./DatabaseConnection.vue'))),
+  'database-connection-manager': markRaw(defineAsyncComponent(() => import('./DatabaseConnectionManager.vue')))
 })
 
 onMounted(() => {
-  if (!isEmpty(route.query.item)) {
-    mainComponent.value = route.query.item
+  if (!isEmpty(route.params.item)) {
+    mainComponent.value = route.params.item
+  } else {
+    mainComponent.value = 'workspace-info'
   }
 })
 
 watch(
-  () => route.query.item,
+  () => route.params.item,
   (item) => {
     if (!item) return
     mainComponent.value = item
@@ -75,17 +77,17 @@ watch(
 
 const openWorkspaceInfo = () => {
   mainTitle.value = '空间信息'
-  router.replace({ query: { item: 'WorkspaceInfo' } })
+  router.replace({ params: { item: 'workspace-info' } })
 }
 
 const openHTTPHeaderTemplateManager = () => {
   mainTitle.value = '请求头模板'
-  router.replace({ query: { item: 'HTTPHeaderTemplateManager' } })
+  router.replace({ params: { item: 'httpheader-template-manager' } })
 }
 
 const openDatabaseConnectionManager = () => {
   mainTitle.value = '数据库连接'
-  router.replace({ query: { item: 'DatabaseConnectionManager' } })
+  router.replace({ params: { item: 'database-connection-manager' } })
 }
 </script>
 

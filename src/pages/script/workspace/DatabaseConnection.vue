@@ -192,7 +192,7 @@ const query = () => {
  * 返回
  */
 const goback = () => {
-  router.replace({ query: { item: 'DatabaseConnectionManager' } })
+  router.replace({ params: { item: 'database-connection-manager' } })
 }
 
 /**

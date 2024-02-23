@@ -19,7 +19,7 @@
         <el-input
           v-model="collectionsFilterText"
           placeholder="搜索脚本"
-          style="padding: 10px 10px 0 10px; margin-bottom: 10px"
+          style="padding: 10px 10px 0; margin-bottom: 10px"
           clearable
         />
         <!-- collection-card -->
@@ -40,7 +40,7 @@
         <el-input
           v-model="resultTreeFilterText"
           placeholder="搜索"
-          style="padding: 10px 10px 0 10px; margin-bottom: 10px"
+          style="padding: 10px 10px 0; margin-bottom: 10px"
           clearable
         />
         <!-- 脚本结果列表 -->
@@ -209,22 +209,18 @@ const goBack = () => {
 <style lang="scss" scoped>
 .report-container {
   position: absolute;
-  overflow: hidden;
-
   display: flex;
   flex: 1;
   flex-direction: column;
-
   width: 100%;
   height: 100%;
-
+  overflow: hidden;
   color: #606266;
 }
 
 .report-header {
   display: flex;
   flex-direction: column;
-
   padding: 0 10px;
   margin: 5px 0;
 
@@ -236,8 +232,8 @@ const goBack = () => {
   :deep(.el-card__body) {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     height: 36px;
   }
 }
@@ -245,10 +241,8 @@ const goBack = () => {
 .report-body {
   display: flex;
   flex: 1;
-
-  height: 0;
   width: 100%;
-
+  height: 0;
   padding: 0 10px;
   padding-bottom: 5px;
 }
@@ -257,11 +251,9 @@ const goBack = () => {
   display: flex;
   flex: 1;
   flex-direction: column;
-
-  height: 100%;
   min-width: 300px;
   max-width: 400px;
-
+  height: 100%;
   margin-right: 10px;
 }
 
@@ -269,11 +261,9 @@ const goBack = () => {
   display: flex;
   flex: 1;
   flex-direction: column;
-
-  height: 100%;
   min-width: 300px;
   max-width: 400px;
-
+  height: 100%;
   margin-right: 10px;
 }
 
@@ -289,17 +279,15 @@ const goBack = () => {
 }
 
 :deep(.el-card__header) {
-  padding: 10px 10px;
+  padding: 10px;
 }
 
 :deep(.el-card__body) {
   display: flex;
   flex: 1;
   flex-direction: column;
-
-  height: 100%;
   width: 100%;
-
+  height: 100%;
   padding: 0;
 }
 

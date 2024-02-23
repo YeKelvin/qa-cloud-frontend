@@ -157,7 +157,7 @@ const removeHeader = (row, index) => {
  * 返回
  */
 const goback = () => {
-  router.replace({ query: { item: 'HTTPHeaderTemplateManager' } })
+  router.replace({ params: { item: 'httpheader-template-manager' } })
 }
 
 /**

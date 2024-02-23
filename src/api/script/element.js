@@ -42,4 +42,4 @@ export const copyElementToWorkspace = (data) => request.post('/script/element/co
 
 export const moveElementToWorkspace = (data) => request.post('/script/element/move/to/workspace', data)
 
-export const queryDatabaseEngineAll = (params) => request.get('/script/element/database/engine/all', { params })
+export const queryDatabaseEngineAll = (params) => request.get('/script/element/config/database/all', { params })

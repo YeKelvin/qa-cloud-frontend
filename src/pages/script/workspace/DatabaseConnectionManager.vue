@@ -12,8 +12,16 @@
       <!-- 列定义 -->
       <el-table-column prop="databaseName" label="数据库名称" />
       <el-table-column prop="databaseType" label="数据库类型" />
-      <el-table-column prop="createdTime" label="创建时间" />
-      <el-table-column prop="updatedTime" label="更新时间" />
+      <el-table-column prop="createdTime" label="创建时间">
+        <template #default="{ row }">
+          {{ row.createdTime ? dayjs(row.createdTime).format('YYYY-MM-DD HH:mm:ss') : '' }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="updatedTime" label="更新时间">
+        <template #default="{ row }">
+          {{ row.updatedTime ? dayjs(row.updatedTime).format('YYYY-MM-DD HH:mm:ss') : '' }}
+        </template>
+      </el-table-column>
       <el-table-column fixed="right" label="操作" width="260" min-width="260">
         <template #default="{ row }">
           <el-button type="primary" link @click="modifyDatabase(row)">编辑</el-button>
@@ -33,6 +41,7 @@ import WorkspaceTree from '@/pymeter/components/editor-aside/common/WorkspaceTre
 import { usePyMeterStore } from '@/store/pymeter'
 import { useWorkspaceStore } from '@/store/workspace'
 import { Plus, Search } from '@element-plus/icons-vue'
+import dayjs from 'dayjs'
 import { isEmpty } from 'lodash-es'
 
 const router = useRouter()
@@ -66,14 +75,14 @@ const query = () => {
  * 新增数据库连接
  */
 const createDatabase = () => {
-  router.replace({ query: { item: 'DatabaseConnection' } })
+  router.replace({ params: { item: 'database-connection' } })
 }
 
 /**
  * 编辑数据库连接
  */
 const modifyDatabase = ({ databaseNo }) => {
-  router.replace({ query: { item: 'DatabaseConnection', databaseNo: databaseNo } })
+  router.replace({ params: { item: 'database-connection' }, query: { databaseNo: databaseNo } })
 }
 
 /**
