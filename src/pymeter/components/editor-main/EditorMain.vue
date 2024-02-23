@@ -12,7 +12,7 @@
       </el-tabs>
 
       <!-- 顶栏 -->
-      <Toolbar :component="activeTab.editorComponent" :metadata="activeTab.metadata" />
+      <TabHeader :component="activeTab.editorComponent" :metadata="activeTab.metadata" />
 
       <!-- pymeter 组件 -->
       <el-scrollbar class="editor-main-scrollbar" style="width: 100%; height: 100%" wrap-style="overflow-x:auto;">
@@ -44,12 +44,12 @@
 
 <script setup>
 import { usePyMeterStore } from '@/store/pymeter'
-import Toolbar from './toolbar/Toolbar.vue'
+import TabHeader from './header/TabHeader.vue'
 import Mousetrap from 'mousetrap'
 
 const components = reactive({
   // workspace
-  TestWorkspace: markRaw(defineAsyncComponent(() => import('./workspace/TestWorkspace.vue'))),
+  TestWorkspace: markRaw(defineAsyncComponent(() => import('./workspaces/TestWorkspace.vue'))),
   // collection
   TestCollection: markRaw(defineAsyncComponent(() => import('./collections/TestCollection.vue'))),
   // snippet

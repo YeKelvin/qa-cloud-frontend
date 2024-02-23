@@ -41,7 +41,7 @@
 <script setup>
 import * as ElementService from '@/api/script/element'
 import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
-import SaveButton from '@/pymeter/components/editor-main/common/SaveButton.vue'
+import SaveButton from '@/pymeter/components/editor-main/others/SaveButton.vue'
 import EditorEmits from '@/pymeter/composables/editor.emits'
 import EditorProps from '@/pymeter/composables/editor.props'
 import useEditor from '@/pymeter/composables/useEditor'

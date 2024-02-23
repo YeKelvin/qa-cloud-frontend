@@ -28,8 +28,8 @@
 <script setup>
 import { isEmpty } from 'lodash-es'
 import { Plus } from '@element-plus/icons-vue'
-import LogicalCondition from '@/pymeter/components/editor-main/common/LogicalCondition.vue'
-import LogicalConditionGroup from '@/pymeter/components/editor-main/common/LogicalConditionGroup.vue'
+import LogicalCondition from '@/pymeter/components/editor-main/others/LogicalCondition.vue'
+import LogicalConditionGroup from '@/pymeter/components/editor-main/others/LogicalConditionGroup.vue'
 
 const attrs = useAttrs()
 const emit = defineEmits(['update:modelValue'])

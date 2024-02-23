@@ -53,8 +53,8 @@
 
 <script setup>
 import * as ElementService from '@/api/script/element'
-import PythonEditor from '@/pymeter/components/editor-main/common/PythonEditor.vue'
-import SaveButton from '@/pymeter/components/editor-main/common/SaveButton.vue'
+import PythonEditor from '@/pymeter/components/editor-main/others/PythonEditor.vue'
+import SaveButton from '@/pymeter/components/editor-main/others/SaveButton.vue'
 import EditorEmits from '@/pymeter/composables/editor.emits'
 import EditorProps from '@/pymeter/composables/editor.props'
 import useEditor from '@/pymeter/composables/useEditor'

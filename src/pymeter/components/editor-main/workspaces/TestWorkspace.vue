@@ -88,10 +88,10 @@
 
 <script setup>
 import * as ElementService from '@/api/script/element'
-import SaveButton from '@/pymeter/components/editor-main/common/SaveButton.vue'
-import PostProcessorPane from '@/pymeter/components/editor-main/component-panes/PostProcessorPane.vue'
-import PrevProcessorPane from '@/pymeter/components/editor-main/component-panes/PrevProcessorPane.vue'
-import TestAssertionPane from '@/pymeter/components/editor-main/component-panes/TestAssertionPane.vue'
+import SaveButton from '@/pymeter/components/editor-main/others/SaveButton.vue'
+import PostProcessorPane from '@/pymeter/components/editor-main/components/PostProcessorPane.vue'
+import PrevProcessorPane from '@/pymeter/components/editor-main/components/PrevProcessorPane.vue'
+import TestAssertionPane from '@/pymeter/components/editor-main/components/TestAssertionPane.vue'
 import EditorEmits from '@/pymeter/composables/editor.emits'
 import EditorProps from '@/pymeter/composables/editor.props'
 import useEditor from '@/pymeter/composables/useEditor'
