@@ -151,33 +151,34 @@ const querySearch = (query) => {
   font-size: 0 !important;
 
   .search-icon {
-    cursor: pointer;
     font-size: 18px;
     vertical-align: middle;
+    cursor: pointer;
   }
 
   .header-search-select {
-    font-size: 18px;
     width: 0;
-    transition: width 0.2s;
     overflow: hidden;
+    font-size: 18px;
+    vertical-align: middle;
     background: transparent;
     border-radius: 0;
-    vertical-align: middle;
+    transition: width 0.2s;
 
     :deep(.el-input__wrapper) {
       --el-select-input-focus-border-color: none;
     }
 
     :deep(.el-input__inner) {
-      --el-select-input-focus-border-color: #ffffff;
-      border: 0;
-      border-radius: 0;
-      padding-left: 0;
+      --el-select-input-focus-border-color: #fff;
+
       padding-right: 0;
-      box-shadow: none !important;
-      border-bottom: 1px solid #d9d9d9;
+      padding-left: 0;
       vertical-align: middle;
+      border: 0;
+      border-bottom: 1px solid #d9d9d9;
+      border-radius: 0;
+      box-shadow: none !important;
     }
   }
 

@@ -1,5 +1,4 @@
 import * as ElementService from '@/api/script/element'
-import * as HttpHeadersService from '@/api/script/headers'
 import * as VariablesService from '@/api/script/variables'
 import { usePyMeterDB } from '@/store/pymeter-db'
 import { useWorkspaceStore } from '@/store/workspace'
@@ -386,11 +385,9 @@ export const usePyMeterStore = defineStore('pymeter', {
      * 查询所有请求头模板
      */
     queryHttpheaderTemplateAll() {
-      HttpHeadersService.queryHttpheaderTemplateAll({ workspaceNo: useWorkspaceStore().workspaceNo }).then(
-        (response) => {
-          this.httpheaderTemplateList = response.result
-        }
-      )
+      ElementService.queryHTTPHeaderTemplateAll({ workspaceNo: useWorkspaceStore().workspaceNo }).then((response) => {
+        this.httpheaderTemplateList = response.result
+      })
     },
 
     /**

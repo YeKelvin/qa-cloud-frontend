@@ -45,9 +45,10 @@ useResizeHandler()
 
 .app-wrapper {
   position: relative;
-  height: 100%;
   width: 100%;
+  height: 100%;
 }
+
 .fixed-header {
   position: fixed;
   top: 0;
@@ -56,6 +57,7 @@ useResizeHandler()
   width: calc(100% - #{$sideBarWidth});
   transition: width 0.28s;
 }
+
 .hideSidebar .fixed-header {
   width: calc(100% - 54px);
 }

@@ -108,13 +108,8 @@ export const constantRoutes = [
       },
       {
         component: () => import('@/pages/script/workspace/WorkspaceSettings.vue'),
-        path: 'workspace/setting/:item?',
+        path: 'workspace/setting',
         name: 'WorkspaceSettings',
-        meta: { title: '空间设置', icon: 'sidebar-config' },
-        hidden: true
-      },
-      {
-        path: 'workspace/setting/workspace-info',
         meta: { title: '空间设置', icon: 'sidebar-config' }
       }
     ]

@@ -12,12 +12,26 @@
       <!-- 列定义 -->
       <el-table-column prop="templateName" label="模板名称" />
       <el-table-column prop="templateDesc" label="模板描述" />
-      <el-table-column prop="createdTime" label="创建时间">
+      <el-table-column
+        prop="createdTime"
+        label="创建时间"
+        min-width="180"
+        width="180"
+        sortable
+        :sort-method="(a, b) => a.createdTime.localeCompare(b.createdTime)"
+      >
         <template #default="{ row }">
           {{ row.createdTime ? dayjs(row.createdTime).format('YYYY-MM-DD HH:mm:ss') : '' }}
         </template>
       </el-table-column>
-      <el-table-column prop="updatedTime" label="更新时间">
+      <el-table-column
+        prop="updatedTime"
+        label="更新时间"
+        min-width="180"
+        width="180"
+        sortable
+        :sort-method="(a, b) => a.updatedTime.localeCompare(b.updatedTime)"
+      >
         <template #default="{ row }">
           {{ row.updatedTime ? dayjs(row.updatedTime).format('YYYY-MM-DD HH:mm:ss') : '' }}
         </template>
@@ -36,7 +50,7 @@
 </template>
 
 <script lang="jsx" setup>
-import * as HeadersService from '@/api/script/headers'
+import * as ElementService from '@/api/script/element'
 import WorkspaceTree from '@/pymeter/components/editor-aside/common/WorkspaceTree.vue'
 import { usePyMeterStore } from '@/store/pymeter'
 import { useWorkspaceStore } from '@/store/workspace'
@@ -75,14 +89,14 @@ const query = () => {
  * 新增请求头模板
  */
 const createTemplate = () => {
-  router.replace({ params: { item: 'httpheader-template' } })
+  router.replace({ query: { item: 'httpheader-template' } })
 }
 
 /**
  * 编辑请求头模板
  */
 const modifyTemplate = ({ templateNo }) => {
-  router.replace({ params: { item: 'httpheader-template' }, query: { templateNo: templateNo } })
+  router.replace({ query: { item: 'httpheader-template', templateNo: templateNo } })
 }
 
 /**
@@ -105,7 +119,7 @@ const duplicateTemplate = async ({ templateNo, templateName }) => {
     .catch(() => true)
   if (cancelled) return
   // 复制请求头模板
-  await HeadersService.duplicateHttpheaderTemplate({ templateNo: templateNo })
+  await ElementService.duplicateElement({ elementNo: templateNo })
   //  重新查询列表
   query()
   // 成功提示
@@ -134,7 +148,10 @@ const cloneTemplate = async ({ templateNo }) => {
     .catch(() => true)
   if (cancelled) return
   // 复制请求头模板到指定空间
-  await HeadersService.copyHttpheaderTemplateToWorkspace({ templateNo: templateNo, workspaceNo })
+  await ElementService.copyElementToWorkspace({
+    workspaceNo: workspaceNo,
+    elementNo: templateNo
+  })
   //  成功提示
   ElMessage({ message: '复制成功', type: 'info', duration: 1 * 1000 })
 }
@@ -161,7 +178,10 @@ const moveTemplate = async ({ templateNo }) => {
     .catch(() => true)
   if (cancelled) return
   // 移动请求头模板到指定空间
-  await HeadersService.moveHttpheaderTemplateToWorkspace({ templateNo: templateNo, workspaceNo })
+  await ElementService.moveElementToWorkspace({
+    workspaceNo: workspaceNo,
+    elementNo: templateNo
+  })
   // 重新查询列表
   query()
   // 成功提示
@@ -188,7 +208,7 @@ const removeTemplate = async ({ templateNo, templateName }) => {
     .catch(() => true)
   if (cancelled) return
   // 删除请求头模板
-  await HeadersService.deleteHttpheaderTemplate({ templateNo: templateNo })
+  await ElementService.removeElement({ elementNo: templateNo })
   // 关闭tab
   pymeterStore.removeTab({ editorNo: templateNo, force: true })
   // 重新查询列表
@@ -199,11 +219,7 @@ const removeTemplate = async ({ templateNo, templateName }) => {
 </script>
 
 <style lang="scss" scoped>
-.pagination {
-  display: flex;
-  flex-shrink: 0;
-  justify-content: flex-end;
-  padding: 10px 0;
-  padding-right: 10px;
+:deep(.arco-empty-image) {
+  padding-top: 20px;
 }
 </style>

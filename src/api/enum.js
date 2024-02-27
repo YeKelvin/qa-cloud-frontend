@@ -164,6 +164,7 @@ export const ElementClass = {
   HTTPSessionManager: 'HTTP-Session配置器',
   VariableDataset: '变量配置器',
   DatabaseEngine: '数据库配置器',
+  HTTPHeaderTemplate: 'HTTP请求头模板',
   // controller
   IfController: 'IF分支',
   LoopController: 'Loop循环',

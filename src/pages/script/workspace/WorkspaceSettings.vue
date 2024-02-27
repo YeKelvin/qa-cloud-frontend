@@ -21,7 +21,7 @@
               <SvgIcon icon-name="pymeter-script2" style="margin-right: 5px; font-size: 18px" />
               <span>脚本设置</span>
             </div>
-            <!-- <div class="option option__lv2" @click="openHTTPHeaderTemplateManager()">请求头模板</div> -->
+            <div class="option option__lv2" @click="openHTTPHeaderTemplateManager()">请求头模板</div>
             <div class="option option__lv2" @click="openDatabaseConnectionManager()">数据库连接</div>
           </div>
         </a-typography-paragraph>
@@ -29,13 +29,18 @@
       <!-- 主体内容 -->
       <template #second>
         <a-typography-paragraph>
-          <div class="setting-body">
-            <div class="body-title">{{ mainTitle }}</div>
-            <el-divider />
-            <div class="body-main">
-              <component :is="components[mainComponent]" />
+          <template v-if="isEmpty(workspaceStore.workspaceNo)">
+            <a-result title="请选择工作空间" status="warning" style="margin-top: 100px" />
+          </template>
+          <template v-else>
+            <div class="setting-body">
+              <div class="body-title">{{ mainTitle }}</div>
+              <el-divider />
+              <div class="body-main">
+                <component :is="components[mainComponent]" />
+              </div>
             </div>
-          </div>
+          </template>
         </a-typography-paragraph>
       </template>
     </a-split>
@@ -44,12 +49,23 @@
 
 <script setup>
 import { isEmpty } from 'lodash-es'
+import { useWorkspaceStore } from '@/store/workspace'
 
 const route = useRoute()
 const router = useRouter()
+const workspaceStore = useWorkspaceStore()
+
 const size = ref('200px')
-const mainTitle = ref('空间信息')
-const mainComponent = ref('WorkspaceInfo')
+const mainComponent = ref('workspace-info')
+const mainTitle = computed(() => {
+  return {
+    'workspace-info': '空间信息',
+    'httpheader-template': '请求头模板',
+    'httpheader-template-manager': '请求头模板',
+    'database-connection': '数据库连接',
+    'database-connection-manager': '数据库连接'
+  }[mainComponent.value]
+})
 
 const components = reactive({
   'workspace-info': markRaw(defineAsyncComponent(() => import('./WorkspaceInfo.vue'))),
@@ -60,15 +76,13 @@ const components = reactive({
 })
 
 onMounted(() => {
-  if (!isEmpty(route.params.item)) {
-    mainComponent.value = route.params.item
-  } else {
-    mainComponent.value = 'workspace-info'
+  if (!isEmpty(route.query.item)) {
+    mainComponent.value = route.query.item
   }
 })
 
 watch(
-  () => route.params.item,
+  () => route.query.item,
   (item) => {
     if (!item) return
     mainComponent.value = item
@@ -76,18 +90,15 @@ watch(
 )
 
 const openWorkspaceInfo = () => {
-  mainTitle.value = '空间信息'
-  router.replace({ params: { item: 'workspace-info' } })
+  router.replace({ query: { item: 'workspace-info' } })
 }
 
 const openHTTPHeaderTemplateManager = () => {
-  mainTitle.value = '请求头模板'
-  router.replace({ params: { item: 'httpheader-template-manager' } })
+  router.replace({ query: { item: 'httpheader-template-manager' } })
 }
 
 const openDatabaseConnectionManager = () => {
-  mainTitle.value = '数据库连接'
-  router.replace({ params: { item: 'database-connection-manager' } })
+  router.replace({ query: { item: 'database-connection-manager' } })
 }
 </script>
 
@@ -188,5 +199,19 @@ const openDatabaseConnectionManager = () => {
   flex: 1;
   margin-top: 0;
   margin-bottom: 0;
+}
+
+:deep(.arco-result-icon-tip) {
+  width: 80px;
+  height: 80px;
+
+  & > svg {
+    font-size: 40px;
+  }
+}
+
+:deep(.arco-result-title) {
+  font-size: 18px;
+  color: var(--el-text-color-primary);
 }
 </style>

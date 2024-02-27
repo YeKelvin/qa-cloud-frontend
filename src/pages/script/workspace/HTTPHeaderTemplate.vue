@@ -1,5 +1,33 @@
 <template>
   <div class="httpheader-template">
+    <el-form
+      ref="elformRef"
+      label-width="120px"
+      label-position="right"
+      inline-message
+      :model="elementData"
+      :rules="elementRules"
+    >
+      <!-- 名称 -->
+      <el-form-item label="模板名称：" prop="elementName">
+        <el-input v-model="elementData.elementName" placeholder="HTTP请求头模板名称" clearable />
+      </el-form-item>
+
+      <!-- 备注 -->
+      <el-form-item label="模板描述：" prop="elementDesc">
+        <el-input
+          v-model="elementData.elementDesc"
+          clearable
+          type="textarea"
+          placeholder="HTTP请求头模板描述"
+          :autosize="{ minRows: 2, maxRows: 4 }"
+        />
+      </el-form-item>
+    </el-form>
+
+    <!-- 分割线 -->
+    <el-divider />
+
     <!-- 请求头表格 -->
     <el-table ref="eltableRef" :data="headerList" style="margin-bottom: 20px" fit stripe highlight-current-row>
       <!-- 数据为空时显示添加按钮 -->
@@ -20,36 +48,36 @@
       </el-table-column>
 
       <!-- 请求头名称 -->
-      <el-table-column label="请求头名称">
+      <el-table-column label="请求头名称" sortable :sort-method="(a, b) => a.name.localeCompare(b.name)">
         <template #default="{ row }">
-          <SimpleTextarea v-model="row.headerName" />
+          <SimpleTextarea v-model="row.name" />
         </template>
       </el-table-column>
 
       <!-- 请求头的值 -->
       <el-table-column label="请求头内容">
         <template #default="{ row }">
-          <SimpleTextarea v-model="row.headerValue" />
+          <SimpleTextarea v-model="row.value" />
         </template>
       </el-table-column>
 
       <!-- 请求头的值 -->
       <el-table-column label="请求头描述">
         <template #default="{ row }">
-          <SimpleTextarea v-model="row.headerDesc" />
+          <SimpleTextarea v-model="row.desc" />
         </template>
       </el-table-column>
 
       <!-- 操作列 -->
       <el-table-column label="操作" fixed="right" align="center" width="80" min-width="80">
-        <template #default="{ row, $index }">
+        <template #default="{ $index }">
           <!-- 删除请求头按钮 -->
           <el-button
             v-show="headerList.length != $index + 1"
             type="danger"
             link
             :icon="Delete"
-            @click="removeHeader(row, $index)"
+            @click="removeHeader($index)"
           />
         </template>
       </el-table-column>
@@ -63,25 +91,39 @@
 </template>
 
 <script setup>
-import * as HttpHeaderService from '@/api/script/headers'
+import * as ElementService from '@/api/script/element'
 import SimpleTextarea from '@/components/simple-textarea/SimpleTextarea.vue'
 import { useWorkspaceStore } from '@/store/workspace'
 import { toHashCode } from '@/utils/object-util'
 import { Check, Close, Delete } from '@element-plus/icons-vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
-import { debounce, has, isEmpty } from 'lodash-es'
+import { ElMessage } from 'element-plus'
+import { debounce, isEmpty } from 'lodash-es'
 
 const route = useRoute()
 const router = useRouter()
 const workspaceStore = useWorkspaceStore()
 
-const hashcode = ref(null)
-const templateNo = ref(route.query.templateNo)
-const headerList = ref([])
-const removeList = ref([])
-
-const edited = computed(() => hashcode.value !== toHashCode(headerList.value))
+const hashcode = ref()
 const creation = computed(() => isEmpty(route.query.templateNo))
+const elementData = ref({
+  elementNo: route.query.templateNo,
+  elementName: '',
+  elementDesc: '',
+  elementType: 'CONFIG',
+  elementClass: 'HTTPHeaderTemplate',
+  elementAttrs: {
+    HTTPHeaderTemplate__headers: []
+  },
+  elementProps: {}
+})
+const elementRules = { elementName: [{ required: true, message: '模板名称不能为空', trigger: 'blur' }] }
+
+const edited = computed(() => hashcode.value !== toHashCode(elementData.value))
+const elformRef = ref()
+const headerList = computed({
+  get: () => elementData.value.elementAttrs.HTTPHeaderTemplate__headers,
+  set: (val) => (elementData.value.elementAttrs.HTTPHeaderTemplate__headers = val)
+})
 
 onMounted(async () => {
   if (creation.value) {
@@ -98,7 +140,7 @@ watch(
 
 watch(
   headerList,
-  debounce(() => autoNewRow(), 100),
+  debounce(() => autoNewRow(), 250),
   { deep: true, flush: 'sync' }
 )
 
@@ -106,10 +148,10 @@ watch(
  * 查询
  */
 const query = () => {
-  HttpHeaderService.queryHttpHeadersByTemplate({ templateNo: route.query.templateNo }).then((response) => {
-    headerList.value = response.result
+  ElementService.queryElementInfo({ elementNo: elementData.value.elementNo }).then((response) => {
+    elementData.value = response.result
     autoNewRow()
-    hashcode.value = toHashCode(headerList.value)
+    hashcode.value = toHashCode(elementData.value)
   })
 }
 
@@ -129,84 +171,74 @@ const autoNewRow = () => {
  * 新增一行空行
  */
 const newRow = () => {
-  headerList.value.push({ headerName: '', headerValue: '', headerDesc: '', enabled: true })
+  headerList.value.push({ name: '', value: '', desc: '', enabled: true })
 }
 
 /**
  * 判断是否为空行
  */
 const isBlankRow = (row) => {
-  return isEmpty(row.headerName) && isEmpty(row.headerValue) && isEmpty(row.headerDesc)
+  return isEmpty(row.name) && isEmpty(row.value) && isEmpty(row.desc)
 }
 
 /**
  * 删除请求头
  */
-const removeHeader = (row, index) => {
-  if (has(row, 'headerNo')) {
-    // 存在 headerNo 时，添加至待删除列表中，等待提交时调用批量删除请求头接口
-    removeList.value.push(row)
-    headerList.value.splice(index, 1)
-  } else {
-    // 没有 headerNo 时，代表数据库中没有该请求头，直接移出提交列表
-    headerList.value.splice(index, 1)
-  }
+const removeHeader = (index) => {
+  headerList.value.splice(index, 1)
 }
 
 /**
  * 返回
  */
 const goback = () => {
-  router.replace({ params: { item: 'httpheader-template-manager' } })
+  router.replace({ query: { item: 'httpheader-template-manager' } })
 }
 
 /**
- * 删除变量二次确认
+ * 修改元素
  */
-const comfirmDeleteHeaders = async (...args) => {
-  const msgList = [h('p', null, '是否确定删除以下请求头?')]
-  args.forEach((item) => msgList.push(h('p', null, h('b', null, item))))
-  return await ElMessageBox.confirm(null, {
-    title: '警告',
-    message: h('div', null, msgList),
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'error'
-  })
-    .then(() => false)
-    .catch(() => true)
+const modifyElement = async () => {
+  // 过滤空行
+  headerList.value = headerList.value.filter((row) => !isBlankRow(row))
+  // 修改元素
+  await ElementService.modifyElement(elementData.value)
+}
+
+/**
+ * 创建元素
+ */
+const createElement = async () => {
+  // 工作空间非空校验
+  if (isEmpty(workspaceStore.workspaceNo)) {
+    ElMessage({ message: '请先选择工作空间', type: 'error', duration: 2 * 1000 })
+    return
+  }
+  // 过滤空行
+  headerList.value = headerList.value.filter((row) => !isBlankRow(row))
+  // 新增元素
+  await ElementService.createElement(elementData.value)
 }
 
 /**
  * 提交数据
  */
 const save = async () => {
-  // 手动清空的空行如果存在 headerNo 则加入待删除列表
-  headerList.value.filter((row) => isBlankRow(row)).forEach((row) => has(row, 'headerNo') && removeList.value.push(row))
-
-  // 批量删除变量
-  if (!isEmpty(removeList.value)) {
-    // 二次确认
-    const cancelled = await comfirmDeleteHeaders(...removeList.value.map((item) => item.headerName))
-    if (cancelled) return
-    // 提交删除
-    await HttpHeaderService.deleteHttpHeaders({
-      templateNo: templateNo.value,
-      headers: removeList.value.map((item) => item.headerNo)
-    })
-    // 清空待删除列表
-    removeList.value = []
+  // 表单校验
+  const error = await elformRef.value
+    .validate()
+    .then(() => false)
+    .catch(() => true)
+  if (error) {
+    ElMessage({ message: '数据校验失败', type: 'error', duration: 2 * 1000 })
+    return
   }
-
-  // 过滤空行
-  const headers = headerList.value.filter((row) => !isBlankRow(row))
-  // 提交修改
-  !isEmpty(headers) &&
-    (await HttpHeaderService.modifyHttpHeaders({ templateNo: templateNo.value, headerList: headers }))
-  // 重新查询
-  query()
+  // 保存元素
+  creation.value ? await createElement() : await modifyElement()
   // 成功提示
   ElMessage({ message: '保存成功', type: 'info', duration: 2 * 1000 })
+  // 返回列表页
+  goback()
 }
 </script>
 

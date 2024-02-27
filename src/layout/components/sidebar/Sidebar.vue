@@ -54,6 +54,7 @@ const isCollapse = computed(() => !appStore.sidebar.opened)
   .el-menu {
     border-right: none;
   }
+
   .el-scrollbar__wrap {
     padding-bottom: 8vh;
   }

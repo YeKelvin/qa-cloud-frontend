@@ -12,12 +12,26 @@
       <!-- 列定义 -->
       <el-table-column prop="databaseName" label="数据库名称" />
       <el-table-column prop="databaseType" label="数据库类型" />
-      <el-table-column prop="createdTime" label="创建时间">
+      <el-table-column
+        prop="createdTime"
+        label="创建时间"
+        min-width="180"
+        width="180"
+        sortable
+        :sort-method="(a, b) => a.createdTime.localeCompare(b.createdTime)"
+      >
         <template #default="{ row }">
           {{ row.createdTime ? dayjs(row.createdTime).format('YYYY-MM-DD HH:mm:ss') : '' }}
         </template>
       </el-table-column>
-      <el-table-column prop="updatedTime" label="更新时间">
+      <el-table-column
+        prop="updatedTime"
+        label="更新时间"
+        min-width="180"
+        width="180"
+        sortable
+        :sort-method="(a, b) => a.updatedTime.localeCompare(b.updatedTime)"
+      >
         <template #default="{ row }">
           {{ row.updatedTime ? dayjs(row.updatedTime).format('YYYY-MM-DD HH:mm:ss') : '' }}
         </template>
@@ -75,14 +89,14 @@ const query = () => {
  * 新增数据库连接
  */
 const createDatabase = () => {
-  router.replace({ params: { item: 'database-connection' } })
+  router.replace({ query: { item: 'database-connection' } })
 }
 
 /**
  * 编辑数据库连接
  */
 const modifyDatabase = ({ databaseNo }) => {
-  router.replace({ params: { item: 'database-connection' }, query: { databaseNo: databaseNo } })
+  router.replace({ query: { item: 'database-connection', databaseNo: databaseNo } })
 }
 
 /**
@@ -202,4 +216,8 @@ const removeDatabase = async ({ databaseNo, databaseName }) => {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+:deep(.arco-empty-image) {
+  padding-top: 20px;
+}
+</style>

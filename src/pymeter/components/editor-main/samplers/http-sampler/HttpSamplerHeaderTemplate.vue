@@ -33,21 +33,21 @@
       :disabled="isEmpty(localModel)"
       @click="showHeaders"
     >
-      查看详情
+      展开
     </el-button>
 
     <!-- 模板下的请求头表格 -->
     <el-table v-else-if="rows.length > 0" style="width: 100%; margin-bottom: 10px" stripe :data="rows">
       <!-- header名称 -->
-      <el-table-column prop="headerName" label="请求头名称" />
+      <el-table-column prop="name" label="请求头名称" />
       <!-- header值 -->
-      <el-table-column prop="headerValue" label="请求头内容" />
+      <el-table-column prop="value" label="请求头内容" />
     </el-table>
   </el-card>
 </template>
 
 <script setup>
-import * as HeadersService from '@/api/script/headers'
+import * as ElementService from '@/api/script/element'
 import { isEmpty } from 'lodash-es'
 import { ArrowDown } from '@element-plus/icons-vue'
 import { usePyMeterStore } from '@/store/pymeter'
@@ -75,8 +75,8 @@ const showWarning = computed(() => {
 /**
  * 查询请求头模板下的所有请求头
  */
-const queryHttpHeaders = () => {
-  HeadersService.queryHttpHeaders({ templates: [...localModel.value] }).then((response) => {
+const queryHTTPHeaders = () => {
+  ElementService.queryHTTPHeaderAllByTemplate({ templates: [...localModel.value] }).then((response) => {
     rows.value = response.result
   })
 }
@@ -87,7 +87,7 @@ const queryHttpHeaders = () => {
 const handleChange = () => {
   nextTick(() => {
     if (!showDetails.value) return
-    queryHttpHeaders()
+    queryHTTPHeaders()
   })
 }
 
@@ -95,7 +95,7 @@ const handleChange = () => {
  * 显示请求头模板内的所有请求头
  */
 const showHeaders = () => {
-  queryHttpHeaders()
+  queryHTTPHeaders()
   showDetails.value = true
 }
 </script>
