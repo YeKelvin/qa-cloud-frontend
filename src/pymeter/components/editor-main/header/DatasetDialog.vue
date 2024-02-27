@@ -275,8 +275,11 @@ const openDatasetEditor = () => {
   display: none;
 }
 
-:deep(.el-dialog__body) {
+:deep(.el-dialog) {
   padding: 0;
+}
+
+:deep(.el-dialog__body) {
   padding-bottom: 10px;
 }
 
