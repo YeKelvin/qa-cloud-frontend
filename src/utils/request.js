@@ -102,7 +102,7 @@ service.interceptors.response.use(
       return Promise.reject(new Error(message))
     } else {
       // 判断用户 token 是否有效，无效或失效则转跳至登录页
-      if (!data.success && data.errorCode === 'E401001') {
+      if (data.code === 401) {
         ElMessageBox.confirm('登录失效，请重新登录', '警告', {
           confirmButtonText: '重新登录',
           cancelButtonText: '取消',
@@ -119,10 +119,9 @@ service.interceptors.response.use(
         })
         return data
       }
-      if (!data.success || data.errorCode) {
-        const message = data.errorMsg || '服务开小差'
-        ElMessage.error({ message: message, duration: 2 * 1000 })
-        return Promise.reject(new Error(message))
+      if (data.code !== 200) {
+        ElMessage.error({ message: data.message || '服务开小差', duration: 2 * 1000 })
+        return Promise.reject(new Error(data.message || '服务开小差'))
       }
       return data
     }

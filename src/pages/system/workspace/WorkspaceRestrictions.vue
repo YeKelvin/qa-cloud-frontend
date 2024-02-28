@@ -58,17 +58,17 @@ const exemptionGroups = ref([])
 onMounted(() => {
   // 查询所有用户
   UserService.queryUserAll().then((response) => {
-    userList.value = response.result
+    userList.value = response.data
   })
   // 查询所有分组
   GroupService.queryGroupAll().then((response) => {
-    groupList.value = response.result
+    groupList.value = response.data
   })
   // 查询空间限制和豁免成员
   WorkspaceService.queryWorkspaceRestriction({ workspaceNo: workspaceNo.value }).then((response) => {
-    checkedPermissions.value = response.result.permissionList.map((item) => item.permissionNo)
-    exemptionUsers.value = response.result.users
-    exemptionGroups.value = response.result.groups
+    checkedPermissions.value = response.data.permissionList.map((item) => item.permissionNo)
+    exemptionUsers.value = response.data.users
+    exemptionGroups.value = response.data.groups
   })
 })
 
@@ -99,7 +99,6 @@ const goBack = () => {
 .role-permission-container {
   display: flex;
   flex-direction: column;
-
   padding: 20px;
 }
 
@@ -110,11 +109,11 @@ const goBack = () => {
 }
 
 .title {
-  color: #606266;
-  font-size: 16px;
-  font-weight: bold;
   font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial,
     sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+  color: #606266;
 }
 
 .permission-table-container {
@@ -123,7 +122,7 @@ const goBack = () => {
 
 .button-container {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
 }
 </style>

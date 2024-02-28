@@ -132,7 +132,7 @@ onUnmounted(() => {
 
 const queryWorkerResult = () => {
   ReportService.queryWorkerResult({ workerId: props.workerId }).then((response) => {
-    details.value = response.result
+    details.value = response.data
     setPieChartData([
       { value: details.value.successfulSamplerTotal, name: '成功', itemStyle: { color: '#44B197' } },
       { value: details.value.failedSamplerTotal, name: '失败', itemStyle: { color: '#FF7676' } }

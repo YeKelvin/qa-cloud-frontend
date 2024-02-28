@@ -183,10 +183,10 @@ const queryBackendData = async () => {
   let response = null
   // 查询空间元素信息
   response = await ElementService.queryElementInfo({ elementNo: elementData.value.elementNo })
-  assignElement(elementData.value, response.result)
+  assignElement(elementData.value, response.data)
   // 查询空间元素组件
   response = await ElementService.queryElementComponents({ elementNo: elementData.value.elementNo })
-  assignComponent(elementData.value, response.result)
+  assignComponent(elementData.value, response.data)
   // 计算HashCode并存储
   assignMetadata(metadata.value, { hashcode: toHashCode(elementData.value) })
 }

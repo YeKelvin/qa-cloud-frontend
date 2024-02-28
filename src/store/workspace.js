@@ -56,16 +56,16 @@ export const useWorkspaceStore = defineStore('workspace', {
       const userStore = useUserStore()
       WorkspaceService.queryWorkspaceAll({ userNo: userStore.number }).then((response) => {
         // 个人空间
-        const privateList = response.result.filter((item) => item.workspaceScope === 'PRIVATE')
+        const privateList = response.data.filter((item) => item.workspaceScope === 'PRIVATE')
         // 团队空间
-        const protectedList = response.result.filter((item) => item.workspaceScope === 'PROTECTED')
+        const protectedList = response.data.filter((item) => item.workspaceScope === 'PROTECTED')
         // 公共空间
-        const publicList = response.result.filter((item) => item.workspaceScope === 'PUBLIC')
+        const publicList = response.data.filter((item) => item.workspaceScope === 'PUBLIC')
         // 存储所有空间，置顶个人空间
         this.workspaceList = [...privateList, ...protectedList, ...publicList]
         // 当前工作空间不为空且不在工作空间列表中时（表示该工作空间已无效），清空localStorage
         if (this.workspaceNo !== '') {
-          if (response.result.findIndex((item) => item.workspaceNo === this.workspaceNo) < 0) {
+          if (response.data.findIndex((item) => item.workspaceNo === this.workspaceNo) < 0) {
             this.workspaceNo = ''
             this.workspaceName = '请选择工作空间'
           }

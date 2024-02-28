@@ -471,7 +471,7 @@ const queryBackendData = async () => {
   let response = null
   // 查询元素信息
   response = await ElementService.queryElementInfo({ elementNo: elementData.value.elementNo })
-  const backendData = response.result
+  const backendData = response.data
   backendData.elementAttrs.HTTPSampler__headers.push({ enabled: true, name: '', value: '', desc: '' })
   backendData.elementAttrs.HTTPSampler__querys.push({ enabled: true, name: '', value: '', desc: '' })
   backendData.elementAttrs.HTTPSampler__forms.push({ enabled: true, type: 'string', name: '', value: '', desc: '' })
@@ -488,7 +488,7 @@ const queryBackendData = async () => {
   setBodyData()
   // 查询元素组件
   response = await ElementService.queryElementComponents({ elementNo: elementData.value.elementNo })
-  assignComponent(elementData.value, response.result)
+  assignComponent(elementData.value, response.data)
   // 计算HashCode并存储
   assignMetadata(metadata.value, { hashcode: toHashCode(elementData.value) })
 }
@@ -621,7 +621,7 @@ const createElement = async () => {
     ...elementData.value
   })
   // 提取元素编号
-  const elementNo = response.result.elementNo
+  const elementNo = response.data.elementNo
   // 移除离线数据
   offlineDB.removeItem(props.editorNo)
   // 更新Tab序列号

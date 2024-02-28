@@ -77,7 +77,7 @@ const showWarning = computed(() => {
  */
 const queryHTTPHeaders = () => {
   ElementService.queryHTTPHeaderAllByTemplate({ templates: [...localModel.value] }).then((response) => {
-    rows.value = response.result
+    rows.value = response.data
   })
 }
 

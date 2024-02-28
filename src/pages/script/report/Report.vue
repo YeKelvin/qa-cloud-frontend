@@ -135,8 +135,8 @@ onMounted(() => {
  */
 const queryReport = () => {
   ReportService.queryReport({ reportNo: reportNo.value }).then((response) => {
-    overview.value = response.result.details
-    collections.value = response.result.collections
+    overview.value = response.data.details
+    collections.value = response.data.collections
   })
 }
 
@@ -145,8 +145,8 @@ const queryReport = () => {
  */
 const queryCollectionResult = () => {
   ReportService.queryCollectionResult({ collectionId: collectionId.value }).then((response) => {
-    collectionDetails.value = response.result.details
-    workers.value = response.result.children
+    collectionDetails.value = response.data.details
+    workers.value = response.data.children
   })
 }
 

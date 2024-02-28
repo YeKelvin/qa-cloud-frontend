@@ -324,19 +324,19 @@ export const usePyMeterStore = defineStore('pymeter', {
       const response = await VariablesService.queryVariableDatasetAll({ workspaceNo: useWorkspaceStore().workspaceNo })
 
       // 全部变量集
-      this.datasetList = response.result
+      this.datasetList = response.data
       // 全局变量
-      this.globalDatasetList = response.result.filter((item) => item.datasetType === 'GLOBAL')
+      this.globalDatasetList = response.data.filter((item) => item.datasetType === 'GLOBAL')
       // 空间变量
-      this.workspaceDatasetList = response.result.filter((item) => item.datasetType === 'WORKSPACE')
+      this.workspaceDatasetList = response.data.filter((item) => item.datasetType === 'WORKSPACE')
       // 环境变量
-      this.environmentDatasetList = response.result.filter((item) => item.datasetType === 'ENVIRONMENT')
+      this.environmentDatasetList = response.data.filter((item) => item.datasetType === 'ENVIRONMENT')
       // 自定义变量
-      this.customDatasetList = response.result.filter((item) => item.datasetType === 'CUSTOM')
+      this.customDatasetList = response.data.filter((item) => item.datasetType === 'CUSTOM')
 
       // 判断是否存在无效数据，存在则删除
       // 当前选择的变量集不为空且不在变量集列表中时（表示该变量集已无效），删除该变量集编号
-      const datasets = response.result.map((item) => item.datasetNo)
+      const datasets = response.data.map((item) => item.datasetNo)
       for (let i = this.selectedDatasets.length - 1; i >= 0; i--) {
         // 删除无效数据
         if (!datasets.includes(this.selectedDatasets[i])) {
@@ -386,7 +386,7 @@ export const usePyMeterStore = defineStore('pymeter', {
      */
     queryHttpheaderTemplateAll() {
       ElementService.queryHTTPHeaderTemplateAll({ workspaceNo: useWorkspaceStore().workspaceNo }).then((response) => {
-        this.httpheaderTemplateList = response.result
+        this.httpheaderTemplateList = response.data
       })
     },
 
@@ -395,7 +395,7 @@ export const usePyMeterStore = defineStore('pymeter', {
      */
     queryDatabaseEngineAll() {
       ElementService.queryDatabaseEngineAll({ workspaceNo: useWorkspaceStore().workspaceNo }).then((response) => {
-        this.databaseEngineList = response.result
+        this.databaseEngineList = response.data
       })
     }
   }

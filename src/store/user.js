@@ -11,8 +11,8 @@ import { defineStore } from 'pinia'
 const getPublicKey = async () => {
   const response = await AuthService.encryptionFactor()
   return {
-    index: response.result.index,
-    publicKey: response.result.publicKey
+    index: response.data.index,
+    publicKey: response.data.publicKey
   }
 }
 
@@ -52,8 +52,8 @@ export const useUserStore = defineStore('user', {
           index: factor.index
         })
       }
-      setToken(response.result.accessToken)
-      this.token = response.result.accessToken
+      setToken(response.data.accessToken)
+      this.token = response.data.accessToken
     },
 
     queryInfo() {
@@ -64,18 +64,18 @@ export const useUserStore = defineStore('user', {
               reject(new Error('身份认证失败或失效，请重新登录'))
               return
             }
-            if (response && (!response.success || !response.result)) {
+            if (response && (response.code !== 200 || !response.data)) {
               reject(new Error('身份认证失败或失效，请重新登录'))
               return
             }
 
             this.avatar = userDefaultAvatar
-            this.number = response.result.userNo
-            this.name = response.result.userName
-            this.sso = response.result.sso
-            this.roles = response.result.roles
-            this.settings = response.result.settings
-            resolve(response.result)
+            this.number = response.data.userNo
+            this.name = response.data.userName
+            this.sso = response.data.sso
+            this.roles = response.data.roles
+            this.settings = response.data.settings
+            resolve(response.data)
           })
           .catch((error) => {
             reject(error)

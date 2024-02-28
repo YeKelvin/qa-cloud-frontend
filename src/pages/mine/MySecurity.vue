@@ -86,8 +86,8 @@ const formRules = {
 const getPublicKey = async () => {
   const response = await AuthService.encryptionFactor()
   return {
-    index: response.result.index,
-    publicKey: response.result.publicKey
+    index: response.data.index,
+    publicKey: response.data.publicKey
   }
 }
 

@@ -196,8 +196,8 @@ onMounted(() => {
  */
 const queryTestplan = () => {
   TestplanService.queryTestplan({ planNo: planNo.value }).then((response) => {
-    assign(formData, response.result)
-    collectionTreeRef.value.setCheckedKeys(response.result.collections)
+    assign(formData, response.data)
+    collectionTreeRef.value.setCheckedKeys(response.data.collections)
   })
 }
 
@@ -206,7 +206,7 @@ const queryTestplan = () => {
  */
 const queryNoticeRobotAll = () => {
   MessageService.queryNoticeRobotAll({ workspaceNo: workspaceStore.workspaceNo }).then((response) => {
-    noticeRobotList.value = response.result
+    noticeRobotList.value = response.data
   })
 }
 

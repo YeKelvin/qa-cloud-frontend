@@ -216,8 +216,8 @@ const queryList = () => {
     page: page.value,
     pageSize: pageSize.value
   }).then((response) => {
-    tableData.value = response.result.data
-    total.value = response.result.total
+    tableData.value = response.data.list
+    total.value = response.data.total
   })
 }
 
@@ -253,7 +253,7 @@ const executeTestplan = async ({ planNo, planName }) => {
   })
   // 成功提示
   ElNotification.success({
-    message: `开始执行测试计划，总 ${response.result.total} 个脚本，请稍等片刻`,
+    message: `开始执行测试计划，总 ${response.data.total} 个脚本，请稍等片刻`,
     duration: 2 * 1000
   })
 }

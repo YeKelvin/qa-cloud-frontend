@@ -39,7 +39,7 @@ onMounted(() => {
  */
 const query = () => {
   RoleService.queryRolePermissions({ roleNo: roleNo.value }).then((response) => {
-    checkedPermissions.value = response.result.map((item) => item.permissionNo)
+    checkedPermissions.value = response.data.map((item) => item.permissionNo)
   })
 }
 
@@ -68,7 +68,6 @@ const goBack = () => {
 .role-permission-container {
   display: flex;
   flex-direction: column;
-
   padding: 20px;
 }
 
@@ -79,11 +78,11 @@ const goBack = () => {
 }
 
 .title {
-  color: #606266;
-  font-size: 16px;
-  font-weight: bold;
   font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial,
     sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+  color: #606266;
 }
 
 .permission-table-container {
@@ -92,7 +91,7 @@ const goBack = () => {
 
 .button-container {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
 }
 </style>

@@ -60,7 +60,7 @@ onMounted(() => {
 
 const queryTestplanExecutionAll = () => {
   TestplanService.queryTestplanExecutionAll({ planNo: props.planNo }).then((response) => {
-    tableData.value = response.result
+    tableData.value = response.data
   })
 }
 

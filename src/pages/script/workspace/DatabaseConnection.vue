@@ -183,7 +183,7 @@ watch(
  */
 const query = () => {
   ElementService.queryElementInfo({ elementNo: elementData.value.elementNo }).then((response) => {
-    elementData.value = response.result
+    elementData.value = response.data
     hashcode.value = toHashCode(elementData.value)
   })
 }

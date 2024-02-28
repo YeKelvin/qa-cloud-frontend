@@ -89,9 +89,9 @@ const queryDatasetALL = async () => {
   // 查询变量集列表
   const response = await VariablesService.queryVariableDatasetAll({ workspaceNo: props.workspaceNo })
 
-  globalDatasetList.value = response.result.filter((item) => item.datasetType === 'GLOBAL')
-  environmentDatasetList.value = response.result.filter((item) => item.datasetType === 'ENVIRONMENT')
-  customDatasetList.value = response.result.filter((item) => item.datasetType === 'CUSTOM')
+  globalDatasetList.value = response.data.filter((item) => item.datasetType === 'GLOBAL')
+  environmentDatasetList.value = response.data.filter((item) => item.datasetType === 'ENVIRONMENT')
+  customDatasetList.value = response.data.filter((item) => item.datasetType === 'CUSTOM')
 }
 </script>
 

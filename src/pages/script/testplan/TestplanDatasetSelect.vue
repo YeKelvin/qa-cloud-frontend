@@ -143,11 +143,11 @@ onMounted(() => {
 const queryDatasetALL = async () => {
   // 查询变量集列表
   const response = await VariablesService.queryVariableDatasetAll({ workspaceNo: props.workspaceNo })
-  datasetList.value = response.result
-  globalDatasetList.value = response.result.filter((item) => item.datasetType === 'GLOBAL')
-  workspaceDatasetList.value = response.result.filter((item) => item.datasetType === 'WORKSPACE')
-  environmentDatasetList.value = response.result.filter((item) => item.datasetType === 'ENVIRONMENT')
-  customDatasetList.value = response.result.filter((item) => item.datasetType === 'CUSTOM')
+  datasetList.value = response.data
+  globalDatasetList.value = response.data.filter((item) => item.datasetType === 'GLOBAL')
+  workspaceDatasetList.value = response.data.filter((item) => item.datasetType === 'WORKSPACE')
+  environmentDatasetList.value = response.data.filter((item) => item.datasetType === 'ENVIRONMENT')
+  customDatasetList.value = response.data.filter((item) => item.datasetType === 'CUSTOM')
 }
 
 const getBoundDatasetName = (datasetNo) => {

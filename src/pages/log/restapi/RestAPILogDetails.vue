@@ -76,7 +76,7 @@ const ActionType = {
 
 onMounted(() => {
   DataService.queryDataLogList({ logNo: formData.value.logNo }).then((response) => {
-    tableData.value = response.result
+    tableData.value = response.data
   })
   nextTick(() => {
     setTimeout(() => {

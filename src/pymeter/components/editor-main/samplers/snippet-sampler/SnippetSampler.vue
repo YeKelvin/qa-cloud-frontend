@@ -203,7 +203,7 @@ const queryOfflineData = async () => {
  */
 const queryBackendData = async () => {
   const response = await ElementService.queryElementInfo({ elementNo: elementData.value.elementNo })
-  assignElement(elementData.value, response.result)
+  assignElement(elementData.value, response.data)
   await querySnippetInfo()
   assignMetadata(metadata.value, { hashcode: toHashCode(elementData.value) })
 }
@@ -217,7 +217,7 @@ const queryTestSnippetAll = async () => {
     elementType: 'SNIPPET',
     elementClass: 'TestSnippet'
   })
-  snippetList.value = response.result
+  snippetList.value = response.data
 }
 
 /**
@@ -228,7 +228,7 @@ const querySnippetInfo = async () => {
   if (!snippetNo) return
   argumentData.value = []
   const response = await ElementService.queryElementInfo({ elementNo: snippetNo })
-  const parameters = response.result.elementAttrs.TestSnippet__parameters
+  const parameters = response.data.elementAttrs.TestSnippet__parameters
   if (creation.value) {
     parameters.forEach((item) => {
       argumentData.value.push({
@@ -340,7 +340,7 @@ const createElement = async () => {
     ...getSubmitData()
   })
   // 提取元素编号
-  const elementNo = response.result.elementNo
+  const elementNo = response.data.elementNo
   // 移除离线数据
   offlineDB.removeItem(props.editorNo)
   // 更新Tab序列号

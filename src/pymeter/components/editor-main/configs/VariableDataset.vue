@@ -152,7 +152,7 @@ const queryOfflineData = async () => {
  */
 const queryBackendData = async () => {
   const response = await VariablesService.queryVariablesByDataset({ datasetNo: configData.value.datasetNo })
-  const backendData = response.result
+  const backendData = response.data
   backendData.push({ variableName: '', variableDesc: '', initialValue: '', currentValue: '', enabled: true })
   configData.value.variableList = backendData
   configData.value.deletionList = []

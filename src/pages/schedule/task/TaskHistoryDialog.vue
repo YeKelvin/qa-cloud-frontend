@@ -59,8 +59,8 @@ onMounted(() => {
 const query = () => {
   ScheduleService.queryTaskHistoryList({ ...queryConditions, page: page.value, pageSize: pageSize.value }).then(
     (response) => {
-      tableData.value = response.result.data
-      total.value = response.result.total
+      tableData.value = response.data.list
+      total.value = response.data.total
     }
   )
 }

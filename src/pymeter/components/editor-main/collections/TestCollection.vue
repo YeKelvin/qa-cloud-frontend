@@ -307,10 +307,10 @@ const queryBackendData = async () => {
   let response = null
   // 查询元素信息
   response = await ElementService.queryElementInfo({ elementNo: elementData.value.elementNo })
-  assignElement(elementData.value, response.result)
+  assignElement(elementData.value, response.data)
   // 查询元素组件
   response = await ElementService.queryElementComponents({ elementNo: elementData.value.elementNo })
-  assignComponent(elementData.value, response.result)
+  assignComponent(elementData.value, response.data)
   // 计算HashCode并存储
   assignMetadata(metadata.value, { hashcode: toHashCode(elementData.value) })
 }
@@ -339,7 +339,7 @@ const createElement = async () => {
   // 新增元素
   const response = await ElementService.createElement(elementData.value)
   // 提取元素编号
-  const elementNo = response.result.elementNo
+  const elementNo = response.data.elementNo
   // 移除离线数据
   offlineDB.removeItem(props.editorNo)
   // 更新Tab序列号
@@ -367,7 +367,7 @@ const queryCollectionScript = () => {
   }).then((response) => {
     showJsonScriptDialog.value = true
     nextTick(() => {
-      jsonEditorRef.value.setValue(JSON.stringify(response.result))
+      jsonEditorRef.value.setValue(JSON.stringify(response.data))
       setTimeout(() => {
         jsonEditorRef.value.formatDocument()
       }, 200)

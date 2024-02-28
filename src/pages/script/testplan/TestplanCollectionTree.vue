@@ -73,7 +73,7 @@ const queryCollections = () => {
     elementType: 'COLLECTION',
     elementClass: 'TestCollection'
   }).then((response) => {
-    collections.value = response.result
+    collections.value = response.data
   })
 }
 

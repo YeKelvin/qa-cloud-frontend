@@ -159,7 +159,7 @@ const queryElementsTree = (expandtop = false) => {
   // 根据列表查询元素及其子代
   ElementService.queryElementTreeByRoots({ roots: props.collections }).then((response) => {
     // 存储列表
-    elementList.value = response.result
+    elementList.value = response.data
     nextTick(() => {
       // 选中的节点保持高亮
       currentKey.value && eltreeRef.value && eltreeRef.value.setCurrentKey(currentKey.value)

@@ -266,8 +266,8 @@ const query = () => {
     page: page.value,
     pageSize: pageSize.value
   }).then((response) => {
-    activities.value = response.result.data
-    total.value = response.result.total
+    activities.value = response.data.list
+    total.value = response.data.total
     loading.value = false
   })
 }

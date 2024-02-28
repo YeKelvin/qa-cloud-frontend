@@ -3,7 +3,7 @@
     <div style="display: flex; flex: 1; flex-direction: column">
       <el-transfer
         v-model="members"
-        style="display: flex; justify-content: center; align-items: center"
+        style="display: flex; align-items: center; justify-content: center"
         filterable
         :titles="['平台用户', '空间成员']"
         :button-texts="['移除', '加入']"
@@ -14,7 +14,7 @@
         </template>
       </el-transfer>
 
-      <div style="display: flex; justify-content: center; align-items: center; margin-top: 10px">
+      <div style="display: flex; align-items: center; justify-content: center; margin-top: 10px">
         <el-button type="primary" @click="save">保 存</el-button>
         <el-button @click="$emit('update:model-value', false)">关 闭</el-button>
       </div>
@@ -51,7 +51,7 @@ onMounted(() => {
  */
 const queryMemberAll = () => {
   UserService.queryUserAll().then((response) => {
-    userList.value = response.result
+    userList.value = response.data
   })
 }
 
@@ -60,7 +60,7 @@ const queryMemberAll = () => {
  */
 const queryWorkspaceMemberAll = () => {
   WorkspaceService.queryWorkspaceMemberAll({ workspaceNo: currentRow.value.workspaceNo }).then((response) => {
-    members.value = response.result.map((item) => item.userNo)
+    members.value = response.data.map((item) => item.userNo)
   })
 }
 
@@ -84,9 +84,9 @@ const save = () => {
 
 <style lang="scss" scoped>
 :deep(.el-transfer-panel) {
+  width: 300px;
   min-width: 200px;
   max-width: 400px;
-  width: 300px;
 }
 
 :deep(.el-transfer__buttons) {

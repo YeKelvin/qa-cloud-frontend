@@ -104,7 +104,7 @@ const createEnvironmentDataset = async () => {
   // 重新查询列表
   queryDatasetAll()
   // 打开新增变量集的 Tab
-  openDataset(response.result.datasetNo, datasetName)
+  openDataset(response.data.datasetNo, datasetName)
   // 成功提示
   ElMessage({ message: '新增成功', type: 'info', duration: 2 * 1000 })
 }
@@ -144,7 +144,7 @@ const createCustomDataset = async () => {
   // 重新查询列表
   queryDatasetAll()
   // 打开新增变量集的 Tab
-  openDataset(response.result.datasetNo, datasetName)
+  openDataset(response.data.datasetNo, datasetName)
   // 成功提示
   ElMessage({ message: '新增成功', type: 'info', duration: 2 * 1000 })
 }

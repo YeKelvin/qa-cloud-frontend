@@ -193,7 +193,7 @@ const queryCollections = async () => {
       elementType: 'COLLECTION',
       elementClass: 'TestCollection'
     })
-  ).result
+  ).data
   // 查询 TestSnippet
   snippetList.value = (
     await ElementService.queryElementAll({
@@ -201,7 +201,7 @@ const queryCollections = async () => {
       elementType: 'SNIPPET',
       elementClass: 'TestSnippet'
     })
-  ).result
+  ).data
   // 加载完成
   loading.value = false
   // 提取集合编号

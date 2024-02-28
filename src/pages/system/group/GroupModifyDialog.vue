@@ -54,7 +54,7 @@ onMounted(() => {
   formData.value.roles = currentRow.value ? currentRow.value.roles.map((item) => item.roleNo) : []
   // 查询所有角色
   RoleService.queryRoleAll().then((response) => {
-    roleList.value = response.result
+    roleList.value = response.data
   })
 })
 

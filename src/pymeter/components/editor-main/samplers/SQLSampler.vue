@@ -202,7 +202,7 @@ watch(
 onMounted(async () => {
   // 查询所有数据库
   const response = await ElementService.queryDatabaseEngineAll({ workspaceNo: workspaceStore.workspaceNo })
-  engineList.value = response.result
+  engineList.value = response.data
 
   // 优先查询离线数据
   if (unsaved.value) {
@@ -233,9 +233,9 @@ const queryOfflineData = async () => {
  */
 const queryBackendData = async () => {
   const response = await ElementService.queryElementInfo({ elementNo: elementData.value.elementNo })
-  assignElement(elementData.value, response.result)
+  assignElement(elementData.value, response.data)
   assignMetadata(metadata.value, { hashcode: toHashCode(elementData.value) })
-  editorRef.value.setValue(response.result.elementProps.SQLSampler__statement)
+  editorRef.value.setValue(response.data.elementProps.SQLSampler__statement)
 }
 
 /**
@@ -294,7 +294,7 @@ const createElement = async () => {
     ...elementData.value
   })
   // 提取元素编号
-  const elementNo = response.result.elementNo
+  const elementNo = response.data.elementNo
   // 移除离线数据
   offlineDB.removeItem(props.editorNo)
   // 更新Tab序列号

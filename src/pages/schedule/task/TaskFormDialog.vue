@@ -331,26 +331,26 @@ onMounted(() => {
   // 查询定时任务信息
   ScheduleService.queryTaskInfo({ jobNo: props.data.jobNo }).then((response) => {
     // 初始化作业信息
-    jobForm.value = response.result
+    jobForm.value = response.data
 
     // 赋值任务参数
     const jobType = jobForm.value.jobType
     if (jobType === 'TESTPLAN') {
-      taskForm.value.planNo = response.result.jobArgs.planNo
+      taskForm.value.planNo = response.data.jobArgs.planNo
     } else if (jobType === 'COLLECTION') {
-      taskForm.value.collectionNo = response.result.jobArgs.collectionNo
+      taskForm.value.collectionNo = response.data.jobArgs.collectionNo
     } else {
-      taskForm.value.workerNo = response.result.jobArgs.workerNo
+      taskForm.value.workerNo = response.data.jobArgs.workerNo
     }
 
     // 赋值触发器参数
     const triggerType = jobForm.value.triggerType
     if (triggerType === 'DATE') {
-      triggerForm.value.date = response.result.triggerArgs
+      triggerForm.value.date = response.data.triggerArgs
     } else if (triggerType === 'INTERVAL') {
-      triggerForm.value.interval = response.result.triggerArgs
+      triggerForm.value.interval = response.data.triggerArgs
     } else {
-      triggerForm.value.cron = response.result.triggerArgs
+      triggerForm.value.cron = response.data.triggerArgs
     }
   })
 })
@@ -360,7 +360,7 @@ const queryTestplanAll = () => {
     workspaceNo: workspaceStore.workspaceNo,
     stateList: ['INITIAL', 'TESTING']
   }).then((response) => {
-    testplanList.value = response.result
+    testplanList.value = response.data
   })
 }
 
@@ -371,7 +371,7 @@ const queryCollectionAll = () => {
     elementClass: 'TestCollection',
     enabled: true
   }).then((response) => {
-    collectionList.value = response.result
+    collectionList.value = response.data
   })
 }
 
@@ -384,7 +384,7 @@ const queryWorkerAll = () => {
     childClass: 'TestWorker',
     enabled: true
   }).then((response) => {
-    workerList.value = response.result
+    workerList.value = response.data
   })
 }
 

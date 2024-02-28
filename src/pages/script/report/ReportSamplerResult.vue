@@ -190,7 +190,7 @@ const setResponseContent = (code) => {
  */
 const querySamplerResult = () => {
   ReportService.querySamplerResult({ samplerId: props.samplerId }).then((response) => {
-    sampler.value = response.result
+    sampler.value = response.data
     handleRequestTabClick({ paneName: requestActiveTabName.value })
     handleResponseTabClick({ paneName: responseActiveTabName.value })
     // 重置源码/解码按钮

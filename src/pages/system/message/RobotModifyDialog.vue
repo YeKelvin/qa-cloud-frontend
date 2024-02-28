@@ -55,7 +55,7 @@ const formRules = reactive({
 
 onMounted(() => {
   MessageService.queryNoticeRobot({ robotNo: currentRow.value.robotNo }).then((response) => {
-    formData.value = response.result
+    formData.value = response.data
   })
 })
 

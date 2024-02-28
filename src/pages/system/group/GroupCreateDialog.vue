@@ -46,7 +46,7 @@ const roleList = ref([])
 
 onMounted(() => {
   RoleService.queryRoleAll().then((response) => {
-    roleList.value = response.result
+    roleList.value = response.data
   })
 })
 

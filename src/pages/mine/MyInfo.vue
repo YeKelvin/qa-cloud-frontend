@@ -45,7 +45,7 @@ const formRules = {
 onMounted(() => {
   // 查询用户信息
   UserService.queryInfo().then((response) => {
-    const user = response.result
+    const user = response.data
     formData.value.userName = user.userName
     formData.value.mobile = user.mobile
     formData.value.email = user.email

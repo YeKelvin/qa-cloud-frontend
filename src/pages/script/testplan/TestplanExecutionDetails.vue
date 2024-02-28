@@ -5,7 +5,7 @@
       <!-- 执行进度 -->
       <el-card shadow="hover" style="width: 50%; margin-right: 10px">
         <template #header><span>执行进度</span></template>
-        <div style="display: flex; flex: 1; justify-content: center; align-items: center; align-content: center">
+        <div style="display: flex; flex: 1; place-content: center center; align-items: center">
           <el-progress type="circle" :percentage="percentage" :width="160" />
         </div>
       </el-card>
@@ -130,8 +130,8 @@ onMounted(() => {
 
 const queryTestplanExecutionDetails = () => {
   TestplanService.queryTestplanExecutionDetails({ executionNo: executionNo.value }).then((response) => {
-    details.value = response.result
-    tableData.value = response.result.collectionList
+    details.value = response.data
+    tableData.value = response.data.collectionList
   })
 }
 
@@ -163,9 +163,8 @@ const goBack = () => {
 .settings-container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  place-content: center center;
   align-items: center;
-  align-content: center;
 
   .el-tag {
     margin: 5px;
@@ -174,17 +173,17 @@ const goBack = () => {
 
 .btn-wrapper {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   margin-top: 10px;
 }
 
 :deep(.el-card__header) {
-  padding: 10px 10px;
+  padding: 10px;
 }
 
 :deep(.el-card__body) {
-  padding: 10px;
   display: flex;
+  padding: 10px;
 }
 </style>

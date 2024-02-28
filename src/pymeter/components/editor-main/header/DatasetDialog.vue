@@ -212,7 +212,7 @@ const queryVariables = async () => {
   } else {
     // 查询后端数据
     const response = await VariablesService.queryVariablesByDataset({ datasetNo: activeTabNo.value })
-    rows.value = response.result
+    rows.value = response.data
   }
 }
 

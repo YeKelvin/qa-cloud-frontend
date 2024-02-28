@@ -235,7 +235,7 @@ const queryOfflineData = async () => {
  */
 const queryBackendData = async () => {
   const response = await ElementService.queryElementInfo({ elementNo: elementData.value.elementNo })
-  assignElement(elementData.value, response.result)
+  assignElement(elementData.value, response.data)
   assignMetadata(metadata.value, { hashcode: toHashCode(elementData.value) })
 }
 
@@ -258,7 +258,7 @@ const createElement = async () => {
     ...elementData.value
   })
   // 提取元素编号
-  const elementNo = response.result.elementNo
+  const elementNo = response.data.elementNo
   // 移除离线数据
   offlineDB.removeItem(props.editorNo)
   // 更新Tab序列号
@@ -280,7 +280,7 @@ const queryWorkerScript = () => {
   }).then((response) => {
     showJsonScriptDialog.value = true
     nextTick(() => {
-      jsonEditorRef.value.setValue(JSON.stringify(response.result))
+      jsonEditorRef.value.setValue(JSON.stringify(response.data))
       setTimeout(() => {
         jsonEditorRef.value.formatDocument()
       }, 200)

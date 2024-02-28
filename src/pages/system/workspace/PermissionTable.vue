@@ -74,7 +74,7 @@ const query = () => {
       const modules = moduleList.value
       const moduleIndexStore = {}
       const objectIndexStore = {}
-      response.result.forEach((item) => {
+      response.data.forEach((item) => {
         if (!has(moduleIndexStore, item.moduleCode)) {
           modules.push({
             moduleNo: item.moduleNo,
