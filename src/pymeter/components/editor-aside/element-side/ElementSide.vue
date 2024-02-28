@@ -105,16 +105,19 @@
     </template>
 
     <!-- 没有选择脚本时给出提示 -->
-    <el-empty
-      v-if="!loading && isEmpty(selectedCollections)"
-      style="height: 100%; padding-top: 0; padding-bottom: 120px"
-    />
+    <template v-if="!loading && isEmpty(selectedCollections)">
+      <el-empty style="height: 100%; padding-top: 0; padding-bottom: 120px">
+        <el-button link type="primary" style="font-size: 16px" :icon="Open" @click="openScriptSelect()">
+          打开脚本
+        </el-button>
+      </el-empty>
+    </template>
   </div>
 </template>
 
 <script setup>
 import * as ElementService from '@/api/script/element'
-import { Plus } from '@element-plus/icons-vue'
+import { Plus, Open } from '@element-plus/icons-vue'
 import { isEmpty } from 'lodash-es'
 import { usePyMeterStore } from '@/store/pymeter'
 import { useWorkspaceStore } from '@/store/workspace'
@@ -163,14 +166,15 @@ onMounted(async () => {
   }
   // 查询集合列表
   await queryCollections()
-  // 没有选择脚本时自动弹出下拉框
-  if (selectedCollections.value.length > 0) return
-  nextTick(() => {
-    setTimeout(() => {
-      elSelectRef.value && elSelectRef.value.focus()
-    }, 1000)
-  })
 })
+
+/**
+ * 手动打开脚本下拉框
+ */
+const openScriptSelect = () => {
+  elSelectRef.value.focus()
+  elSelectRef.value.$el.click()
+}
 
 /**
  * 滚动至底部
