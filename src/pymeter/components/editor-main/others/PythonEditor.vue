@@ -1,12 +1,11 @@
 <template>
-  <div class="python-editor-container">
-    <MonacoEditor
+  <div class="python-editor">
+    <FunctionEditor
       ref="pythonEditorRef"
-      v-model="localValue"
+      style="flex: 1"
       language="python"
-      class="python-editor"
-      :height="props.height"
-      :readonly="readonly"
+      :model-value="attrs.modelValue"
+      @update:model-value="emit('update:modelValue', $event)"
     />
     <div class="right-container">
       <!-- 运行按钮 -->
@@ -57,20 +56,14 @@
 </template>
 
 <script setup>
-import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
+import FunctionEditor from './FunctionEditor.vue'
 
 const emit = defineEmits(['update:modelValue', 'run', 'runall', 'runcase'])
 const attrs = useAttrs()
 const props = defineProps({
-  readonly: { type: Boolean, default: false },
   runnable: { type: Boolean, default: false },
-  height: { type: [String, Number], default: '300px' },
   phase: { type: String, required: true }, // SAMPLER | PREV | POST | ASSERTION
   type: { type: String, required: true } // PYTHON | HTTP
-})
-const localValue = computed({
-  get: () => attrs.modelValue,
-  set: (val) => emit('update:modelValue', val)
 })
 const pythonEditorRef = ref()
 
@@ -186,13 +179,8 @@ defineExpose({
 </script>
 
 <style lang="scss" scoped>
-.python-editor-container {
-  display: flex;
-  margin-bottom: 10px;
-}
-
 .python-editor {
-  flex: 1;
+  display: flex;
   margin-bottom: 10px;
 }
 

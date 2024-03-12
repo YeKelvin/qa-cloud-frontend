@@ -26,7 +26,7 @@
         <!-- 空数据提示 -->
         <template #empty><el-empty /></template>
         <!-- 列定义 -->
-        <el-table-column prop="planNo" label="计划编号" min-width="180" width="180" />
+        <el-table-column prop="planNo" label="计划编号" min-width="200" width="200" />
         <el-table-column prop="planName" label="计划名称" min-width="150">
           <template #default="{ row }">{{ row.planName }} ({{ row.collectionTotal }})</template>
         </el-table-column>

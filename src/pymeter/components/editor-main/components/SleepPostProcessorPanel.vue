@@ -1,23 +1,23 @@
 <template>
   <el-form
-    label-position="right"
     label-width="100px"
-    inline-message
     scroll-to-error
-    style="width: 100%; padding-right: 105px; padding-left: 69px; margin-top: 20px"
+    style="width: 100%; padding-right: 115px; padding-left: 67px; margin-top: 20px"
     :model="elementProperty"
     :rules="rules"
   >
     <!-- 延迟时间 -->
     <el-form-item label="延迟时间：" prop="SleepPostProcessor__delay">
-      <el-input v-model="elementProperty.SleepPostProcessor__delay" clearable>
+      <FxInput v-model="elementProperty.SleepPostProcessor__delay">
         <template #append>ms</template>
-      </el-input>
+      </FxInput>
     </el-form-item>
   </el-form>
 </template>
 
 <script setup>
+import FxInput from '@/pymeter/components/editor-main/others/FunctionInput.vue'
+
 const props = defineProps({
   elementProps: Object
 })

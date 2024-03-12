@@ -10,14 +10,14 @@
     <!-- 参数值 -->
     <el-table-column label="参数值" width="auto">
       <template #default="{ row }">
-        <SimpleTextarea v-model="row.desc" :placeholder="row.default" />
+        <FxInput v-model="row.desc" :placeholder="row.default" />
       </template>
     </el-table-column>
   </el-table>
 </template>
 
 <script setup>
-import SimpleTextarea from '@/components/simple-textarea/SimpleTextarea.vue'
+import FxInput from '@/pymeter/components/editor-main/others/FunctionInput.vue'
 </script>
 
 <style lang="scss" scoped>

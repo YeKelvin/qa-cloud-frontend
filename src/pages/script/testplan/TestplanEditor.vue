@@ -14,7 +14,6 @@
         <el-scrollbar class="maxsize" wrap-style="overflow-x:auto;" view-style="padding:10px;">
           <el-form
             ref="elformRef"
-            label-position="right"
             label-width="140px"
             style="width: 100%"
             inline-message

@@ -30,21 +30,21 @@
       <!-- 变量名称 -->
       <el-table-column label="变量名称">
         <template #default="{ row }">
-          <SimpleTextarea v-model="row.variableName" />
+          <AutosizeTextarea v-model="row.variableName" />
         </template>
       </el-table-column>
 
       <!-- 默认值 -->
       <el-table-column label="默认值">
         <template #default="{ row }">
-          <SimpleTextarea v-model="row.initialValue" />
+          <AutosizeTextarea v-model="row.initialValue" />
         </template>
       </el-table-column>
 
       <!-- 当前值 -->
       <el-table-column label="当前值">
         <template #default="{ row }">
-          <SimpleTextarea v-model="row.currentValue" />
+          <AutosizeTextarea v-model="row.currentValue" />
         </template>
       </el-table-column>
 
@@ -72,7 +72,7 @@
 
 <script setup>
 import * as VariablesService from '@/api/script/variables'
-import SimpleTextarea from '@/components/simple-textarea/SimpleTextarea.vue'
+import AutosizeTextarea from '@/components/autosize-textarea/AutosizeTextarea.vue'
 import SaveButton from '@/pymeter/components/editor-main/others/SaveButton.vue'
 import EditorEmits from '@/pymeter/composables/editor.emits'
 import EditorProps from '@/pymeter/composables/editor.props'

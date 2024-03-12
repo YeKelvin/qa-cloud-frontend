@@ -1,21 +1,14 @@
 <template>
   <div class="pymeter-component-container" tabindex="-1">
-    <el-form
-      ref="elformRef"
-      label-width="140px"
-      label-position="right"
-      inline-message
-      :model="elementData"
-      :rules="elementRules"
-    >
+    <el-form ref="elformRef" label-width="140px" :model="elementData" :rules="elementRules">
       <!-- 元素名称 -->
       <el-form-item label="名称：" prop="elementName">
-        <el-input v-model="elementData.elementName" placeholder="元素名称" clearable />
+        <FxInput v-model="elementData.elementName" placeholder="元素名称" />
       </el-form-item>
 
       <!-- 元素备注 -->
       <el-form-item label="备注：" prop="elementDesc">
-        <el-input v-model="elementData.elementDesc" placeholder="元素备注" clearable />
+        <FxInput v-model="elementData.elementDesc" placeholder="元素备注" />
       </el-form-item>
 
       <!-- 元素属性 -->
@@ -105,6 +98,7 @@
 <script setup>
 import * as ElementService from '@/api/script/element'
 import * as ExecutionService from '@/api/script/execution'
+import FxInput from '@/pymeter/components/editor-main/others/FunctionInput.vue'
 import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
 import SvgIcon from '@/components/svg-icon/SvgIcon.vue'
 import EditorEmits from '@/pymeter/composables/editor.emits'

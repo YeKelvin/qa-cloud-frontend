@@ -29,21 +29,21 @@
     <!-- 参数名称 -->
     <el-table-column label="名称" width="auto">
       <template #default="{ row }">
-        <SimpleTextarea v-model="row.name" />
+        <FxInput v-model="row.name" />
       </template>
     </el-table-column>
 
     <!-- 参数值 -->
     <el-table-column label="值" width="auto">
       <template #default="{ row }">
-        <SimpleTextarea v-model="row.value" />
+        <FxInput v-model="row.value" />
       </template>
     </el-table-column>
 
     <!-- 参数描述 -->
     <el-table-column v-if="showDesc" label="描述" width="auto">
       <template #default="{ row }">
-        <SimpleTextarea v-model="row.desc" />
+        <FxInput v-model="row.desc" />
       </template>
     </el-table-column>
 
@@ -73,7 +73,7 @@
 </template>
 
 <script setup>
-import SimpleTextarea from '@/components/simple-textarea/SimpleTextarea.vue'
+import FxInput from '@/pymeter/components/editor-main/others/FunctionInput.vue'
 import { Check, Close, Delete } from '@element-plus/icons-vue'
 import { isEmpty } from 'lodash-es'
 import sortablejs from 'sortablejs'

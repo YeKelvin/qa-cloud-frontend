@@ -1,50 +1,39 @@
 <template>
   <div class="pymeter-component-container" tabindex="-1">
-    <el-form
-      ref="elformRef"
-      label-width="120px"
-      label-position="right"
-      inline-message
-      :model="elementData"
-      :rules="elementRules"
-    >
+    <el-form ref="elformRef" label-width="120px" :model="elementData" :rules="elementRules">
       <!-- 元素名称 -->
       <el-form-item label="名称：" prop="elementName">
-        <el-input v-model="elementData.elementName" placeholder="元素名称" clearable />
+        <FxInput v-model="elementData.elementName" placeholder="元素名称" />
       </el-form-item>
 
       <!-- 元素备注 -->
       <el-form-item label="备注：" prop="elementDesc">
-        <el-input v-model="elementData.elementDesc" placeholder="元素备注" clearable />
+        <FxInput v-model="elementData.elementDesc" placeholder="元素备注" />
       </el-form-item>
 
       <!-- 最大循环次数 -->
       <el-form-item label="最大循环数：" prop="elementProps.WhileController__max_loop_count">
-        <el-input
-          v-model="elementData.elementProps.WhileController__max_loop_count"
-          placeholder="最大循环次数"
-          clearable
-        />
+        <FxInput v-model="elementData.elementProps.WhileController__max_loop_count" placeholder="最大循环次数" />
       </el-form-item>
 
       <!-- 循环超时时间 -->
       <el-form-item label="超时时间：" prop="elementProps.WhileController__timeout">
-        <el-input v-model="elementData.elementProps.WhileController__timeout" placeholder="超时时间（ms）" clearable />
+        <FxInput v-model="elementData.elementProps.WhileController__timeout" placeholder="超时时间（ms）" />
       </el-form-item>
 
       <!-- 间隔时间 -->
       <el-form-item label="间隔时间：" prop="elementProps.WhileController__delay">
-        <el-input v-model="elementData.elementProps.WhileController__delay" placeholder="间隔时间（ms）" clearable />
+        <FxInput v-model="elementData.elementProps.WhileController__delay" placeholder="间隔时间（ms）" />
       </el-form-item>
 
       <!-- while条件 -->
-      <el-form-item label="表达式：" prop="elementProps.WhileController__condition">
-        <MonacoEditor
+      <el-form-item label="条件表达式：" prop="elementProps.WhileController__condition">
+        <FxEditor
           ref="editorRef"
           v-model="elementData.elementProps.WhileController__condition"
           language="python"
           line-numbers="off"
-          style="height: 100px"
+          style="height: 100px; margin-bottom: 0"
         />
         <el-tag
           type="danger"
@@ -65,6 +54,8 @@
 
 <script setup>
 import * as ElementService from '@/api/script/element'
+import FxInput from '@/pymeter/components/editor-main/others/FunctionInput.vue'
+import FxEditor from '@/pymeter/components/editor-main/others/FunctionEditor.vue'
 import SaveButton from '@/pymeter/components/editor-main/others/SaveButton.vue'
 import EditorEmits from '@/pymeter/composables/editor.emits'
 import EditorProps from '@/pymeter/composables/editor.props'
@@ -74,7 +65,6 @@ import { usePyMeterDB } from '@/store/pymeter-db'
 import { toHashCode } from '@/utils/object-util'
 import { ElMessage } from 'element-plus'
 import { debounce } from 'lodash-es'
-import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
 
 const emit = defineEmits(EditorEmits)
 const props = defineProps(EditorProps)

@@ -1,38 +1,30 @@
 <template>
   <div class="pymeter-component-container" tabindex="-1">
-    <el-form
-      ref="elformRef"
-      label-width="80px"
-      label-position="right"
-      inline-message
-      :model="elementData"
-      :rules="elementRules"
-    >
+    <el-form ref="elformRef" label-width="80px" :model="elementData" :rules="elementRules">
       <!-- 元素名称 -->
       <el-form-item label="名称：" prop="elementName">
-        <el-input v-model="elementData.elementName" placeholder="元素名称" clearable />
+        <FxInput v-model="elementData.elementName" placeholder="元素名称" />
       </el-form-item>
 
       <!-- 元素备注 -->
       <el-form-item label="备注：" prop="elementDesc">
-        <el-input v-model="elementData.elementDesc" placeholder="元素备注" clearable />
+        <FxInput v-model="elementData.elementDesc" placeholder="元素备注" />
       </el-form-item>
 
       <!-- URL = 请求方法 + 请求方法-->
       <el-form-item id="url" label="地址：" prop="elementProps.HTTPSampler__url">
         <span style="display: flex; flex: 1">
           <!-- 请求方法 -->
-          <el-input
+          <FxInput
             v-model="elementData.elementProps.HTTPSampler__url"
             placeholder="请求地址"
             style="margin-right: 10px"
-            clearable
           >
             <template #prepend>
               <!-- 请求方法 -->
               <HTTPMethodSelect v-model="elementData.elementProps.HTTPSampler__method" />
             </template>
-          </el-input>
+          </FxInput>
           <!-- 运行按钮 -->
           <el-dropdown split-button type="primary" trigger="click" placement="bottom-end" @click="sendRequest()">
             <SvgIcon icon-name="pymeter-send" style="margin-right: 5px; font-size: 18px" />
@@ -115,11 +107,11 @@
         <!-- 主体数据类型单选框 -->
         <span class="body-mode-options-wrapper" style="padding: 0 10px">
           <el-radio-group v-model="bodyMode">
-            <el-radio label="none">none</el-radio>
-            <el-radio label="form-data">form-data</el-radio>
-            <el-radio label="x-www-form-urlencoded">form-urlencoded</el-radio>
-            <el-radio label="raw">raw</el-radio>
-            <el-radio label="custom">自定义</el-radio>
+            <el-radio value="none">none</el-radio>
+            <el-radio value="form-data">form-data</el-radio>
+            <el-radio value="x-www-form-urlencoded">form-urlencoded</el-radio>
+            <el-radio value="raw">raw</el-radio>
+            <el-radio value="custom">自定义</el-radio>
           </el-radio-group>
           <!-- raw data type -->
           <el-select v-if="bodyMode == 'raw'" v-model="bodyRawType" class="raw-type">
@@ -141,7 +133,7 @@
 
         <!-- 代码编辑器 -->
         <template v-if="bodyMode == 'raw' || bodyMode == 'custom'">
-          <MonacoEditor ref="bodyEditorRef" v-model="bodyData" language="json" style="margin-bottom: 10px" />
+          <FxEditor ref="bodyEditorRef" v-model="bodyData" language="json" style="margin-bottom: 10px" />
         </template>
       </div>
 
@@ -162,7 +154,7 @@
 
       <!-- HTTP配置 -->
       <div v-if="showHTTPConfigsTab" class="tab-pane">
-        <el-form label-position="right" label-width="100px">
+        <el-form label-width="100px">
           <!-- 重定向 -->
           <el-form-item label="重定向：">
             <el-switch
@@ -177,43 +169,40 @@
 
           <!-- 编码 -->
           <el-form-item label="编码：">
-            <el-input
+            <FxInput
               v-model="elementData.elementProps.HTTPSampler__encoding"
               style="width: 300px"
               placeholder="UTF-8"
-              clearable
             />
           </el-form-item>
 
           <!-- 连接超时时间 -->
           <el-form-item label="连接超时：">
-            <el-input
+            <FxInput
               v-model="elementData.elementProps.HTTPSampler__connect_timeout"
               style="width: 300px"
               placeholder="超时时长"
-              clearable
             >
               <template #append>毫秒</template>
-            </el-input>
+            </FxInput>
           </el-form-item>
 
           <!-- 响应超时时间 -->
           <el-form-item label="响应超时：">
-            <el-input
+            <FxInput
               v-model="elementData.elementProps.HTTPSampler__response_timeout"
               style="width: 300px"
               placeholder="超时时长"
-              clearable
             >
               <template #append>毫秒</template>
-            </el-input>
+            </FxInput>
           </el-form-item>
         </el-form>
       </div>
 
       <!-- 组件设置 -->
       <div v-if="showCompoSettingsTab" class="tab-pane">
-        <el-form label-position="right" label-width="120px">
+        <el-form label-width="120px">
           <!-- 筛选规则 -->
           <el-form-item>
             <!-- label -->
@@ -282,7 +271,8 @@
 
 <script setup>
 import * as ElementService from '@/api/script/element'
-import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
+import FxInput from '@/pymeter/components/editor-main/others/FunctionInput.vue'
+import FxEditor from '@/pymeter/components/editor-main/others/FunctionEditor.vue'
 import ComponentFilter from '@/pymeter/components/editor-main/others/ComponentFilter.vue'
 import SaveButton from '@/pymeter/components/editor-main/others/SaveButton.vue'
 import PostProcessorPane from '@/pymeter/components/editor-main/components/PostProcessorPane.vue'

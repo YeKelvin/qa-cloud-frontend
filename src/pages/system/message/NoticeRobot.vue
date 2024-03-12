@@ -25,7 +25,7 @@
         <!-- 空数据提示 -->
         <template #empty><el-empty /></template>
         <!-- 列定义 -->
-        <el-table-column prop="robotNo" label="机器人编号" min-width="180" width="180" />
+        <el-table-column prop="robotNo" label="机器人编号" min-width="200" width="200" />
         <el-table-column prop="robotName" label="机器人名称" min-width="150" />
         <el-table-column prop="robotDesc" label="机器人描述" min-width="150" />
         <el-table-column prop="robotType" label="机器人类型" min-width="100" width="100">

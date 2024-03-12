@@ -4,13 +4,13 @@
     <div class="top-title">基本信息</div>
     <el-card shadow="hover">
       <el-row>
-        <el-col :span="8" class="item-tile">空间编号</el-col>
+        <el-col :span="8" class="item-title">空间编号</el-col>
         <el-col :span="12">{{ workspaceStore.workspaceNo }}</el-col>
         <el-col :span="4" />
       </el-row>
       <el-divider />
       <el-row>
-        <el-col :span="8" class="item-tile">空间名称</el-col>
+        <el-col :span="8" class="item-title">空间名称</el-col>
         <el-col :span="12">{{ workspaceStore.workspaceName }}</el-col>
         <el-col :span="4" />
       </el-row>
@@ -20,7 +20,7 @@
     <div class="top-title">空间操作</div>
     <el-card shadow="hover">
       <el-row>
-        <el-col :span="8" class="item-tile">克隆空间</el-col>
+        <el-col :span="8" class="item-title">克隆空间</el-col>
         <el-col :span="12">克隆空间但不包含脚本</el-col>
         <el-col :span="4"><el-button type="primary" plain @click="cloneWorkspace()">克隆空间</el-button></el-col>
       </el-row>
@@ -30,7 +30,7 @@
     <div class="top-title danger">危险操作</div>
     <el-card shadow="hover" style="border: 1px solid var(--el-color-danger-light-3)">
       <el-row>
-        <el-col :span="8" class="item-tile">删除空间</el-col>
+        <el-col :span="8" class="item-title">删除空间</el-col>
         <el-col :span="12">务必谨慎，删除后空间不可找回</el-col>
         <el-col :span="4"><el-button type="danger" plain @click="deleteWorkspace()">删除空间</el-button></el-col>
       </el-row>
@@ -68,7 +68,7 @@ const deleteWorkspace = () => {
   color: var(--el-color-danger);
 }
 
-.item-tile {
+.item-title {
   font-weight: bold;
 }
 

@@ -10,7 +10,6 @@ import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import VueDevTools from 'vite-plugin-vue-devtools'
 import IconsResolver from 'unplugin-icons/resolver'
-import DefineOptions from 'unplugin-vue-define-options/vite'
 
 export default ({ mode }) =>
   defineConfig({
@@ -52,7 +51,6 @@ export default ({ mode }) =>
           ElementPlusResolver()
         ]
       }),
-      DefineOptions(),
       createSvgIconsPlugin({
         iconDirs: [path.resolve(process.cwd(), 'src/assets/icons')],
         symbolId: 'icon-[dir]-[name]'

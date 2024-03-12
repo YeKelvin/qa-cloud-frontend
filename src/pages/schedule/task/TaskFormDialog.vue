@@ -18,9 +18,9 @@
       <el-card shadow="hover" style="width: 100%; margin-bottom: 18px">
         <el-form-item label="任务类型：" prop="jobType">
           <el-radio-group v-model="jobForm.jobType" :disabled="queryMode">
-            <el-radio label="TESTPLAN">测试计划</el-radio>
-            <el-radio label="COLLECTION">测试集合</el-radio>
-            <el-radio label="WORKER">测试用例</el-radio>
+            <el-radio value="TESTPLAN">测试计划</el-radio>
+            <el-radio value="COLLECTION">测试集合</el-radio>
+            <el-radio value="WORKER">测试用例</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form
@@ -104,9 +104,9 @@
       <el-card shadow="hover" style="width: 100%; margin-bottom: 20px">
         <el-form-item label="触发类型：" prop="triggerType">
           <el-radio-group v-model="jobForm.triggerType" :disabled="queryMode">
-            <el-radio label="DATE">固定时间</el-radio>
-            <el-radio label="INTERVAL">固定间隔</el-radio>
-            <el-radio label="CRON">CRON</el-radio>
+            <el-radio value="DATE">固定时间</el-radio>
+            <el-radio value="INTERVAL">固定间隔</el-radio>
+            <el-radio value="CRON">CRON</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form

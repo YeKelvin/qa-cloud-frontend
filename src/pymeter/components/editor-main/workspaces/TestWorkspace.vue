@@ -29,7 +29,7 @@
     </el-tabs>
 
     <div v-if="showSettingsTab" class="tab-pane">
-      <el-form label-position="right" label-width="140px">
+      <el-form label-width="140px">
         <!-- 倒序执行 -->
         <el-form-item style="padding-top: 10px">
           <!-- label -->

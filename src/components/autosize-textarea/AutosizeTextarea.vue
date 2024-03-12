@@ -4,29 +4,28 @@
     class="autosize-textarea"
     placeholder=" "
     :value="attrs.modelValue"
-    @input="handleInput"
+    @input="emit('update:modelValue', $event.target.value)"
   />
 </template>
 
 <script setup>
+import { debounce, isEmpty } from 'lodash-es'
+
 const emit = defineEmits(['update:modelValue'])
 const attrs = useAttrs()
 const textareaRef = ref()
 
 onMounted(() => {
-  nextTick(() => {
-    setTimeout(() => {
-      if (attrs.modelValue) resizeTextarea()
-    }, 100)
-  })
+  if (isEmpty(attrs.modelValue)) return
+  resize()
 })
 
-const handleInput = (event) => {
-  emit('update:modelValue', event.target.value)
-  nextTick(resizeTextarea)
-}
+watch(
+  () => attrs.modelValue,
+  () => resize()
+)
 
-const resizeTextarea = () => {
+const resize = debounce(() => {
   const textarea = textareaRef.value
   if (textarea) {
     textarea.style.height = '32px'
@@ -34,7 +33,7 @@ const resizeTextarea = () => {
   if (textarea && textarea.scrollHeight) {
     textarea.style.height = `${textarea.scrollHeight}px`
   }
-}
+}, 100)
 </script>
 
 <style lang="scss" scoped>
@@ -57,8 +56,6 @@ const resizeTextarea = () => {
   background-image: none;
   border: None;
   border-color: var(--el-border-color);
-
-  /* border-radius: 4px; */
   outline: None;
   transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
 
@@ -68,26 +65,14 @@ const resizeTextarea = () => {
 
   &:hover {
     border-bottom: 1px solid var(--el-border-color);
-
-    /* border-bottom-right-radius: 0; */
-
-    /* border-bottom-left-radius: 0; */
   }
 
   &:placeholder-shown {
     border-bottom: 1px solid var(--el-border-color);
-
-    /* border-bottom-right-radius: 0; */
-
-    /* border-bottom-left-radius: 0; */
   }
 
   &:focus {
-    border-color: var(--el-color-primary);
-
-    /* border-bottom-right-radius: 0; */
-
-    /* border-bottom-left-radius: 0; */
+    border-bottom: 1px solid var(--el-color-primary);
   }
 }
 </style>

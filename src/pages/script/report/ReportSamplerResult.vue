@@ -38,8 +38,8 @@
           @click="copyRequest"
         />
         <el-radio-group v-show="hasRequestDecoded()" v-model="requestDataType" size="small">
-          <el-radio-button label="source">Source</el-radio-button>
-          <el-radio-button label="decode">Decode</el-radio-button>
+          <el-radio-button value="source">Source</el-radio-button>
+          <el-radio-button value="decode">Decode</el-radio-button>
         </el-radio-group>
       </div>
     </div>
@@ -76,8 +76,8 @@
           @click="copyResponse"
         />
         <el-radio-group v-show="hasResponseDecoded()" v-model="responseDataType" size="small">
-          <el-radio-button label="source">Source</el-radio-button>
-          <el-radio-button label="decode">Decode</el-radio-button>
+          <el-radio-button value="source">Source</el-radio-button>
+          <el-radio-button value="decode">Decode</el-radio-button>
         </el-radio-group>
       </div>
     </div>

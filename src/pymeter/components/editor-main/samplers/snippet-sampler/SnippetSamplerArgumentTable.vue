@@ -1,5 +1,5 @@
 <template>
-  <el-table style="width: 100%; margin-bottom: 20px" stripe>
+  <el-table style="width: 100%; margin-bottom: 20px; border-radius: 4px" stripe>
     <!-- 空表格 -->
     <template #empty><el-empty description=" " /></template>
     <!-- 参数名称 -->
@@ -22,7 +22,7 @@
       </template>
       <template #default="{ row }">
         <span v-if="useDefault">{{ row.default }}</span>
-        <SimpleTextarea v-else v-model="row.value" :placeholder="row.default" />
+        <FxInput v-else v-model="row.value" :placeholder="row.default" />
       </template>
     </el-table-column>
 
@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-import SimpleTextarea from '@/components/simple-textarea/SimpleTextarea.vue'
+import FxInput from '@/pymeter/components/editor-main/others/FunctionInput.vue'
 import { Check, Close } from '@element-plus/icons-vue'
 
 const emit = defineEmits(['update:useDefault'])

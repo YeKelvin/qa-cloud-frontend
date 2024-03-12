@@ -3,3 +3,7 @@
     cursor: grab;
   }
 }
+
+.unselectable {
+  user-select: none;
+}

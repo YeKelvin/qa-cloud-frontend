@@ -1,21 +1,14 @@
 <template>
   <div class="pymeter-component-container" tabindex="-1">
-    <el-form
-      ref="elformRef"
-      label-width="120px"
-      label-position="right"
-      inline-message
-      :model="elementData"
-      :rules="elementRules"
-    >
+    <el-form ref="elformRef" label-width="120px" :model="elementData" :rules="elementRules">
       <!-- 元素名称 -->
       <el-form-item label="名称：" prop="elementName">
-        <el-input v-model="elementData.elementName" placeholder="元素名称" clearable />
+        <FxInput v-model="elementData.elementName" placeholder="元素名称" />
       </el-form-item>
 
       <!-- 元素备注 -->
       <el-form-item label="备注：" prop="elementDesc">
-        <el-input v-model="elementData.elementDesc" placeholder="元素备注" clearable />
+        <FxInput v-model="elementData.elementDesc" placeholder="元素备注" />
       </el-form-item>
 
       <!-- 数据库选择框 -->
@@ -29,7 +22,7 @@
           >
             <span class="database-type-option">
               <span>{{ item.databaseName }}</span>
-              <el-tag type="danger" size="small" disable-transitions>{{ DatabaseType[item.dbType] }}</el-tag>
+              <el-tag type="danger" size="small" disable-transitions>{{ DatabaseType[item.databaseType] }}</el-tag>
             </span>
           </el-option>
         </el-select>
@@ -37,10 +30,9 @@
 
       <!-- 变量名称 -->
       <el-form-item label="变量名：" prop="elementProps.SQLSampler__result_name">
-        <el-input
+        <FxInput
           v-model="elementData.elementProps.SQLSampler__result_name"
           placeholder="用于存储查询结果集合的变量名称"
-          clearable
         />
       </el-form-item>
 
@@ -64,32 +56,26 @@
       <div v-show="showSettingsTab">
         <!-- 结果数限制 -->
         <el-form-item label="结果数量限制：" prop="elementProps.SQLSampler__limit">
-          <el-input
-            v-model="elementData.elementProps.SQLSampler__limit"
-            placeholder="默认=10"
-            style="width: 300px"
-            clearable
-          >
+          <FxInput v-model="elementData.elementProps.SQLSampler__limit" placeholder="10" style="width: 300px">
             <template #append>条</template>
-          </el-input>
+          </FxInput>
         </el-form-item>
 
         <!-- 超时时间 -->
         <el-form-item label="超时时间：" prop="elementProps.SQLSampler__query_timeout">
-          <el-input
+          <FxInput
             v-model="elementData.elementProps.SQLSampler__query_timeout"
-            placeholder="默认=10000"
+            placeholder="10000"
             style="width: 300px"
-            clearable
           >
             <template #append>毫秒</template>
-          </el-input>
+          </FxInput>
         </el-form-item>
       </div>
 
       <!-- SQL语句 -->
       <div v-show="showStatementTab" style="margin-bottom: 20px">
-        <MonacoEditor ref="editorRef" v-model="elementData.elementProps.SQLSampler__statement" language="sql" />
+        <FxEditor ref="editorRef" v-model="elementData.elementProps.SQLSampler__statement" language="sql" />
       </div>
     </el-form>
 
@@ -123,6 +109,8 @@
 <script setup>
 import { DatabaseType } from '@/api/enum'
 import * as ElementService from '@/api/script/element'
+import FxEditor from '@/pymeter/components/editor-main/others/FunctionEditor.vue'
+import FxInput from '@/pymeter/components/editor-main/others/FunctionInput.vue'
 import SaveButton from '@/pymeter/components/editor-main/others/SaveButton.vue'
 import EditorEmits from '@/pymeter/composables/editor.emits'
 import EditorProps from '@/pymeter/composables/editor.props'

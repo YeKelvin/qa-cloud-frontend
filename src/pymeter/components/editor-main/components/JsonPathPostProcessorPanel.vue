@@ -1,20 +1,14 @@
 <template>
   <el-form
-    label-position="right"
     label-width="100px"
-    inline-message
     scroll-to-error
-    style="width: 100%; padding-right: 105px; padding-left: 69px; margin-top: 20px"
+    style="width: 100%; padding-right: 115px; padding-left: 70px; margin-top: 20px"
     :model="elementProperty"
     :rules="rules"
   >
     <!-- 变量名称 -->
     <el-form-item label="变量名称：" prop="JsonPathPostProcessor__variable_name">
-      <el-input
-        v-model="elementProperty.JsonPathPostProcessor__variable_name"
-        placeholder="存储提取值的变量名称"
-        clearable
-      >
+      <FxInput v-model="elementProperty.JsonPathPostProcessor__variable_name" placeholder="存储提取值的变量名称">
         <template #prepend>
           <!-- 变量作用域 -->
           <el-select
@@ -25,12 +19,12 @@
             <el-option label="全局变量" value="GLOBAL" />
           </el-select>
         </template>
-      </el-input>
+      </FxInput>
     </el-form-item>
 
     <!-- JsonPath表达式 -->
     <el-form-item label="JsonPath：" prop="JsonPathPostProcessor__jsonpath">
-      <el-input v-model="elementProperty.JsonPathPostProcessor__jsonpath" placeholder="$.aa.bb[0].cc" clearable />
+      <FxInput v-model="elementProperty.JsonPathPostProcessor__jsonpath" placeholder="$.aa.bb[0].cc" />
     </el-form-item>
 
     <!-- 列表随机 -->
@@ -47,16 +41,13 @@
 
     <!-- 默认值 -->
     <el-form-item label="默认值：" prop="JsonPathPostProcessor__default_value">
-      <el-input
-        v-model="elementProperty.JsonPathPostProcessor__default_value"
-        placeholder="提取失败时使用默认值"
-        clearable
-      />
+      <FxInput v-model="elementProperty.JsonPathPostProcessor__default_value" placeholder="提取失败时使用默认值" />
     </el-form-item>
   </el-form>
 </template>
 
 <script setup>
+import FxInput from '@/pymeter/components/editor-main/others/FunctionInput.vue'
 import { Check, Close } from '@element-plus/icons-vue'
 
 const props = defineProps({

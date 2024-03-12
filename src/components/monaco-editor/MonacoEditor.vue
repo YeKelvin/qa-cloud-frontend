@@ -11,7 +11,7 @@ import monacoOptions from './monaco.options'
 
 let instance
 const editorRef = ref()
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'blur', 'focus'])
 const props = defineProps({
   modelValue: { type: String, default: '' },
   theme: { type: String, default: 'vs' },
@@ -22,7 +22,7 @@ const props = defineProps({
   wordWrap: { type: String, default: 'on' },
   lineNumbers: { type: String, default: 'on' }
 })
-const localValue = computed({
+const localModel = computed({
   get: () => props.modelValue,
   set: (val) => emit('update:modelValue', val)
 })
@@ -62,6 +62,10 @@ onMounted(async () => {
   instance.getModel().setEOL(monaco.editor.EndOfLinePreference.LF)
   // 双向绑定
   instance.onDidChangeModelContent(debounce(() => emit('update:modelValue', instance.getValue()), 200))
+  // 失焦事件
+  instance.onDidBlurEditorText((e) => emit('blur', e))
+  // 焦点事件
+  instance.onDidFocusEditorText((e) => emit('focus', e))
   // 移除有冲突的默认快捷键
   removeDefaultKeybindings()
 })
@@ -77,7 +81,7 @@ const createEditor = async () => {
     wordWrap: props.wordWrap,
     lineNumbers: props.lineNumbers,
     theme: props.theme,
-    value: localValue.value,
+    value: localModel.value,
     ...options.value
   })
   await waitingCreated()
@@ -156,20 +160,23 @@ const insert = (val) => {
   if (!val) {
     val = String(val)
   }
-
-  const selection = instance.getSelection()
+  // 获取光标位置
+  const position = instance.getSelection()
+  // 插入内容
   instance.executeEdits('', [
     {
       range: {
-        startLineNumber: selection.startLineNumber,
-        startColumn: selection.startColumn,
-        endLineNumber: selection.endLineNumber,
-        endColumn: selection.endColumn
+        startLineNumber: position.startLineNumber,
+        startColumn: position.startColumn,
+        endLineNumber: position.endLineNumber,
+        endColumn: position.endColumn
       },
       text: val,
       forceMoveMarkers: true
     }
   ])
+  // 重新聚焦
+  instance.focus()
 }
 
 /**

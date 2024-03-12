@@ -1,13 +1,6 @@
 <template>
   <div>
-    <el-form
-      ref="elformRef"
-      label-width="120px"
-      label-position="right"
-      inline-message
-      :model="elementData"
-      :rules="elementRules"
-    >
+    <el-form ref="elformRef" label-width="120px" :model="elementData" :rules="elementRules">
       <!-- 名称 -->
       <el-form-item label="数据库名称：" prop="elementName">
         <el-input v-model="elementData.elementName" placeholder="元素名称" clearable />

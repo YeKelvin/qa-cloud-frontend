@@ -1,16 +1,10 @@
 <template>
-  <div class="python-editor-container">
-    <MonacoEditor
-      ref="pythonEditor"
-      v-model="scriptContent"
-      language="python"
-      class="python-editor"
-      :readonly="readonly"
-    />
-    <div class="snippet-code-container">
+  <div class="python-editor">
+    <FxEditor ref="pythonEditorRef" v-model="scriptContent" language="python" style="flex: 1" />
+    <div class="snippet-code">
       <span class="snippet-title">代码片段</span>
       <el-scrollbar style="width: 100%; height: 100%" wrap-style="overflow-x:auto;">
-        <ul class="snippet-code-list">
+        <ul class="snippet-list">
           <li @click="getVarSnippet()">获取局部变量</li>
           <li @click="getPropSnippet()">获取全局变量</li>
           <template
@@ -41,7 +35,7 @@
 </template>
 
 <script setup>
-import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
+import FxEditor from '@/pymeter/components/editor-main/others/FunctionEditor.vue'
 
 const ScriptPropertyNameEmun = {
   PythonSampler: 'PythonSampler__script',
@@ -51,7 +45,6 @@ const ScriptPropertyNameEmun = {
 }
 
 const props = defineProps({
-  readonly: Boolean,
   ownerType: String,
   elementType: String,
   elementClass: String,
@@ -60,14 +53,10 @@ const props = defineProps({
 const elementProperty = computed(() => props.elementProps)
 const scriptPropertyName = computed(() => ScriptPropertyNameEmun[props.elementClass])
 const scriptContent = computed({
-  get() {
-    return elementProperty.value[scriptPropertyName.value]
-  },
-  set(val) {
-    elementProperty.value[scriptPropertyName.value] = val
-  }
+  get: () => elementProperty.value[scriptPropertyName.value],
+  set: (val) => (elementProperty.value[scriptPropertyName.value] = val)
 })
-const pythonEditor = ref()
+const pythonEditorRef = ref()
 
 onMounted(() => {
   const content = scriptContent.value
@@ -82,105 +71,101 @@ onMounted(() => {
  * 设置编辑器内容
  */
 const setValue = (val) => {
-  pythonEditor.value && pythonEditor.value.setValue(val)
+  pythonEditorRef.value && pythonEditorRef.value.setValue(val)
 }
 
 /**
  * 获取编辑器内容
  */
 const getValue = () => {
-  return pythonEditor.value.getValue()
+  return pythonEditorRef.value.getValue()
 }
 
 const getVarSnippet = () => {
-  let selection = pythonEditor.value.getSelectionValue()
+  let selection = pythonEditorRef.value.getSelectionValue()
   selection = selection || 'name'
-  pythonEditor.value.insertSnippet(`vars.get(\${1:${selection}})`)
-  pythonEditor.value.focus()
+  pythonEditorRef.value.insertSnippet(`vars.get(\${1:${selection}})`)
+  pythonEditorRef.value.focus()
 }
 const getPropSnippet = () => {
-  let selection = pythonEditor.value.getSelectionValue()
+  let selection = pythonEditorRef.value.getSelectionValue()
   selection = selection || 'name'
-  pythonEditor.value.insertSnippet(`props.get(\${1:${selection}})`)
-  pythonEditor.value.focus()
+  pythonEditorRef.value.insertSnippet(`props.get(\${1:${selection}})`)
+  pythonEditorRef.value.focus()
 }
 const getResponseJsonSnippet = () => {
-  pythonEditor.value.insert('res = result.json\n')
-  pythonEditor.value.focus()
+  pythonEditorRef.value.insert('res = result.json\n')
+  pythonEditorRef.value.focus()
 }
 const getTableData = () => {
-  pythonEditor.value.insertSnippet("val = vars.get('rows')[0]['${1:colunmName}']\n")
-  pythonEditor.value.focus()
+  pythonEditorRef.value.insertSnippet("val = vars.get('rows')[0]['${1:colunmName}']\n")
+  pythonEditorRef.value.focus()
 }
 const setVarSnippet = () => {
-  let selection = pythonEditor.value.getSelectionValue()
+  let selection = pythonEditorRef.value.getSelectionValue()
   selection = selection || 'value'
-  pythonEditor.value.insertSnippet(`vars.put('\${1:name}', \${2:${selection}})`)
-  pythonEditor.value.focus()
+  pythonEditorRef.value.insertSnippet(`vars.put('\${1:name}', \${2:${selection}})`)
+  pythonEditorRef.value.focus()
 }
 const setPropSnippet = () => {
-  let selection = pythonEditor.value.getSelectionValue()
+  let selection = pythonEditorRef.value.getSelectionValue()
   selection = selection || 'value'
-  pythonEditor.value.insertSnippet(`props.put('\${1:name}', \${2:${selection}})`)
-  pythonEditor.value.focus()
+  pythonEditorRef.value.insertSnippet(`props.put('\${1:name}', \${2:${selection}})`)
+  pythonEditorRef.value.focus()
 }
 const outputLogInfo = () => {
-  const selection = pythonEditor.value.getSelectionValue()
+  const selection = pythonEditorRef.value.getSelectionValue()
   if (selection) {
-    pythonEditor.value.insert(`log.info(f'{${selection}=}')\n`)
+    pythonEditorRef.value.insert(`log.info(f'{${selection}=}')\n`)
   } else {
-    pythonEditor.value.insertSnippet("log.info('${1:content}')\n")
+    pythonEditorRef.value.insertSnippet("log.info('${1:content}')\n")
   }
-  pythonEditor.value.focus()
+  pythonEditorRef.value.focus()
 }
 const assertion = () => {
-  pythonEditor.value.insertSnippet("assert ${1:condition}, '${2:message}'\n")
-  pythonEditor.value.focus()
+  pythonEditorRef.value.insertSnippet("assert ${1:condition}, '${2:message}'\n")
+  pythonEditorRef.value.focus()
 }
 const toJson = () => {
-  let selection = pythonEditor.value.getSelectionValue()
+  let selection = pythonEditorRef.value.getSelectionValue()
   selection = selection || 'object'
-  pythonEditor.value.insertSnippet(`to_json(\${1:${selection}})`)
-  pythonEditor.value.focus()
+  pythonEditorRef.value.insertSnippet(`to_json(\${1:${selection}})`)
+  pythonEditorRef.value.focus()
 }
 const fromJson = () => {
-  let selection = pythonEditor.value.getSelectionValue()
+  let selection = pythonEditorRef.value.getSelectionValue()
   selection = selection || 'json_str'
-  pythonEditor.value.insertSnippet(`from_json(\${1:${selection}})`)
-  pythonEditor.value.focus()
+  pythonEditorRef.value.insertSnippet(`from_json(\${1:${selection}})`)
+  pythonEditorRef.value.focus()
 }
 const foreachList = () => {
-  pythonEditor.value.insertSnippet('for ${2:item} in ${1:list_object}:\n    ${3:exp}')
-  pythonEditor.value.focus()
+  pythonEditorRef.value.insertSnippet('for ${2:item} in ${1:list_object}:\n    ${3:exp}')
+  pythonEditorRef.value.focus()
 }
 const foreachDict = () => {
-  pythonEditor.value.insertSnippet('for ${2:key}, ${3:value} in ${1:dic_object}.items():\n    ${4:exp}')
-  pythonEditor.value.focus()
+  pythonEditorRef.value.insertSnippet('for ${2:key}, ${3:value} in ${1:dic_object}.items():\n    ${4:exp}')
+  pythonEditorRef.value.focus()
 }
 const listComprehensions = () => {
-  pythonEditor.value.insertSnippet(
+  pythonEditorRef.value.insertSnippet(
     'comprehensions = [${3:out_exp} for ${2:item} in ${1:list_object} if ${4:condition}]\n'
   )
-  pythonEditor.value.focus()
+  pythonEditorRef.value.focus()
 }
 const dictComprehensions = () => {
-  pythonEditor.value.insertSnippet(
+  pythonEditorRef.value.insertSnippet(
     'comprehensions = {${4:key}:${5:value} for ${2:key}, ${3:value} in ${1:dict_object}.items() if ${6:condition}}\n'
   )
-  pythonEditor.value.focus()
+  pythonEditorRef.value.focus()
 }
 </script>
 
 <style lang="scss" scoped>
-.python-editor-container {
+.python-editor {
   display: flex;
 }
 
-.python-editor {
-  flex: 1;
-}
-
-.snippet-code-container {
+.snippet-code {
   width: 120px;
   min-width: 120px;
   max-width: 120px;
@@ -194,7 +179,7 @@ const dictComprehensions = () => {
   color: #606266;
 }
 
-.snippet-code-list {
+.snippet-list {
   padding: 10px;
   margin: 0;
 

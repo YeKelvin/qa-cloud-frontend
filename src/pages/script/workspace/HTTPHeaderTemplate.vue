@@ -1,13 +1,6 @@
 <template>
   <div class="httpheader-template">
-    <el-form
-      ref="elformRef"
-      label-width="120px"
-      label-position="right"
-      inline-message
-      :model="elementData"
-      :rules="elementRules"
-    >
+    <el-form ref="elformRef" label-width="120px" :model="elementData" :rules="elementRules">
       <!-- 名称 -->
       <el-form-item label="模板名称：" prop="elementName">
         <el-input v-model="elementData.elementName" placeholder="HTTP请求头模板名称" clearable />
@@ -50,21 +43,21 @@
       <!-- 请求头名称 -->
       <el-table-column label="请求头名称" sortable :sort-method="(a, b) => a.name.localeCompare(b.name)">
         <template #default="{ row }">
-          <SimpleTextarea v-model="row.name" />
+          <AutosizeTextarea v-model="row.name" />
         </template>
       </el-table-column>
 
       <!-- 请求头的值 -->
       <el-table-column label="请求头内容">
         <template #default="{ row }">
-          <SimpleTextarea v-model="row.value" />
+          <AutosizeTextarea v-model="row.value" />
         </template>
       </el-table-column>
 
       <!-- 请求头的值 -->
       <el-table-column label="请求头描述">
         <template #default="{ row }">
-          <SimpleTextarea v-model="row.desc" />
+          <AutosizeTextarea v-model="row.desc" />
         </template>
       </el-table-column>
 
@@ -92,7 +85,7 @@
 
 <script setup>
 import * as ElementService from '@/api/script/element'
-import SimpleTextarea from '@/components/simple-textarea/SimpleTextarea.vue'
+import AutosizeTextarea from '@/components/autosize-textarea/AutosizeTextarea.vue'
 import { useWorkspaceStore } from '@/store/workspace'
 import { toHashCode } from '@/utils/object-util'
 import { Check, Close, Delete } from '@element-plus/icons-vue'

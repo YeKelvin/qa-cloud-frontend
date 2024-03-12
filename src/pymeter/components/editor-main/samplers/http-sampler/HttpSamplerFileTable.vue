@@ -29,28 +29,35 @@
     <!-- 参数名 -->
     <el-table-column label="参数名" width="auto">
       <template #default="{ row }">
-        <FileItem v-model:name="row.name" v-model:argtype="row.argtype" />
+        <FxInput v-model="row.name">
+          <template #append>
+            <el-select v-model="row.argtype" style="width: 68px; min-width: 68px">
+              <el-option label="text" value="text" />
+              <el-option label="file" value="file" disabled />
+            </el-select>
+          </template>
+        </FxInput>
       </template>
     </el-table-column>
 
     <!-- 参数值 -->
     <el-table-column label="参数值" width="auto">
       <template #default="{ row }">
-        <SimpleTextarea v-model="row.value" />
+        <FxInput v-model="row.value" />
       </template>
     </el-table-column>
 
     <!-- MIME类型 -->
     <el-table-column v-if="showMimeType" label="MIME类型" width="auto">
       <template #default="{ row }">
-        <SimpleTextarea v-model="row.mimetype" />
+        <FxInput v-model="row.mimetype" />
       </template>
     </el-table-column>
 
     <!-- 描述 -->
     <el-table-column v-if="showDesc" label="描述" width="auto">
       <template #default="{ row }">
-        <SimpleTextarea v-model="row.desc" />
+        <FxInput v-model="row.desc" />
       </template>
     </el-table-column>
 
@@ -83,11 +90,10 @@
 </template>
 
 <script setup>
-import SimpleTextarea from '@/components/simple-textarea/SimpleTextarea.vue'
+import FxInput from '@/pymeter/components/editor-main/others/FunctionInput.vue'
 import { Check, Close, Delete } from '@element-plus/icons-vue'
 import { isEmpty } from 'lodash-es'
 import sortablejs from 'sortablejs'
-import FileItem from './HttpSamplerFileItem.vue'
 
 let sortable = null
 const props = defineProps({ modelValue: Array })
@@ -173,5 +179,9 @@ span {
 
 :deep(.el-table__inner-wrapper::before) {
   height: 0;
+}
+
+:deep(.el-input-group__append) {
+  background-color: var(--el-fill-color-blank);
 }
 </style>

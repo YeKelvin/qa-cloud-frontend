@@ -173,8 +173,8 @@
       <div v-show="showing && showRequestCode" class="tab-pane" style="display: flex; flex-direction: column">
         <span style="display: flex; padding: 5px">
           <el-radio-group v-show="hasRequestDecoded()" v-model="requestDataType" size="small">
-            <el-radio-button label="source">Source</el-radio-button>
-            <el-radio-button label="decode">Decode</el-radio-button>
+            <el-radio-button value="source">Source</el-radio-button>
+            <el-radio-button value="decode">Decode</el-radio-button>
           </el-radio-group>
         </span>
         <MonacoEditor ref="requestEditorRef" language="json" height="100" :readonly="true" />
@@ -200,12 +200,12 @@
             style="margin-right: 20px"
             size="small"
           >
-            <el-radio-button label="source">Source</el-radio-button>
-            <el-radio-button label="decode">Decode</el-radio-button>
+            <el-radio-button value="source">Source</el-radio-button>
+            <el-radio-button value="decode">Decode</el-radio-button>
           </el-radio-group>
           <el-radio-group v-model="responseDisplayType" style="margin-right: 20px" size="small">
-            <el-radio-button label="pretty">Pretty</el-radio-button>
-            <el-radio-button label="raw">Raw</el-radio-button>
+            <el-radio-button value="pretty">Pretty</el-radio-button>
+            <el-radio-button value="raw">Raw</el-radio-button>
           </el-radio-group>
           <el-select v-model="responseContentType" style="width: 80px; margin-right: 20px" size="small">
             <el-option label="JSON" value="json" />

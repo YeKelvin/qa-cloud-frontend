@@ -184,10 +184,10 @@ const openDatabaseConnectionManager = () => {
   flex: 1;
   width: 1px;
   height: 100%;
-  background-color: (var(--el-border-color));
+  background-color: var(--el-border-color);
 
   &:hover {
-    background-color: (var(--el-color-primary));
+    background-color: var(--el-color-primary);
   }
 }
 

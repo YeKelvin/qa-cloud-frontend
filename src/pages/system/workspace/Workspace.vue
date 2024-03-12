@@ -24,7 +24,7 @@
         <!-- 空数据提示 -->
         <template #empty><el-empty /></template>
         <!-- 列定义 -->
-        <el-table-column prop="workspaceNo" label="空间编号" min-width="180" width="180" />
+        <el-table-column prop="workspaceNo" label="空间编号" min-width="200" width="200" />
         <el-table-column prop="workspaceName" label="空间名称" min-width="200" />
         <el-table-column prop="workspaceScope" label="空间作用域" min-width="200">
           <template #default="{ row }">{{ WorkspaceScope[row.workspaceScope] }}</template>

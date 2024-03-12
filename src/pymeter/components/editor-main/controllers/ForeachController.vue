@@ -1,60 +1,53 @@
 <template>
   <div class="pymeter-component-container" tabindex="-1">
-    <el-form
-      ref="elformRef"
-      label-width="100px"
-      label-position="right"
-      inline-message
-      :model="elementData"
-      :rules="elementRules"
-    >
+    <el-form ref="elformRef" label-width="100px" :model="elementData" :rules="elementRules">
       <!-- 元素名称 -->
       <el-form-item label="名称：" prop="elementName">
-        <el-input v-model="elementData.elementName" placeholder="元素名称" clearable />
+        <FxInput v-model="elementData.elementName" placeholder="元素名称" />
       </el-form-item>
 
       <!-- 元素备注 -->
       <el-form-item label="备注：" prop="elementDesc">
-        <el-input v-model="elementData.elementDesc" placeholder="元素备注" clearable />
+        <FxInput v-model="elementData.elementDesc" placeholder="元素备注" />
       </el-form-item>
 
       <!-- 循环延迟时间 -->
       <el-form-item label="间隔时间：" prop="elementProps.ForeachController__delay">
-        <el-input v-model="elementData.elementProps.ForeachController__delay" placeholder="间隔时间(ms)" clearable />
+        <FxInput v-model="elementData.elementProps.ForeachController__delay" placeholder="间隔时间(ms)" />
       </el-form-item>
 
-      <!-- for变量 -->
-      <el-form-item prop="elementProps.ForeachController__target">
-        <template #label>
-          <span style="font-size: 16px">for：</span>
-        </template>
-        <el-input v-model="elementData.elementProps.ForeachController__target" placeholder="目标变量名称" clearable />
+      <!-- 变量名称 -->
+      <el-form-item label="变量名称：" prop="elementProps.ForeachController__target">
+        <FxInput v-model="elementData.elementProps.ForeachController__target" placeholder="目标变量名称" />
       </el-form-item>
 
-      <!-- in对象 -->
-      <el-form-item prop="elementProps.ForeachController__iter">
-        <template #label>
-          <span style="font-size: 16px">in：</span>
-        </template>
-        <el-radio-group v-model="elementData.elementProps.ForeachController__type" style="margin-bottom: 10px">
-          <el-radio label="OBJECT">可迭代对象</el-radio>
-          <el-radio label="CUSTOM">自定义声明</el-radio>
-        </el-radio-group>
-        <template v-if="elementData.elementProps.ForeachController__type == 'OBJECT'">
-          <el-input v-model="elementData.elementProps.ForeachController__iter" placeholder="对象名称" clearable>
-            <template #prepend>${</template>
-            <template #append>}</template>
-          </el-input>
-        </template>
-        <template v-else>
-          <MonacoEditor
-            ref="editorRef"
-            v-model="elementData.elementProps.ForeachController__iter"
-            language="python"
-            line-numbers="off"
-            style="height: 100px"
-          />
-        </template>
+      <!-- 遍历数组 -->
+      <el-form-item label="遍历数组：" prop="elementProps.ForeachController__iter">
+        <div style="width: 100%; margin-bottom: 20px">
+          <el-radio-group v-model="elementData.elementProps.ForeachController__type">
+            <el-radio value="OBJECT">从变量中读取数组</el-radio>
+            <el-radio value="CUSTOM">自定义数组</el-radio>
+          </el-radio-group>
+          <template v-if="elementData.elementProps.ForeachController__type == 'OBJECT'">
+            <FxInput
+              v-model="elementData.elementProps.ForeachController__iter"
+              placeholder="对象名称"
+              style="width: 100%"
+            >
+              <template #prepend>${</template>
+              <template #append>}</template>
+            </FxInput>
+          </template>
+          <template v-else>
+            <FxEditor
+              ref="editorRef"
+              v-model="elementData.elementProps.ForeachController__iter"
+              language="python"
+              line-numbers="off"
+              style="height: 100px"
+            />
+          </template>
+        </div>
       </el-form-item>
     </el-form>
 
@@ -67,7 +60,8 @@
 
 <script setup>
 import * as ElementService from '@/api/script/element'
-import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
+import FxInput from '@/pymeter/components/editor-main/others/FunctionInput.vue'
+import FxEditor from '@/pymeter/components/editor-main/others/FunctionEditor.vue'
 import SaveButton from '@/pymeter/components/editor-main/others/SaveButton.vue'
 import EditorEmits from '@/pymeter/composables/editor.emits'
 import EditorProps from '@/pymeter/composables/editor.props'
@@ -100,8 +94,8 @@ const elementData = ref({
 })
 const elementRules = {
   elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }],
-  'elementProps.ForeachController__target': [{ required: true, message: '目标变量不能为空', trigger: 'blur' }],
-  'elementProps.ForeachController__iter': [{ required: true, message: '迭代对象/声明不能为空', trigger: 'blur' }]
+  'elementProps.ForeachController__target': [{ required: true, message: '变量名称不能为空', trigger: 'blur' }],
+  'elementProps.ForeachController__iter': [{ required: true, message: '遍历数组不能为空', trigger: 'blur' }]
 }
 const elformRef = ref()
 const editorRef = ref()
@@ -233,11 +227,11 @@ defineExpose({
 </script>
 
 <style lang="scss" scoped>
-:deep(.el-input-group__prepend) {
+:deep(.FxInput-group__prepend) {
   width: 80px;
 }
 
-:deep(.el-input-group__append) {
+:deep(.FxInput-group__append) {
   width: 60px;
 }
 </style>

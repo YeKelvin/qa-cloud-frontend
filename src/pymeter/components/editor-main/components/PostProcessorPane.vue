@@ -62,7 +62,7 @@
                 {{ ElementClass[element.elementClass] }}
               </el-tag>
               <!-- 组件名称 -->
-              <el-input
+              <FxInput
                 v-model="element.elementName"
                 style="margin-right: 10px"
                 @click.stop
@@ -101,10 +101,11 @@
 </template>
 
 <script setup>
-import draggable from 'vuedraggable'
-import { isEmpty } from 'lodash-es'
-import { Delete, Plus } from '@element-plus/icons-vue'
+import FxInput from '@/pymeter/components/editor-main/others/FunctionInput.vue'
 import { ElementClass } from '@/api/enum'
+import { Delete, Plus } from '@element-plus/icons-vue'
+import { isEmpty } from 'lodash-es'
+import draggable from 'vuedraggable'
 
 const components = {
   PythonPostProcessor: markRaw(defineAsyncComponent(() => import('./PythonEditorPanel.vue'))),

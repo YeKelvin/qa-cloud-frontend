@@ -1,16 +1,14 @@
 <template>
   <el-form
-    label-position="right"
     label-width="100px"
-    inline-message
     scroll-to-error
-    style="width: 100%; padding-right: 104px; padding-left: 56px; margin-top: 20px"
+    style="width: 100%; padding-right: 115px; padding-left: 57px; margin-top: 20px"
     :model="elementProperty"
     :rules="rules"
   >
     <!-- JsonPath表达式 -->
     <el-form-item label="JsonPath：" prop="JsonPathAssertion__jsonpath">
-      <el-input v-model="elementProperty.JsonPathAssertion__jsonpath" placeholder="$.aa.bb[0].cc" clearable />
+      <FxInput v-model="elementProperty.JsonPathAssertion__jsonpath" placeholder="$.aa.bb[0].cc" />
     </el-form-item>
 
     <!-- 判断类型 -->
@@ -44,12 +42,14 @@
       label="期望值："
       prop="JsonPathAssertion__expected_value"
     >
-      <el-input v-model="elementProperty.JsonPathAssertion__expected_value" placeholder="期望值" clearable />
+      <FxInput v-model="elementProperty.JsonPathAssertion__expected_value" placeholder="期望值" />
     </el-form-item>
   </el-form>
 </template>
 
 <script setup>
+import FxInput from '@/pymeter/components/editor-main/others/FunctionInput.vue'
+
 const props = defineProps({
   elementProps: Object
 })

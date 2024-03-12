@@ -1,5 +1,5 @@
 <template>
-  <el-form label-position="right" label-width="110px" style="width: 100%" :model="formData" :rules="formRules">
+  <el-form label-width="110px" style="width: 100%" :model="formData" :rules="formRules">
     <el-form-item label="计划名称：">
       <b style="color: #f56c6c">{{ planName }}</b>
     </el-form-item>

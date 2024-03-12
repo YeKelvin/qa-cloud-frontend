@@ -26,7 +26,7 @@
         <!-- 空数据提示 -->
         <template #empty><el-empty /></template>
         <!-- 列定义 -->
-        <el-table-column prop="userNo" label="用户编号" min-width="180" width="180" />
+        <el-table-column prop="userNo" label="用户编号" min-width="200" width="200" />
         <el-table-column prop="userName" label="用户名称" min-width="150" />
         <el-table-column prop="loginName" label="登录账号" min-width="150" />
         <el-table-column prop="mobile" label="手机号码" min-width="150" />

@@ -1,43 +1,35 @@
 <template>
   <div class="pymeter-component-container" tabindex="-1">
-    <el-form
-      ref="elformRef"
-      label-width="100px"
-      label-position="right"
-      inline-message
-      :model="elementData"
-      :rules="elementRules"
-    >
+    <el-form ref="elformRef" label-width="100px" :model="elementData" :rules="elementRules">
       <!-- 元素名称 -->
       <el-form-item label="名称：" prop="elementName">
-        <el-input v-model="elementData.elementName" placeholder="元素名称" clearable />
+        <FxInput v-model="elementData.elementName" placeholder="元素名称" />
       </el-form-item>
 
       <!-- 元素备注 -->
       <el-form-item label="备注：" prop="elementDesc">
-        <el-input v-model="elementData.elementDesc" placeholder="元素备注" clearable />
+        <FxInput v-model="elementData.elementDesc" placeholder="元素备注" />
       </el-form-item>
 
       <!-- 重试次数 -->
       <el-form-item label="重试次数：" prop="elementProps.RetryController__retries">
-        <el-input v-model="elementData.elementProps.RetryController__retries" maxlength="2" clearable>
+        <FxInput v-model="elementData.elementProps.RetryController__retries" maxlength="2">
           <template #append>次</template>
-        </el-input>
+        </FxInput>
       </el-form-item>
 
       <!-- 重试间隔时间 -->
       <el-form-item label="重试间隔：" prop="elementProps.RetryController__intervals">
-        <el-input v-model="elementData.elementProps.RetryController__intervals" placeholder="重试间隔时间" clearable>
+        <FxInput v-model="elementData.elementProps.RetryController__intervals" placeholder="重试间隔时间">
           <template #append>ms</template>
-        </el-input>
+        </FxInput>
       </el-form-item>
 
       <!-- 标识前缀 -->
       <el-form-item label="标识前缀：" prop="elementProps.RetryController__flag_prefix">
-        <el-input
+        <FxInput
           v-model="elementData.elementProps.RetryController__flag_prefix"
           placeholder="重试标识前缀，用于标识当前取样器正在重试和重试的次数"
-          clearable
         />
       </el-form-item>
     </el-form>
@@ -51,6 +43,7 @@
 
 <script setup>
 import * as ElementService from '@/api/script/element'
+import FxInput from '@/pymeter/components/editor-main/others/FunctionInput.vue'
 import SaveButton from '@/pymeter/components/editor-main/others/SaveButton.vue'
 import EditorEmits from '@/pymeter/composables/editor.emits'
 import EditorProps from '@/pymeter/composables/editor.props'
@@ -203,7 +196,7 @@ defineExpose({
 </script>
 
 <style lang="scss" scoped>
-:deep(.el-input-group__append) {
+:deep(.FxInput-group__append) {
   width: 60px;
 }
 </style>

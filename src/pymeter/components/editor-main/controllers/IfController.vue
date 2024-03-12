@@ -1,31 +1,24 @@
 <template>
   <div class="pymeter-component-container" tabindex="-1">
-    <el-form
-      ref="elformRef"
-      label-width="100px"
-      label-position="right"
-      inline-message
-      :model="elementData"
-      :rules="elementRules"
-    >
+    <el-form ref="elformRef" label-width="100px" :model="elementData" :rules="elementRules">
       <!-- 元素名称 -->
       <el-form-item label="名称：" prop="elementName">
-        <el-input v-model="elementData.elementName" placeholder="元素名称" clearable />
+        <FxInput v-model="elementData.elementName" placeholder="元素名称" />
       </el-form-item>
 
       <!-- 元素备注 -->
       <el-form-item label="备注：" prop="elementDesc">
-        <el-input v-model="elementData.elementDesc" placeholder="元素备注" clearable />
+        <FxInput v-model="elementData.elementDesc" placeholder="元素备注" />
       </el-form-item>
 
       <!-- if条件 -->
       <el-form-item label="表达式：" prop="elementProps.IfController__condition">
-        <MonacoEditor
+        <FxEditor
           ref="editorRef"
           v-model="elementData.elementProps.IfController__condition"
           language="python"
           line-numbers="off"
-          style="height: 100px"
+          style="height: 100px; margin-bottom: 0"
         />
         <el-tag type="danger" style="font-size: 14px" disable-transitions>注意：仅支持单行表达式</el-tag>
       </el-form-item>
@@ -40,7 +33,8 @@
 
 <script setup>
 import * as ElementService from '@/api/script/element'
-import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
+import FxInput from '@/pymeter/components/editor-main/others/FunctionInput.vue'
+import FxEditor from '@/pymeter/components/editor-main/others/FunctionEditor.vue'
 import SaveButton from '@/pymeter/components/editor-main/others/SaveButton.vue'
 import EditorEmits from '@/pymeter/composables/editor.emits'
 import EditorProps from '@/pymeter/composables/editor.props'

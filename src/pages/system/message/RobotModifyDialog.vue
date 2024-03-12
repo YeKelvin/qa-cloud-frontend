@@ -10,8 +10,8 @@
     >
       <el-form-item label="机器人类型：" prop="robotType">
         <el-radio-group v-model="formData.robotType" disabled>
-          <el-radio label="WECOM">企业微信</el-radio>
-          <el-radio label="DINGTALK">钉钉</el-radio>
+          <el-radio value="WECOM">企业微信</el-radio>
+          <el-radio value="DINGTALK">钉钉</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="机器人名称：" prop="robotName">

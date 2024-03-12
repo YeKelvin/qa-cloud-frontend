@@ -26,11 +26,12 @@
     "**/*.yaml"
   ],
   "rules": {
+    "function-url-quotes": "always",
     "no-empty-source": null,
     "no-descending-specificity": null,
-    "function-url-quotes": "always",
     "value-keyword-case": null,
     "value-no-vendor-prefix": null,
+    "import-notation": "string",
     "property-no-unknown": null,
     "property-no-vendor-prefix": null,
     "selector-class-pattern": null,
