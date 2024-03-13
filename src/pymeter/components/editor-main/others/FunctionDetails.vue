@@ -25,7 +25,7 @@
           <el-table-column prop="value" label="参数值" class-name="arg-value">
             <template #default="{ row }">
               <template v-if="row.options">
-                <el-select v-model="row.value" :placeholder="row.default">
+                <el-select v-model="row.value" :placeholder="row.default" :clearable="!row.required">
                   <el-option v-for="option in row.options" :key="option" :label="option" :value="option" />
                 </el-select>
               </template>
@@ -79,6 +79,10 @@ const func = computed(() => props.data)
 
 :deep(.el-input__wrapper) {
   border-radius: 0;
+}
+
+:deep(.el-input__validateIcon) {
+  display: none;
 }
 
 :deep(.el-select__wrapper) {

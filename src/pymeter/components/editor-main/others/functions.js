@@ -393,12 +393,6 @@ const getFunctions = () => [
         ]
       },
       {
-        name: 'python_eval',
-        desc: '执行一句Python表达式并返回结果',
-        code: '__python_eval',
-        args: [{ name: 'expression', desc: '表达式', value: '', default: '', required: true }]
-      },
-      {
         name: 'lowercase',
         desc: '字符串转小写',
         code: '__lowercase',
@@ -409,6 +403,12 @@ const getFunctions = () => [
         desc: '字符串转大写',
         code: '__uppercase',
         args: [{ name: 'data', desc: '字符串', value: '', default: '', required: true }]
+      },
+      {
+        name: 'python_eval',
+        desc: '执行一句Python表达式并返回结果',
+        code: '__python_eval',
+        args: [{ name: 'expression', desc: '表达式', value: '', default: '', required: true }]
       }
     ]
   }
