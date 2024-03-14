@@ -28,7 +28,6 @@ const pymeterStore = usePyMeterStore()
 
 onMounted(() => {
   pymeterStore.queryDatasetAll()
-  pymeterStore.queryHttpheaderTemplateAll()
 })
 </script>
 

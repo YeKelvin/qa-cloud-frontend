@@ -17,7 +17,7 @@
       @change="handleChange"
     >
       <el-option
-        v-for="item in pymeterStore.httpheaderTemplateList"
+        v-for="item in templateList"
         :key="item.templateNo"
         :label="item.templateName"
         :value="item.templateNo"
@@ -48,19 +48,31 @@
 
 <script setup>
 import * as ElementService from '@/api/script/element'
-import { isEmpty } from 'lodash-es'
+import { useWorkspaceStore } from '@/store/workspace'
 import { ArrowDown } from '@element-plus/icons-vue'
-import { usePyMeterStore } from '@/store/pymeter'
+import { useQuery } from '@tanstack/vue-query'
+import { isEmpty } from 'lodash-es'
 
-const pymeterStore = usePyMeterStore()
 const emit = defineEmits(['update:modelValue'])
 const props = defineProps({ modelValue: Array })
 const localModel = computed({
   get: () => props.modelValue,
   set: (val) => emit('update:modelValue', val)
 })
+
+const workspaceStore = useWorkspaceStore()
+const workspaceNo = computed(() => workspaceStore.workspaceNo)
+const { data: templateList } = useQuery({
+  staleTime: 1000 * 60 * 10, // 10分钟过期
+  queryKey: ['HTTPHeaderTemplate', workspaceNo],
+  queryFn: async () => {
+    const response = await ElementService.queryHTTPHeaderTemplateAll({ workspaceNo: workspaceNo.value })
+    return response.data
+  }
+})
+
 const rows = ref([])
-const templates = computed(() => pymeterStore.httpheaderTemplateList.map((item) => item.templateNo))
+const templates = computed(() => templateList.value.map((item) => item.templateNo))
 const showDetails = ref(false)
 const showWarning = computed(() => {
   const selectedList = localModel.value

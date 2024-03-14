@@ -315,7 +315,7 @@ const modifyElement = async () => {
   // 修改元素
   await ElementService.modifyElement(elementData.value)
   // 刷新集合列表
-  pymeterStore.refreshCollections()
+  pymeterStore.refreshElementRootList()
   // 刷新元素列表
   pymeterStore.refreshElementTree()
 }
@@ -340,11 +340,11 @@ const createElement = async () => {
   // 更新元素编号
   elementData.value.elementNo = elementNo
   // 刷新集合列表
-  pymeterStore.refreshCollections()
+  pymeterStore.refreshElementRootList()
   // 刷新元素列表
   pymeterStore.refreshElementTree()
   // 添加至已选列表中
-  pymeterStore.addSelectedCollection(elementNo)
+  pymeterStore.openScript(elementNo)
   // 滚动至底部
   pymeterStore.scrollToElementTreeBottom()
 }

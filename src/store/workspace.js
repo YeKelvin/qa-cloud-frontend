@@ -43,8 +43,6 @@ export const useWorkspaceStore = defineStore('workspace', {
       pymeterStore.clearSelectedDataset()
       // 重新查询变量集列表
       pymeterStore.queryDatasetAll()
-      // 重新查询 http 请求头模板列表
-      pymeterStore.queryHttpheaderTemplateAll()
       // 打开空间的离线数据
       pymeterStore.openOfflineTab()
     },
@@ -52,7 +50,7 @@ export const useWorkspaceStore = defineStore('workspace', {
     /**
      * 查询所有工作空间
      */
-    loadWorkspaceList() {
+    loadsWorkspaceList() {
       const userStore = useUserStore()
       WorkspaceService.queryWorkspaceAll({ userNo: userStore.number }).then((response) => {
         // 个人空间
@@ -71,7 +69,7 @@ export const useWorkspaceStore = defineStore('workspace', {
           }
         } else {
           // 如果当前未选择工作空间，清空已选择的脚本列表
-          window.localStorage.removeItem('selectedCollections')
+          window.localStorage.removeItem('selectedScripts')
         }
       })
     }

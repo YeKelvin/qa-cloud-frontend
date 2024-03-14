@@ -259,7 +259,7 @@ const openTestSnippet = () => {
     return
   }
   // 脚本列表打开片段脚本
-  pymeterStore.addSelectedCollection(elementData.value.elementAttrs.SnippetSampler__snippet_no)
+  pymeterStore.openScript(elementData.value.elementAttrs.SnippetSampler__snippet_no)
   // 滚动至底部
   pymeterStore.scrollToElementTreeBottom()
 }

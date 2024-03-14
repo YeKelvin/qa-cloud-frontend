@@ -32,7 +32,7 @@
             link
             :icon="Close"
             style="font-size: 16px"
-            @click.stop="pymeterStore.removeSelectedCollection(data.elementNo)"
+            @click.stop="pymeterStore.closeScript(data.elementNo)"
           />
           <!-- 更多按钮 -->
           <el-button
@@ -73,7 +73,7 @@ let clickTimer = null
 const offlineDB = usePyMeterDB().offlineDB
 const pymeterStore = usePyMeterStore()
 const props = defineProps({
-  collections: { type: Array, default: () => [] }
+  scripts: { type: Array, default: () => [] }
 })
 const elementList = ref([])
 const pendingPaste = ref(null)
@@ -102,7 +102,7 @@ const {
 } = useElTree()
 
 watch(
-  () => pymeterStore.refreshElementTreeFlag,
+  () => pymeterStore.flagAsRefreshElementTree,
   () => queryElementsTree()
 )
 watch(
@@ -115,7 +115,7 @@ watch(
   }
 )
 watch(
-  () => props.collections,
+  () => props.scripts,
   (val) => {
     if (!val) return
     queryElementsTree()
@@ -124,7 +124,7 @@ watch(
 )
 
 onMounted(() => {
-  if (!isEmpty(props.collections)) queryElementsTree(true)
+  if (!isEmpty(props.scripts)) queryElementsTree(true)
   // 根据操作系统动态绑定快捷键
   const eltreeDom = eltreeRef.value.$el
   eltreeDom.addEventListener('keydown', cutByShortcut, false)
@@ -151,13 +151,13 @@ onBeforeUnmount(() => {
  */
 const queryElementsTree = (expandtop = false) => {
   // 无勾选脚本时无需查询
-  if (isEmpty(props.collections)) {
+  if (isEmpty(props.scripts)) {
     elementList.value = []
     expandedList.value = []
     return
   }
   // 根据列表查询元素及其子代
-  ElementService.queryElementTreeByRoots({ roots: props.collections }).then((response) => {
+  ElementService.queryElementTreeByRoots({ roots: props.scripts }).then((response) => {
     // 存储列表
     elementList.value = response.data
     nextTick(() => {
@@ -517,9 +517,9 @@ const deleteElement = debounce(
     // 集合元素特殊处理
     if (data.elementType === 'COLLECTION') {
       // 从已选中的集合列表中移除该集合
-      pymeterStore.removeSelectedCollection(data.elementNo)
+      pymeterStore.closeScript(data.elementNo)
       // 重新查询集合列表
-      pymeterStore.refreshCollections()
+      pymeterStore.refreshElementRootList()
     }
     // 关闭tab
     pymeterStore.removeTab({ editorNo: data.elementNo, force: true })

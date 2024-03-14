@@ -42,6 +42,7 @@ export default ({ mode }) =>
         }
       }),
       Components({
+        dts: false,
         resolvers: [
           // 按需加载 Arco
           ArcoResolver({ sideEffect: true }),

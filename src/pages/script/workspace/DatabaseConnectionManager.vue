@@ -52,21 +52,22 @@
 <script lang="jsx" setup>
 import * as ElementService from '@/api/script/element'
 import WorkspaceTree from '@/pymeter/components/editor-aside/common/WorkspaceTree.vue'
-import { usePyMeterStore } from '@/store/pymeter'
 import { useWorkspaceStore } from '@/store/workspace'
 import { Plus, Search } from '@element-plus/icons-vue'
+import { useQueryClient } from '@tanstack/vue-query'
 import dayjs from 'dayjs'
 import { isEmpty } from 'lodash-es'
 
 const router = useRouter()
-const pymeterStore = usePyMeterStore()
+const queryClient = useQueryClient()
 const workspaceStore = useWorkspaceStore()
-const tableData = computed(() => pymeterStore.databaseEngineList)
+const workspaceNo = computed(() => workspaceStore.workspaceNo)
+const databaseList = ref([])
 const filteredText = ref('')
 const filteredData = computed(() => {
   const filterKey = filteredText.value
-  if (isEmpty(filterKey)) return tableData.value
-  return tableData.value.filter((item) => item.databaseName && item.databaseName.indexOf(filterKey.trim()) !== -1)
+  if (isEmpty(filterKey)) return databaseList.value
+  return databaseList.value.filter((item) => item.databaseName && item.databaseName.indexOf(filterKey.trim()) !== -1)
 })
 
 onMounted(() => {
@@ -82,7 +83,9 @@ watch(
  * 查询数据库连接列表
  */
 const query = () => {
-  pymeterStore.queryDatabaseEngineAll()
+  ElementService.queryDatabaseEngineAll({ workspaceNo: workspaceStore.workspaceNo }).then((response) => {
+    databaseList.value = response.data
+  })
 }
 
 /**
@@ -120,6 +123,9 @@ const duplicateDatabase = async ({ databaseNo, databaseName }) => {
   if (cancelled) return
   // 复制数据库连接
   await ElementService.duplicateElement({ elementNo: databaseNo })
+  // 删除缓存
+  await queryClient.cancelQueries({ queryKey: ['DatabaseEngine', workspaceNo] })
+  await queryClient.invalidateQueries({ queryKey: ['DatabaseEngine', workspaceNo] })
   //  重新查询列表
   query()
   // 成功提示
@@ -152,6 +158,9 @@ const cloneDatabase = async ({ databaseNo }) => {
     workspaceNo: workspaceNo,
     elementNo: databaseNo
   })
+  // 删除缓存
+  await queryClient.cancelQueries({ queryKey: ['DatabaseEngine', workspaceNo] })
+  await queryClient.invalidateQueries({ queryKey: ['DatabaseEngine', workspaceNo] })
   //  成功提示
   ElMessage({ message: '复制成功', type: 'info', duration: 1 * 1000 })
 }
@@ -182,6 +191,9 @@ const moveDatabase = async ({ databaseNo }) => {
     workspaceNo: workspaceNo,
     elementNo: databaseNo
   })
+  // 删除缓存
+  await queryClient.cancelQueries({ queryKey: ['DatabaseEngine', workspaceNo] })
+  await queryClient.invalidateQueries({ queryKey: ['DatabaseEngine', workspaceNo] })
   // 重新查询列表
   query()
   // 成功提示
@@ -209,6 +221,9 @@ const removeDatabase = async ({ databaseNo, databaseName }) => {
   if (cancelled) return
   // 删除数据库连接
   await ElementService.removeElement({ elementNo: databaseNo })
+  // 删除缓存
+  await queryClient.cancelQueries({ queryKey: ['DatabaseEngine', workspaceNo] })
+  await queryClient.invalidateQueries({ queryKey: ['DatabaseEngine', workspaceNo] })
   // 重新查询列表
   query()
   // 成功提示

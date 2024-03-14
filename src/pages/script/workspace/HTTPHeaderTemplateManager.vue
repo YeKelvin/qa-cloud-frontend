@@ -52,21 +52,22 @@
 <script lang="jsx" setup>
 import * as ElementService from '@/api/script/element'
 import WorkspaceTree from '@/pymeter/components/editor-aside/common/WorkspaceTree.vue'
-import { usePyMeterStore } from '@/store/pymeter'
 import { useWorkspaceStore } from '@/store/workspace'
 import { Plus, Search } from '@element-plus/icons-vue'
+import { useQueryClient } from '@tanstack/vue-query'
 import dayjs from 'dayjs'
 import { isEmpty } from 'lodash-es'
 
 const router = useRouter()
-const pymeterStore = usePyMeterStore()
+const queryClient = useQueryClient()
 const workspaceStore = useWorkspaceStore()
-const tableData = computed(() => pymeterStore.httpheaderTemplateList)
+const workspaceNo = computed(() => workspaceStore.workspaceNo)
+const templateList = ref([])
 const filteredText = ref('')
 const filteredData = computed(() => {
   const filterKey = filteredText.value
-  if (isEmpty(filterKey)) return tableData.value
-  return tableData.value.filter((item) => item.templateName && item.templateName.indexOf(filterKey.trim()) !== -1)
+  if (isEmpty(filterKey)) return templateList.value
+  return templateList.value.filter((item) => item.templateName && item.templateName.indexOf(filterKey.trim()) !== -1)
 })
 
 onMounted(() => {
@@ -81,8 +82,9 @@ watch(
 /**
  * 查询请求头模板列表
  */
-const query = () => {
-  pymeterStore.queryHttpheaderTemplateAll()
+const query = async () => {
+  const response = await ElementService.queryHTTPHeaderTemplateAll({ workspaceNo: workspaceStore.workspaceNo })
+  templateList.value = response.data
 }
 
 /**
@@ -120,6 +122,9 @@ const duplicateTemplate = async ({ templateNo, templateName }) => {
   if (cancelled) return
   // 复制请求头模板
   await ElementService.duplicateElement({ elementNo: templateNo })
+  // 删除缓存
+  await queryClient.cancelQueries({ queryKey: ['HTTPHeaderTemplate', workspaceNo] })
+  await queryClient.invalidateQueries({ queryKey: ['HTTPHeaderTemplate', workspaceNo] })
   //  重新查询列表
   query()
   // 成功提示
@@ -152,6 +157,9 @@ const cloneTemplate = async ({ templateNo }) => {
     workspaceNo: workspaceNo,
     elementNo: templateNo
   })
+  // 删除缓存
+  await queryClient.cancelQueries({ queryKey: ['HTTPHeaderTemplate', workspaceNo] })
+  await queryClient.invalidateQueries({ queryKey: ['HTTPHeaderTemplate', workspaceNo] })
   //  成功提示
   ElMessage({ message: '复制成功', type: 'info', duration: 1 * 1000 })
 }
@@ -182,6 +190,9 @@ const moveTemplate = async ({ templateNo }) => {
     workspaceNo: workspaceNo,
     elementNo: templateNo
   })
+  // 删除缓存
+  await queryClient.cancelQueries({ queryKey: ['HTTPHeaderTemplate', workspaceNo] })
+  await queryClient.invalidateQueries({ queryKey: ['HTTPHeaderTemplate', workspaceNo] })
   // 重新查询列表
   query()
   // 成功提示
@@ -209,8 +220,9 @@ const removeTemplate = async ({ templateNo, templateName }) => {
   if (cancelled) return
   // 删除请求头模板
   await ElementService.removeElement({ elementNo: templateNo })
-  // 关闭tab
-  pymeterStore.removeTab({ editorNo: templateNo, force: true })
+  // 删除缓存
+  await queryClient.cancelQueries({ queryKey: ['HTTPHeaderTemplate', workspaceNo] })
+  await queryClient.invalidateQueries({ queryKey: ['HTTPHeaderTemplate', workspaceNo] })
   // 重新查询列表
   query()
   // 成功提示

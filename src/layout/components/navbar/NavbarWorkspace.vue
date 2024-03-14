@@ -51,7 +51,7 @@ const filterText = ref('')
 
 watch(filterText, (val) => eltreeRef.value.filter(val))
 
-onMounted(() => workspaceStore.loadWorkspaceList())
+onMounted(() => workspaceStore.loadsWorkspaceList())
 
 const handleNodeClick = (node) => {
   workspaceStore.changeWorkspace(node)

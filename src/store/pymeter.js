@@ -1,4 +1,3 @@
-import * as ElementService from '@/api/script/element'
 import * as VariablesService from '@/api/script/variables'
 import { usePyMeterDB } from '@/store/pymeter-db'
 import { useWorkspaceStore } from '@/store/workspace'
@@ -19,21 +18,19 @@ export const usePyMeterStore = defineStore('pymeter', {
       activeTabNo: '',
 
       // 刷新集合列表
-      // TODO: 改名：flagAsRefreshElementRootList
-      refreshCollectionsFlag: 0,
+      flagAsRefreshElementRootList: 0,
 
       // 刷新脚本元素
-      // TODO: 改名：flagAsRefreshElementTree
-      refreshElementTreeFlag: 0,
+      flagAsRefreshElementTree: 0,
 
       // 滚动至脚本列表底部
-      // TODO: 改名：flagAsScrollToElementTreeBottom
-      scrollToElementTreeBottomFlag: 0,
+      flagAsScrollToElementTreeBottom: 0,
 
       // 待展开节点的元素编号
       pendingExpandedElementNo: 0,
 
       // 变量集列表
+      // TODO: vue-query改造
       datasetList: [],
       // 全局变量集列表
       globalDatasetList: [],
@@ -52,23 +49,15 @@ export const usePyMeterStore = defineStore('pymeter', {
       useCurrentValue: true,
 
       // 当前选中的集合编号列表（缓存）
-      // TODO: 改名：selectedScripts
-      selectedCollections: [],
+      selectedScripts: [],
 
       // 显示底部抽屉窗口
       showingFooterDrawer: false,
-      // TODO: 改名：activeFooterViewer
-      activeFooterViewName: 'RESULT',
-
-      // 请求头模板列表
-      httpheaderTemplateList: [],
-
-      // 数据库配置列表
-      databaseEngineList: []
+      activeFooterViewer: 'RESULT'
     }
   },
   persist: {
-    paths: ['selectedDatasets', 'useCurrentValue', 'selectedCollections']
+    paths: ['selectedDatasets', 'useCurrentValue', 'selectedScripts']
   },
   getters: {},
   actions: {
@@ -218,24 +207,23 @@ export const usePyMeterStore = defineStore('pymeter', {
 
     /**
      * 立即刷新集合列表
-     * TODO: 改名：refreshElementRootList
      */
-    refreshCollections() {
-      this.refreshCollectionsFlag += 1
+    refreshElementRootList() {
+      this.flagAsRefreshElementRootList += 1
     },
 
     /**
      * 立即刷新脚本内容
      */
     refreshElementTree() {
-      this.refreshElementTreeFlag += 1
+      this.flagAsRefreshElementTree += 1
     },
 
     /**
      * 滚动至脚本列表底部
      */
     scrollToElementTreeBottom() {
-      this.scrollToElementTreeBottomFlag += 1
+      this.flagAsScrollToElementTreeBottom += 1
     },
 
     /**
@@ -247,26 +235,24 @@ export const usePyMeterStore = defineStore('pymeter', {
 
     /**
      * 添加已选择的集合元素
-     * TODO: 改名：openScript
      */
-    addSelectedCollection(rootNo) {
-      if (this.selectedCollections.includes(rootNo)) return
-      this.selectedCollections.push(rootNo)
+    openScript(rootNo) {
+      if (this.selectedScripts.includes(rootNo)) return
+      this.selectedScripts.push(rootNo)
     },
 
     /**
      * 移除已选择的集合元素
-     * TODO: 改名：closeScript
      */
-    removeSelectedCollection(rootNo) {
-      this.selectedCollections = this.selectedCollections.filter((item) => item !== rootNo)
+    closeScript(rootNo) {
+      this.selectedScripts = this.selectedScripts.filter((item) => item !== rootNo)
     },
 
     /**
      * 打开结果视图窗口
      */
     openResultDrawer() {
-      this.activeFooterViewName = 'RESULT'
+      this.activeFooterViewer = 'RESULT'
       this.showingFooterDrawer = true
     },
 
@@ -274,7 +260,7 @@ export const usePyMeterStore = defineStore('pymeter', {
      * 打开日志视图窗口
      */
     openLogDrawer() {
-      this.activeFooterViewName = 'LOG'
+      this.activeFooterViewer = 'LOG'
       this.showingFooterDrawer = true
     },
 
@@ -289,10 +275,10 @@ export const usePyMeterStore = defineStore('pymeter', {
      * 切换窗口打开状态
      */
     toggleResultView() {
-      if (this.activeFooterViewName === 'RESULT') {
+      if (this.activeFooterViewer === 'RESULT') {
         this.showingFooterDrawer = !this.showingFooterDrawer
       } else {
-        this.activeFooterViewName = 'RESULT'
+        this.activeFooterViewer = 'RESULT'
         this.showingFooterDrawer = true
       }
     },
@@ -301,10 +287,10 @@ export const usePyMeterStore = defineStore('pymeter', {
      * 切换窗口打开状态
      */
     toggleLogView() {
-      if (this.activeFooterViewName === 'LOG') {
+      if (this.activeFooterViewer === 'LOG') {
         this.showingFooterDrawer = !this.showingFooterDrawer
       } else {
-        this.activeFooterViewName = 'LOG'
+        this.activeFooterViewer = 'LOG'
         this.showingFooterDrawer = true
       }
     },
@@ -379,24 +365,6 @@ export const usePyMeterStore = defineStore('pymeter', {
         // 没有选择环境变量集时，开放所有环境变量集
         this.environmentDatasetList.forEach((item) => (item.disabled = false))
       }
-    },
-
-    /**
-     * 查询所有请求头模板
-     */
-    queryHttpheaderTemplateAll() {
-      ElementService.queryHTTPHeaderTemplateAll({ workspaceNo: useWorkspaceStore().workspaceNo }).then((response) => {
-        this.httpheaderTemplateList = response.data
-      })
-    },
-
-    /**
-     * 查询所有数据库配置
-     */
-    queryDatabaseEngineAll() {
-      ElementService.queryDatabaseEngineAll({ workspaceNo: useWorkspaceStore().workspaceNo }).then((response) => {
-        this.databaseEngineList = response.data
-      })
     }
   }
 })

@@ -66,8 +66,8 @@ const drawerSize = ref('65%')
 const isMaxSize = computed(() => drawerSize.value === '100%')
 const results = inject('results', null)
 const logs = inject('logs', null)
-const showResultView = computed(() => pymeterStore.activeFooterViewName === 'RESULT')
-const showlogView = computed(() => pymeterStore.activeFooterViewName === 'LOG')
+const showResultView = computed(() => pymeterStore.activeFooterViewer === 'RESULT')
+const showlogView = computed(() => pymeterStore.activeFooterViewer === 'LOG')
 /**
  * 清空所有记录
  */

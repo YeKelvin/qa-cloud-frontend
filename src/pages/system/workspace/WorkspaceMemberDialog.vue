@@ -73,7 +73,7 @@ const save = () => {
     members: members.value
   }).then(() => {
     // 重新查询工作空间列表
-    workspaceStore.loadWorkspaceList()
+    workspaceStore.loadsWorkspaceList()
     // 关闭dialog
     emit('update:model-value', false)
     // 成功提示

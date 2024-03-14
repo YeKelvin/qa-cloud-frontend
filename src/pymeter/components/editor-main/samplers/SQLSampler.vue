@@ -15,14 +15,14 @@
       <el-form-item label="数据库：" prop="elementAttrs.SQLSampler__engine_no">
         <el-select v-model="elementData.elementAttrs.SQLSampler__engine_no" style="width: 100%">
           <el-option
-            v-for="item in engineList"
-            :key="item.databaseNo"
-            :label="item.databaseName"
-            :value="item.databaseNo"
+            v-for="option in databaseList"
+            :key="option.databaseNo"
+            :label="option.databaseName"
+            :value="option.databaseNo"
           >
             <span class="database-type-option">
-              <span>{{ item.databaseName }}</span>
-              <el-tag type="danger" size="small" disable-transitions>{{ DatabaseType[item.databaseType] }}</el-tag>
+              <span>{{ option.databaseName }}</span>
+              <el-tag type="danger" size="small" disable-transitions>{{ DatabaseType[option.databaseType] }}</el-tag>
             </span>
           </el-option>
         </el-select>
@@ -74,13 +74,13 @@
       </div>
 
       <!-- SQL语句 -->
-      <div v-show="showStatementTab" style="margin-bottom: 20px">
+      <div v-show="showStatementTab">
         <FxEditor ref="editorRef" v-model="elementData.elementProps.SQLSampler__statement" language="sql" />
       </div>
     </el-form>
 
     <!-- 操作按钮 -->
-    <div style="display: flex; justify-content: center">
+    <div style="display: flex; justify-content: center; margin-top: 10px">
       <!-- 保存按钮 -->
       <template v-if="creation || unsaved">
         <SaveButton style="margin-right: 10px" :tips="shortcutKeyName" @click="save()" />
@@ -122,10 +122,12 @@ import { useWorkspaceStore } from '@/store/workspace'
 import { toHashCode } from '@/utils/object-util'
 import { ElMessage } from 'element-plus'
 import { debounce, isEmpty } from 'lodash-es'
+import { useQuery } from '@tanstack/vue-query'
 
 const emit = defineEmits(EditorEmits)
 const props = defineProps(EditorProps)
 const workspaceStore = useWorkspaceStore()
+const workspaceNo = computed(() => workspaceStore.workspaceNo)
 const { runSampler, runOffline, runWorkerBySampler } = useRunnableElement()
 const { assignElement, assignMetadata } = useElement()
 const { unsaved, metadata, creation, localkey, shortcutKeyName, updateTabName, expandParentNode, refreshElementTree } =
@@ -164,9 +166,17 @@ const hiddenSettingsDot = computed(
     isEmpty(elementData.value.elementProps.SQLSampler__query_timeout)
 )
 
-const engineList = ref([])
 const elformRef = ref()
 const editorRef = ref()
+
+const { data: databaseList } = useQuery({
+  staleTime: 1000 * 60 * 10, // 10分钟过期
+  queryKey: ['DatabaseEngine', workspaceNo],
+  queryFn: async () => {
+    const response = await ElementService.queryDatabaseEngineAll({ workspaceNo: workspaceNo.value })
+    return response.data
+  }
+})
 
 watch(
   elementData,
@@ -188,10 +198,6 @@ watch(
 )
 
 onMounted(async () => {
-  // 查询所有数据库
-  const response = await ElementService.queryDatabaseEngineAll({ workspaceNo: workspaceStore.workspaceNo })
-  engineList.value = response.data
-
   // 优先查询离线数据
   if (unsaved.value) {
     queryOfflineData()

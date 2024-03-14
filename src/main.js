@@ -5,6 +5,9 @@ import App from './App'
 import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
+// vue-query
+import { VueQueryPlugin as VueQuery } from '@tanstack/vue-query'
+
 // vue-router
 import Router from './router'
 // 导航守卫
@@ -39,6 +42,7 @@ const app = createApp(App)
 // 注册 vue 插件
 app.use(pinia)
 app.use(Router)
+app.use(VueQuery)
 app.use(SocketIO)
 app.use(ElementPlus, { locale: chinese })
 // 全局注册自定义组件

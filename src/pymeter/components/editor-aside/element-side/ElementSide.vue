@@ -7,7 +7,7 @@
     <span v-if="!loading" class="collection-list-container">
       <el-select
         ref="elSelectRef"
-        v-model="selectedCollections"
+        v-model="selectedScripts"
         style="flex-grow: 1"
         tag-type="danger"
         size="large"
@@ -70,7 +70,7 @@
     </span>
 
     <!-- 选择脚本后才显示 -->
-    <template v-if="!loading && !isEmpty(selectedCollections)">
+    <template v-if="!loading && !isEmpty(selectedScripts)">
       <!-- 元素操作按钮 -->
       <div class="operation-container" style="margin-top: 5px">
         <!-- 展开节点按钮 -->
@@ -100,12 +100,12 @@
         wrap-style="overflow-x:auto;"
         view-style="padding:10px;"
       >
-        <ElementTree ref="elementTreeRef" :collections="selectedCollections" />
+        <ElementTree ref="elementTreeRef" :scripts="selectedScripts" />
       </el-scrollbar>
     </template>
 
     <!-- 没有选择脚本时给出提示 -->
-    <template v-if="!loading && isEmpty(selectedCollections)">
+    <template v-if="!loading && isEmpty(selectedScripts)">
       <el-empty style="height: 100%; padding-top: 0; padding-bottom: 120px">
         <el-button link type="primary" style="font-size: 16px" :icon="Open" @click="openScriptSelect()">
           打开脚本
@@ -131,13 +131,13 @@ const loading = ref(false)
 const collectionList = ref([])
 const snippetList = ref([])
 const elementTreeRef = ref()
-const selectedCollections = computed({
-  get: () => pymeterStore.selectedCollections,
+const elScrollbarRef = ref()
+const selectedScripts = computed({
+  get: () => pymeterStore.selectedScripts,
   set: (val) => {
-    if (!loading.value) pymeterStore.selectedCollections = val
+    if (!loading.value) pymeterStore.selectedScripts = val
   }
 })
-const elScrollbarRef = ref()
 
 watch(
   () => workspaceStore.workspaceNo,
@@ -146,22 +146,22 @@ watch(
     // 重新查询集合列表
     queryCollections()
     // 清空已选择的集合
-    selectedCollections.value = []
+    selectedScripts.value = []
   }
 )
 watch(
-  () => pymeterStore.refreshCollectionsFlag,
+  () => pymeterStore.flagAsRefreshElementRootList,
   () => queryCollections()
 )
 watch(
-  () => pymeterStore.scrollToElementTreeBottomFlag,
+  () => pymeterStore.flagAsScrollToElementTreeBottom,
   () => scrollToBottom()
 )
 
 onMounted(async () => {
   // 没有选择工作空间时，清空已选择的集合列表
   if (!workspaceStore.workspaceNo) {
-    selectedCollections.value = []
+    selectedScripts.value = []
     return
   }
   // 查询集合列表
@@ -211,10 +211,10 @@ const queryCollections = async () => {
   // 提取集合编号
   const collections = [...collectionList.value, ...snippetList.value].map((item) => item.elementNo)
   // 遍历取消选择无效的集合
-  const selecteds = selectedCollections.value
+  const selecteds = selectedScripts.value
   for (let i = selecteds.length - 1; i >= 0; i--) {
     if (!collections.includes(selecteds[i])) {
-      selectedCollections.value.splice(i, 1)
+      selectedScripts.value.splice(i, 1)
     }
   }
 }

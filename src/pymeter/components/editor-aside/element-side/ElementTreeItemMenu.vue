@@ -539,7 +539,7 @@ const moveElementToWorkspace = async () => {
   // 关闭tab
   pymeterStore.removeTab({ editorNo: data.elementNo })
   // 从已选中的集合列表中移除该集合
-  pymeterStore.removeSelectedCollection(data.elementNo)
+  pymeterStore.closeScript(data.elementNo)
   // 重新查询列表
   pymeterStore.refreshElementTree()
   // 成功提示
@@ -598,9 +598,9 @@ const removeElement = async () => {
   // 集合元素特殊处理
   if (data.elementType === 'COLLECTION') {
     // 从已选中的集合列表中移除该集合
-    pymeterStore.removeSelectedCollection(data.elementNo)
+    pymeterStore.closeScript(data.elementNo)
     // 重新查询集合列表
-    pymeterStore.refreshCollections()
+    pymeterStore.refreshElementRootList()
   }
   // 关闭tab
   pymeterStore.removeTab({ editorNo: data.elementNo, force: true })

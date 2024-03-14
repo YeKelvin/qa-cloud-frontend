@@ -69,7 +69,7 @@ const submitForm = async () => {
   // 重新查询列表
   emit('re-query')
   // 重新查询工作空间列表
-  workspaceStore.loadWorkspaceList()
+  workspaceStore.loadsWorkspaceList()
 }
 </script>
 
