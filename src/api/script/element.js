@@ -30,6 +30,8 @@ export const enableElement = (data) => request.put('/script/element/enable', dat
 
 export const disableElement = (data) => request.put('/script/element/disable', data)
 
+export const skipElement = (data) => request.put('/script/element/skip', data)
+
 export const toggleElementState = (data) => request.put('/script/element/state/toggle', data)
 
 export const moveElement = (data) => request.post('/script/element/move', data)

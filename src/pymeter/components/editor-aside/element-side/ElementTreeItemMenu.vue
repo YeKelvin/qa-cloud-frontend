@@ -77,10 +77,9 @@
         <el-button link @click="openNewWhileControllerTab">While循环</el-button>
         <el-button link @click="openNewForeachControllerTab">Foreach循环</el-button>
         <el-button link @click="openNewRetryControllerTab">重试循环</el-button>
-        <el-button link @click="openNewTransactionControllerTab">事务控制</el-button>
       </el-popover>
 
-      <template v-if="item?.elementType == 'COLLECTION'">
+      <template v-if="['COLLECTION', 'SNIPPET'].includes(item?.elementType)">
         <el-divider />
         <el-button link @click="copyElementToWorkspace">克隆</el-button>
         <el-button link @click="moveElementToWorkspace">移动</el-button>
@@ -93,20 +92,24 @@
           <el-tag type="info" size="small" disable-transitions>{{ shortcutKeyPrefix }}+D</el-tag>
         </el-button>
       </template>
-
       <el-divider />
-      <!-- 启用按钮 -->
-      <el-button v-if="!item?.enabled" link class="element-menu--shortcut-option" @click="enableElement">
-        <span>启用</span>
-        <el-tag type="info" size="small" disable-transitions>{{ shortcutKeyPrefix }}+/</el-tag>
-      </el-button>
-      <!-- 禁用按钮 -->
-      <el-button v-else link class="element-menu--shortcut-option" @click="disableElement">
-        <span>禁用</span>
-        <el-tag type="info" size="small" disable-transitions>{{ shortcutKeyPrefix }}+/</el-tag>
-      </el-button>
 
-      <el-divider />
+      <template v-if="!['COLLECTION', 'SNIPPET'].includes(item?.elementType)">
+        <!-- 启用按钮 -->
+        <template v-if="!item?.enabled || item?.skiped">
+          <el-button link @click="enableElement">启用</el-button>
+        </template>
+        <!-- 禁用按钮 -->
+        <template v-if="item?.enabled">
+          <el-button link @click="disableElement">禁用</el-button>
+        </template>
+        <!-- 跳过按钮 -->
+        <template v-if="!item?.skiped">
+          <el-button link @click="skipElement">跳过</el-button>
+        </template>
+        <el-divider />
+      </template>
+
       <!-- 删除按钮 -->
       <el-button link class="element-menu--shortcut-option" @click="removeElement">
         <span>删除</span>
@@ -565,6 +568,18 @@ const disableElement = () => {
   closeMenu()
   // 禁用元素
   ElementService.disableElement({ elementNo: item.value.elementNo }).then(() => {
+    // 重新查询列表
+    pymeterStore.refreshElementTree()
+  })
+}
+
+/**
+ * 跳过元素
+ */
+const skipElement = () => {
+  closeMenu()
+  // 跳过元素
+  ElementService.skipElement({ elementNo: item.value.elementNo }).then(() => {
     // 重新查询列表
     pymeterStore.refreshElementTree()
   })

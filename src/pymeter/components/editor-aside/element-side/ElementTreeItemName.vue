@@ -33,6 +33,8 @@
     <el-tag v-if="data.elementClass == 'TeardownWorker'" size="small" disable-transitions>后置</el-tag>
     <!-- 禁用标识 -->
     <el-tag v-if="!data.enabled" type="danger" size="small" disable-transitions>禁用</el-tag>
+    <!-- 跳过标识 -->
+    <el-tag v-if="data.skiped" type="danger" size="small" disable-transitions>跳过</el-tag>
   </span>
 </template>
 
