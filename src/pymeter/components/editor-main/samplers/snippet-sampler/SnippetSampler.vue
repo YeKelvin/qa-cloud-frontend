@@ -92,6 +92,12 @@
 </template>
 
 <script setup>
+import { View } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { debounce, isEmpty } from 'lodash-es'
+
+import ArgumentTable from './SnippetSamplerArgumentTable.vue'
+
 import * as ElementService from '@/api/script/element'
 import FxInput from '@/pymeter/components/editor-main/others/FunctionInput.vue'
 import EditorEmits from '@/pymeter/composables/editor.emits'
@@ -103,10 +109,6 @@ import { usePyMeterStore } from '@/store/pymeter'
 import { usePyMeterDB } from '@/store/pymeter-db'
 import { useWorkspaceStore } from '@/store/workspace'
 import { toHashCode } from '@/utils/object-util'
-import { View } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
-import { debounce, isEmpty } from 'lodash-es'
-import ArgumentTable from './SnippetSamplerArgumentTable.vue'
 
 const emit = defineEmits(EditorEmits)
 const props = defineProps(EditorProps)
@@ -300,8 +302,8 @@ const runTestCase = () => {
 // 校验参数值是否为空
 const checkArguments = () => {
   const args = argumentData.value
-  for (let i = 0; i < args.length; i++) {
-    if (isEmpty(args[i].value)) return true
+  for (const arg of args) {
+    if (isEmpty(arg.value)) return true
   }
   return false
 }

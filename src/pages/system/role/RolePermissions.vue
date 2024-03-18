@@ -19,10 +19,12 @@
 </template>
 
 <script setup>
-import * as RoleService from '@/api/usercenter/role'
-import { ElMessage } from 'element-plus'
 import { Check, Close } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+
 import PermissionTable from './PermissionTable.vue'
+
+import * as RoleService from '@/api/usercenter/role'
 
 const route = useRoute()
 const router = useRouter()

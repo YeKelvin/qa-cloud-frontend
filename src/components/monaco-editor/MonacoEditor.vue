@@ -6,6 +6,7 @@
 
 <script setup>
 import { debounce } from 'lodash-es'
+
 import monaco from './monaco.base'
 import monacoOptions from './monaco.options'
 

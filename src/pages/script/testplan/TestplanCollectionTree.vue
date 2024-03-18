@@ -108,13 +108,13 @@ const setCheckedKeys = (keys) => {
   // 调整脚本顺序
   const indexs = []
   const list = [...collections.value]
-  for (let i = 0; i < keys.length; i++) {
-    const index = collections.value.findIndex((item) => item.elementNo === keys[i])
+  for (const key of keys) {
+    const index = collections.value.findIndex((item) => item.elementNo === key)
     if (index === -1) return
     indexs.push(index)
   }
-  for (let i = 0; i < indexs.length; i++) {
-    ;[list[i], list[indexs[i]]] = [list[indexs[i]], list[i]]
+  for (const [i, index] of indexs.entries()) {
+    ;[list[i], list[index]] = [list[index], list[i]]
   }
   collections.value = list
 }

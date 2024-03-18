@@ -54,11 +54,13 @@
 </template>
 
 <script setup>
-import { usePyMeterStore } from '@/store/pymeter'
-import { usePymeterSocketStore } from '@/store/pymeter-socket'
 import { ElMessage } from 'element-plus'
+
 import LogView from './log-view/LogView.vue'
 import ResultView from './result-view/ResultView.vue'
+
+import { usePyMeterStore } from '@/store/pymeter'
+import { usePymeterSocketStore } from '@/store/pymeter-socket'
 
 const pymeterStore = usePyMeterStore()
 const pymeterSocketStore = usePymeterSocketStore()

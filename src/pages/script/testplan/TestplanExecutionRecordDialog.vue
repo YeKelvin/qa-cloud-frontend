@@ -42,11 +42,12 @@
 </template>
 
 <script setup>
+import dayjs from 'dayjs'
 import { ElMessage, ElMessageBox } from 'element-plus'
+
 import { RunningState, TestPhase } from '@/api/enum'
 import * as ExecutionService from '@/api/script/execution'
 import * as TestplanService from '@/api/script/testplan'
-import dayjs from 'dayjs'
 
 const props = defineProps({
   planNo: { type: String, default: '' }

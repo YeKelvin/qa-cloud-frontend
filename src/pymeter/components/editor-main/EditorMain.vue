@@ -43,9 +43,11 @@
 </template>
 
 <script setup>
-import { usePyMeterStore } from '@/store/pymeter'
-import TabHeader from './header/TabHeader.vue'
 import Mousetrap from 'mousetrap'
+
+import TabHeader from './header/TabHeader.vue'
+
+import { usePyMeterStore } from '@/store/pymeter'
 
 const components = reactive({
   // workspace
@@ -78,7 +80,7 @@ const components = reactive({
 
 const pymeterStore = usePyMeterStore()
 const activeTab = computed(() => {
-  let tab = pymeterStore.tabs.filter((tab) => tab.editorNo === pymeterStore.activeTabNo)[0]
+  let tab = pymeterStore.tabs.find((tab) => tab.editorNo === pymeterStore.activeTabNo)
   if (!tab) tab = { editorComponent: '' }
   return tab
 })

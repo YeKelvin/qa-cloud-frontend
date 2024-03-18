@@ -36,8 +36,9 @@
 </template>
 
 <script setup>
-import { omit } from 'lodash-es'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { omit } from 'lodash-es'
+
 import * as GroupService from '@/api/usercenter/group'
 import * as RoleService from '@/api/usercenter/role'
 import * as UserService from '@/api/usercenter/user'

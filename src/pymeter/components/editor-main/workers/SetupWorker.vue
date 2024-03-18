@@ -96,11 +96,15 @@
 </template>
 
 <script setup>
+import { Check, Close } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { debounce } from 'lodash-es'
+
 import * as ElementService from '@/api/script/element'
 import * as ExecutionService from '@/api/script/execution'
-import FxInput from '@/pymeter/components/editor-main/others/FunctionInput.vue'
 import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
 import SvgIcon from '@/components/svg-icon/SvgIcon.vue'
+import FxInput from '@/pymeter/components/editor-main/others/FunctionInput.vue'
 import EditorEmits from '@/pymeter/composables/editor.emits'
 import EditorProps from '@/pymeter/composables/editor.props'
 import useEditor from '@/pymeter/composables/useEditor'
@@ -109,9 +113,6 @@ import useRunnableElement from '@/pymeter/composables/useRunnableElement'
 import { usePyMeterStore } from '@/store/pymeter'
 import { usePyMeterDB } from '@/store/pymeter-db'
 import { toHashCode } from '@/utils/object-util'
-import { Check, Close } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
-import { debounce } from 'lodash-es'
 
 const emit = defineEmits(EditorEmits)
 const props = defineProps(EditorProps)

@@ -24,8 +24,10 @@
 <script setup>
 // fuse is a lightweight fuzzy-search module
 // make search results more in line with expectations
-import Fuse from 'fuse.js'
 import path from 'path'
+
+import Fuse from 'fuse.js'
+
 import { usePermissionStore } from '@/store/permission'
 
 const router = useRouter()
@@ -138,11 +140,7 @@ const generateRoutes = (routes, basePath = '/', prefixTitle = []) => {
 }
 
 const querySearch = (query) => {
-  if (query !== '') {
-    options.value = fuse.value.search(query)
-  } else {
-    options.value = []
-  }
+  options.value = query !== '' ? fuse.value.search(query) : []
 }
 </script>
 

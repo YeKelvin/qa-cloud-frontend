@@ -80,12 +80,13 @@
 </template>
 
 <script setup>
-import * as ElementService from '@/api/script/element'
 import { Check, Close } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { isEmpty, debounce } from 'lodash-es'
-import { toHashCode } from '@/utils/object-util'
+
+import * as ElementService from '@/api/script/element'
 import { useWorkspaceStore } from '@/store/workspace'
+import { toHashCode } from '@/utils/object-util'
 
 const route = useRoute()
 const router = useRouter()

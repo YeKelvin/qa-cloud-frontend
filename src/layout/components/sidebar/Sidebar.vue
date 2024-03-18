@@ -26,11 +26,11 @@
 <script setup>
 import SidebarItem from './SidebarItem.vue'
 import SidebarLogo from './SidebarLogo.vue'
-import variables from '@/styles/variables.module.scss'
 
 import { useAppStore } from '@/store/app'
 import { usePermissionStore } from '@/store/permission'
 import { useSettingsStore } from '@/store/settings'
+import variables from '@/styles/variables.module.scss'
 
 const route = useRoute()
 const appStore = useAppStore()

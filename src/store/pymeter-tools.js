@@ -1,5 +1,6 @@
-import { usePyMeterDB } from '@/store/pymeter-db'
 import { isEmpty } from 'lodash-es'
+
+import { usePyMeterDB } from '@/store/pymeter-db'
 
 /**
  * 移除 keepalive 缓存

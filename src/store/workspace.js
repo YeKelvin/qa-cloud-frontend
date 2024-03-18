@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
-import { useUserStore } from '@/store/user'
-import { usePyMeterStore } from '@/store/pymeter'
+
 import * as WorkspaceService from '@/api/public/workspace'
+import { usePyMeterStore } from '@/store/pymeter'
+import { useUserStore } from '@/store/user'
 
 export const useWorkspaceStore = defineStore('workspace', {
   state: () => {

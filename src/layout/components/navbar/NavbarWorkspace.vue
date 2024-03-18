@@ -41,6 +41,7 @@
 
 <script setup>
 import { CaretBottom } from '@element-plus/icons-vue'
+
 import { useWorkspaceStore } from '@/store/workspace'
 
 const workspaceStore = useWorkspaceStore()

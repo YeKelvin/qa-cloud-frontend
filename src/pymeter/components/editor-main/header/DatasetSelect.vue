@@ -62,8 +62,9 @@
 </template>
 
 <script setup>
-import { usePyMeterStore } from '@/store/pymeter'
 import { isEmpty } from 'lodash-es'
+
+import { usePyMeterStore } from '@/store/pymeter'
 
 const pymeterStore = usePyMeterStore()
 const props = defineProps({

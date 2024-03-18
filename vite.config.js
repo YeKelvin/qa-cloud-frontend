@@ -1,6 +1,7 @@
 import { defineConfig, loadEnv } from 'vite'
 import { vitePluginForArco } from '@arco-plugins/vite-vue'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
+import { VueRouterAutoImports } from 'unplugin-vue-router'
 import { ElementPlusResolver, ArcoResolver } from 'unplugin-vue-components/resolvers'
 import path from 'path'
 import vue from '@vitejs/plugin-vue'
@@ -26,7 +27,7 @@ export default ({ mode }) =>
       vitePluginForArco({ style: 'css' }),
       Icons({ autoInstall: true }),
       AutoImport({
-        imports: ['vue', 'vue-router', 'pinia'],
+        imports: ['vue', /** 'vue-router', */ 'pinia', VueRouterAutoImports],
         resolvers: [
           // 按需加载 Arco
           ArcoResolver(),

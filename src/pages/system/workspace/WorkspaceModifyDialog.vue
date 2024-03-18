@@ -31,6 +31,7 @@
 
 <script setup>
 import { ElMessage, ElMessageBox } from 'element-plus'
+
 import * as WorkspaceService from '@/api/public/workspace'
 
 const emit = defineEmits(['update:model-value', 're-query'])

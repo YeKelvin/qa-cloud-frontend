@@ -45,6 +45,9 @@
 </template>
 
 <script setup>
+import { ElMessage } from 'element-plus'
+import { debounce, isEmpty } from 'lodash-es'
+
 import * as ElementService from '@/api/script/element'
 import FxInput from '@/pymeter/components/editor-main/others/FunctionInput.vue'
 import PythonEditor from '@/pymeter/components/editor-main/others/PythonEditor.vue'
@@ -56,8 +59,6 @@ import useElement from '@/pymeter/composables/useElement'
 import useRunnableElement from '@/pymeter/composables/useRunnableElement'
 import { usePyMeterDB } from '@/store/pymeter-db'
 import { toHashCode } from '@/utils/object-util'
-import { ElMessage } from 'element-plus'
-import { debounce, isEmpty } from 'lodash-es'
 
 const emit = defineEmits(EditorEmits)
 const props = defineProps(EditorProps)

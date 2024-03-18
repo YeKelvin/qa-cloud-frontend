@@ -42,6 +42,7 @@
 
 <script setup>
 import { isEmpty } from 'lodash-es'
+
 import FxInput from './FunctionInput.vue'
 
 const props = defineProps({

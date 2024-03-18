@@ -84,13 +84,14 @@
 </template>
 
 <script setup>
+import { Check, Close, Delete } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { debounce, isEmpty } from 'lodash-es'
+
 import * as ElementService from '@/api/script/element'
 import AutosizeTextarea from '@/components/autosize-textarea/AutosizeTextarea.vue'
 import { useWorkspaceStore } from '@/store/workspace'
 import { toHashCode } from '@/utils/object-util'
-import { Check, Close, Delete } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
-import { debounce, isEmpty } from 'lodash-es'
 
 const route = useRoute()
 const router = useRouter()
@@ -155,7 +156,7 @@ const autoNewRow = () => {
   if (isEmpty(headerList.value)) {
     newRow()
   } else {
-    const lastRow = headerList.value[headerList.value.length - 1]
+    const lastRow = headerList.value.at(-1)
     if (!isBlankRow(lastRow)) newRow()
   }
 }

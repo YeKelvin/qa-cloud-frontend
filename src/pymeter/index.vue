@@ -20,8 +20,9 @@
 
 <script setup>
 import EditorAside from './components/editor-aside/EditorAside.vue'
-import EditorMain from './components/editor-main/EditorMain.vue'
 import EditorFooter from './components/editor-footer/EditorFooter.vue'
+import EditorMain from './components/editor-main/EditorMain.vue'
+
 import { usePyMeterStore } from '@/store/pymeter'
 
 const pymeterStore = usePyMeterStore()

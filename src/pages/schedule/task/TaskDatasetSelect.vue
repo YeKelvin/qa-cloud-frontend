@@ -31,6 +31,7 @@
 
 <script setup>
 import { isEmpty as _isEmpty } from 'lodash-es'
+
 import * as VariablesService from '@/api/script/variables'
 
 const attrs = useAttrs()

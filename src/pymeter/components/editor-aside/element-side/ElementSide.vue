@@ -116,12 +116,14 @@
 </template>
 
 <script setup>
-import * as ElementService from '@/api/script/element'
 import { Plus, Open } from '@element-plus/icons-vue'
 import { isEmpty } from 'lodash-es'
+
+import ElementTree from './ElementTree.vue'
+
+import * as ElementService from '@/api/script/element'
 import { usePyMeterStore } from '@/store/pymeter'
 import { useWorkspaceStore } from '@/store/workspace'
-import ElementTree from './ElementTree.vue'
 
 const pymeterStore = usePyMeterStore()
 const workspaceStore = useWorkspaceStore()
@@ -209,11 +211,11 @@ const queryCollections = async () => {
   // 加载完成
   loading.value = false
   // 提取集合编号
-  const collections = [...collectionList.value, ...snippetList.value].map((item) => item.elementNo)
+  const collections = new Set([...collectionList.value, ...snippetList.value].map((item) => item.elementNo))
   // 遍历取消选择无效的集合
   const selecteds = selectedScripts.value
   for (let i = selecteds.length - 1; i >= 0; i--) {
-    if (!collections.includes(selecteds[i])) {
+    if (!collections.has(selecteds[i])) {
       selectedScripts.value.splice(i, 1)
     }
   }

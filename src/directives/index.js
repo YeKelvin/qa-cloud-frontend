@@ -1,10 +1,10 @@
-import permission from './permission'
+import clickoutside from './clickoutside'
 import copy from './copy'
-import longpress from './longpress'
 import debounce from './debounce'
+import longpress from './longpress'
+import permission from './permission'
 import watermark from './watermark'
 import waves from './waves/waves'
-import clickoutside from './clickoutside'
 
 export default function (app) {
   app.directive('permission', permission)

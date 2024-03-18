@@ -61,16 +61,17 @@
 </template>
 
 <script lang="jsx" setup>
+import { MoreFilled } from '@element-plus/icons-vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+
 import * as VariablesService from '@/api/script/variables'
 import useElTree from '@/composables/useElTree'
 import EnvDatasetSelect from '@/pymeter/components/editor-aside/common/EnvDatasetSelect.vue'
 import NameInput from '@/pymeter/components/editor-aside/common/NameInput.vue'
 import WorkspaceTree from '@/pymeter/components/editor-aside/common/WorkspaceTree.vue'
-import { usePyMeterDB } from '@/store/pymeter-db'
 import { usePyMeterStore } from '@/store/pymeter'
+import { usePyMeterDB } from '@/store/pymeter-db'
 import { useWorkspaceStore } from '@/store/workspace'
-import { MoreFilled } from '@element-plus/icons-vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
 
 const {
   eltreeRef,

@@ -235,11 +235,12 @@
 </template>
 
 <script setup>
-import { isEmpty } from 'lodash-es'
-import { ElMessage } from 'element-plus'
 import { CopyDocument } from '@element-plus/icons-vue'
-import useClipboard from '@/composables/useClipboard'
+import { ElMessage } from 'element-plus'
+import { isEmpty } from 'lodash-es'
+
 import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
+import useClipboard from '@/composables/useClipboard'
 
 const { toClipboard } = useClipboard()
 const props = defineProps({
@@ -252,18 +253,10 @@ const responseEditorRef = ref()
 const assertionEditorRef = ref()
 const current = reactive({ sampler: {} })
 const currentRequestData = computed(() => {
-  if (requestDataType.value === 'source') {
-    return current.sampler.requestData
-  } else {
-    return current.sampler.requestDecoded
-  }
+  return requestDataType.value === 'source' ? current.sampler.requestData : current.sampler.requestDecoded
 })
 const currentResponseData = computed(() => {
-  if (responseDataType.value === 'source') {
-    return current.sampler.responseData
-  } else {
-    return current.sampler.responseDecoded
-  }
+  return responseDataType.value === 'source' ? current.sampler.responseData : current.sampler.responseDecoded
 })
 const currentAssertion = computed(() => {
   return current.sampler.failedAssertion?.message
@@ -403,8 +396,8 @@ const copyReqHeaders = async () => {
   let text = ''
   const headers = current.sampler.requestHeaders
   const keys = Object.keys(headers)
-  for (let i = 0; i < keys.length; i++) {
-    text += `${keys[i]}: ${headers[keys[i]]}\n`
+  for (const key of keys) {
+    text += `${key}: ${headers[key]}\n`
   }
   await toClipboard(text)
   ElMessage({ message: '复制成功', type: 'info', duration: 1 * 1000 })
@@ -420,8 +413,8 @@ const copyResHeaders = async () => {
   let text = ''
   const headers = current.sampler.responseHeaders
   const keys = Object.keys(headers)
-  for (let i = 0; i < keys.length; i++) {
-    text += `${keys[i]}: ${headers[keys[i]]}\n`
+  for (const key of keys) {
+    text += `${key}: ${headers[key]}\n`
   }
   await toClipboard(text)
   ElMessage({ message: '复制成功', type: 'info', duration: 1 * 1000 })
@@ -429,11 +422,11 @@ const copyResHeaders = async () => {
 
 const copyAll = async () => {
   let request = hasRequestDecoded() ? current.sampler.requestDecoded : current.sampler.requestData
-  if (request && request[request.length - 1] !== '\n') {
+  if (request && request.at(-1) !== '\n') {
     request += '\n'
   }
   let response = hasResponseDecoded() ? current.sampler.responseDecoded : current.sampler.responseData
-  if (response && response[response.length - 1] !== '\n') {
+  if (response && response.at(-1) !== '\n') {
     response += '\n'
   }
   const text = `[请求数据]\n${request}\n[响应数据]\n${response}`

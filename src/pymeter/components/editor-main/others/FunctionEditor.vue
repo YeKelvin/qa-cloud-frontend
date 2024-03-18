@@ -27,8 +27,9 @@
 </template>
 
 <script setup>
-import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
 import FuncitonDialog from './FuncitonDialog.vue'
+
+import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
 
 const emit = defineEmits(['update:modelValue'])
 const attrs = useAttrs()
@@ -81,12 +82,13 @@ defineExpose({
 .magic-button {
   position: absolute;
   right: 10px;
-  bottom: 5px;
+  bottom: 10px;
   margin-right: 10px;
   margin-bottom: 10px;
 }
 
 .hide-line-numbers {
   right: 5px !important;
+  bottom: 5px !important;
 }
 </style>

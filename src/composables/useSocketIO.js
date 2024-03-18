@@ -1,6 +1,7 @@
-import { useUserStore } from '@/store/user'
-import { usePymeterSocketStore } from '@/store/pymeter-socket'
 import useSocket from './useSocket'
+
+import { usePymeterSocketStore } from '@/store/pymeter-socket'
+import { useUserStore } from '@/store/user'
 
 export default function useSocketIO() {
   const socket = useSocket()

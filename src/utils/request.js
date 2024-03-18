@@ -1,11 +1,11 @@
-import _ from 'lodash-es'
 import axios from 'axios'
+import { ElMessageBox, ElMessage, ElLoading } from 'element-plus'
+import _ from 'lodash-es'
 import { customAlphabet } from 'nanoid'
 
-import { ElMessageBox, ElMessage, ElLoading } from 'element-plus'
-import { getToken } from '@/utils/auth'
 import { useUserStore } from '@/store/user'
 import { useWorkspaceStore } from '@/store/workspace'
+import { getToken } from '@/utils/auth'
 
 /**
  * TODO: 优化axios，参考以下网址

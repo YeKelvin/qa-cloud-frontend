@@ -67,15 +67,17 @@
 </template>
 
 <script setup>
-import { ElMessage, ElMessageBox } from 'element-plus'
 import { Search, Refresh, Plus } from '@element-plus/icons-vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+
+import CreateDialog from './WorkspaceCreateDialog.vue'
+import MemberDialog from './WorkspaceMemberDialog.vue'
+import ModifyDialog from './WorkspaceModifyDialog.vue'
+
 import { WorkspaceScope } from '@/api/enum'
+import * as WorkspaceService from '@/api/public/workspace'
 import ConditionInput from '@/components/query-condition/ConditionInput.vue'
 import useQueryConditions from '@/composables/useQueryConditions'
-import CreateDialog from './WorkspaceCreateDialog.vue'
-import ModifyDialog from './WorkspaceModifyDialog.vue'
-import MemberDialog from './WorkspaceMemberDialog.vue'
-import * as WorkspaceService from '@/api/public/workspace'
 
 const router = useRouter()
 // 查询条件

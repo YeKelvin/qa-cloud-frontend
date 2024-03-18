@@ -57,8 +57,8 @@
 
 <script setup>
 import * as DataService from '@/api/system/data'
-import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
 import MonacoDiffEditor from '@/components/monaco-editor/MonacoDiffEditor.vue'
+import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
 
 const emit = defineEmits(['update:model-value'])
 const formData = inject('currentRow', null)

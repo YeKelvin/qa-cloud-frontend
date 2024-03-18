@@ -73,9 +73,10 @@
 </template>
 
 <script setup>
-import * as VariablesService from '@/api/script/variables'
 import { Check, Close } from '@element-plus/icons-vue'
 import { isEmpty } from 'lodash-es'
+
+import * as VariablesService from '@/api/script/variables'
 
 const emit = defineEmits(['change-datasets', 'change-use-current-value'])
 const props = defineProps({

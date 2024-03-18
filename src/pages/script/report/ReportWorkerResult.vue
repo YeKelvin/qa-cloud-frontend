@@ -31,8 +31,8 @@
 </template>
 
 <script setup>
-import useECharts from '@/composables/useECharts'
 import * as ReportService from '@/api/script/report'
+import useECharts from '@/composables/useECharts'
 
 const props = defineProps({
   workerId: { type: String, default: '' }

@@ -107,6 +107,10 @@
 </template>
 
 <script setup>
+import { useQuery } from '@tanstack/vue-query'
+import { ElMessage } from 'element-plus'
+import { debounce, isEmpty } from 'lodash-es'
+
 import { DatabaseType } from '@/api/enum'
 import * as ElementService from '@/api/script/element'
 import FxEditor from '@/pymeter/components/editor-main/others/FunctionEditor.vue'
@@ -120,9 +124,6 @@ import useRunnableElement from '@/pymeter/composables/useRunnableElement'
 import { usePyMeterDB } from '@/store/pymeter-db'
 import { useWorkspaceStore } from '@/store/workspace'
 import { toHashCode } from '@/utils/object-util'
-import { ElMessage } from 'element-plus'
-import { debounce, isEmpty } from 'lodash-es'
-import { useQuery } from '@tanstack/vue-query'
 
 const emit = defineEmits(EditorEmits)
 const props = defineProps(EditorProps)

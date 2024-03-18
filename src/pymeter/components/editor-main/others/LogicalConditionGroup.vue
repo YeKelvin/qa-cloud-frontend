@@ -48,6 +48,7 @@
 
 <script setup>
 import { Plus, CloseBold } from '@element-plus/icons-vue'
+
 import LogicalCondition from '@/pymeter/components/editor-main/others/LogicalCondition.vue'
 
 const emit = defineEmits(['add', 'remove', 'add-group', 'remove-group', 'auto-adjust', 'update:logic', 'update:rules'])

@@ -95,17 +95,19 @@
 </template>
 
 <script setup>
-import * as ScheduleService from '@/api/schedule/task'
 import { Search, Refresh, Plus } from '@element-plus/icons-vue'
+import dayjs from 'dayjs'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { JobState, JobType, TriggerType } from '@/api/enum'
-import { useWorkspaceStore } from '@/store/workspace'
-import useQueryConditions from '@/composables/useQueryConditions'
-import ConditionInput from '@/components/query-condition/ConditionInput.vue'
-import ConditionSelect from '@/components/query-condition/ConditionSelect.vue'
+
 import TaskFormDialog from './TaskFormDialog.vue'
 import TaskHistoryDialog from './TaskHistoryDialog.vue'
-import dayjs from 'dayjs'
+
+import { JobState, JobType, TriggerType } from '@/api/enum'
+import * as ScheduleService from '@/api/schedule/task'
+import ConditionInput from '@/components/query-condition/ConditionInput.vue'
+import ConditionSelect from '@/components/query-condition/ConditionSelect.vue'
+import useQueryConditions from '@/composables/useQueryConditions'
+import { useWorkspaceStore } from '@/store/workspace'
 
 const workspaceStore = useWorkspaceStore()
 

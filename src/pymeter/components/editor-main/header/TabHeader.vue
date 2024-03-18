@@ -47,9 +47,10 @@
 
 <script setup>
 import { isEmpty } from 'lodash-es'
-import DatasetSelect from './DatasetSelect.vue'
-import DatasetDialog from './DatasetDialog.vue'
+
 import ChangeLogDrawer from './ChangeLogDrawer.vue'
+import DatasetDialog from './DatasetDialog.vue'
+import DatasetSelect from './DatasetSelect.vue'
 
 const props = defineProps({
   component: { type: String, default: '' },

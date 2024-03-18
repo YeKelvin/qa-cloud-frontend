@@ -1,5 +1,6 @@
-import { useWorkspaceStore } from '@/store/workspace'
 import localforage from 'localforage'
+
+import { useWorkspaceStore } from '@/store/workspace'
 
 export const usePyMeterDB = defineStore('pymeter-db', {
   state: () => {

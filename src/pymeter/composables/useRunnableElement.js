@@ -1,9 +1,10 @@
-import * as ExecutionService from '@/api/script/execution'
-import { isEmpty } from 'lodash-es'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { usePyMeterDB } from '@/store/pymeter-db'
-import { usePyMeterStore } from '@/store/pymeter'
+import { isEmpty } from 'lodash-es'
+
+import * as ExecutionService from '@/api/script/execution'
 import useSocketIO from '@/composables/useSocketIO'
+import { usePyMeterStore } from '@/store/pymeter'
+import { usePyMeterDB } from '@/store/pymeter-db'
 
 export default function useRunnableElement() {
   const socketio = useSocketIO()

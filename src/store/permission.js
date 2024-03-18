@@ -1,12 +1,9 @@
 import { defineStore } from 'pinia'
+
 import { asyncRoutes, constantRoutes } from '@/router'
 
 function hasPermission(roles, route) {
-  if (route.meta && route.meta.roles) {
-    return roles.some((role) => route.meta.roles.includes(role))
-  } else {
-    return true
-  }
+  return route.meta && route.meta.roles ? roles.some((role) => route.meta.roles.includes(role)) : true
 }
 
 export function filterAsyncRoutes(routes, roles) {
@@ -36,12 +33,7 @@ export const usePermissionStore = defineStore('permission', {
   actions: {
     generateRoutes(roles) {
       return new Promise((resolve) => {
-        let accessedRoutes
-        if (roles.includes('ADMIN')) {
-          accessedRoutes = asyncRoutes || []
-        } else {
-          accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
-        }
+        const accessedRoutes = roles.includes('ADMIN') ? asyncRoutes || [] : filterAsyncRoutes(asyncRoutes, roles)
         this.addRoutes = accessedRoutes
         this.routes = constantRoutes.concat(accessedRoutes)
         resolve(accessedRoutes)

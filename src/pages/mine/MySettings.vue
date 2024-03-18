@@ -23,10 +23,11 @@
 </template>
 
 <script setup>
-import { assign } from 'lodash-es'
 import { ElMessage } from 'element-plus'
-import { useUserStore } from '@/store/user'
+import { assign } from 'lodash-es'
+
 import * as UserService from '@/api/usercenter/user'
+import { useUserStore } from '@/store/user'
 
 const userStore = useUserStore()
 const elformRef = ref()

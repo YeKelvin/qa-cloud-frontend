@@ -120,13 +120,14 @@
 </template>
 
 <script lang="jsx" setup>
-import * as ElementService from '@/api/script/element'
 import { ArrowRight } from '@element-plus/icons-vue'
 import { ElMessageBox, ElMessage } from 'element-plus'
-import { usePyMeterDB } from '@/store/pymeter-db'
-import { usePyMeterStore } from '@/store/pymeter'
-import { useWorkspaceStore } from '@/store/workspace'
+
+import * as ElementService from '@/api/script/element'
 import WorkspaceTree from '@/pymeter/components/editor-aside/common/WorkspaceTree.vue'
+import { usePyMeterStore } from '@/store/pymeter'
+import { usePyMeterDB } from '@/store/pymeter-db'
+import { useWorkspaceStore } from '@/store/workspace'
 
 const attrs = useAttrs()
 const offlineDB = usePyMeterDB().offlineDB

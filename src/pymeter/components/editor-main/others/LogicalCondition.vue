@@ -47,21 +47,14 @@ const field = computed(() => props.rule.field)
 const multiple = computed(() => ['IN', 'NOT_IN'].includes(rule.value.operator))
 const options = computed(() => {
   if (!field.value) return null
-  return conditionData.filter((item) => item.field.value === field.value)[0].options
+  return conditionData.find((item) => item.field.value === field.value).options
 })
 
 watch(field, () => {
-  // eslint-disable-next-line vue/no-mutating-props
   props.rule.value = []
 })
 watch(multiple, (val) => {
-  if (val) {
-    // eslint-disable-next-line vue/no-mutating-props
-    props.rule.value = []
-  } else {
-    // eslint-disable-next-line vue/no-mutating-props
-    props.rule.value = ''
-  }
+  props.rule.value = val ? [] : ''
 })
 </script>
 

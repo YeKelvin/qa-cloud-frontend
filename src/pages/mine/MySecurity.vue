@@ -31,11 +31,12 @@
 </template>
 
 <script setup>
-import { JSEncrypt } from 'jsencrypt'
 import { ElMessage } from 'element-plus'
-import { useUserStore } from '@/store/user'
+import { JSEncrypt } from 'jsencrypt'
+
 import * as AuthService from '@/api/usercenter/auth'
 import * as UserService from '@/api/usercenter/user'
+import { useUserStore } from '@/store/user'
 
 const checkPassword = (_, value, callback) => {
   if (!value) {
@@ -47,8 +48,8 @@ const checkPassword = (_, value, callback) => {
   if (value.length >= 16) {
     return callback(new Error('新密码不能大于16个字符'))
   }
-  for (let i = 0; i < value.length; i++) {
-    if (!/[0-9a-z!@_]/i.test(value[i])) {
+  for (const element of value) {
+    if (!/[\w!@]/i.test(element)) {
       return callback(new Error('新密码不能包含特殊字符'))
     }
   }
@@ -60,11 +61,7 @@ const checkConfirm = (_, value, callback) => {
   if (!value) {
     return callback(new Error('确认密码不能为空'))
   }
-  if (value !== formData.value.newPassword) {
-    return callback(new Error('密码确认不一致'))
-  } else {
-    return callback()
-  }
+  return value !== formData.value.newPassword ? callback(new Error('密码确认不一致')) : callback()
 }
 
 const userStore = useUserStore()

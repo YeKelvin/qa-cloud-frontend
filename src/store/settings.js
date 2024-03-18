@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+
 import defaultSettings from '@/settings'
 
 const { showSettings, fixedHeader, sidebarLogo } = defaultSettings

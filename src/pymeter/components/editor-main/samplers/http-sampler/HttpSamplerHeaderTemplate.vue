@@ -47,11 +47,12 @@
 </template>
 
 <script setup>
-import * as ElementService from '@/api/script/element'
-import { useWorkspaceStore } from '@/store/workspace'
 import { ArrowDown } from '@element-plus/icons-vue'
 import { useQuery } from '@tanstack/vue-query'
 import { isEmpty } from 'lodash-es'
+
+import * as ElementService from '@/api/script/element'
+import { useWorkspaceStore } from '@/store/workspace'
 
 const emit = defineEmits(['update:modelValue'])
 const props = defineProps({ modelValue: Array })

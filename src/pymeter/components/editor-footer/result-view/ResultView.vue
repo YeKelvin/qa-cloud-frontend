@@ -44,10 +44,12 @@
 </template>
 
 <script setup>
+import { isEmpty } from 'lodash-es'
+
+import ResultCollector from './ResultCollector.vue'
+
 import LinearLoading from '@/components/linear-loading/LinearLoading.vue'
 import { usePymeterSocketStore } from '@/store/pymeter-socket'
-import { isEmpty } from 'lodash-es'
-import ResultCollector from './ResultCollector.vue'
 
 const emit = defineEmits(['update:data'])
 const pymeterSocketStore = usePymeterSocketStore()

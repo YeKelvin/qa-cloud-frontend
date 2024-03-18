@@ -190,17 +190,19 @@
 </template>
 
 <script setup>
-import * as ElementService from '@/api/script/element'
-import * as TestplanService from '@/api/script/testplan'
-import * as ScheduleService from '@/api/schedule/task'
+import { Check, Close } from '@element-plus/icons-vue'
+import { isValidCron } from 'cron-validator'
+import dayjs from 'dayjs'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { isEmpty } from 'lodash-es'
-import { isValidCron } from 'cron-validator'
-import { Check, Close } from '@element-plus/icons-vue'
-import { useWorkspaceStore } from '@/store/workspace'
-import dayjs from 'dayjs'
-import DatasetSelect from './TaskDatasetSelect.vue'
+
 import CrontabIntroduce from './TaskCrontabIntroduce.vue'
+import DatasetSelect from './TaskDatasetSelect.vue'
+
+import * as ScheduleService from '@/api/schedule/task'
+import * as ElementService from '@/api/script/element'
+import * as TestplanService from '@/api/script/testplan'
+import { useWorkspaceStore } from '@/store/workspace'
 
 const checkIntervalValue = (_, value, callback) => {
   if (!value) {
@@ -210,11 +212,7 @@ const checkIntervalValue = (_, value, callback) => {
   if (!Number.isInteger(val)) {
     return callback(new Error('间隔时长必须为整数'))
   } else {
-    if (val <= 0) {
-      return callback(new Error('间隔时长必须大于0'))
-    } else {
-      return callback()
-    }
+    return val <= 0 ? callback(new Error('间隔时长必须大于0')) : callback()
   }
 }
 const jobFormRules = {
@@ -428,11 +426,9 @@ const submitForm = async () => {
     })
   }
   // 创建或修改任务
-  if (createMode.value) {
-    await ScheduleService.createTask(requestData.value)
-  } else {
-    await ScheduleService.modifyTask(requestData.value)
-  }
+  await (createMode.value
+    ? ScheduleService.createTask(requestData.value)
+    : ScheduleService.modifyTask(requestData.value))
   // 成功提示
   ElMessage({ message: '新增成功', type: 'info', duration: 2 * 1000 })
   // 关闭dialog

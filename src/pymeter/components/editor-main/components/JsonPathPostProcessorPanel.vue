@@ -47,8 +47,9 @@
 </template>
 
 <script setup>
-import FxInput from '@/pymeter/components/editor-main/others/FunctionInput.vue'
 import { Check, Close } from '@element-plus/icons-vue'
+
+import FxInput from '@/pymeter/components/editor-main/others/FunctionInput.vue'
 
 const props = defineProps({
   elementProps: Object

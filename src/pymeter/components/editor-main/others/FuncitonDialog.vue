@@ -44,9 +44,9 @@
 </template>
 
 <script setup>
-import { getFunctions } from './functions'
-import FuncitonList from './FunctionList.vue'
 import FunctionDetails from './FunctionDetails.vue'
+import FuncitonList from './FunctionList.vue'
+import { getFunctions } from './functions'
 
 const emit = defineEmits(['update:modelValue', 'insert'])
 const functions = getFunctions()

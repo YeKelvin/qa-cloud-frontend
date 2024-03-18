@@ -1,7 +1,7 @@
 export default {
   mounted(el, binding) {
     if (typeof binding.value !== 'function') {
-      throw 'callback must be a function'
+      throw Error('callback must be a function')
     }
     el.__handleClick__ = function (e) {
       if (el.contains(e.target)) {

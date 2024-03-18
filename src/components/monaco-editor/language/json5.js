@@ -23,15 +23,15 @@ const JSON5_LANG_DEFINE = {
       [/{\s*/, 'delimiter.bracket'],
       [/}\s*/, 'delimiter.bracket'],
       [/\[/, 'delimiter.square'],
-      [/\]/, 'delimiter.square'],
+      [/]/, 'delimiter.square'],
       [/:\s*/, 'delimiter.colon'],
       [/,/, 'delimiter.comma'],
       [/true|false|null/, 'constant'],
-      [/"(?:[^\\\"]|\\.)*"/, 'string'],
-      [/'(?:[^\\\']|\\.)*'/, 'string'],
-      [/-?(0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?/, 'number'],
+      [/"(?:[^"\\]|\\.)*"/, 'string'],
+      [/'(?:[^'\\]|\\.)*'/, 'string'],
+      [/-?(0|[1-9]\d*)(?:\.\d+)?(?:[Ee][+-]?\d+)?/, 'number'],
       [/\/\/.*/, 'comment'],
-      [/\/\*[\s\S]*?\*\//, 'comment']
+      [/\/\*[\S\s]*?\*\//, 'comment']
     ]
   }
 }

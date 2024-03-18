@@ -101,12 +101,13 @@
 </template>
 
 <script setup>
-import * as ReportService from '@/api/script/report'
-import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
-import useClipboard from '@/composables/useClipboard'
 import { CopyDocument } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { isEmpty } from 'lodash-es'
+
+import * as ReportService from '@/api/script/report'
+import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
+import useClipboard from '@/composables/useClipboard'
 
 const props = defineProps({
   samplerId: { type: String, default: '' }
@@ -227,7 +228,7 @@ const handleResponseTabClick = (tab) => {
  * 反序列化 Headers
  */
 const getHeadersFromJson = (val) => {
-  if (!val || (val.charAt(0) !== '{' && val.charAt(val.length - 1) !== '}')) return []
+  if (!val || (val.charAt(0) !== '{' && val.at(-1) !== '}')) return []
   const data = []
   try {
     const headers = JSON.parse(val)
@@ -241,11 +242,7 @@ const getHeadersFromJson = (val) => {
 }
 
 const copyRequest = async () => {
-  if (requestActiveTabName.value === 'REQUEST_DATA') {
-    await copyRequestData()
-  } else {
-    await copyRequestHeaders()
-  }
+  await (requestActiveTabName.value === 'REQUEST_DATA' ? copyRequestData() : copyRequestHeaders())
 }
 
 const copyRequestData = async () => {
@@ -264,11 +261,7 @@ const copyRequestHeaders = async () => {
 }
 
 const copyResponse = async () => {
-  if (responseActiveTabName.value === 'RESPONSE_DATA') {
-    await copyResponseData()
-  } else {
-    await copyResponseHeaders()
-  }
+  await (responseActiveTabName.value === 'RESPONSE_DATA' ? copyResponseData() : copyResponseHeaders())
 }
 const copyResponseData = async () => {
   const text = responseDataType.value === 'source' ? sampler.value.responseData : sampler.value.responseDecoded
@@ -287,11 +280,11 @@ const copyResponseHeaders = async () => {
 
 const copyAll = async () => {
   let request = hasRequestDecoded() ? sampler.value.requestDecoded : sampler.value.requestData
-  if (request && request[request.length - 1] !== '\n') {
+  if (request && request.at(-1) !== '\n') {
     request += '\n'
   }
   let response = hasResponseDecoded() ? sampler.value.responseDecoded : sampler.value.responseData
-  if (response && response[response.length - 1] !== '\n') {
+  if (response && response.at(-1) !== '\n') {
     response += '\n'
   }
   const text = `[请求数据]\n${request}\n[响应数据]\n${response}`

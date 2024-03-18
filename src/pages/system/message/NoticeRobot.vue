@@ -69,16 +69,18 @@
 </template>
 
 <script setup>
-import * as MessageService from '@/api/public/message'
-import { ElMessage, ElMessageBox } from 'element-plus'
 import { Search, Refresh, Plus } from '@element-plus/icons-vue'
-import { RobotState, RobotType } from '@/api/enum'
-import { useWorkspaceStore } from '@/store/workspace'
-import useQueryConditions from '@/composables/useQueryConditions'
-import ConditionInput from '@/components/query-condition/ConditionInput.vue'
-import ConditionSelect from '@/components/query-condition/ConditionSelect.vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+
 import RobotCreateDialog from './RobotCreateDialog.vue'
 import RobotModifyDialog from './RobotModifyDialog.vue'
+
+import { RobotState, RobotType } from '@/api/enum'
+import * as MessageService from '@/api/public/message'
+import ConditionInput from '@/components/query-condition/ConditionInput.vue'
+import ConditionSelect from '@/components/query-condition/ConditionSelect.vue'
+import useQueryConditions from '@/composables/useQueryConditions'
+import { useWorkspaceStore } from '@/store/workspace'
 
 const workspaceStore = useWorkspaceStore()
 const { queryConditions, resetQueryConditions } = useQueryConditions({

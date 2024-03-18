@@ -29,8 +29,9 @@
 </template>
 
 <script setup>
-import * as PermissionService from '@/api/usercenter/permission'
 import { has } from 'lodash-es'
+
+import * as PermissionService from '@/api/usercenter/permission'
 
 const emit = defineEmits(['update:checkedList'])
 const props = defineProps({ checkedList: { type: Array, default: () => [] } })

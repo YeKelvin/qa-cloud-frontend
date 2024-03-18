@@ -24,9 +24,10 @@
 
 <script setup>
 import { ElMessage } from 'element-plus'
-import { useWorkspaceStore } from '@/store/workspace'
-import * as UserService from '@/api/usercenter/user'
+
 import * as WorkspaceService from '@/api/public/workspace'
+import * as UserService from '@/api/usercenter/user'
+import { useWorkspaceStore } from '@/store/workspace'
 
 const currentRow = inject('currentRow', null)
 const emit = defineEmits(['update:model-value'])

@@ -101,11 +101,12 @@
 </template>
 
 <script setup>
-import FxInput from '@/pymeter/components/editor-main/others/FunctionInput.vue'
-import { ElementClass } from '@/api/enum'
 import { Delete, Plus } from '@element-plus/icons-vue'
 import { isEmpty } from 'lodash-es'
 import draggable from 'vuedraggable'
+
+import { ElementClass } from '@/api/enum'
+import FxInput from '@/pymeter/components/editor-main/others/FunctionInput.vue'
 
 const components = {
   PythonPostProcessor: markRaw(defineAsyncComponent(() => import('./PythonEditorPanel.vue'))),

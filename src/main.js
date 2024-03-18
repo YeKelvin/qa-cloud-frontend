@@ -1,3 +1,4 @@
+/* eslint-disable import/order */
 //  vue
 import App from './App'
 

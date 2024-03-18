@@ -1,4 +1,5 @@
 // 引入 echarts 核心模块，核心模块提供了 echarts 使用必须要的接口
+// eslint-disable-next-line import/order
 import * as echarts from 'echarts/core'
 // 引入图表，图表后缀都为 Chart
 import { PieChart } from 'echarts/charts'

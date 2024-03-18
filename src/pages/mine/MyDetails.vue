@@ -16,10 +16,11 @@
 </template>
 
 <script setup>
-import { useUserStore } from '@/store/user'
 import MyInfo from './MyInfo.vue'
 import MySecurity from './MySecurity.vue'
 import MySettings from './MySettings.vue'
+
+import { useUserStore } from '@/store/user'
 
 const userStore = useUserStore()
 const activeName = ref('INFO')
@@ -32,11 +33,9 @@ const showSettings = computed(() => activeName.value === 'SETTINGS')
 .details-container {
   display: flex;
   justify-content: center;
-
-  margin-top: 80px;
-  padding: 0 80px;
-
   height: 100%;
+  padding: 0 80px;
+  margin-top: 80px;
 }
 
 .tabs-container {

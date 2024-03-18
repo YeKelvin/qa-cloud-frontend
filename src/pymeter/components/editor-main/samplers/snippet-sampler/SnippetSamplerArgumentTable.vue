@@ -36,8 +36,9 @@
 </template>
 
 <script setup>
-import FxInput from '@/pymeter/components/editor-main/others/FunctionInput.vue'
 import { Check, Close } from '@element-plus/icons-vue'
+
+import FxInput from '@/pymeter/components/editor-main/others/FunctionInput.vue'
 
 const emit = defineEmits(['update:useDefault'])
 const props = defineProps({

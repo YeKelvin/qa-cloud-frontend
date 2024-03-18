@@ -29,14 +29,16 @@
 </template>
 
 <script lang="jsx" setup>
+import { Plus } from '@element-plus/icons-vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+
+import DatasetTree from './DatasetTree.vue'
+
 import * as VariablesService from '@/api/script/variables'
 import EnvDatasetSelect from '@/pymeter/components/editor-aside/common/EnvDatasetSelect.vue'
 import NameInput from '@/pymeter/components/editor-aside/common/NameInput.vue'
 import { usePyMeterStore } from '@/store/pymeter'
 import { useWorkspaceStore } from '@/store/workspace'
-import { Plus } from '@element-plus/icons-vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
-import DatasetTree from './DatasetTree.vue'
 
 const pymeterStore = usePyMeterStore()
 const workspaceStore = useWorkspaceStore()

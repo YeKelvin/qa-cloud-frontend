@@ -49,6 +49,7 @@
 
 <script setup>
 import { isEmpty } from 'lodash-es'
+
 import { useWorkspaceStore } from '@/store/workspace'
 
 const route = useRoute()

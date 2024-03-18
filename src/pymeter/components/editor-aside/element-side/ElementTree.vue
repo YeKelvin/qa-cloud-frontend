@@ -59,15 +59,17 @@
 </template>
 
 <script lang="jsx" setup>
-import * as ElementService from '@/api/script/element'
-import { isEmpty, debounce } from 'lodash-es'
 import { Close, MoreFilled } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
-import { usePyMeterDB } from '@/store/pymeter-db'
-import { usePyMeterStore } from '@/store/pymeter'
-import useElTree from '@/composables/useElTree'
-import ElementTreeItemName from './ElementTreeItemName.vue'
+import { isEmpty, debounce } from 'lodash-es'
+
 import ElementTreeItemMenu from './ElementTreeItemMenu.vue'
+import ElementTreeItemName from './ElementTreeItemName.vue'
+
+import * as ElementService from '@/api/script/element'
+import useElTree from '@/composables/useElTree'
+import { usePyMeterStore } from '@/store/pymeter'
+import { usePyMeterDB } from '@/store/pymeter-db'
 
 let clickTimer = null
 const offlineDB = usePyMeterDB().offlineDB

@@ -1,9 +1,10 @@
+import { JSEncrypt } from 'jsencrypt'
+import { defineStore } from 'pinia'
+
 import * as AuthService from '@/api/usercenter/auth'
 import * as UserService from '@/api/usercenter/user'
 import userDefaultAvatar from '@/assets/images/layout/user_avatar.gif'
 import { getToken, removeToken, setToken } from '@/utils/auth'
-import { JSEncrypt } from 'jsencrypt'
-import { defineStore } from 'pinia'
 
 /**
  * 获取加密公钥

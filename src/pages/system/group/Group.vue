@@ -75,15 +75,17 @@
 </template>
 
 <script setup>
-import { ElMessage, ElMessageBox } from 'element-plus'
 import { Search, Refresh, Plus } from '@element-plus/icons-vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+
+import CreateDialog from './GroupCreateDialog.vue'
+import ModifyDialog from './GroupModifyDialog.vue'
+
 import { GroupState } from '@/api/enum'
 import * as GroupService from '@/api/usercenter/group'
 import ConditionInput from '@/components/query-condition/ConditionInput.vue'
 import ConditionSelect from '@/components/query-condition/ConditionSelect.vue'
 import useQueryConditions from '@/composables/useQueryConditions'
-import CreateDialog from './GroupCreateDialog.vue'
-import ModifyDialog from './GroupModifyDialog.vue'
 
 const router = useRouter()
 const { queryConditions, resetQueryConditions } = useQueryConditions({

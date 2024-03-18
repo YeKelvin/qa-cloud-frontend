@@ -26,8 +26,9 @@
 </template>
 
 <script setup>
-import { isEmpty } from 'lodash-es'
 import { Plus } from '@element-plus/icons-vue'
+import { isEmpty } from 'lodash-es'
+
 import LogicalCondition from '@/pymeter/components/editor-main/others/LogicalCondition.vue'
 import LogicalConditionGroup from '@/pymeter/components/editor-main/others/LogicalConditionGroup.vue'
 

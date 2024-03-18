@@ -53,17 +53,19 @@
 </template>
 
 <script setup>
-import { ElMessage } from 'element-plus'
 import { CaretBottom } from '@element-plus/icons-vue'
-import { useAppStore } from '@/store/app'
-import { useUserStore } from '@/store/user'
-import { usePyMeterStore } from '@/store/pymeter'
-import { useWorkspaceStore } from '@/store/workspace'
+import { ElMessage } from 'element-plus'
+
 import Breadcrumb from './NavbarBreadcrumb.vue'
 import Hamburger from './NavbarHamburger.vue'
 import Screenfull from './NavbarScreenfull.vue'
 import Search from './NavbarSearch.vue'
 import WorkspaceSelect from './NavbarWorkspace.vue'
+
+import { useAppStore } from '@/store/app'
+import { usePyMeterStore } from '@/store/pymeter'
+import { useUserStore } from '@/store/user'
+import { useWorkspaceStore } from '@/store/workspace'
 
 const router = useRouter()
 const appStore = useAppStore()

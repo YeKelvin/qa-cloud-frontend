@@ -157,18 +157,20 @@
 </template>
 
 <script lang="jsx" setup>
-import * as ExecutionService from '@/api/script/execution'
-import * as TestplanService from '@/api/script/testplan'
-import { ElMessage, ElMessageBox, ElNotification } from 'element-plus'
 import { Edit, Search, Refresh, Plus } from '@element-plus/icons-vue'
-import { TestplanState, TestPhase } from '@/api/enum'
-import { useWorkspaceStore } from '@/store/workspace'
-import useQueryConditions from '@/composables/useQueryConditions'
-import ConditionInput from '@/components/query-condition/ConditionInput.vue'
-import ConditionSelect from '@/components/query-condition/ConditionSelect.vue'
+import dayjs from 'dayjs'
+import { ElMessage, ElMessageBox, ElNotification } from 'element-plus'
+
 import TestplanDatasetSelect from './TestplanDatasetSelect.vue'
 import TestplanExecutionRecordDialog from './TestplanExecutionRecordDialog.vue'
-import dayjs from 'dayjs'
+
+import { TestplanState, TestPhase } from '@/api/enum'
+import * as ExecutionService from '@/api/script/execution'
+import * as TestplanService from '@/api/script/testplan'
+import ConditionInput from '@/components/query-condition/ConditionInput.vue'
+import ConditionSelect from '@/components/query-condition/ConditionSelect.vue'
+import useQueryConditions from '@/composables/useQueryConditions'
+import { useWorkspaceStore } from '@/store/workspace'
 
 // 查询条件
 const { queryConditions, resetQueryConditions } = useQueryConditions({

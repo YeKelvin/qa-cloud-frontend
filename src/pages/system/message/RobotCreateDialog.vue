@@ -32,8 +32,9 @@
 </template>
 
 <script setup>
-import * as MessageService from '@/api/public/message'
 import { ElMessage } from 'element-plus'
+
+import * as MessageService from '@/api/public/message'
 import { useWorkspaceStore } from '@/store/workspace'
 
 const emit = defineEmits(['update:model-value', 're-query'])

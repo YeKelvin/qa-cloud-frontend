@@ -27,6 +27,7 @@
 
 <script setup>
 import { ElMessage, ElMessageBox } from 'element-plus'
+
 import * as ApplicationService from '@/api/opencenter/application'
 
 const emit = defineEmits(['update:model-value', 're-query'])

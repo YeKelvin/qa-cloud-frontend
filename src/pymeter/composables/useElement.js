@@ -2,7 +2,7 @@ import { isArray as _isArray, isObject as _isObject } from 'lodash-es'
 
 export default function useEditor() {
   const isObject = (obj) => {
-    return !_isArray(obj) && _isObject()
+    return !_isArray(obj) && _isObject(obj)
   }
 
   const deepAssign = (target, source) => {

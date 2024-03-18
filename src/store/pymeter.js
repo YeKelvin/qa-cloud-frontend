@@ -1,9 +1,11 @@
+import { isEmpty } from 'lodash-es'
+import { defineStore } from 'pinia'
+
+import { confirmClose, removeCache } from './pymeter-tools'
+
 import * as VariablesService from '@/api/script/variables'
 import { usePyMeterDB } from '@/store/pymeter-db'
 import { useWorkspaceStore } from '@/store/workspace'
-import { isEmpty } from 'lodash-es'
-import { defineStore } from 'pinia'
-import { confirmClose, removeCache } from './pymeter-tools'
 
 export const usePyMeterStore = defineStore('pymeter', {
   state: () => {
@@ -201,7 +203,7 @@ export const usePyMeterStore = defineStore('pymeter', {
       })
       const tabs = this.tabs
       if (tabs.length > 0) {
-        this.activeTabNo = tabs[tabs.length - 1].editorNo
+        this.activeTabNo = tabs.at(-1).editorNo
       }
     },
 
@@ -322,10 +324,10 @@ export const usePyMeterStore = defineStore('pymeter', {
 
       // 判断是否存在无效数据，存在则删除
       // 当前选择的变量集不为空且不在变量集列表中时（表示该变量集已无效），删除该变量集编号
-      const datasets = response.data.map((item) => item.datasetNo)
+      const datasets = new Set(response.data.map((item) => item.datasetNo))
       for (let i = this.selectedDatasets.length - 1; i >= 0; i--) {
         // 删除无效数据
-        if (!datasets.includes(this.selectedDatasets[i])) {
+        if (!datasets.has(this.selectedDatasets[i])) {
           this.selectedDatasets.splice(i, 1)
         }
       }

@@ -28,11 +28,12 @@
 </template>
 
 <script setup>
+import path from 'path'
+
 import SidebarItemLink from './SidebarItemLink.vue'
 </script>
 
 <script>
-import path from 'path'
 import { isExternal } from '@/utils/validate'
 
 export default {

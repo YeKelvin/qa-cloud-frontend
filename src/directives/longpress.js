@@ -5,7 +5,7 @@
 export default {
   mounted(el, binding) {
     if (typeof binding.value !== 'function') {
-      throw 'callback must be a function'
+      throw Error('callback must be a function')
     }
     // 定义变量
     let pressTimer = null

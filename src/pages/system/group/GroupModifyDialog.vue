@@ -28,10 +28,11 @@
 </template>
 
 <script setup>
-import { omit as _omit } from 'lodash-es'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import * as RoleService from '@/api/usercenter/role'
+import { omit as _omit } from 'lodash-es'
+
 import * as GroupService from '@/api/usercenter/group'
+import * as RoleService from '@/api/usercenter/role'
 
 const emit = defineEmits(['update:model-value', 're-query'])
 const currentRow = inject('currentRow', null)

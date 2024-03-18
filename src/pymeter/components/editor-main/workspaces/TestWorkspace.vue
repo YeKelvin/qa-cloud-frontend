@@ -87,20 +87,21 @@
 </template>
 
 <script setup>
+import { Warning } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { debounce, isEmpty } from 'lodash-es'
+
 import * as ElementService from '@/api/script/element'
-import SaveButton from '@/pymeter/components/editor-main/others/SaveButton.vue'
 import PostProcessorPane from '@/pymeter/components/editor-main/components/PostProcessorPane.vue'
 import PrevProcessorPane from '@/pymeter/components/editor-main/components/PrevProcessorPane.vue'
 import TestAssertionPane from '@/pymeter/components/editor-main/components/TestAssertionPane.vue'
+import SaveButton from '@/pymeter/components/editor-main/others/SaveButton.vue'
 import EditorEmits from '@/pymeter/composables/editor.emits'
 import EditorProps from '@/pymeter/composables/editor.props'
 import useEditor from '@/pymeter/composables/useEditor'
 import useElement from '@/pymeter/composables/useElement'
 import { usePyMeterDB } from '@/store/pymeter-db'
 import { toHashCode } from '@/utils/object-util'
-import { Warning } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
-import { debounce, isEmpty } from 'lodash-es'
 
 const emit = defineEmits(EditorEmits)
 const props = defineProps(EditorProps)

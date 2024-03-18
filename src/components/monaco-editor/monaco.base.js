@@ -17,14 +17,15 @@ import 'monaco-editor/esm/vs/editor/standalone/browser/quickAccess/standaloneCom
 import 'monaco-editor/esm/vs/editor/standalone/browser/referenceSearch/standaloneReferenceSearch.js'
 import 'monaco-editor/esm/vs/editor/standalone/browser/toggleHighContrast/toggleHighContrast.js'
 
+// eslint-disable-next-line import/order
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api.js'
 
 import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
-import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
 import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
+import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
 
-import { LOG_LANG_DEFINE, LOG_LANG_COLORS } from './language/log'
 import { JSON5_LANG_DEFINE, JSON5_LANG_CONFIG } from './language/json5'
+import { LOG_LANG_DEFINE, LOG_LANG_COLORS } from './language/log'
 import { PYMETER_COMPLETIONS, PYMETER_FUNCTION_COMPLETIONS } from './language/pymeter'
 import { PYTHON_LANG_DEFINE, PYTHON_LANG_COLORS, PYTHON_KEYWORDS_COMPLETIONS } from './language/python'
 

@@ -70,15 +70,17 @@
 </template>
 
 <script setup>
-import { ElMessage, ElMessageBox } from 'element-plus'
 import { Search, Refresh, Plus } from '@element-plus/icons-vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+
+import CreateForm from './ApplicationCreateForm.vue'
+import ModifyForm from './ApplicationModifyForm.vue'
+
 import { ApplicationState } from '@/api/enum'
 import * as ApplicationService from '@/api/opencenter/application'
 import ConditionInput from '@/components/query-condition/ConditionInput.vue'
 import ConditionSelect from '@/components/query-condition/ConditionSelect.vue'
 import useQueryConditions from '@/composables/useQueryConditions'
-import CreateForm from './ApplicationCreateForm.vue'
-import ModifyForm from './ApplicationModifyForm.vue'
 
 const { queryConditions, resetQueryConditions } = useQueryConditions({
   appNo: '',

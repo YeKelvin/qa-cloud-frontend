@@ -73,21 +73,21 @@ const handleNodeClick = (data, node) => {
 .tree-item {
   display: flex;
   align-items: center;
-  user-select: none;
-  padding: 4px;
   width: 100%;
+  padding: 4px;
+  user-select: none;
 }
 
 .worker-name-wrapper {
   display: flex;
-  flex-direction: column;
   flex: 1;
+  flex-direction: column;
 }
 
 .element-name {
-  white-space: normal;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: normal;
 }
 
 .result-time-wrapper {
@@ -101,17 +101,17 @@ const handleNodeClick = (data, node) => {
 }
 
 .stauts-icon {
-  height: 2em !important;
   width: 2em !important;
+  height: 2em !important;
 }
 
 .worker-icon {
-  height: 1.4em !important;
   width: 1.4em !important;
+  height: 1.4em !important;
 }
 
 .sampler-icon {
-  height: 1.4em !important;
   width: 1.4em !important;
+  height: 1.4em !important;
 }
 </style>

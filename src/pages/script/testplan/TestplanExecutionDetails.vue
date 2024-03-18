@@ -88,11 +88,12 @@
 </template>
 
 <script setup>
-import * as TestplanService from '@/api/script/testplan'
 import { Back, DataAnalysis } from '@element-plus/icons-vue'
-import { RunningState } from '@/api/enum'
-import { isEmpty } from 'lodash-es'
 import dayjs from 'dayjs'
+import { isEmpty } from 'lodash-es'
+
+import { RunningState } from '@/api/enum'
+import * as TestplanService from '@/api/script/testplan'
 
 const route = useRoute()
 const router = useRouter()

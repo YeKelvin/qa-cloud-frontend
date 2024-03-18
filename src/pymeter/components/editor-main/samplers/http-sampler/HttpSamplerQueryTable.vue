@@ -73,10 +73,11 @@
 </template>
 
 <script setup>
-import FxInput from '@/pymeter/components/editor-main/others/FunctionInput.vue'
 import { Check, Close, Delete } from '@element-plus/icons-vue'
 import { isEmpty } from 'lodash-es'
 import sortablejs from 'sortablejs'
+
+import FxInput from '@/pymeter/components/editor-main/others/FunctionInput.vue'
 
 let sortable = null
 
@@ -105,7 +106,7 @@ const autoNewRow = () => {
   if (isEmpty(list)) {
     newRow()
   } else {
-    const lastRow = list[list.length - 1]
+    const lastRow = list.at(-1)
     if (!isBlankRow(lastRow)) newRow()
   }
 }

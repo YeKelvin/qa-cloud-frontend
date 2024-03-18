@@ -1,14 +1,14 @@
 const LOG_LANG_DEFINE = {
   inherit: true,
   ignoreCase: true,
-  logTime: /(\[[\d-:. ]*\])?\s?/,
-  logLevel: /\[(ERROR|WARNING|INFO|DEBUG)?\]/,
+  logTime: /(\[[\d-: .]*])?\s?/,
+  logLevel: /\[(ERROR|WARNING|INFO|DEBUG)?]/,
   tokenizer: {
     root: [
-      [/@logTime\[DEBUG\]/, { token: 'debug-log', next: '@text.debug' }],
-      [/@logTime\[INFO\]/, { token: 'info-log', next: '@text.info' }],
-      [/@logTime\[WARNING\]/, { token: 'warning-log', next: '@text.warning' }],
-      [/@logTime\[ERROR\]/, { token: 'error-log', next: '@text.error' }]
+      [/@logTime\[DEBUG]/, { token: 'debug-log', next: '@text.debug' }],
+      [/@logTime\[INFO]/, { token: 'info-log', next: '@text.info' }],
+      [/@logTime\[WARNING]/, { token: 'warning-log', next: '@text.warning' }],
+      [/@logTime\[ERROR]/, { token: 'error-log', next: '@text.error' }]
     ],
     text: [
       [/@logTime@logLevel/, { token: '@rematch', next: '@pop' }],

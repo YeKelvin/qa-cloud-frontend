@@ -85,16 +85,18 @@
 </template>
 
 <script setup>
-import * as ReportService from '@/api/script/report'
-import { isBlank } from '@/utils/string-util'
 import { ArrowLeft, CopyDocument, DataAnalysis } from '@element-plus/icons-vue'
 import { isEmpty } from 'lodash-es'
+
 import ReportCollectionCard from './ReportCollectionCard.vue'
 import ReportCollectionResult from './ReportCollectionResult.vue'
 import ReportOverview from './ReportOverview.vue'
 import ReportResultTree from './ReportResultTree'
 import ReportSamplerResult from './ReportSamplerResult.vue'
 import ReportWorkerResult from './ReportWorkerResult.vue'
+
+import * as ReportService from '@/api/script/report'
+import { isBlank } from '@/utils/string-util'
 
 const route = useRoute()
 const router = useRouter()
@@ -115,11 +117,9 @@ const showSamplerResult = ref(false)
 const showTree = computed(() => !isEmpty(workers.value))
 const samplerResultRef = ref()
 const filteredCollections = computed(() => {
-  if (isBlank(collectionsFilterText.value)) {
-    return collections.value
-  } else {
-    return collections.value.filter((item) => item.name.indexOf(collectionsFilterText.value.trim()) !== -1)
-  }
+  return isBlank(collectionsFilterText.value)
+    ? collections.value
+    : collections.value.filter((item) => item.name.indexOf(collectionsFilterText.value.trim()) !== -1)
 })
 
 onMounted(() => {

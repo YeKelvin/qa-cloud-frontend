@@ -114,10 +114,17 @@
 </template>
 
 <script setup>
+import { Check, Close } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { debounce, isEmpty } from 'lodash-es'
+
+import ArgumentTable from './TestSnippetArgumentTable.vue' // 实参
+import ParameterTable from './TestSnippetParameterTable.vue' // 形参
+
 import * as ElementService from '@/api/script/element'
 import * as ExecutionService from '@/api/script/execution'
-import FxInput from '@/pymeter/components/editor-main/others/FunctionInput.vue'
 import MonacoEditor from '@/components/monaco-editor/MonacoEditor.vue'
+import FxInput from '@/pymeter/components/editor-main/others/FunctionInput.vue'
 import EditorEmits from '@/pymeter/composables/editor.emits'
 import EditorProps from '@/pymeter/composables/editor.props'
 import useEditor from '@/pymeter/composables/useEditor'
@@ -127,11 +134,6 @@ import { usePyMeterStore } from '@/store/pymeter'
 import { usePyMeterDB } from '@/store/pymeter-db'
 import { useWorkspaceStore } from '@/store/workspace'
 import { toHashCode } from '@/utils/object-util'
-import { Check, Close } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
-import { debounce, isEmpty } from 'lodash-es'
-import ArgumentTable from './TestSnippetArgumentTable.vue' // 实参
-import ParameterTable from './TestSnippetParameterTable.vue' // 形参
 
 const emit = defineEmits(EditorEmits)
 const props = defineProps(EditorProps)

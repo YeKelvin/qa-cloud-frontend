@@ -73,15 +73,17 @@
 </template>
 
 <script setup>
-import { ElMessage, ElMessageBox } from 'element-plus'
 import { Search, Refresh, Plus } from '@element-plus/icons-vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+
+import CreateDialog from './RoleCreateDialog.vue'
+import ModifyDialog from './RoleModifyDialog.vue'
+
 import { RoleState, RoleType } from '@/api/enum'
 import * as RoleService from '@/api/usercenter/role'
 import ConditionInput from '@/components/query-condition/ConditionInput.vue'
 import ConditionSelect from '@/components/query-condition/ConditionSelect.vue'
 import useQueryConditions from '@/composables/useQueryConditions'
-import CreateDialog from './RoleCreateDialog.vue'
-import ModifyDialog from './RoleModifyDialog.vue'
 
 const router = useRouter()
 const { queryConditions, resetQueryConditions } = useQueryConditions({

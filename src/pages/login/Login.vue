@@ -65,8 +65,9 @@
 </template>
 
 <script setup>
-import { isEmpty } from 'lodash-es'
 import { ElMessage } from 'element-plus'
+import { isEmpty } from 'lodash-es'
+
 import { useUserStore } from '@/store/user'
 
 const validateLoginName = (_, value, callback) => {
@@ -103,11 +104,7 @@ const loginNameRef = ref()
 const passwordRef = ref()
 
 const loginNamePlaceholder = computed(() => {
-  if (accountType.value === 'enterprise') {
-    return '企业邮箱'
-  } else {
-    return '账号 / 邮箱 / 手机号'
-  }
+  return accountType.value === 'enterprise' ? '企业邮箱' : '账号 / 邮箱 / 手机号'
 })
 
 watch(

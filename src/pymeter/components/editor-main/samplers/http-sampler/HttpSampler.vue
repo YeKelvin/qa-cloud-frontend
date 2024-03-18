@@ -270,24 +270,10 @@
 </template>
 
 <script setup>
-import * as ElementService from '@/api/script/element'
-import FxInput from '@/pymeter/components/editor-main/others/FunctionInput.vue'
-import FxEditor from '@/pymeter/components/editor-main/others/FunctionEditor.vue'
-import ComponentFilter from '@/pymeter/components/editor-main/others/ComponentFilter.vue'
-import SaveButton from '@/pymeter/components/editor-main/others/SaveButton.vue'
-import PostProcessorPane from '@/pymeter/components/editor-main/components/PostProcessorPane.vue'
-import PrevProcessorPane from '@/pymeter/components/editor-main/components/PrevProcessorPane.vue'
-import TestAssertionPane from '@/pymeter/components/editor-main/components/TestAssertionPane.vue'
-import EditorEmits from '@/pymeter/composables/editor.emits'
-import EditorProps from '@/pymeter/composables/editor.props'
-import useEditor from '@/pymeter/composables/useEditor'
-import useElement from '@/pymeter/composables/useElement'
-import useRunnableElement from '@/pymeter/composables/useRunnableElement'
-import { usePyMeterDB } from '@/store/pymeter-db'
-import { toHashCode } from '@/utils/object-util'
 import { Check, Close, Warning } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { debounce, isEmpty } from 'lodash-es'
+
 import HTTPFileTable from './HttpSamplerFileTable.vue'
 import HTTPFormTable from './HttpSamplerFormTable.vue'
 import HTTPHeaderTable from './HttpSamplerHeaderTable.vue'
@@ -295,6 +281,22 @@ import HTTPHeaderTemplate from './HttpSamplerHeaderTemplate.vue'
 import HTTPMethodSelect from './HttpSamplerMethodSelect.vue'
 import HTTPQueryTable from './HttpSamplerQueryTable.vue'
 import useHTTP from './useHTTP'
+
+import * as ElementService from '@/api/script/element'
+import PostProcessorPane from '@/pymeter/components/editor-main/components/PostProcessorPane.vue'
+import PrevProcessorPane from '@/pymeter/components/editor-main/components/PrevProcessorPane.vue'
+import TestAssertionPane from '@/pymeter/components/editor-main/components/TestAssertionPane.vue'
+import ComponentFilter from '@/pymeter/components/editor-main/others/ComponentFilter.vue'
+import FxEditor from '@/pymeter/components/editor-main/others/FunctionEditor.vue'
+import FxInput from '@/pymeter/components/editor-main/others/FunctionInput.vue'
+import SaveButton from '@/pymeter/components/editor-main/others/SaveButton.vue'
+import EditorEmits from '@/pymeter/composables/editor.emits'
+import EditorProps from '@/pymeter/composables/editor.props'
+import useEditor from '@/pymeter/composables/useEditor'
+import useElement from '@/pymeter/composables/useElement'
+import useRunnableElement from '@/pymeter/composables/useRunnableElement'
+import { usePyMeterDB } from '@/store/pymeter-db'
+import { toHashCode } from '@/utils/object-util'
 
 const emit = defineEmits(EditorEmits)
 const props = defineProps(EditorProps)
@@ -490,11 +492,7 @@ const setBodyData = () => {
   // 设置主体模式
   setBodyMode()
   // 激活Tab
-  if (bodyMode.value !== 'none') {
-    activeTabName.value = 'HTTP_BODY'
-  } else {
-    activeTabName.value = 'HTTP_QUERYS'
-  }
+  activeTabName.value = bodyMode.value !== 'none' ? 'HTTP_BODY' : 'HTTP_QUERYS'
   // 初始化主体数据
   if (!['form-data', 'x-www-form-urlencoded'].includes(bodyMode.value)) {
     nextTick(
@@ -504,8 +502,8 @@ const setBodyData = () => {
 }
 
 const isBlankAll = (...args) => {
-  for (let i = 0; i < args.length; i++) {
-    if (!isEmpty(args[i])) return false
+  for (const arg of args) {
+    if (!isEmpty(arg)) return false
   }
   return true
 }

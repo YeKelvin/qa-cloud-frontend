@@ -90,11 +90,7 @@ export default function useHTTP(elementData) {
     const header = elementData.value.elementAttrs.HTTPSampler__headers.find(
       (item) => item.name.toLowerCase() === 'content-type'
     )
-    if (header) {
-      return header.value
-    } else {
-      return ''
-    }
+    return header ? header.value : ''
   }
 
   /**
@@ -136,11 +132,11 @@ export default function useHTTP(elementData) {
    */
   const checkLogicalCondition = (grouprule) => {
     const rules = grouprule.rules
-    for (let i = 0; i < rules.length; i++) {
-      if ('logic' in rules[i]) {
-        if (checkLogicalCondition(rules[i])) return true
+    for (const rule of rules) {
+      if ('logic' in rule) {
+        if (checkLogicalCondition(rule)) return true
       } else {
-        if (isEmpty(rules[i].field)) return true
+        if (isEmpty(rule.field)) return true
       }
     }
   }

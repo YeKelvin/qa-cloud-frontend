@@ -66,10 +66,10 @@ const rules = {
 }
 
 watch(
-  () => elementProperty.JsonPathAssertion__operator,
+  () => elementProperty.value.JsonPathAssertion__operator,
   (val) => {
     if (['NULL', 'NOT_NULL', 'BLANK', 'NOT_BLANK', 'EXISTS', 'NOT_EXISTS'].includes(val)) {
-      elementProperty.JsonPathAssertion__expected_value = ''
+      elementProperty.value.JsonPathAssertion__expected_value = ''
     }
   }
 )

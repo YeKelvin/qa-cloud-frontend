@@ -15,16 +15,18 @@
     "defineExpose": true,
     "defineOptions": true
   },
-  "plugins": ["prettier", "import", "promise", "oxlint"],
+  "plugins": ["promise"],
   "extends": [
     "./.eslintrc-auto-import.json",
     "standard",
-    "prettier",
     "eslint:recommended",
     "plugin:@tanstack/eslint-plugin-query/recommended",
     "plugin:import/recommended",
+    "plugin:unicorn/recommended",
+    "plugin:promise/recommended",
     "plugin:prettier/recommended",
-    "plugin:vue/vue3-recommended"
+    "plugin:vue/vue3-recommended",
+    "plugin:oxlint/recommended"
   ],
   "parser": "vue-eslint-parser",
   "parserOptions": {
@@ -103,6 +105,28 @@
     "import/no-unresolved": [0],
     "import/no-absolute-path": "off",
     "import/no-named-as-default": "off",
-    "import/no-extraneous-dependencies": "off"
+    "import/no-extraneous-dependencies": "off",
+    "import/order": [
+      "error",
+      {
+        // 对导入模块进行分组
+        "groups": ["builtin", "external", "internal", "parent", "sibling", "index", "object", "type", "unknown"],
+        // newlines-between 不同组之间是否进行换行
+        "newlines-between": "always",
+        // alphabetize 根据字母顺序对每个组内的顺序进行排序
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        }
+      }
+    ],
+
+    "unicorn/prefer-ternary": ["error", "only-single-line"],
+    "unicorn/prevent-abbreviations": "off",
+
+    "promise/always-return": "off",
+    "promise/catch-or-return": "off",
+    "promise/no-nesting": "off"
+
   }
 }

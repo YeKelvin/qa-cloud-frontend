@@ -71,6 +71,10 @@
 </template>
 
 <script setup>
+import { Check, Close, Delete } from '@element-plus/icons-vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { debounce, has, isEmpty } from 'lodash-es'
+
 import * as VariablesService from '@/api/script/variables'
 import AutosizeTextarea from '@/components/autosize-textarea/AutosizeTextarea.vue'
 import SaveButton from '@/pymeter/components/editor-main/others/SaveButton.vue'
@@ -80,9 +84,6 @@ import useEditor from '@/pymeter/composables/useEditor'
 import useElement from '@/pymeter/composables/useElement'
 import { usePyMeterDB } from '@/store/pymeter-db'
 import { toHashCode } from '@/utils/object-util'
-import { Check, Close, Delete } from '@element-plus/icons-vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
-import { debounce, has, isEmpty } from 'lodash-es'
 
 const emit = defineEmits(EditorEmits)
 const props = defineProps(EditorProps)
@@ -167,7 +168,7 @@ const autoNewRow = () => {
   if (isEmpty(variableList)) {
     newRow()
   } else {
-    const lastRow = variableList[variableList.length - 1]
+    const lastRow = variableList.at(-1)
     if (!isBlankRow(lastRow)) newRow()
   }
 }

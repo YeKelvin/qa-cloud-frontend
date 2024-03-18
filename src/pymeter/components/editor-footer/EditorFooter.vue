@@ -33,13 +33,15 @@
 </template>
 
 <script setup>
+import { ElMessage, ElNotification } from 'element-plus'
+import { assign } from 'lodash-es'
+
+import MainDrawer from './MainDrawer.vue'
+
 import useSocket from '@/composables/useSocket'
 import useSocketIO from '@/composables/useSocketIO'
 import { usePyMeterStore } from '@/store/pymeter'
 import { usePymeterSocketStore } from '@/store/pymeter-socket'
-import { ElMessage, ElNotification } from 'element-plus'
-import { assign } from 'lodash-es'
-import MainDrawer from './MainDrawer.vue'
 
 const socket = useSocket()
 const socketio = useSocketIO()

@@ -50,13 +50,14 @@
 </template>
 
 <script lang="jsx" setup>
-import * as ElementService from '@/api/script/element'
-import WorkspaceTree from '@/pymeter/components/editor-aside/common/WorkspaceTree.vue'
-import { useWorkspaceStore } from '@/store/workspace'
 import { Plus, Search } from '@element-plus/icons-vue'
 import { useQueryClient } from '@tanstack/vue-query'
 import dayjs from 'dayjs'
 import { isEmpty } from 'lodash-es'
+
+import * as ElementService from '@/api/script/element'
+import WorkspaceTree from '@/pymeter/components/editor-aside/common/WorkspaceTree.vue'
+import { useWorkspaceStore } from '@/store/workspace'
 
 const router = useRouter()
 const queryClient = useQueryClient()

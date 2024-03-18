@@ -38,12 +38,14 @@
 </template>
 
 <script setup>
+import { Check, Close } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+
+import PermissionTable from './PermissionTable.vue'
+
+import * as WorkspaceService from '@/api/public/workspace'
 import * as GroupService from '@/api/usercenter/group'
 import * as UserService from '@/api/usercenter/user'
-import * as WorkspaceService from '@/api/public/workspace'
-import { ElMessage } from 'element-plus'
-import { Check, Close } from '@element-plus/icons-vue'
-import PermissionTable from './PermissionTable.vue'
 
 const route = useRoute()
 const router = useRouter()

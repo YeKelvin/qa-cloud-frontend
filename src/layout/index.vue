@@ -14,9 +14,10 @@
 
 <script setup>
 import { Navbar, Sidebar, AppMain } from './components'
+import useResizeHandler from './composables/useResizeHandler'
+
 import { useAppStore } from '@/store/app'
 import { useSettingsStore } from '@/store/settings'
-import useResizeHandler from './composables/useResizeHandler'
 
 const route = useRoute()
 const appStore = useAppStore()
@@ -41,7 +42,7 @@ useResizeHandler()
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+@import '@/styles/variables';
 
 .app-wrapper {
   position: relative;
