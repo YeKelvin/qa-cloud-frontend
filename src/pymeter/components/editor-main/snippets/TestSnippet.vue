@@ -67,7 +67,7 @@
               <span style="margin-left: 5px">运 行</span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item @click="querySnippetJson()">查询脚本</el-dropdown-item>
+                  <el-dropdown-item @click="querySnippetJson()">展示Json脚本</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -99,7 +99,7 @@
           <span>运 行</span>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item @click="querySnippetJson()">查询脚本</el-dropdown-item>
+              <el-dropdown-item @click="querySnippetJson()">展示Json脚本</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>

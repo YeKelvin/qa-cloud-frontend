@@ -154,7 +154,7 @@
             <span>运 行</span>
             <template #dropdown>
               <el-dropdown-menu>
-                <el-dropdown-item @click="queryCollectionScript()">查询脚本</el-dropdown-item>
+                <el-dropdown-item @click="queryCollectionScript()">展示Json脚本</el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>

@@ -21,8 +21,7 @@
       <SvgIcon v-else-if="data.elementType == 'CONTROLLER'" icon-name="pymeter-controller" />
       <SvgIcon v-else-if="data.elementType == 'ASSERTION'" icon-name="pymeter-assertion" />
     </span>
-    <!-- 名称 -->
-    <span class="element-name">{{ data.elementName }}</span>
+
     <!-- 集合标识 -->
     <el-tag v-if="data.elementClass == 'TestCollection'" size="small" disable-transitions>集合</el-tag>
     <!-- 片段标识 -->
@@ -31,6 +30,8 @@
     <el-tag v-if="data.elementClass == 'SetupWorker'" size="small" disable-transitions>前置</el-tag>
     <!-- Teardown标识 -->
     <el-tag v-if="data.elementClass == 'TeardownWorker'" size="small" disable-transitions>后置</el-tag>
+    <!-- 名称 -->
+    <span class="element-name">{{ data.elementName }}</span>
     <!-- 禁用标识 -->
     <el-tag v-if="!data.enabled" type="danger" size="small" disable-transitions>禁用</el-tag>
     <!-- 跳过标识 -->
@@ -56,12 +57,13 @@ export default {
 }
 
 .element-name {
+  margin-right: 5px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: normal;
 }
 
 .el-tag {
-  margin-left: 5px;
+  margin-right: 5px;
 }
 </style>
