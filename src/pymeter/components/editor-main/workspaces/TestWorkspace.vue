@@ -3,7 +3,7 @@
     <el-tabs v-model="activeTabName">
       <el-tab-pane name="SETTINGS">
         <template #label>
-          <el-badge :hidden="hiddenSettingsDot" type="success" is-dot>空间设置</el-badge>
+          <el-badge :hidden="hiddenSettingsDot" type="success" is-dot>组件设置</el-badge>
         </template>
       </el-tab-pane>
       <!-- <el-tab-pane name="CONFIGURATOR">
