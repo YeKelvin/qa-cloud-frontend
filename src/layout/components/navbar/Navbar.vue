@@ -79,7 +79,7 @@ const displayWorkspaceWhitelist = [
   '/script/workspace/setting',
   '/system/workspace',
   '/system/notice/robot',
-  '/schedule/task'
+  '/schedule/job'
 ]
 
 const openTestWorkspace = () => {

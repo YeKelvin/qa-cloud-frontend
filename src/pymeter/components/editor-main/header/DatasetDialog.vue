@@ -1,6 +1,13 @@
 <template>
   <div id="dataset-dialog">
-    <el-dialog width="60%" :show-close="false" center v-bind="$attrs" @close="$emit('update:model-value', false)">
+    <el-dialog
+      width="60%"
+      :show-close="false"
+      center
+      append-to-body
+      v-bind="$attrs"
+      @close="$emit('update:model-value', false)"
+    >
       <!-- 顶栏 -->
       <template #header>
         <div v-show="!isEmpty(selectedDatasetList)" style="display: flex">
@@ -122,13 +129,14 @@
 </template>
 
 <script setup>
+import { Check, Close, CopyDocument, Edit } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { isEmpty } from 'lodash-es'
+
 import * as VariablesService from '@/api/script/variables'
 import useClipboard from '@/composables/useClipboard'
 import { usePyMeterStore } from '@/store/pymeter'
 import { usePyMeterDB } from '@/store/pymeter-db'
-import { Check, Close, CopyDocument, Edit } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
-import { isEmpty } from 'lodash-es'
 
 const { toClipboard } = useClipboard()
 const pymeterStore = usePyMeterStore()

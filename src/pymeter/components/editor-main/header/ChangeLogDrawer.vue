@@ -191,6 +191,7 @@
       class="diff-dialog"
       width="65%"
       center
+      append-to-body
       destroy-on-close
       @close="showDiffDialog = false"
     >
@@ -201,6 +202,7 @@
 
 <script setup>
 import { isBoolean } from 'lodash-es'
+
 import { AttributeDefinition, PropertyDefinition } from '@/api/enum'
 import * as HistoryService from '@/api/script/history'
 import MonacoDiffEditor from '@/components/monaco-editor/MonacoDiffEditor.vue'

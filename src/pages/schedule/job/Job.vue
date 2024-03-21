@@ -7,7 +7,7 @@
         <ConditionInput v-model="queryConditions.jobName" label="作业名称" />
         <ConditionSelect v-model="queryConditions.jobType" :options="JobType" label="作业类型" />
         <ConditionSelect v-model="queryConditions.triggerType" :options="TriggerType" label="触发类型" />
-        <ConditionSelect v-model="queryConditions.state" :options="JobState" label="状态" />
+        <ConditionSelect v-model="queryConditions.state" :options="JobState" label="作业状态" />
       </div>
       <div style="display: flex; justify-content: space-between">
         <div />
@@ -26,21 +26,15 @@
         <template #empty><el-empty /></template>
         <!-- 列定义 -->
         <el-table-column prop="jobNo" label="作业编号" min-width="200" width="200" />
-        <el-table-column prop="jobName" label="作业名称" min-width="150">
-          <template #default="{ row }">
-            <el-tag v-if="row.triggerType == 'DATE'" disable-transitions>once</el-tag>
-            <el-tag v-else type="danger" disable-transitions>loop</el-tag>
-            <span style="margin-left: 10px">{{ row.jobName }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column prop="jobType" label="作业类型" min-width="100" width="100">
-          <template #default="{ row }">{{ JobType[row.jobType] }}</template>
+        <el-table-column prop="jobName" label="作业名称" min-width="150" />
+        <el-table-column prop="jobType" label="作业对象" min-width="200">
+          <template #default="{ row }">{{ JobType[row.jobType] }}（{{ row.jobArgs.name }}）</template>
         </el-table-column>
         <el-table-column prop="triggerType" label="触发类型" min-width="100" width="100">
           <template #default="{ row }">{{ TriggerType[row.triggerType] }}</template>
         </el-table-column>
-        <el-table-column prop="state" label="状态" min-width="80" width="80">
-          <template #default="{ row }">{{ JobState[row.state] }}</template>
+        <el-table-column prop="jobState" label="作业状态" min-width="100" width="100">
+          <template #default="{ row }">{{ JobState[row.jobState] }}</template>
         </el-table-column>
         <el-table-column prop="createdTime" label="创建时间" min-width="180" width="180">
           <template #default="{ row }">
@@ -49,20 +43,17 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" min-width="200" width="200">
           <template #default="{ row }">
-            <el-button type="primary" link @click="openDetailDialog(row)">详情</el-button>
-            <template v-if="row.state != 'CLOSED'">
-              <el-button type="primary" link @click="openModifyDialog(row)">编辑</el-button>
+            <el-button type="primary" link @click="openJobDetails(row)">详情</el-button>
+            <template v-if="row.jobState == 'NORMAL'">
+              <el-button type="primary" link @click="pauseJob(row)">暂停</el-button>
             </template>
-            <template v-if="row.state == 'NORMAL'">
-              <el-button type="primary" link @click="pauseTask(row)">暂停</el-button>
+            <template v-if="row.jobState == 'PAUSED'">
+              <el-button type="primary" link @click="resumeJob(row)">恢复</el-button>
             </template>
-            <template v-if="row.state == 'PAUSED'">
-              <el-button type="primary" link @click="resumeTask(row)">恢复</el-button>
+            <template v-if="row.jobState != 'CLOSED'">
+              <el-button type="primary" link @click="removeJob(row)">关闭</el-button>
             </template>
-            <template v-if="row.state != 'CLOSED'">
-              <el-button type="primary" link @click="removeTask(row)">关闭</el-button>
-            </template>
-            <el-button type="primary" link @click="openHistoryDialog(row)">历史</el-button>
+            <el-button type="primary" link @click="openLogDialog(row)">历史</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -81,16 +72,13 @@
     </div>
 
     <!-- 任务表单 -->
-    <TaskFormDialog
-      v-if="showFormDialog"
-      v-model="showFormDialog"
+    <JobInfoDialog
+      v-if="showingDetails"
+      v-model="showingDetails"
       :edit-mode="dialogArgs.editMode"
       :data="dialogArgs.data"
       @re-query="query"
     />
-
-    <!-- 任务历史 -->
-    <TaskHistoryDialog v-if="showHistoryDialog" v-model="showHistoryDialog" />
   </div>
 </template>
 
@@ -99,11 +87,10 @@ import { Search, Refresh, Plus } from '@element-plus/icons-vue'
 import dayjs from 'dayjs'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
-import TaskFormDialog from './TaskFormDialog.vue'
-import TaskHistoryDialog from './TaskHistoryDialog.vue'
+import JobInfoDialog from './JobInfoDialog.vue'
 
 import { JobState, JobType, TriggerType } from '@/api/enum'
-import * as ScheduleService from '@/api/schedule/task'
+import * as ScheduleService from '@/api/schedule/job'
 import ConditionInput from '@/components/query-condition/ConditionInput.vue'
 import ConditionSelect from '@/components/query-condition/ConditionSelect.vue'
 import useQueryConditions from '@/composables/useQueryConditions'
@@ -117,15 +104,15 @@ const { queryConditions, resetQueryConditions } = useQueryConditions({
   jobName: '',
   jobDesc: '',
   jobType: '',
-  triggerType: '',
-  state: ''
+  jobState: '',
+  triggerType: ''
 })
 const tableData = ref([])
 const page = ref(1)
 const pageSize = ref(10)
 const total = ref(0)
 const currentRow = ref(null)
-const showFormDialog = ref(false)
+const showingDetails = ref(false)
 const showHistoryDialog = ref(false)
 const dialogArgs = reactive({
   editMode: null,
@@ -149,7 +136,7 @@ onMounted(() => {
  * 查询
  */
 const query = () => {
-  ScheduleService.queryTaskList({ ...queryConditions, page: page.value, pageSize: pageSize.value }).then((response) => {
+  ScheduleService.queryJobList({ ...queryConditions, page: page.value, pageSize: pageSize.value }).then((response) => {
     tableData.value = response.data.list
     total.value = response.data.total
   })
@@ -158,7 +145,7 @@ const query = () => {
 /**
  * 暂停作业
  */
-const pauseTask = async (row) => {
+const pauseJob = async (row) => {
   // 二次确认
   const cancelled = await ElMessageBox.confirm('确定暂停吗？', '警告', {
     confirmButtonText: '确定',
@@ -169,7 +156,7 @@ const pauseTask = async (row) => {
     .catch(() => true)
   if (cancelled) return
   // 暂停作业
-  await ScheduleService.pauseTask({ jobNo: row.jobNo })
+  await ScheduleService.pauseJob({ jobNo: row.jobNo })
   // 成功提示
   ElMessage({ message: `暂停作业成功`, type: 'info', duration: 2 * 1000 })
   // 重新查询列表
@@ -179,7 +166,7 @@ const pauseTask = async (row) => {
 /**
  * 恢复作业
  */
-const resumeTask = async (row) => {
+const resumeJob = async (row) => {
   // 二次确认
   const cancelled = await ElMessageBox.confirm('确定恢复吗？', '警告', {
     confirmButtonText: '确定',
@@ -190,7 +177,7 @@ const resumeTask = async (row) => {
     .catch(() => true)
   if (cancelled) return
   // 恢复作业
-  await ScheduleService.resumeTask({ jobNo: row.jobNo })
+  await ScheduleService.resumeJob({ jobNo: row.jobNo })
   // 成功提示
   ElMessage({ message: `恢复作业成功`, type: 'info', duration: 2 * 1000 })
   // 重新查询列表
@@ -200,7 +187,7 @@ const resumeTask = async (row) => {
 /**
  * 关闭作业
  */
-const removeTask = async (row) => {
+const removeJob = async (row) => {
   // 二次确认
   const cancelled = await ElMessageBox.confirm('确定关闭吗？', '警告', {
     confirmButtonText: '确定',
@@ -211,7 +198,7 @@ const removeTask = async (row) => {
     .catch(() => true)
   if (cancelled) return
   // 关闭作业
-  await ScheduleService.removeTask({ jobNo: row.jobNo })
+  await ScheduleService.removeJob({ jobNo: row.jobNo })
   // 成功提示
   ElMessage({ message: '关闭作业成功', type: 'info', duration: 2 * 1000 })
   // 重新查询列表
@@ -224,31 +211,24 @@ const removeTask = async (row) => {
 const openCreateDialog = (row) => {
   dialogArgs.editMode = 'CREATE'
   dialogArgs.data = null
-  showFormDialog.value = true
+  currentRow.value = null
+  showingDetails.value = true
 }
 
 /**
  * 打开详情对话框
  */
-const openDetailDialog = (row) => {
+const openJobDetails = (row) => {
   dialogArgs.editMode = 'QUERY'
   dialogArgs.data = row
-  showFormDialog.value = true
-}
-
-/**
- * 打开编辑对话框
- */
-const openModifyDialog = (row) => {
-  dialogArgs.editMode = 'MODIFY'
-  dialogArgs.data = row
-  showFormDialog.value = true
+  currentRow.value = row
+  showingDetails.value = true
 }
 
 /**
  * 打开历史对话框
  */
-const openHistoryDialog = (row) => {
+const openLogDialog = (row) => {
   currentRow.value = row
   showHistoryDialog.value = true
 }

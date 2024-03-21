@@ -105,7 +105,8 @@ export const RobotType = {
 }
 
 export const JobState = {
-  NORMAL: '正常',
+  PENDING: '待开始',
+  RUNNING: '运行中',
   PAUSED: '已暂停',
   CLOSED: '已关闭'
 }
@@ -118,11 +119,10 @@ export const JobType = {
 
 export const TriggerType = {
   DATE: '固定时间',
-  INTERVAL: '固定间隔',
-  CRON: 'CRON'
+  CRON: 'CRONTAB'
 }
 
-export const TaskOperationType = {
+export const JobEvent = {
   ADD: '添加作业',
   MODIFY: '修改作业',
   EXECUTE: '执行作业',

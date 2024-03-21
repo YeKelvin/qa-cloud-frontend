@@ -125,10 +125,16 @@ export const constantRoutes = [
     meta: { title: '定时任务', icon: 'sidebar-schedule' },
     children: [
       {
-        component: () => import('@/pages/schedule/task/Task.vue'),
-        path: 'task',
-        name: 'Task',
-        meta: { title: '任务管理', icon: 'sidebar-schedule-task' }
+        component: () => import('@/pages/schedule/job/Job.vue'),
+        path: 'job',
+        name: 'Job',
+        meta: { title: '作业管理', icon: 'sidebar-schedule-job' }
+      },
+      {
+        component: () => import('@/pages/schedule/log/JobLog.vue'),
+        path: 'job/log',
+        name: 'JobLog',
+        meta: { title: '作业日志', icon: 'sidebar-schedule-job-log' }
       }
     ]
   }
