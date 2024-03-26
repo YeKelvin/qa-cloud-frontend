@@ -35,7 +35,7 @@
       />
     </el-option-group>
     <!-- 空间变量 -->
-    <el-option-group v-if="!isEmpty(datasetListAsWorkspace)" key="workspace" label="空间">
+    <el-option-group key="workspace" label="空间">
       <el-option
         v-for="item in datasetListAsWorkspace"
         :key="item.datasetNo"

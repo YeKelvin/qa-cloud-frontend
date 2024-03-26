@@ -12,7 +12,7 @@
       </el-tabs>
 
       <!-- 顶栏 -->
-      <TabHeader :component="activeTab.editorComponent" :metadata="activeTab.metadata" />
+      <EditorHeader :component="activeTab.editorComponent" :metadata="activeTab.metadata" />
 
       <!-- pymeter 组件 -->
       <el-scrollbar class="editor-main-scrollbar" style="width: 100%; height: 100%" wrap-style="overflow-x:auto;">
@@ -45,7 +45,7 @@
 <script setup>
 import Mousetrap from 'mousetrap'
 
-import TabHeader from './header/TabHeader.vue'
+import EditorHeader from './header/EditorHeader.vue'
 
 import { usePyMeterStore } from '@/store/pymeter'
 

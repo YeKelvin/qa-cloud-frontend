@@ -1,16 +1,17 @@
-import { defineConfig, loadEnv } from 'vite'
-import { vitePluginForArco } from '@arco-plugins/vite-vue'
-import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
-import { VueRouterAutoImports } from 'unplugin-vue-router'
-import { ElementPlusResolver, ArcoResolver } from 'unplugin-vue-components/resolvers'
 import path from 'path'
+
+import { vitePluginForArco } from '@arco-plugins/vite-vue'
 import vue from '@vitejs/plugin-vue'
 import jsx from '@vitejs/plugin-vue-jsx'
-import Icons from 'unplugin-icons/vite'
 import AutoImport from 'unplugin-auto-import/vite'
-import Components from 'unplugin-vue-components/vite'
-import VueDevTools from 'vite-plugin-vue-devtools'
 import IconsResolver from 'unplugin-icons/resolver'
+import Icons from 'unplugin-icons/vite'
+import { ElementPlusResolver, ArcoResolver } from 'unplugin-vue-components/resolvers'
+import Components from 'unplugin-vue-components/vite'
+import { VueRouterAutoImports } from 'unplugin-vue-router'
+import { defineConfig, loadEnv } from 'vite'
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
+import VueDevTools from 'vite-plugin-vue-devtools'
 
 export default ({ mode }) =>
   defineConfig({
@@ -87,7 +88,9 @@ export default ({ mode }) =>
     },
     resolve: {
       alias: {
+        // eslint-disable-next-line unicorn/prefer-module
         '~': path.resolve(__dirname, './'),
+        // eslint-disable-next-line unicorn/prefer-module
         '@': path.resolve(__dirname, 'src')
       },
       extensions: ['.js', '.ts', '.jsx', '.tsx', '.json', '.vue']

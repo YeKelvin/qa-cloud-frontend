@@ -3,9 +3,7 @@ import { defineStore } from 'pinia'
 
 import { confirmClose, removeCache } from './pymeter-tools'
 
-import * as VariablesService from '@/api/script/variables'
 import { usePyMeterDB } from '@/store/pymeter-db'
-import { useWorkspaceStore } from '@/store/workspace'
 
 export const usePyMeterStore = defineStore('pymeter', {
   state: () => {
@@ -31,25 +29,10 @@ export const usePyMeterStore = defineStore('pymeter', {
       // 待展开节点的元素编号
       pendingExpandedElementNo: 0,
 
-      // 变量集列表
-      // TODO: vue-query改造
-      datasetList: [],
-      // 全局变量集列表
-      globalDatasetList: [],
-      // 空间变量集列表
-      workspaceDatasetList: [],
-      // 环境变量集列表
-      environmentDatasetList: [],
-      // 自定义变量集列表
-      customDatasetList: [],
-      // 当前选中的变量集列表（缓存）
-      selectedDatasets: [],
-      // 当前选择的环境变量集编号
-      selectedEnvironmentNo: '',
-
       // 是否使用当前值（缓存）
       useCurrentValue: true,
-
+      // 当前选中的变量集列表（缓存）
+      selectedDatasets: [],
       // 当前选中的集合编号列表（缓存）
       selectedScripts: [],
 
@@ -302,71 +285,6 @@ export const usePyMeterStore = defineStore('pymeter', {
      */
     clearSelectedDataset() {
       this.selectedDatasets = []
-    },
-
-    /**
-     * 查询所有数据集列表
-     */
-    async queryDatasetAll() {
-      // 查询变量集列表
-      const response = await VariablesService.queryVariableDatasetAll({ workspaceNo: useWorkspaceStore().workspaceNo })
-
-      // 全部变量集
-      this.datasetList = response.data
-      // 全局变量
-      this.globalDatasetList = response.data.filter((item) => item.datasetType === 'GLOBAL')
-      // 空间变量
-      this.workspaceDatasetList = response.data.filter((item) => item.datasetType === 'WORKSPACE')
-      // 环境变量
-      this.environmentDatasetList = response.data.filter((item) => item.datasetType === 'ENVIRONMENT')
-      // 自定义变量
-      this.customDatasetList = response.data.filter((item) => item.datasetType === 'CUSTOM')
-
-      // 判断是否存在无效数据，存在则删除
-      // 当前选择的变量集不为空且不在变量集列表中时（表示该变量集已无效），删除该变量集编号
-      const datasets = new Set(response.data.map((item) => item.datasetNo))
-      for (let i = this.selectedDatasets.length - 1; i >= 0; i--) {
-        // 删除无效数据
-        if (!datasets.has(this.selectedDatasets[i])) {
-          this.selectedDatasets.splice(i, 1)
-        }
-      }
-
-      // 禁用其余未选择的环境变量集
-      this.disableOtherEnvDataset()
-    },
-
-    /**
-     * 设置当前选中的变量集列表
-     */
-    setSelectedDatasets(data) {
-      this.selectedDatasets = data
-      this.disableOtherEnvDataset()
-    },
-
-    /**
-     * 禁用未选择的环境变量集（已选择了一个环境变量集的情况下）
-     */
-    disableOtherEnvDataset() {
-      // 没有选中任何变量集时，开放所有环境变量集
-      if (isEmpty(this.selectedDatasets)) {
-        this.environmentDatasetList.forEach((item) => (item.disabled = false))
-      }
-      // 从已选择的变量集中过滤出环境变量集
-      const envs = this.datasetList.filter(
-        (item) => item.datasetType === 'ENVIRONMENT' && this.selectedDatasets.includes(item.datasetNo)
-      )
-
-      if (envs.length > 0) {
-        // 存储当前环境编号
-        this.selectedEnvironmentNo = envs[0].datasetNo
-        // 已经选择了环境变量集，禁用其余环境变量集
-        this.environmentDatasetList.forEach((item) => (item.disabled = item.datasetNo !== envs[0].datasetNo))
-      } else {
-        this.selectedEnvironmentNo = ''
-        // 没有选择环境变量集时，开放所有环境变量集
-        this.environmentDatasetList.forEach((item) => (item.disabled = false))
-      }
     }
   }
 })

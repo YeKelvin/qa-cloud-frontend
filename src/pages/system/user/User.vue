@@ -162,7 +162,7 @@ const modifyUserState = async (row, state) => {
  */
 const resetPassword = async (row) => {
   // 二次确认
-  const cancelled = await ElMessageBox.confirm('确定重置密码吗？', '提示', {
+  const cancelled = await ElMessageBox.confirm('是否确定重置密码？', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'

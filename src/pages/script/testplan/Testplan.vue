@@ -152,7 +152,7 @@
       />
     </div>
 
-    <TestplanExecutionRecordDialog v-if="showRecordDialog" v-model="showRecordDialog" :plan-no="currentRowPlanNo" />
+    <ExecutionRecordDialog v-if="showRecordDialog" v-model="showRecordDialog" :plan-no="currentRowPlanNo" />
   </div>
 </template>
 
@@ -161,8 +161,8 @@ import { Edit, Search, Refresh, Plus } from '@element-plus/icons-vue'
 import dayjs from 'dayjs'
 import { ElMessage, ElMessageBox, ElNotification } from 'element-plus'
 
-import TestplanDatasetSelect from './TestplanDatasetSelect.vue'
-import TestplanExecutionRecordDialog from './TestplanExecutionRecordDialog.vue'
+import DatasetSelect from './TestplanDatasetSelect.vue'
+import ExecutionRecordDialog from './TestplanExecutionRecordDialog.vue'
 
 import { TestplanState, TestPhase } from '@/api/enum'
 import * as ExecutionService from '@/api/script/execution'
@@ -228,17 +228,15 @@ const queryList = () => {
  */
 const executeTestplan = async ({ planNo, planName }) => {
   let datasets = []
-  let useCurrentValue = false
+  let useCurrvalue = false
   // 弹出选择变量集的对话框
   const cancelled = await ElMessageBox.confirm(null, {
     title: '请选择测试环境',
     message: (
-      <TestplanDatasetSelect
-        key={new Date().getTime()}
-        workspaceNo={workspaceStore.workspaceNo}
+      <DatasetSelect
         planName={planName}
-        onChangeDatasets={(val) => (datasets = val)}
-        onChangeUseCurrentValue={(val) => (useCurrentValue = val)}
+        onUpdate:selectedDatasets={(val) => (datasets = val)}
+        onUpdate:useCurrentValue={(val) => (useCurrvalue = val)}
       />
     ),
     confirmButtonText: '确定',
@@ -251,7 +249,7 @@ const executeTestplan = async ({ planNo, planName }) => {
   const response = await ExecutionService.executeTestPlan({
     planNo: planNo,
     datasets: datasets,
-    useCurrentValue: useCurrentValue
+    useCurrentValue: useCurrvalue
   })
   // 成功提示
   ElNotification.success({

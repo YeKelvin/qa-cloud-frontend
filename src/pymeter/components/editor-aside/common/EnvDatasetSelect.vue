@@ -3,7 +3,7 @@
     <span style="font-weight: 400">环境绑定：</span>
     <el-select v-model="localvalue" clearable style="width: 100%">
       <el-option
-        v-for="item in pymeterStore.environmentDatasetList"
+        v-for="item in datasetListAsEnvironment"
         :key="item.datasetNo"
         :value="item.datasetNo"
         :label="item.datasetName"
@@ -13,11 +13,12 @@
 </template>
 
 <script setup>
-import { usePyMeterStore } from '@/store/pymeter'
+import useDataset from '@/pymeter/composables/useDataset'
 
-const pymeterStore = usePyMeterStore()
-const props = defineProps({ modelValue: { type: String } })
+const { datasetListAsEnvironment } = useDataset()
+
 const emit = defineEmits(['update:modelValue'])
+const props = defineProps({ modelValue: { type: String } })
 
 const localvalue = ref(props.modelValue)
 

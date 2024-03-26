@@ -22,7 +22,7 @@
         <template #empty><el-empty /></template>
         <!-- 列定义 -->
         <el-table-column prop="logNo" label="日志编号" min-width="280" width="280" />
-        <el-table-column prop="jobNo" label="作业编号" min-width="180" width="180" />
+        <el-table-column prop="jobNo" label="作业编号" min-width="200" width="200" />
         <el-table-column prop="jobName" label="作业名称" min-width="100" />
         <el-table-column prop="jobType" label="作业对象" min-width="200">
           <template #default="{ row }">{{ JobType[row.jobType] }}（{{ row.jobArgs.name }}）</template>
@@ -30,7 +30,7 @@
         <el-table-column prop="jobEvent" label="操作类型" min-width="100" width="100">
           <template #default="{ row }">{{ JobEvent[row.jobEvent] }}</template>
         </el-table-column>
-        <el-table-column prop="operationBy" label="操作人" min-width="60" />
+        <el-table-column prop="operationBy" label="操作人" min-width="100" />
         <el-table-column prop="operationTime" label="操作时间" min-width="180" width="180">
           <template #default="{ row }">
             {{ row.operationTime ? dayjs(row.operationTime).format('YYYY-MM-DD HH:mm:ss') : '' }}
@@ -46,8 +46,8 @@
         :page-sizes="[10, 25, 50, 100]"
         :page-size="pageSize"
         :total="total"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
+        @size-change="onSizeChange"
+        @current-change="onCurrentChange"
       />
     </div>
   </div>
@@ -102,12 +102,12 @@ const query = () => {
   )
 }
 
-const handleSizeChange = (val) => {
+const onSizeChange = (val) => {
   pageSize.value = val
   query()
 }
 
-const handleCurrentChange = (val) => {
+const onCurrentChange = (val) => {
   page.value = val
   query()
 }

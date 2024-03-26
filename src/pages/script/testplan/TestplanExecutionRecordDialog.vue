@@ -1,6 +1,6 @@
 <template>
   <el-dialog title="执行记录" width="80%" center>
-    <el-table :data="tableData" style="width: 100%; height: 100%" fit stripe highlight-current-row>
+    <el-table :data="tableData" style="width: 100%; height: 100%" border fit stripe highlight-current-row>
       <!-- 空数据提示 -->
       <template #empty><el-empty /></template>
       <!-- 列定义 -->
@@ -69,7 +69,7 @@ const queryTestplanExecutionAll = () => {
  * 中断运行
  */
 const interrupt = (executionNo) => {
-  ElMessageBox.confirm('确定中断运行吗？', '提示', {
+  ElMessageBox.confirm('是否确定中断运行？', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'

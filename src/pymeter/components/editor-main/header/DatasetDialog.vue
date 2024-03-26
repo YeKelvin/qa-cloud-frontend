@@ -1,13 +1,6 @@
 <template>
   <div id="dataset-dialog">
-    <el-dialog
-      width="60%"
-      :show-close="false"
-      center
-      append-to-body
-      v-bind="$attrs"
-      @close="$emit('update:model-value', false)"
-    >
+    <el-dialog width="60%" :show-close="false" center v-bind="$attrs" @close="$emit('update:model-value', false)">
       <!-- 顶栏 -->
       <template #header>
         <div v-show="!isEmpty(selectedDatasetList)" style="display: flex">
@@ -135,9 +128,11 @@ import { isEmpty } from 'lodash-es'
 
 import * as VariablesService from '@/api/script/variables'
 import useClipboard from '@/composables/useClipboard'
+import useDataset from '@/pymeter/composables/useDataset'
 import { usePyMeterStore } from '@/store/pymeter'
 import { usePyMeterDB } from '@/store/pymeter-db'
 
+const { datasetList } = useDataset()
 const { toClipboard } = useClipboard()
 const pymeterStore = usePyMeterStore()
 const offlineDB = usePyMeterDB().offlineDB
@@ -162,7 +157,7 @@ const filteredData = computed(() => {
   }
 })
 const selectedDatasetList = computed(() =>
-  pymeterStore.datasetList.filter((item) => pymeterStore.selectedDatasets.indexOf(item.datasetNo) > -1)
+  datasetList.value.filter((item) => pymeterStore.selectedDatasets.indexOf(item.datasetNo) > -1)
 )
 const backtop = reactive({
   right: 40,
@@ -228,7 +223,7 @@ const queryVariables = async () => {
  * 打开变量集组件
  */
 const openDatasetEditor = () => {
-  const dataset = pymeterStore.datasetList.find((item) => item.datasetNo === activeTabNo.value)
+  const dataset = datasetList.value.find((item) => item.datasetNo === activeTabNo.value)
   if (!dataset) return
 
   emit('update:model-value', false)

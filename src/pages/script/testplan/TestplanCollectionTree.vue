@@ -3,8 +3,8 @@
     <template v-if="collections.length > 0">
       <!-- 按钮 -->
       <div style="display: flex; justify-content: flex-end">
-        <el-button type="primary" link @click="setAllChecked">全选</el-button>
-        <el-button type="primary" link @click="resetChecked">清空</el-button>
+        <el-button type="primary" link @click="setAllChecked">全 选</el-button>
+        <el-button type="primary" link @click="resetChecked">清 空</el-button>
       </div>
 
       <!-- 搜索 -->
@@ -19,9 +19,9 @@
           highlight-current
           style="padding-bottom: 50px"
           :data="collections"
+          :props="{ label: 'elementName', children: 'children' }"
           :allow-drop="allowDrop"
           :filter-node-method="filterNode"
-          :props="{ label: 'elementName', children: 'children' }"
           @node-click="handleNodeClick"
         >
           <template #default="{ node, data }">
@@ -44,6 +44,8 @@
 </template>
 
 <script setup>
+import { isEmpty } from 'lodash-es'
+
 import * as ElementService from '@/api/script/element'
 import { useWorkspaceStore } from '@/store/workspace'
 
@@ -52,6 +54,7 @@ const collections = ref([])
 const workspaceStore = useWorkspaceStore()
 
 const filterText = ref('')
+// eslint-disable-next-line unicorn/no-array-callback-reference
 watch(filterText, (val) => eltreeRef.value.filter(val))
 watch(
   () => workspaceStore.workspaceNo,
@@ -95,10 +98,15 @@ const handleNodeClick = (data, node) => {
 
 const filterNode = (value, data) => {
   if (!value) return true
-  return data.elementName.indexOf(value) !== -1
+  return data.elementName.toLowerCase().indexOf(value.toLowerCase()) !== -1
 }
 
 const setAllChecked = () => {
+  if (!isEmpty(filterText.value)) {
+    const filteredCollections = collections.value.filter((item) => filterNode(filterText.value, item))
+    eltreeRef.value.setCheckedKeys(filteredCollections.map((item) => item.elementNo))
+    return
+  }
   eltreeRef.value.setCheckedKeys(collections.value.map((item) => item.elementNo))
 }
 

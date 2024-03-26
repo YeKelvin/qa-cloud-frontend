@@ -27,7 +27,7 @@
 
             <!-- 计划描述 -->
             <el-form-item label="计划描述：" prop="planDesc">
-              <el-input v-model="formData.planDesc" clearable />
+              <el-input v-model="formData.planDesc" type="textarea" autosize />
             </el-form-item>
 
             <!-- 版本 -->
@@ -111,14 +111,16 @@
 </template>
 
 <script setup>
+import { Check, Close } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { assign, isEmpty } from 'lodash-es'
+
+import TestplanCollectionTree from './TestplanCollectionTree.vue'
+
 import { RobotType } from '@/api/enum'
 import * as MessageService from '@/api/public/message'
 import * as TestplanService from '@/api/script/testplan'
 import { useWorkspaceStore } from '@/store/workspace'
-import { Check, Close, Edit } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
-import { assign, isEmpty } from 'lodash-es'
-import TestplanCollectionTree from './TestplanCollectionTree.vue'
 
 const checkIterations = (_, value, callback) => {
   if (!value) {
@@ -128,11 +130,7 @@ const checkIterations = (_, value, callback) => {
   if (!Number.isInteger(val)) {
     return callback(new Error('迭代次数必须为整数'))
   } else {
-    if (val < 1 || val > 999) {
-      return callback(new Error('迭代次数仅支持[1-999]'))
-    } else {
-      return callback()
-    }
+    return val < 1 || val > 999 ? callback(new Error('迭代次数仅支持[1-999]')) : callback()
   }
 }
 
@@ -143,9 +141,9 @@ const workspaceStore = useWorkspaceStore()
 const elformRef = ref()
 const collectionTreeRef = ref()
 
+const noticeRobotList = ref([])
 const planNo = ref(route.query.planNo)
 const creation = computed(() => isEmpty(route.query.planNo))
-const noticeRobotList = ref([])
 const formData = reactive({
   planName: '',
   planDesc: '',
@@ -159,11 +157,11 @@ const formData = reactive({
   noticeRobots: [],
   stopOnErrorCount: '3'
 })
-const formRules = reactive({
+const formRules = {
   planName: [{ required: true, message: '计划名称不能为空', trigger: 'blur' }],
   iterations: [{ required: true, message: '迭代次数不能为空', validator: checkIterations, trigger: 'blur' }],
   concurrency: [{ required: true, message: '并发数量不能为空', trigger: 'blur' }]
-})
+}
 
 watch(
   () => formData.iterations,

@@ -1,5 +1,11 @@
 <template>
-  <el-dialog title="新增定时任务" width="50%" center append-to-body @close="$emit('update:modelValue', false)">
+  <el-dialog
+    :title="creation ? '新增定时任务' : '定时任务'"
+    width="50%"
+    center
+    append-to-body
+    @close="$emit('update:modelValue', false)"
+  >
     <!-- 作业表单 -->
     <el-form ref="jobformRef" label-width="100px" :model="jobData" :rules="jobRules">
       <!-- 作业基础信息 -->
@@ -133,10 +139,13 @@
               <el-input v-model="triggerData.crontab" clearable :disabled="readonly" />
             </el-form-item>
             <el-alert type="info" show-icon :closable="false">
-              <div class="flexbox-center">
-                <span>CRON请参考：</span>
+              <div style="display: flex; align-items: flex-start">
+                <span>请参考：</span>
                 <el-link href="https://crontab.guru/" type="primary" target="_blank">crontab.guru</el-link>
               </div>
+              <template v-if="!isEmpty(triggerData.crontab)">
+                <div v-for="(time, index) in nextRunTimes" :key="index">第 {{ index + 1 }} 次运行时间: {{ time }}</div>
+              </template>
             </el-alert>
           </template>
         </el-form>
@@ -144,7 +153,7 @@
     </el-form>
 
     <template v-if="saveable">
-      <div class="flexbox-center">
+      <div style="display: flex; justify-content: center">
         <el-button type="primary" @click="submitForm()">保 存</el-button>
       </div>
     </template>
@@ -152,7 +161,7 @@
 </template>
 
 <script setup>
-import { isValidCron } from 'cron-validator'
+import { Cron } from 'croner'
 import dayjs from 'dayjs'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { isEmpty } from 'lodash-es'
@@ -234,6 +243,22 @@ const requestData = computed(() => {
     }
   }
   return data
+})
+const nextRunTimes = computed(() => {
+  const expression = triggerData.value.crontab
+  if (isEmpty(expression)) return []
+  if (currentRow.value && !['PENDING', 'RUNNING'].includes(currentRow.value.jobState)) return []
+  try {
+    const nexts = []
+    Cron(expression)
+      .nextRuns(5)
+      .forEach((time) => {
+        nexts.push(dayjs(time).format('YYYY-MM-DD HH:mm:ss'))
+      })
+    return nexts
+  } catch (error) {
+    return []
+  }
 })
 
 watch(
@@ -318,6 +343,17 @@ const queryTestcaseAll = () => {
   })
 }
 
+const isValidCrontab = (expression) => {
+  try {
+    // 尝试解析CRON表达式
+    // eslint-disable-next-line no-new
+    new Cron(expression)
+    return true // 没有抛出异常，认为表达式有效
+  } catch (error) {
+    return false // 如果抛出异常，认为表达式无效
+  }
+}
+
 /**
  * 提交表单
  */
@@ -342,16 +378,13 @@ const submitForm = async () => {
     return
   }
   // cron格式校验
-  if (
-    jobData.value.triggerType === 'CRON' &&
-    !isValidCron(triggerData.value.crontab, { alias: true, allowBlankDay: true })
-  ) {
+  if (jobData.value.triggerType === 'CRON' && !isValidCrontab(triggerData.value.crontab)) {
     ElMessage({ message: 'CRON表达式不正确', type: 'error', duration: 2 * 1000 })
     return
   }
   // 没有选择变量集时给出提示
   if (isEmpty(jobData.value.jobArgs.datasets)) {
-    await ElMessageBox.confirm('当前没有选择[环境/变量]，确定提交吗？', '警告', {
+    await ElMessageBox.confirm('当前没有选择[环境/变量]，是否确定提交？', '警告', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
       type: 'warning'
@@ -388,9 +421,6 @@ const isSameDate = (current, strftime) => {
   return sameYear && sameMonth && sameDate
 }
 
-/**
- * el-date-picker handler
- */
 const disabledHours = () => {
   const current = dayjs()
   if (isSameDate(current, triggerData.value.date.datetime)) {
@@ -399,9 +429,6 @@ const disabledHours = () => {
   return []
 }
 
-/**
- * el-date-picker handler
- */
 const disabledMinutes = (hour) => {
   const current = dayjs()
   if (hour === current.hour()) {
@@ -410,16 +437,10 @@ const disabledMinutes = (hour) => {
   return []
 }
 
-/**
- * el-date-picker handler
- */
 const disabledSeconds = () => {
   return makeRange(0, 60)
 }
 
-/**
- * el-cascader handler
- */
 const cascaderFilter = (node, keyword) => {
   return node.data.elementName.includes(keyword)
 }

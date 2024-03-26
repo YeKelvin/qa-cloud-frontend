@@ -6,8 +6,8 @@
         <ConditionInput v-model="queryConditions.jobNo" label="作业编号" />
         <ConditionInput v-model="queryConditions.jobName" label="作业名称" />
         <ConditionSelect v-model="queryConditions.jobType" :options="JobType" label="作业类型" />
+        <ConditionSelect v-model="queryConditions.jobState" :options="JobState" label="作业状态" />
         <ConditionSelect v-model="queryConditions.triggerType" :options="TriggerType" label="触发类型" />
-        <ConditionSelect v-model="queryConditions.state" :options="JobState" label="作业状态" />
       </div>
       <div style="display: flex; justify-content: space-between">
         <div />
@@ -36,11 +36,8 @@
         <el-table-column prop="jobState" label="作业状态" min-width="100" width="100">
           <template #default="{ row }">{{ JobState[row.jobState] }}</template>
         </el-table-column>
-        <el-table-column prop="createdTime" label="创建时间" min-width="180" width="180">
-          <template #default="{ row }">
-            {{ row.createdTime ? dayjs(row.createdTime).format('YYYY-MM-DD HH:mm:ss') : '' }}
-          </template>
-        </el-table-column>
+        <el-table-column prop="createdTime" label="创建时间" min-width="180" width="180" />
+        <el-table-column prop="nextRunTime" label="下次运行时间" min-width="180" width="180" />
         <el-table-column fixed="right" label="操作" min-width="200" width="200">
           <template #default="{ row }">
             <el-button type="primary" link @click="openJobDetails(row)">详情</el-button>
@@ -53,7 +50,6 @@
             <template v-if="row.jobState != 'CLOSED'">
               <el-button type="primary" link @click="removeJob(row)">关闭</el-button>
             </template>
-            <el-button type="primary" link @click="openLogDialog(row)">历史</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -66,25 +62,18 @@
         :page-sizes="[10, 25, 50, 100]"
         :page-size="pageSize"
         :total="total"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
+        @size-change="onSizeChange"
+        @current-change="onCurrentChange"
       />
     </div>
 
     <!-- 任务表单 -->
-    <JobInfoDialog
-      v-if="showingDetails"
-      v-model="showingDetails"
-      :edit-mode="dialogArgs.editMode"
-      :data="dialogArgs.data"
-      @re-query="query"
-    />
+    <JobInfoDialog v-if="showingDetails" v-model="showingDetails" @re-query="query" />
   </div>
 </template>
 
 <script setup>
 import { Search, Refresh, Plus } from '@element-plus/icons-vue'
-import dayjs from 'dayjs'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 import JobInfoDialog from './JobInfoDialog.vue'
@@ -113,11 +102,6 @@ const pageSize = ref(10)
 const total = ref(0)
 const currentRow = ref(null)
 const showingDetails = ref(false)
-const showHistoryDialog = ref(false)
-const dialogArgs = reactive({
-  editMode: null,
-  data: {}
-})
 
 provide('currentRow', currentRow)
 
@@ -147,7 +131,7 @@ const query = () => {
  */
 const pauseJob = async (row) => {
   // 二次确认
-  const cancelled = await ElMessageBox.confirm('确定暂停吗？', '警告', {
+  const cancelled = await ElMessageBox.confirm('是否确定暂停？', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
@@ -168,7 +152,7 @@ const pauseJob = async (row) => {
  */
 const resumeJob = async (row) => {
   // 二次确认
-  const cancelled = await ElMessageBox.confirm('确定恢复吗？', '警告', {
+  const cancelled = await ElMessageBox.confirm('是否确定恢复？', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
@@ -189,7 +173,7 @@ const resumeJob = async (row) => {
  */
 const removeJob = async (row) => {
   // 二次确认
-  const cancelled = await ElMessageBox.confirm('确定关闭吗？', '警告', {
+  const cancelled = await ElMessageBox.confirm('是否确定关闭？', '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
@@ -208,9 +192,7 @@ const removeJob = async (row) => {
 /**
  * 打开详情对话框
  */
-const openCreateDialog = (row) => {
-  dialogArgs.editMode = 'CREATE'
-  dialogArgs.data = null
+const openCreateDialog = () => {
   currentRow.value = null
   showingDetails.value = true
 }
@@ -219,32 +201,16 @@ const openCreateDialog = (row) => {
  * 打开详情对话框
  */
 const openJobDetails = (row) => {
-  dialogArgs.editMode = 'QUERY'
-  dialogArgs.data = row
   currentRow.value = row
   showingDetails.value = true
 }
 
-/**
- * 打开历史对话框
- */
-const openLogDialog = (row) => {
-  currentRow.value = row
-  showHistoryDialog.value = true
-}
-
-/**
- * pagination handler
- */
-const handleSizeChange = (val) => {
+const onSizeChange = (val) => {
   pageSize.value = val
   query()
 }
 
-/**
- * pagination handler
- */
-const handleCurrentChange = (val) => {
+const onCurrentChange = (val) => {
   page.value = val
   query()
 }

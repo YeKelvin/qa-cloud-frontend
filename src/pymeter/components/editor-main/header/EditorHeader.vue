@@ -1,5 +1,5 @@
 <template>
-  <div v-show="showToolBar" class="toolbar-container">
+  <div v-show="showing" class="toolbar-container">
     <!-- 操作栏 -->
     <div class="toolbar-main">
       <!-- 左侧：组件名称 -->
@@ -14,20 +14,20 @@
       <div class="r-container">
         <!-- 元素历史按钮 -->
         <el-button
-          v-show="showHistoryBTN"
+          v-show="showingChangelogBTN"
           style="padding-right: 20px"
           type="primary"
           link
-          @click="showChangelog = true"
+          @click="showingChangelog = true"
         >
           <SvgIcon icon-name="common-changelog" style="font-size: 20px" />
         </el-button>
         <!-- 变量集 -->
         <span class="dataset-container">
           <!-- 变量集选择器 -->
-          <DatasetSelect :show="showToolBar" />
+          <DatasetSelect :show="showing" />
           <!-- 查看变量按钮 -->
-          <el-button style="padding-right: 5px" type="primary" link @click="showDatasetDialog = true">
+          <el-button style="padding-right: 5px" type="primary" link @click="showingVariables = true">
             <SvgIcon icon-name="pymeter-show-data" style="font-size: 20px" />
           </el-button>
         </span>
@@ -38,10 +38,10 @@
     <el-divider />
 
     <!-- 变量详情视图 -->
-    <DatasetDialog v-if="showDatasetDialog" v-model="showDatasetDialog" />
+    <DatasetDialog v-if="showingVariables" v-model="showingVariables" />
 
     <!-- 元素变更日志 -->
-    <ChangeLogDrawer v-model="showChangelog" destroy-on-close />
+    <ChangeLogDrawer v-model="showingChangelog" destroy-on-close />
   </div>
 </template>
 
@@ -79,15 +79,15 @@ const componentNames = {
 // 组件名称
 const componentName = computed(() => componentNames[props.component])
 // 是否显示操作栏的标识
-const showToolBar = computed(() => !isEmpty(componentName.value))
-// 是否显示元素历史按钮
-const showHistoryBTN = computed(() => !isEmpty(props.metadata?.sn))
+const showing = computed(() => !isEmpty(componentName.value))
 // 是否显示元素路径
 const showElementPath = computed(() => !isEmpty(props.metadata?.path))
-// 是否显示变更日志
-const showChangelog = ref(false)
 // 是否显示变量详情视图
-const showDatasetDialog = ref(false)
+const showingVariables = ref(false)
+// 是否显示变更日志
+const showingChangelog = ref(false)
+// 是否显示元素历史按钮
+const showingChangelogBTN = computed(() => !isEmpty(props.metadata?.sn))
 </script>
 
 <style lang="scss" scoped>

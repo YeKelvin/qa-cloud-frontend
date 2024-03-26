@@ -12,9 +12,9 @@
     :max-collapse-tags="2"
   >
     <!-- 自定义变量 -->
-    <el-option-group v-if="!isEmpty(filteredCustomDatasetList)" key="custom" label="自定义">
+    <el-option-group v-if="!isEmpty(filteredDatasetListAsCustom)" key="custom" label="自定义">
       <el-option
-        v-for="item in filteredCustomDatasetList"
+        v-for="item in filteredDatasetListAsCustom"
         :key="item.datasetNo"
         :label="item.datasetName"
         :value="item.datasetNo"
@@ -30,9 +30,9 @@
       </el-option>
     </el-option-group>
     <!-- 环境变量 -->
-    <el-option-group v-if="!isEmpty(pymeterStore.environmentDatasetList)" key="environment" label="环境">
+    <el-option-group v-if="!isEmpty(datasetListAsEnvironment)" key="environment" label="环境">
       <el-option
-        v-for="item in pymeterStore.environmentDatasetList"
+        v-for="item in datasetListAsEnvironment"
         :key="item.datasetNo"
         :label="item.datasetName"
         :value="item.datasetNo"
@@ -40,9 +40,9 @@
       />
     </el-option-group>
     <!-- 空间变量 -->
-    <el-option-group v-if="!isEmpty(pymeterStore.workspaceDatasetList)" key="workspace" label="空间">
+    <el-option-group key="workspace" label="空间">
       <el-option
-        v-for="item in pymeterStore.workspaceDatasetList"
+        v-for="item in datasetListAsWorkspace"
         :key="item.datasetNo"
         :label="item.datasetName"
         :value="item.datasetNo"
@@ -52,7 +52,7 @@
     <!-- 全局变量 -->
     <el-option-group key="global" label="全局">
       <el-option
-        v-for="item in pymeterStore.globalDatasetList"
+        v-for="item in datasetListAsGlobal"
         :key="item.datasetNo"
         :label="item.datasetName"
         :value="item.datasetNo"
@@ -64,37 +64,19 @@
 <script setup>
 import { isEmpty } from 'lodash-es'
 
-import { usePyMeterStore } from '@/store/pymeter'
+import useDataset from '@/pymeter/composables/useDataset'
 
-const pymeterStore = usePyMeterStore()
+const {
+  selectedDatasets,
+  datasetListAsGlobal,
+  datasetListAsWorkspace,
+  datasetListAsEnvironment,
+  filteredDatasetListAsCustom,
+  getBoundDatasetName
+} = useDataset()
 const props = defineProps({
   show: { type: Boolean, default: () => false }
 })
-const selectedDatasets = computed({
-  get() {
-    return pymeterStore.selectedDatasets
-  },
-  set(val) {
-    if (props.show) pymeterStore.setSelectedDatasets(val)
-  }
-})
-const filteredCustomDatasetList = computed(() => {
-  if (!pymeterStore.selectedEnvironmentNo) {
-    return pymeterStore.customDatasetList
-  }
-  return pymeterStore.customDatasetList.filter(
-    (item) => !item.datasetBinding || item.datasetBinding === pymeterStore.selectedEnvironmentNo
-  )
-})
-
-onMounted(() => {
-  pymeterStore.queryDatasetAll()
-})
-
-const getBoundDatasetName = (datasetNo) => {
-  const results = pymeterStore.environmentDatasetList.filter((item) => item.datasetNo === datasetNo)
-  return results ? results[0].datasetName : ''
-}
 </script>
 
 <style lang="scss">

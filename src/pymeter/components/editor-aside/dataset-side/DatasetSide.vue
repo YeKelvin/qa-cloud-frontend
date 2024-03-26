@@ -37,9 +37,11 @@ import DatasetTree from './DatasetTree.vue'
 import * as VariablesService from '@/api/script/variables'
 import EnvDatasetSelect from '@/pymeter/components/editor-aside/common/EnvDatasetSelect.vue'
 import NameInput from '@/pymeter/components/editor-aside/common/NameInput.vue'
+import useDataset from '@/pymeter/composables/useDataset'
 import { usePyMeterStore } from '@/store/pymeter'
 import { useWorkspaceStore } from '@/store/workspace'
 
+const { removeQueryCache } = useDataset()
 const pymeterStore = usePyMeterStore()
 const workspaceStore = useWorkspaceStore()
 
@@ -47,19 +49,9 @@ const filterText = ref('')
 const datasetTreeRef = ref()
 
 watch(filterText, (val) => {
+  // eslint-disable-next-line unicorn/no-array-callback-reference
   datasetTreeRef.value.filter(val)
 })
-
-onMounted(() => {
-  queryDatasetAll()
-})
-
-/**
- * 查询所有变量集
- */
-const queryDatasetAll = () => {
-  pymeterStore.queryDatasetAll()
-}
 
 /**
  * 打开变量集
@@ -103,8 +95,8 @@ const createEnvironmentDataset = async () => {
     datasetName: datasetName,
     datasetType: 'ENVIRONMENT'
   })
-  // 重新查询列表
-  queryDatasetAll()
+  // 删除查询缓存
+  await removeQueryCache()
   // 打开新增变量集的 Tab
   openDataset(response.data.datasetNo, datasetName)
   // 成功提示
@@ -143,8 +135,8 @@ const createCustomDataset = async () => {
     datasetType: 'CUSTOM',
     datasetBinding: datasetBinding
   })
-  // 重新查询列表
-  queryDatasetAll()
+  // 删除查询缓存
+  await removeQueryCache()
   // 打开新增变量集的 Tab
   openDataset(response.data.datasetNo, datasetName)
   // 成功提示

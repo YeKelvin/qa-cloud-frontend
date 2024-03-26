@@ -212,10 +212,9 @@
                 <!-- tips -->
                 <el-tooltip placement="right" effect="light">
                   <template #content>
-                    <div style="font-size: 14px; color: var(--el-text-color-regular)">
-                      <div>- 根据指定的规则筛选组件</div>
-                      <div>- 包含: 前置处理器、后置处理器、断言器</div>
-                      <div>- 目的: 通过筛选以达到仅执行或排除指定的组件</div>
+                    <div style="font-size: 16px; line-height: 2; color: var(--el-text-color-regular)">
+                      <!-- eslint-disable-next-line prettier/prettier -->
+                      <div><b>- 说明: </b>仅执行符合条件的组件</div>
                     </div>
                   </template>
                   <el-button :icon="Warning" style="font-size: 16px" link />
@@ -236,11 +235,13 @@
                 <!-- tips -->
                 <el-tooltip placement="right" effect="light">
                   <template #content>
-                    <div style="font-size: 14px; color: var(--el-text-color-regular)">
-                      <div>- 说明: 根据组件的类型指定其运行顺序</div>
-                      <div>- 包含: 前置处理器、后置处理器、断言器</div>
-                      <div>- 正序: 空间 → 集合 → 线程 → 控制器 → 取样器</div>
-                      <div>- 倒序: 取样器 → 控制器 → 线程 → 集合 → 空间</div>
+                    <div style="font-size: 16px; line-height: 2; color: var(--el-text-color-regular)">
+                      <!-- eslint-disable-next-line prettier/prettier -->
+                      <div><b>- 说明: </b>指定组件的运行顺序，默认顺序执行</div>
+                      <!-- eslint-disable-next-line prettier/prettier -->
+                      <div><b>- 顺序: </b>空间 → 集合 → 线程 → 控制器 → 取样器</div>
+                      <!-- eslint-disable-next-line prettier/prettier -->
+                      <div><b>- 倒序: </b>取样器 → 控制器 → 线程 → 集合 → 空间</div>
                     </div>
                   </template>
                   <el-button :icon="Warning" style="font-size: 16px" link />

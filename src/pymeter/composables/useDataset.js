@@ -1,19 +1,28 @@
-import { useQuery } from '@tanstack/vue-query'
+import { useQuery, useQueryClient } from '@tanstack/vue-query'
 import { isEmpty } from 'lodash-es'
 
 import * as VariablesService from '@/api/script/variables'
+import { usePyMeterStore } from '@/store/pymeter'
 import { useWorkspaceStore } from '@/store/workspace'
 
 export default function useDataset() {
   const instance = getCurrentInstance()
 
   const workspaceStore = useWorkspaceStore()
+  const pymeterStore = usePyMeterStore()
+  const queryClient = useQueryClient()
   const workspaceNo = computed(() => workspaceStore.workspaceNo)
 
   // 已选择的变量集编号列表
   const selectedDatasets = computed({
-    get: () => instance.props.modelValue,
-    set: (value) => instance.emit('update:modelValue', value)
+    get: () => ('modelValue' in instance.props ? instance.props.modelValue : pymeterStore.selectedDatasets),
+    set: (value) => {
+      if ('modelValue' in instance.props) {
+        instance.emit('update:modelValue', value)
+      } else {
+        pymeterStore.selectedDatasets = value
+      }
+    }
   })
   // 已选择的环境变量集编号
   const selectedEnvironmentNo = ref('')
@@ -128,8 +137,11 @@ export default function useDataset() {
    * 删除无效的已选变量集
    */
   const deleteInvalidDataset = () => {
+    if (selectedDatasets.value === undefined) return
+    const len = selectedDatasets.value.length
+    if (len === 0) return
     const datasets = new Set(datasetList.value.map((item) => item.datasetNo))
-    for (let i = selectedDatasets.value.length - 1; i >= 0; i--) {
+    for (let i = len - 1; i >= 0; i--) {
       // 删除无效数据
       if (!datasets.has(selectedDatasets.value[i])) {
         selectedDatasets.value.splice(i, 1)
@@ -141,6 +153,7 @@ export default function useDataset() {
    * 禁用未选择的环境变量集（已选择了一个环境变量集的情况下）
    */
   const disableUnselectedEnvironment = () => {
+    if (selectedDatasets.value === undefined) return
     // 没有选中任何变量集时，开放所有环境变量集
     if (isEmpty(selectedDatasets.value)) {
       datasetListAsEnvironment.value.forEach((item) => (item.disabled = false))
@@ -164,11 +177,19 @@ export default function useDataset() {
   }
 
   /**
+   * 删除 vue-query 缓存
+   */
+  const removeQueryCache = async () => {
+    await queryClient.cancelQueries({ queryKey: ['VariableDataset', workspaceNo] })
+    await queryClient.invalidateQueries({ queryKey: ['VariableDataset', workspaceNo] })
+  }
+
+  /**
    * 获取已绑定的变量集名称
    */
   const getBoundDatasetName = (datasetNo) => {
     const results = datasetListAsEnvironment.value.filter((item) => item.datasetNo === datasetNo)
-    return results ? results[0].datasetName : ''
+    return !isEmpty(results) ? results[0].datasetName : ''
   }
 
   onMounted(() => setData())
@@ -185,6 +206,7 @@ export default function useDataset() {
     filteredDatasetListAsCustom,
     selectedDatasets,
     selectedEnvironmentNo,
+    removeQueryCache,
     getBoundDatasetName
   }
 }

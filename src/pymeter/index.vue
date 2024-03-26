@@ -22,14 +22,6 @@
 import EditorAside from './components/editor-aside/EditorAside.vue'
 import EditorFooter from './components/editor-footer/EditorFooter.vue'
 import EditorMain from './components/editor-main/EditorMain.vue'
-
-import { usePyMeterStore } from '@/store/pymeter'
-
-const pymeterStore = usePyMeterStore()
-
-onMounted(() => {
-  pymeterStore.queryDatasetAll()
-})
 </script>
 
 <style lang="scss" scoped>

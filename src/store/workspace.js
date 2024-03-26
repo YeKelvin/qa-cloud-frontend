@@ -42,8 +42,6 @@ export const useWorkspaceStore = defineStore('workspace', {
       pymeterStore.removeAllTab()
       // 清空已选择的变量集列表
       pymeterStore.clearSelectedDataset()
-      // 重新查询变量集列表
-      pymeterStore.queryDatasetAll()
       // 打开空间的离线数据
       pymeterStore.openOfflineTab()
     },

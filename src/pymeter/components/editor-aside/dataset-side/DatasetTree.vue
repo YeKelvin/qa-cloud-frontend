@@ -3,7 +3,7 @@
     ref="eltreeRef"
     node-key="datasetNo"
     :props="{ label: 'datasetName' }"
-    :data="pymeterStore.datasetList"
+    :data="datasetList"
     :filter-node-method="filterNode"
     @node-click="handleNodeClick"
   >
@@ -69,6 +69,7 @@ import useElTree from '@/composables/useElTree'
 import EnvDatasetSelect from '@/pymeter/components/editor-aside/common/EnvDatasetSelect.vue'
 import NameInput from '@/pymeter/components/editor-aside/common/NameInput.vue'
 import WorkspaceTree from '@/pymeter/components/editor-aside/common/WorkspaceTree.vue'
+import useDataset from '@/pymeter/composables/useDataset'
 import { usePyMeterStore } from '@/store/pymeter'
 import { usePyMeterDB } from '@/store/pymeter-db'
 import { useWorkspaceStore } from '@/store/workspace'
@@ -85,22 +86,20 @@ const {
   triggerButtonMouseenter,
   handleMenuHide
 } = useElTree()
+const { datasetList, removeQueryCache, getBoundDatasetName } = useDataset()
+
 const offlineDB = usePyMeterDB().offlineDB
 const pymeterStore = usePyMeterStore()
 const workspaceStore = useWorkspaceStore()
-const operatingDatasetType = computed(() => operatingNode.value?.data?.datasetType)
+
 const disabledOperation = computed(() => ['GLOBAL', 'WORKSPACE'].includes(operatingDatasetType.value))
+const operatingDatasetType = computed(() => operatingNode.value?.data?.datasetType)
 
 /**
  * 关闭操作菜单
  */
 const closeMenu = () => {
   menuVisible.value = false
-}
-
-const getBoundDatasetName = (datasetNo) => {
-  const results = pymeterStore.environmentDatasetList.filter((item) => item.datasetNo === datasetNo)
-  return results ? results[0].datasetName : ''
 }
 
 /**
@@ -149,8 +148,8 @@ const renameAndRebindDataset = async () => {
     offline.meta.name = newName
     offlineDB.setItem(data.datasetNo, offline)
   }
-  // 重新查询列表
-  pymeterStore.queryDatasetAll()
+  // 删除查询缓存
+  await removeQueryCache()
   // 重命名tab
   pymeterStore.updateTab({ editorNo: data.datasetNo, editorName: newName })
   // 成功提示
@@ -185,8 +184,8 @@ const renameDataset = async () => {
     offline.meta.name = newName
     offlineDB.setItem(data.datasetNo, offline)
   }
-  // 重新查询列表
-  pymeterStore.queryDatasetAll()
+  // 删除查询缓存
+  await removeQueryCache()
   // 重命名tab
   pymeterStore.updateTab({ editorNo: data.datasetNo, editorName: newName })
   // 成功提示
@@ -216,8 +215,8 @@ const duplicateDataset = async () => {
   if (cancelled) return
   // 复制变量集
   await VariablesService.duplicateVariableDataset({ datasetNo: data.datasetNo })
-  // 重新查询列表
-  pymeterStore.queryDatasetAll()
+  // 删除查询缓存
+  await removeQueryCache()
   // 成功提示
   ElMessage({ message: '复制成功', type: 'info', duration: 2 * 1000 })
 }
@@ -276,8 +275,8 @@ const moveDatasetToWorkspace = async () => {
   if (cancelled) return
   // 移动变量集到指定的空间
   await VariablesService.moveVariableDatasetToWorkspace({ datasetNo: data.datasetNo, workspaceNo })
-  // 重新查询列表
-  pymeterStore.queryDatasetAll()
+  // 删除查询缓存
+  await removeQueryCache()
   // 成功提示
   ElMessage({ message: '移动成功', type: 'info', duration: 2 * 1000 })
 }
@@ -305,12 +304,12 @@ const deleteDataset = async () => {
   if (cancelled) return
   // 删除变量集
   await VariablesService.deleteVariableDataset({ datasetNo: data.datasetNo })
+  // 删除查询缓存
+  await removeQueryCache()
   // 删除离线数据
   offlineDB.removeItem(data.datasetNo)
   // 关闭tab
   pymeterStore.removeTab({ editorNo: data.datasetNo, force: true })
-  // 重新查询列表
-  pymeterStore.queryDatasetAll()
   // 成功提示
   ElMessage({ message: '删除成功', type: 'info', duration: 2 * 1000 })
 }
@@ -344,6 +343,7 @@ const filterNode = (value, data) => {
  * el-tree 文本过滤
  */
 const filter = (val) => {
+  // eslint-disable-next-line unicorn/no-array-callback-reference
   eltreeRef.value.filter(val)
 }
 
