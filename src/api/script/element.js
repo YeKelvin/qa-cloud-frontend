@@ -11,7 +11,7 @@ export const queryElementInfo = (params) => request.get('/script/element/info', 
 export const queryElementTree = (params) => request.get('/script/element/tree', { params })
 
 export const queryElementTreeByRoots = (params) =>
-  request.get('/script/element/tree/by/roots', {
+  request.get('/script/element/tree/by-roots', {
     params,
     paramsSerializer: { indexes: null }
   })

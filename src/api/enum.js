@@ -295,6 +295,9 @@ export const PropertyDefinition = {
 }
 
 export const AttributeDefinition = {
+  // TestWorkspace
+  running_strategy: '运行策略',
+
   // TestCollection
   TestCollection__exclude_workspace: '排除空间组件',
 

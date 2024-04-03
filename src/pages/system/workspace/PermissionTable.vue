@@ -13,7 +13,7 @@
           <el-checkbox
             v-for="permission in row.permissionList"
             :key="permission.permissionNo"
-            :label="permission.permissionNo"
+            :value="permission.permissionNo"
           >
             {{ permission.permissionName }}
           </el-checkbox>

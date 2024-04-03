@@ -12,7 +12,7 @@
       </el-form-item>
 
       <!-- 串行执行 -->
-      <el-form-item label="串行执行：" prop="elementProps.TestCollection__serialize_workers">
+      <!-- <el-form-item label="串行执行：" prop="elementProps.TestCollection__serialize_workers">
         <el-switch
           v-model="elementData.elementProps.TestCollection__serialize_workers"
           active-value="true"
@@ -22,7 +22,7 @@
           :inactive-icon="Close"
           :disabled="true"
         />
-      </el-form-item>
+      </el-form-item> -->
 
       <!-- 间隔时间 -->
       <!-- <el-form-item label="间隔时间：" prop="elementProps.TestCollection__delay">

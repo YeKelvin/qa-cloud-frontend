@@ -5,3 +5,5 @@ export const queryPermissionAll = (params) =>
     params: params,
     paramsSerializer: { indexes: null }
   })
+
+export const queryOpenPermissionAll = (params) => request.get('/usercenter/open/permission/all', { params: params })

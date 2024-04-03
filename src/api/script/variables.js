@@ -22,7 +22,7 @@ export const disableVariable = (data) => request.put('/script/variable/disable',
 
 export const updateCurrentValue = (data) => request.put('/script/variable/current/value', data)
 
-export const queryVariablesByDataset = (params) => request.get('/script/variables/by/dataset', { params })
+export const queryVariablesByDataset = (params) => request.get('/script/variables/by-dataset', { params })
 
 export const queryVariables = (params) =>
   request.get('/script/variables', { params, paramsSerializer: { indexes: null } })

@@ -15,7 +15,7 @@
           <el-button type="primary" :icon="Search" @click="query()">查 询</el-button>
           <el-button :icon="Refresh" @click="resetQueryConditions()">重 置</el-button>
         </div>
-        <el-button type="primary" :icon="Plus" @click="showCreateForm = true">新 增</el-button>
+        <el-button type="primary" :icon="Plus" @click="createDialogVisible = true">新 增</el-button>
       </div>
     </el-card>
 
@@ -29,20 +29,19 @@
         <el-table-column prop="appName" label="应用名称" min-width="150" />
         <el-table-column prop="appCode" label="应用代码" min-width="150" />
         <el-table-column prop="appDesc" label="应用描述" min-width="150" />
-        <el-table-column prop="appSecret" label="应用密钥" min-width="150" />
         <el-table-column prop="state" label="状态" min-width="60" width="60">
           <template #default="{ row }">{{ ApplicationState[row.state] }}</template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" min-width="200" width="200">
           <template #default="{ row }">
-            <el-button type="primary" link @click="openModifyForm(row)">编辑</el-button>
+            <el-button type="primary" link @click="gotoTokenManager(row)">令牌</el-button>
+            <el-button type="primary" link @click="openModifyDialog(row)">编辑</el-button>
             <template v-if="row.state === 'ENABLE'">
               <el-button type="primary" link @click="modifyAppState(row, 'DISABLE')">禁用</el-button>
             </template>
             <template v-else>
               <el-button type="primary" link @click="modifyAppState(row, 'ENABLE')">启用</el-button>
             </template>
-            <el-button type="primary" link @click="resetSecret(row)">重置</el-button>
             <el-button type="primary" link @click="deleteApp(row)">删除</el-button>
           </template>
         </el-table-column>
@@ -57,15 +56,15 @@
         :page-sizes="[10, 25, 50, 100]"
         :page-size="pageSize"
         :total="total"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
+        @size-change="onSizeChange"
+        @current-change="onCurrentChange"
       />
     </div>
 
     <!-- 创建应用表单 -->
-    <CreateForm v-if="showCreateForm" v-model="showCreateForm" @re-query="query" />
+    <CreateForm v-if="createDialogVisible" v-model="createDialogVisible" @re-query="query" />
     <!-- 编辑应用表单 -->
-    <ModifyForm v-if="showModifyForm" v-model="showModifyForm" @re-query="query" />
+    <ModifyForm v-if="modifyDialogVisible" v-model="modifyDialogVisible" @re-query="query" />
   </div>
 </template>
 
@@ -89,13 +88,14 @@ const { queryConditions, resetQueryConditions } = useQueryConditions({
   appDesc: '',
   state: ''
 })
+const router = useRouter()
 const tableData = ref([])
 const page = ref(1)
 const pageSize = ref(10)
 const total = ref(0)
 const currentRow = ref({})
-const showCreateForm = ref(false)
-const showModifyForm = ref(false)
+const createDialogVisible = ref(false)
+const modifyDialogVisible = ref(false)
 
 provide('currentRow', currentRow)
 
@@ -138,27 +138,6 @@ const modifyAppState = async (row, state) => {
 }
 
 /**
- * 重置应用密钥
- */
-const resetSecret = async (row) => {
-  // 二次确认
-  const cancelled = await ElMessageBox.confirm(`是否确定重置？`, '警告', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
-  })
-    .then(() => false)
-    .catch(() => true)
-  if (cancelled) return
-  // 重置应用密钥
-  await ApplicationService.resetApplicationSecret({ appNo: row.appNo })
-  // 成功提示
-  ElMessage({ message: '重置成功', type: 'info', duration: 2 * 1000 })
-  // 重新查询列表
-  query()
-}
-
-/**
  * 删除应用
  */
 const deleteApp = async (row) => {
@@ -179,26 +158,24 @@ const deleteApp = async (row) => {
   query()
 }
 
-/**
- * 打开编辑对话框
- */
-const openModifyForm = (row) => {
-  showModifyForm.value = true
-  currentRow.value = row
+const gotoTokenManager = ({ appNo }) => {
+  router.push({ path: '/opencenter/token', query: { appNo: appNo } })
 }
 
 /**
- * pagination handler
+ * 打开编辑对话框
  */
-const handleSizeChange = (val) => {
+const openModifyDialog = (row) => {
+  modifyDialogVisible.value = true
+  currentRow.value = row
+}
+
+const onSizeChange = (val) => {
   pageSize.value = val
   query()
 }
 
-/**
- * pagination handler
- */
-const handleCurrentChange = (val) => {
+const onCurrentChange = (val) => {
   page.value = val
   query()
 }

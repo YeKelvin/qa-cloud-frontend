@@ -243,6 +243,20 @@ export const asyncRoutes = [
         path: 'apilog',
         name: 'APILog',
         meta: { title: '接口日志', icon: 'sidebar-log' }
+      },
+      {
+        component: () => import('@/pages/opencenter/token/TokenManager.vue'),
+        path: 'token',
+        name: 'Token',
+        meta: { title: '访问令牌', activeMenu: '/opencenter/application' },
+        hidden: true
+      },
+      {
+        component: () => import('@/pages/opencenter/token/TokenEditor.vue'),
+        path: 'token-editor',
+        name: 'TokenEditor',
+        meta: { title: '访问令牌', activeMenu: '/opencenter/application' },
+        hidden: true
       }
     ]
   },

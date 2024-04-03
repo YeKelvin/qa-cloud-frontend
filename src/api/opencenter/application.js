@@ -10,6 +10,4 @@ export const modifyApplication = (data) => request.put('/opencenter/application'
 
 export const modifyApplicationState = (data) => request.put('/opencenter/application/state', data)
 
-export const resetApplicationSecret = (data) => request.post('/opencenter/application/secret/reset', data)
-
 export const deleteApplication = (data) => request.delete('/opencenter/application', { data: data })

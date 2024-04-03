@@ -1,21 +1,14 @@
 <template>
   <el-dialog title="新增应用" width="50%" center @close="$emit('update:model-value', false)">
-    <el-form
-      ref="elformRef"
-      label-width="100px"
-      style="width: 100%; padding-right: 30px"
-      inline-message
-      :model="formData"
-      :rules="formRules"
-    >
+    <el-form ref="elformRef" label-width="100px" :model="formData" :rules="formRules">
       <el-form-item label="应用名称：" prop="appName">
         <el-input v-model="formData.appName" clearable />
       </el-form-item>
       <el-form-item label="应用代码：" prop="appCode">
         <el-input v-model="formData.appCode" clearable />
       </el-form-item>
-      <el-form-item label="应用备注：" prop="appDesc">
-        <el-input v-model="formData.appDesc" clearable />
+      <el-form-item label="应用描述：" prop="appDesc">
+        <el-input v-model="formData.appDesc" type="textarea" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm()">提 交</el-button>
