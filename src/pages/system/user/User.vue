@@ -141,7 +141,7 @@ const query = () => {
 const modifyUserState = async (row, state) => {
   const message = state === 'DISABLE' ? '禁用' : '启用'
   // 二次确认
-  const cancelled = await ElMessageBox.confirm(`确定${message}吗？`, '警告', {
+  const cancelled = await ElMessageBox.confirm(`是否确定${message}？`, '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'

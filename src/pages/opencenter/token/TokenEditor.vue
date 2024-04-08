@@ -16,8 +16,22 @@
             <el-input v-model="tokenData.tokenDesc" type="textarea" />
           </el-form-item>
           <!-- 有效时间 -->
-          <el-form-item label="有效时间：" prop="expireTime">
-            <el-input v-model="tokenData.expireTime" />
+          <el-form-item v-if="creation || noExpires" label="有效时间：" prop="expireTime">
+            <el-select v-model="expiration" style="width: 200px; margin-right: 10px">
+              <el-option label="7天" value="7" />
+              <el-option label="30天" value="30" />
+              <el-option label="60天" value="60" />
+              <el-option label="90天" value="90" />
+              <el-option label="永久有效" value="FOREVER" />
+              <el-option label="自定义日期" value="CUSTOM" />
+            </el-select>
+            <template v-if="expiration === 'CUSTOM'">
+              <el-date-picker
+                v-model="expireDate"
+                placeholder="失效日期"
+                :disabled-date="(time) => time.getTime() <= Date.now()"
+              />
+            </template>
           </el-form-item>
           <!-- 权限列表 -->
           <el-form-item label="令牌权限：" prop="permissions">
@@ -61,9 +75,10 @@
   </div>
 </template>
 
-<script setup>
-import { Close, Plus } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
+<script lang="jsx" setup>
+import dayjs from 'dayjs'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { isEmpty } from 'lodash-es'
 
 import * as TokenService from '@/api/opencenter/token'
 import * as PermissionService from '@/api/usercenter/permission'
@@ -75,6 +90,7 @@ const creation = computed(() => !tokenNo.value)
 const elformRef = ref()
 const tokenNo = ref(route.query.tokenNo)
 const tokenData = ref({
+  appNo: route.query.appNo,
   tokenName: '',
   tokenDesc: '',
   expireTime: '',
@@ -84,6 +100,9 @@ const tokenRules = {
   tokenName: [{ required: true, message: '令牌名称不能为空', trigger: 'blur' }],
   permissions: [{ required: true, message: '令牌权限不能为空', trigger: 'blur' }]
 }
+const expiration = ref('')
+const expireDate = ref('')
+const noExpires = ref(false)
 
 const moduleList = ref([])
 const tableData = computed(() => {
@@ -107,6 +126,17 @@ const tableData = computed(() => {
   return data
 })
 
+watch(expiration, (val) => {
+  if (val === 'CUSTOM') return
+  if (val === 'FOREVER') {
+    tokenData.value.expireTime = ''
+    return
+  }
+  tokenData.value.expireTime = dayjs().add(val, 'day').format('YYYY-MM-DD')
+})
+
+watch(expireDate, (val) => (tokenData.value.expireTime = dayjs(val).format('YYYY-MM-DD')))
+
 onMounted(() => {
   queryPermissions()
   if (!tokenNo.value) return
@@ -114,14 +144,18 @@ onMounted(() => {
 })
 
 /**
- * 查询
+ * 查询令牌
  */
 const query = () => {
   TokenService.queryToken({ tokenNo: tokenNo.value }).then((response) => {
     tokenData.value = response.data
+    noExpires.value = isEmpty(tokenData.value.expireTime)
   })
 }
 
+/**
+ * 查询权限列表
+ */
 const queryPermissions = () => {
   PermissionService.queryPermissionAll({ moduleCodes: ['SCRIPT', 'SCHEDULER'] }).then((response) => {
     const modules = moduleList.value
@@ -139,17 +173,17 @@ const queryPermissions = () => {
       }
       const module = modules[moduleIndexs[item.moduleCode]]
       const objects = module.objectList
-      const objectIndexKey = `${item.moduleCode}__${item.objectCode}`
-      if (!(objectIndexKey in objectIndexs)) {
+      const objectKey = `${item.moduleCode}_${item.objectCode}`
+      if (!(objectKey in objectIndexs)) {
         objects.push({
           objectNo: item.objectNo,
           objectName: item.objectName,
           objectCode: item.objectCode,
           permissionList: []
         })
-        objectIndexs[objectIndexKey] = objects.length - 1
+        objectIndexs[objectKey] = objects.length - 1
       }
-      objects[objectIndexs[objectIndexKey]].permissionList.push({
+      objects[objectIndexs[objectKey]].permissionList.push({
         permissionNo: item.permissionNo,
         permissionName: item.permissionName,
         permissionDesc: item.permissionDesc,
@@ -184,6 +218,34 @@ const checkAll = (permissionList) => {
   tokenData.value.permissions = [...new Set(checkeds)]
 }
 
+const createToken = async () => {
+  const response = await TokenService.createAppToken(tokenData.value)
+  await ElMessageBox.alert(null, {
+    title: '新增成功',
+    confirmButtonText: '确 定',
+    message: (
+      <div>
+        <span style="margin-bottom: 10px">确定之后将无法再次查看，请复制保存并妥善保管!</span>
+        <el-tag type="danger" style="margin-bottom: 10px">
+          注意: 访问令牌作为重要凭证，请勿泄露！
+        </el-tag>
+        <span
+          style="
+                color: var(--el-color-primary);
+                padding: 10px;
+                word-break: break-all;
+                background-color: var(--el-color-primary-light-9);
+                border: 1px solid var(--el-color-primary-light-8);
+                border-radius: 6px;
+          "
+        >
+          {response.data.token}
+        </span>
+      </div>
+    )
+  })
+}
+
 const save = async () => {
   // 表单校验
   const error = await elformRef.value
@@ -195,7 +257,7 @@ const save = async () => {
     return
   }
   // 保存令牌
-  creation.value ? await TokenService.createAppToken(tokenData.value) : await modifyToken(tokenData.value)
+  creation.value ? await createToken() : await modifyToken(tokenData.value)
   // 返回上一页
   goback()
   // 成功提示
@@ -204,10 +266,6 @@ const save = async () => {
 
 const goback = () => {
   window.history.length > 1 ? router.go(-1) : router.push('/opencenter/application')
-}
-
-const gotoAppManager = (tokenNo = null) => {
-  router.push({ path: '/opencenter/application' })
 }
 </script>
 

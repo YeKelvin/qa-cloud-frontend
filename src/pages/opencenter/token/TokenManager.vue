@@ -2,7 +2,7 @@
   <div class="token-manager-wrapper">
     <div class="token-manager">
       <div class="token-header">
-        <p style="font-size: 20px">应用访问令牌</p>
+        <span style="font-size: 20px">应用访问令牌</span>
         <el-button type="primary" plain :icon="Plus" @click="gotoTokenEditor()">新增</el-button>
       </div>
       <el-divider />
@@ -12,29 +12,60 @@
       </template>
       <template v-else>
         <el-card v-for="token in tokenList" :key="token.tokenNo" shadow="hover">
-          <template v-slot:header>
-<div  style="display: flex; align-items: center; justify-content: space-between;">
-            <p style="font-size: 18px">{{ token.name }}</p>
-            <el-button type="text" @click="gotoTokenEditor(token.tokenNo)">编辑</el-button>
-          </div>
-</template>
-          <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px">
-            <p style="font-size: 16px">令牌编号：{{ token.tokenNo }}</p>
-            <el-button type="text" @click="copyToken(token.tokenNo)">复制</el-button>
-          </div>
-          <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px">
-            <p style="font-size: 16px">有效期：{{ token.validTime }}</p>
-            <el-button type="text" @click="deleteToken(token.tokenNo)">删除</el-button>
+          <template #header>
+            <div style="display: flex; align-items: center; justify-content: space-between">
+              <div>
+                <SvgIcon icon-name="common-token" style="margin-right: 5px; font-size: 16px" />
+                <span style="font-size: 18px">{{ token.tokenName }}</span>
+              </div>
+              <div>
+                <el-button type="primary" plain :icon="EditPen" @click="gotoTokenEditor(token.tokenNo)">编辑</el-button>
+                <el-button type="danger" plain :icon="Delete" @click="deleteToken(token.tokenNo)">删除</el-button>
+              </div>
+            </div>
+          </template>
+          <div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px">
+              <div>
+                <el-tag
+                  v-for="object in token.objects"
+                  :key="object"
+                  size="large"
+                  style="margin-right: 10px"
+                  disable-transitions
+                >
+                  {{ object }}
+                </el-tag>
+              </div>
+              <template v-if="token.lastUsedTime">
+                <el-tag type="info" disable-transitions>最后使用时间: {{ token.lastUsedTime }}</el-tag>
+              </template>
+              <template v-else>
+                <el-tag type="danger" disable-transitions>从未使用</el-tag>
+              </template>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between">
+              <el-tag type="info" disable-transitions>创建时间: {{ token.createdTime }}</el-tag>
+              <template v-if="token.expireTime">
+                <el-tag type="danger" disable-transitions>失效时间: {{ token.expireTime }}</el-tag>
+              </template>
+              <template v-else>
+                <el-tag type="danger" disable-transitions>永久有效</el-tag>
+              </template>
+            </div>
           </div>
         </el-card>
       </template>
+      <div class="token-footer">
+        <el-button @click="goback()">返 回</el-button>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { Close, Plus } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
+import { Plus, Delete, EditPen } from '@element-plus/icons-vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 import * as TokenService from '@/api/opencenter/token'
 
@@ -57,12 +88,43 @@ const query = () => {
   })
 }
 
+/**
+ * 删除令牌
+ */
+const deleteToken = async (tokenNo) => {
+  // 二次确认
+  const cancelled = await ElMessageBox.confirm('是否确定删除？', '警告', {
+    confirmButtonText: '确 定',
+    cancelButtonText: '取 消',
+    type: 'error'
+  })
+    .then(() => false)
+    .catch(() => true)
+  if (cancelled) return
+  // 删除提交
+  await TokenService.removeToken({ tokenNo: tokenNo })
+  // 刷新列表
+  query()
+  // 成功提示
+  ElMessage({ message: '删除成功', type: 'info', duration: 2 * 1000 })
+}
+
+/**
+ * 跳转至编辑页
+ */
 const gotoTokenEditor = (tokenNo = null) => {
-  const querys = {}
+  const querys = { appNo: appNo.value }
   if (tokenNo) {
     querys.tokenNo = tokenNo
   }
   router.push({ path: '/opencenter/token-editor', query: querys })
+}
+
+/**
+ * 返回上一页
+ */
+const goback = () => {
+  window.history.length > 1 ? router.go(-1) : router.push('/opencenter/application')
 }
 </script>
 
@@ -100,4 +162,13 @@ const gotoTokenEditor = (tokenNo = null) => {
 :deep(.el-empty__description) {
   display: none;
 }
+
+:deep(.el-card) {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+/* :deep(.el-card__header) {
+  padding: 5px;
+} */
 </style>

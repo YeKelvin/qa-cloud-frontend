@@ -34,7 +34,7 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" min-width="200" width="200">
           <template #default="{ row }">
-            <el-button type="primary" link @click="gotoTokenManager(row)">令牌</el-button>
+            <el-button type="primary" link @click="gotoTokenManager(row)">访问令牌</el-button>
             <el-button type="primary" link @click="openModifyDialog(row)">编辑</el-button>
             <template v-if="row.state === 'ENABLE'">
               <el-button type="primary" link @click="modifyAppState(row, 'DISABLE')">禁用</el-button>
@@ -121,7 +121,7 @@ const query = () => {
 const modifyAppState = async (row, state) => {
   const stateMsg = state === 'DISABLE' ? '禁用' : '启用'
   // 二次确认
-  const cancelled = await ElMessageBox.confirm(`确定${stateMsg}吗？`, '警告', {
+  const cancelled = await ElMessageBox.confirm(`是否确定${stateMsg}？`, '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'

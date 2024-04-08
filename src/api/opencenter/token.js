@@ -11,5 +11,3 @@ export const createUserToken = (data) => request.post('/opencenter/user/token', 
 export const modifyToken = (data) => request.put('/opencenter/token', data)
 
 export const removeToken = (data) => request.delete('/opencenter/token', { data: data })
-
-export const invalidToken = (data) => request.delete('/opencenter/token/invalid', { data: data })

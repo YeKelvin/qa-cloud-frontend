@@ -50,6 +50,7 @@ const elpopoverRef = ref()
 const eltreeRef = ref()
 const filterText = ref('')
 
+// eslint-disable-next-line unicorn/no-array-callback-reference
 watch(filterText, (val) => eltreeRef.value.filter(val))
 
 onMounted(() => workspaceStore.loadsWorkspaceList())

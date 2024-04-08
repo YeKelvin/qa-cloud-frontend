@@ -132,7 +132,7 @@ const query = () => {
 const modifyRobotState = async (row, state) => {
   const stateMsg = state === 'DISABLE' ? '禁用' : '启用'
   // 二次确认
-  const cancelled = await ElMessageBox.confirm(`确定${stateMsg}吗？`, '警告', {
+  const cancelled = await ElMessageBox.confirm(`是否确定${stateMsg}？`, '警告', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
