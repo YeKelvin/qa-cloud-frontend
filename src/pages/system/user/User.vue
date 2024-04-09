@@ -34,7 +34,7 @@
         <el-table-column prop="roles" label="用户角色" min-width="150">
           <template #default="{ row }">
             <div class="tags-wrapper">
-              <el-tag v-for="role in row.roles" :key="role.roleNo" type="danger" disable-transitions>
+              <el-tag v-for="role in row.roles" :key="role.roleNo" disable-transitions>
                 {{ role.roleName }}
               </el-tag>
             </div>
@@ -43,16 +43,20 @@
         <el-table-column prop="groups" label="分组" min-width="150">
           <template #default="{ row }">
             <div class="tags-wrapper">
-              <el-tag v-for="group in row.groups" :key="group.groupNo" type="danger" disable-transitions>
+              <el-tag v-for="group in row.groups" :key="group.groupNo" disable-transitions>
                 {{ group.groupName }}
               </el-tag>
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="state" label="状态" min-width="60" width="60">
-          <template #default="{ row }">{{ UserState[row.state] }}</template>
+        <el-table-column prop="state" label="状态" min-width="70" width="70">
+          <template #default="{ row }">
+            <el-tag :type="row.state === 'ENABLE' ? 'primary' : 'warning'" disable-transitions>
+              {{ UserState[row.state] }}
+            </el-tag>
+          </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" min-width="160" width="160">
+        <el-table-column fixed="right" label="操作" min-width="240" width="240">
           <template #default="{ row }">
             <el-button type="primary" link @click="openModifyDialog(row)">编辑</el-button>
             <el-button type="primary" link @click="resetPassword(row)">重置密码</el-button>
@@ -62,7 +66,7 @@
             <template v-else>
               <el-button type="primary" link @click="modifyUserState(row, 'ENABLE')">启用</el-button>
             </template>
-            <el-button type="primary" link @click="deleteUser(row)">删除</el-button>
+            <el-button type="danger" link @click="deleteUser(row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -142,8 +146,8 @@ const modifyUserState = async (row, state) => {
   const message = state === 'DISABLE' ? '禁用' : '启用'
   // 二次确认
   const cancelled = await ElMessageBox.confirm(`是否确定${message}？`, '警告', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
+    confirmButtonText: '确 定',
+    cancelButtonText: '取 消',
     type: 'warning'
   })
     .then(() => false)
@@ -163,8 +167,8 @@ const modifyUserState = async (row, state) => {
 const resetPassword = async (row) => {
   // 二次确认
   const cancelled = await ElMessageBox.confirm('是否确定重置密码？', '提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
+    confirmButtonText: '确 定',
+    cancelButtonText: '取 消',
     type: 'warning'
   })
     .then(() => false)
@@ -182,9 +186,9 @@ const resetPassword = async (row) => {
 const deleteUser = async (row) => {
   // 二次确认
   const cancelled = await ElMessageBox.confirm('是否确定删除？', '警告', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
+    type: 'error',
+    confirmButtonText: '确 定',
+    cancelButtonText: '取 消'
   })
     .then(() => false)
     .catch(() => true)

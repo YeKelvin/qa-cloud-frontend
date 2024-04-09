@@ -58,8 +58,8 @@ const confirmDiscard = async (offlineKey) => {
   try {
     // 二次确认窗口
     await ElMessageBox.confirm('脚本数据未保存，是否放弃变更？', '警告', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
+      confirmButtonText: '确 定',
+      cancelButtonText: '取 消',
       type: 'warning'
     })
     // 丢弃离线数据

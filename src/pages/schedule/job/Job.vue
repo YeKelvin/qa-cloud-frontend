@@ -132,8 +132,8 @@ const query = () => {
 const pauseJob = async (row) => {
   // 二次确认
   const cancelled = await ElMessageBox.confirm('是否确定暂停？', '警告', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
+    confirmButtonText: '确 定',
+    cancelButtonText: '取 消',
     type: 'warning'
   })
     .then(() => false)
@@ -153,8 +153,8 @@ const pauseJob = async (row) => {
 const resumeJob = async (row) => {
   // 二次确认
   const cancelled = await ElMessageBox.confirm('是否确定恢复？', '警告', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
+    confirmButtonText: '确 定',
+    cancelButtonText: '取 消',
     type: 'warning'
   })
     .then(() => false)
@@ -174,8 +174,8 @@ const resumeJob = async (row) => {
 const removeJob = async (row) => {
   // 二次确认
   const cancelled = await ElMessageBox.confirm('是否确定关闭？', '警告', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
+    confirmButtonText: '确 定',
+    cancelButtonText: '取 消',
     type: 'warning'
   })
     .then(() => false)

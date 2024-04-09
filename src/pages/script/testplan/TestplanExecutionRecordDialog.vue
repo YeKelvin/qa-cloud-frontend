@@ -70,8 +70,8 @@ const queryTestplanExecutionAll = () => {
  */
 const interrupt = (executionNo) => {
   ElMessageBox.confirm('是否确定中断运行？', '提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
+    confirmButtonText: '确 定',
+    cancelButtonText: '取 消',
     type: 'warning'
   }).then(() => {
     ExecutionService.interruptTestplan({ executionNo: executionNo }).then(() => {

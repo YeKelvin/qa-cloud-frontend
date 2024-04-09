@@ -110,8 +110,8 @@ const duplicateDatabase = async ({ databaseNo, databaseName }) => {
   // 二次确认
   const cancelled = await ElMessageBox.confirm(null, {
     type: 'warning',
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
+    confirmButtonText: '确 定',
+    cancelButtonText: '取 消',
     title: '警告',
     message: (
       <span style="white-space:normal; overflow:hidden; text-overflow:ellipsis;">
@@ -148,8 +148,8 @@ const cloneDatabase = async ({ databaseNo }) => {
         onNodeClick={(data) => (workspaceNo = data.workspaceNo)}
       />
     ),
-    confirmButtonText: '确定',
-    cancelButtonText: '取消'
+    confirmButtonText: '确 定',
+    cancelButtonText: '取 消'
   })
     .then(() => false)
     .catch(() => true)
@@ -181,8 +181,8 @@ const moveDatabase = async ({ databaseNo }) => {
         onNodeClick={(data) => (workspaceNo = data.workspaceNo)}
       />
     ),
-    confirmButtonText: '确定',
-    cancelButtonText: '取消'
+    confirmButtonText: '确 定',
+    cancelButtonText: '取 消'
   })
     .then(() => false)
     .catch(() => true)
@@ -207,10 +207,10 @@ const moveDatabase = async ({ databaseNo }) => {
 const removeDatabase = async ({ databaseNo, databaseName }) => {
   // 二次确认
   const cancelled = await ElMessageBox.confirm(null, {
-    type: 'warning',
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
+    type: 'error',
     title: '警告',
+    confirmButtonText: '确 定',
+    cancelButtonText: '取 消',
     message: (
       <span style="white-space:normal; overflow:hidden; text-overflow:ellipsis;">
         是否确定删除 <b style="font-size: 16px">{databaseName}</b> ？

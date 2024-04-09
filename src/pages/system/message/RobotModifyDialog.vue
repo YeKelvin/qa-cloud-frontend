@@ -76,8 +76,8 @@ const submitForm = async () => {
   }
   // 二次确认
   error = await ElMessageBox.confirm('是否确定修改？', '提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
+    confirmButtonText: '确 定',
+    cancelButtonText: '取 消',
     type: 'warning'
   })
     .then(() => false)

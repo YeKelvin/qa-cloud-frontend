@@ -35,6 +35,13 @@ export const HttpMethods = {
   TRACE: 'TRACE'
 }
 
+export const HttpMethodColor = {
+  GET: 'success',
+  POST: 'primary',
+  PUT: 'warning',
+  DELETE: 'danger'
+}
+
 export const RunningState = {
   WAITING: '待运行',
   RUNNING: '运行中',

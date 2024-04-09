@@ -32,14 +32,26 @@
         <!-- 空数据提示 -->
         <template #empty><el-empty /></template>
         <!-- 列定义 -->
-        <el-table-column prop="method" label="请求方法" min-width="100" width="100" />
+        <el-table-column prop="method" label="请求方法" min-width="100" width="100">
+          <template #default="{ row }">
+            <el-tag :type="HttpMethodColor[row.method]" style="font-size: 14px" disable-transitions>
+              {{ row.method }}
+            </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column prop="path" label="请求路由" min-width="150" />
         <el-table-column prop="desc" label="请求描述" min-width="150" />
         <el-table-column prop="success" label="响应状态" min-width="150">
-          <template #default="{ row }">{{ row.success == true ? '成功' : '失败' }}</template>
+          <template #default="{ row }">
+            <el-tag :type="row.success == true ? 'success' : 'danger'" style="font-size: 14px" disable-transitions>
+              {{ row.success == true ? '成功' : '失败' }}
+            </el-tag>
+          </template>
         </el-table-column>
         <el-table-column prop="elapsedTime" label="响应耗时" min-width="150">
-          <template #default="{ row }">{{ row.elapsedTime }} ms</template>
+          <template #default="{ row }">
+            <el-tag type="info" style="font-size: 14px" disable-transitions>{{ row.elapsedTime }} ms</el-tag>
+          </template>
         </el-table-column>
         <el-table-column prop="appName" label="应用名称" min-width="150" width="150" />
         <el-table-column prop="invokeIp" label="请求IP" min-width="150" width="150" />
@@ -75,6 +87,7 @@ import { Search, Refresh } from '@element-plus/icons-vue'
 
 import LogDetails from './OpenAPILogDetails.vue'
 
+import { HttpMethodColor } from '@/api/enum'
 import * as APILogService from '@/api/opencenter/apilog'
 import ConditionDatetimePicker from '@/components/query-condition/ConditionDatetimePicker.vue'
 import ConditionInput from '@/components/query-condition/ConditionInput.vue'

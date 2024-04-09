@@ -79,8 +79,8 @@ const createEnvironmentDataset = async () => {
   const cancelled = await ElMessageBox.confirm(null, {
     title: '新增环境变量集',
     message: <NameInput onUpdate:modelValue={(val) => (datasetName = val)} />,
-    confirmButtonText: '确定',
-    cancelButtonText: '取消'
+    confirmButtonText: '确 定',
+    cancelButtonText: '取 消'
   })
     .then(() => false)
     .catch(() => true)
@@ -118,8 +118,8 @@ const createCustomDataset = async () => {
         <EnvDatasetSelect onUpdate:modelValue={(val) => (datasetBinding = val)} />
       </div>
     ),
-    confirmButtonText: '确定',
-    cancelButtonText: '取消'
+    confirmButtonText: '确 定',
+    cancelButtonText: '取 消'
   })
     .then(() => false)
     .catch(() => true)

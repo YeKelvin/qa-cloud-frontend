@@ -25,6 +25,7 @@
               <el-option label="永久有效" value="FOREVER" />
               <el-option label="自定义日期" value="CUSTOM" />
             </el-select>
+            <!-- 自定义失效日期 -->
             <template v-if="expiration === 'CUSTOM'">
               <el-date-picker
                 v-model="expireDate"
@@ -226,7 +227,7 @@ const createToken = async () => {
     message: (
       <div>
         <span style="margin-bottom: 10px">确定之后将无法再次查看，请复制保存并妥善保管!</span>
-        <el-tag type="danger" style="margin-bottom: 10px">
+        <el-tag type="danger" style="margin-bottom: 10px" disable-transitions>
           注意: 访问令牌作为重要凭证，请勿泄露！
         </el-tag>
         <span

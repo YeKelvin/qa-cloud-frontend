@@ -33,8 +33,12 @@
         <el-table-column prop="roleType" label="角色类型" min-width="150">
           <template #default="{ row }">{{ RoleType[row.roleType] }}</template>
         </el-table-column>
-        <el-table-column prop="state" label="状态" min-width="60" width="60">
-          <template #default="{ row }">{{ RoleState[row.state] }}</template>
+        <el-table-column prop="state" label="状态" min-width="70" width="70">
+          <template #default="{ row }">
+            <el-tag :type="row.state === 'ENABLE' ? 'primary' : 'warning'" disable-transitions>
+              {{ RoleState[row.state] }}
+            </el-tag>
+          </template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" min-width="180" width="180">
           <template #default="{ row }">
@@ -44,9 +48,11 @@
               <el-button type="primary" link @click="modifyRoleState(row, 'DISABLE')">禁用</el-button>
             </template>
             <template v-else>
-              <el-button type="primary" link @click="modifyRoleState(row, 'ENABLE')">启用</el-button>
+              <el-button type="danger" link @click="modifyRoleState(row, 'ENABLE')">启用</el-button>
             </template>
-            <el-button v-if="row.roleType == 'CUSTOM'" type="primary" link @click="deleteRole(row)">删除</el-button>
+            <template v-if="row.roleType == 'CUSTOM'">
+              <el-button type="danger" link @click="deleteRole(row)">删除</el-button>
+            </template>
           </template>
         </el-table-column>
       </el-table>
@@ -125,8 +131,8 @@ const modifyRoleState = async (row, state) => {
   const stateMsg = state === 'DISABLE' ? '禁用' : '启用'
   // 二次确认
   const cancelled = await ElMessageBox.confirm(`是否确定${stateMsg}？`, '警告', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
+    confirmButtonText: '确 定',
+    cancelButtonText: '取 消',
     type: 'warning'
   })
     .then(() => false)
@@ -146,9 +152,9 @@ const modifyRoleState = async (row, state) => {
 const deleteRole = async (row) => {
   // 二次确认
   const cancelled = await ElMessageBox.confirm('是否确定删除？', '警告', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
+    type: 'error',
+    confirmButtonText: '确 定',
+    cancelButtonText: '取 消'
   })
     .then(() => false)
     .catch(() => true)

@@ -29,8 +29,8 @@ export default function useRunnableElement() {
   const confirmWithoutDataset = async () => {
     if (isEmpty(pymeterStore.selectedDatasets)) {
       await ElMessageBox.confirm('当前没有选择[环境/变量]，是否确定执行？', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: '确 定',
+        cancelButtonText: '取 消',
         type: 'warning'
       })
     }

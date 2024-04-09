@@ -130,8 +130,8 @@ const renameAndRebindDataset = async () => {
         <EnvDatasetSelect modelValue={newBinding} onUpdate:modelValue={(val) => (newBinding = val)} />
       </div>
     ),
-    confirmButtonText: '确定',
-    cancelButtonText: '取消'
+    confirmButtonText: '确 定',
+    cancelButtonText: '取 消'
   })
     .then(() => false)
     .catch(() => true)
@@ -167,8 +167,8 @@ const renameDataset = async () => {
   const cancelled = await ElMessageBox.confirm(null, {
     title: '重命名变量集',
     message: <NameInput modelValue={newName} onUpdate:modelValue={(val) => (newName = val)} />,
-    confirmButtonText: '确定',
-    cancelButtonText: '取消'
+    confirmButtonText: '确 定',
+    cancelButtonText: '取 消'
   })
     .then(() => false)
     .catch(() => true)
@@ -201,8 +201,8 @@ const duplicateDataset = async () => {
   // 二次确认
   const cancelled = await ElMessageBox.confirm(null, {
     type: 'warning',
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
+    confirmButtonText: '确 定',
+    cancelButtonText: '取 消',
     title: '警告',
     message: (
       <span style="white-space:normal; overflow:hidden; text-overflow:ellipsis;">
@@ -238,8 +238,8 @@ const copyDatasetToWorkspace = async () => {
         onNodeClick={(data) => (workspaceNo = data.workspaceNo)}
       />
     ),
-    confirmButtonText: '确定',
-    cancelButtonText: '取消'
+    confirmButtonText: '确 定',
+    cancelButtonText: '取 消'
   })
     .then(() => false)
     .catch(() => true)
@@ -267,8 +267,8 @@ const moveDatasetToWorkspace = async () => {
         onNodeClick={(data) => (workspaceNo = data.workspaceNo)}
       />
     ),
-    confirmButtonText: '确定',
-    cancelButtonText: '取消'
+    confirmButtonText: '确 定',
+    cancelButtonText: '取 消'
   })
     .then(() => false)
     .catch(() => true)
@@ -289,10 +289,10 @@ const deleteDataset = async () => {
   closeMenu()
   // 二次确认
   const cancelled = await ElMessageBox.confirm(null, {
-    type: 'warning',
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
+    type: 'error',
     title: '警告',
+    confirmButtonText: '确 定',
+    cancelButtonText: '取 消',
     message: (
       <span style="white-space:normal; overflow:hidden; text-overflow:ellipsis;">
         是否确定删除 <b style="font-size: 16px">{data.datasetName}</b> ？

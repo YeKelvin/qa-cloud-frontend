@@ -38,7 +38,7 @@
             <template v-if="row.workspaceScope != 'PRIVATE'">
               <el-button type="primary" link @click="gotoRestrictionManager(row)">限制管理</el-button>
               <el-button type="primary" link @click="openModifyDialog(row)">编辑</el-button>
-              <el-button type="primary" link @click="deleteWorkspace(row)">删除</el-button>
+              <el-button type="danger" link @click="deleteWorkspace(row)">删除</el-button>
             </template>
           </template>
         </el-table-column>
@@ -120,9 +120,9 @@ const query = () => {
 const deleteWorkspace = async (row) => {
   // 二次确认
   const cancelled = await ElMessageBox.confirm('是否确定删除?', '警告', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
+    type: 'error',
+    confirmButtonText: '确 定',
+    cancelButtonText: '取 消'
   })
     .then(() => false)
     .catch(() => true)

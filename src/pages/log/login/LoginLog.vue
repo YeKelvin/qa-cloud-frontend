@@ -33,7 +33,7 @@
         <!-- 列定义 -->
         <el-table-column prop="userName" label="用户名称" min-width="220" />
         <el-table-column prop="loginName" label="登录账号" min-width="220" />
-        <el-table-column prop="loginType" label="账号类型" min-width="100">
+        <el-table-column prop="loginType" label="登录类型" min-width="100">
           <template #default="{ row }">{{ LoginType[row.loginType] }}</template>
         </el-table-column>
         <el-table-column prop="loginMethod" label="登录方式" min-width="100">

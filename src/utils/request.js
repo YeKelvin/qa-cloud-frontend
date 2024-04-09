@@ -105,7 +105,7 @@ service.interceptors.response.use(
       if (data.code === 401) {
         ElMessageBox.confirm('登录失效，请重新登录', '警告', {
           confirmButtonText: '重新登录',
-          cancelButtonText: '取消',
+          cancelButtonText: '取 消',
           type: 'warning'
         }).then(() => {
           useUserStore()

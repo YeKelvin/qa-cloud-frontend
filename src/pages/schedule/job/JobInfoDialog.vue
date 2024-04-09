@@ -385,8 +385,8 @@ const submitForm = async () => {
   // 没有选择变量集时给出提示
   if (isEmpty(jobData.value.jobArgs.datasets)) {
     await ElMessageBox.confirm('当前没有选择[环境/变量]，是否确定提交？', '警告', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
+      confirmButtonText: '确 定',
+      cancelButtonText: '取 消',
       type: 'warning'
     })
   }

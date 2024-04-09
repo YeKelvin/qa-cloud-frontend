@@ -214,11 +214,11 @@ const comfirmDeleteVariables = async (...args) => {
   const msgList = [h('p', null, '是否确定删除以下变量?')]
   args.forEach((item) => msgList.push(h('p', null, h('b', null, item))))
   return await ElMessageBox.confirm(null, {
+    type: 'error',
     title: '警告',
     message: h('div', null, msgList),
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'error'
+    confirmButtonText: '确 定',
+    cancelButtonText: '取 消'
   })
     .then(() => false)
     .catch(() => true)

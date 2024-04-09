@@ -239,8 +239,8 @@ const executeTestplan = async ({ planNo, planName }) => {
         onUpdate:useCurrentValue={(val) => (useCurrvalue = val)}
       />
     ),
-    confirmButtonText: '确定',
-    cancelButtonText: '取消'
+    confirmButtonText: '确 定',
+    cancelButtonText: '取 消'
   })
     .then(() => false)
     .catch(() => true)

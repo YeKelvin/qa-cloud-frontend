@@ -31,8 +31,12 @@
         <el-table-column prop="robotType" label="机器人类型" min-width="100" width="100">
           <template #default="{ row }">{{ RobotType[row.robotType] }}</template>
         </el-table-column>
-        <el-table-column prop="state" label="状态" min-width="60" width="60">
-          <template #default="{ row }">{{ RobotState[row.state] }}</template>
+        <el-table-column prop="state" label="状态" min-width="70" width="70">
+          <template #default="{ row }">
+            <el-tag :type="row.state === 'ENABLE' ? 'primary' : 'warning'" disable-transitions>
+              {{ RobotState[row.state] }}
+            </el-tag>
+          </template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" min-width="160" width="160">
           <template #default="{ row }">
@@ -133,8 +137,8 @@ const modifyRobotState = async (row, state) => {
   const stateMsg = state === 'DISABLE' ? '禁用' : '启用'
   // 二次确认
   const cancelled = await ElMessageBox.confirm(`是否确定${stateMsg}？`, '警告', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
+    confirmButtonText: '确 定',
+    cancelButtonText: '取 消',
     type: 'warning'
   })
     .then(() => false)
@@ -154,9 +158,9 @@ const modifyRobotState = async (row, state) => {
 const removeRobot = async (row) => {
   // 二次确认
   const cancelled = await ElMessageBox.confirm('是否确定删除？', '警告', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
+    type: 'error',
+    confirmButtonText: '确 定',
+    cancelButtonText: '取 消'
   })
     .then(() => false)
     .catch(() => true)

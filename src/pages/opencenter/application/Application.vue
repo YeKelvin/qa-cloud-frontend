@@ -29,8 +29,12 @@
         <el-table-column prop="appName" label="应用名称" min-width="150" />
         <el-table-column prop="appCode" label="应用代码" min-width="150" />
         <el-table-column prop="appDesc" label="应用描述" min-width="150" />
-        <el-table-column prop="state" label="状态" min-width="60" width="60">
-          <template #default="{ row }">{{ ApplicationState[row.state] }}</template>
+        <el-table-column prop="state" label="状态" min-width="70" width="70">
+          <template #default="{ row }">
+            <el-tag :type="row.state === 'ENABLE' ? 'primary' : 'warning'" disable-transitions>
+              {{ ApplicationState[row.state] }}
+            </el-tag>
+          </template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" min-width="200" width="200">
           <template #default="{ row }">
@@ -42,7 +46,7 @@
             <template v-else>
               <el-button type="primary" link @click="modifyAppState(row, 'ENABLE')">启用</el-button>
             </template>
-            <el-button type="primary" link @click="deleteApp(row)">删除</el-button>
+            <el-button type="danger" link @click="deleteApp(row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -122,8 +126,8 @@ const modifyAppState = async (row, state) => {
   const stateMsg = state === 'DISABLE' ? '禁用' : '启用'
   // 二次确认
   const cancelled = await ElMessageBox.confirm(`是否确定${stateMsg}？`, '警告', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
+    confirmButtonText: '确 定',
+    cancelButtonText: '取 消',
     type: 'warning'
   })
     .then(() => false)
@@ -143,9 +147,9 @@ const modifyAppState = async (row, state) => {
 const deleteApp = async (row) => {
   // 二次确认
   const cancelled = await ElMessageBox.confirm('是否确定删除？', '警告', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
+    confirmButtonText: '确 定',
+    cancelButtonText: '取 消',
+    type: 'error'
   })
     .then(() => false)
     .catch(() => true)
