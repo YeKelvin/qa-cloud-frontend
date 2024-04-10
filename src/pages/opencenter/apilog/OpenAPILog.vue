@@ -18,7 +18,7 @@
           :options="{ true: '成功', false: '失败' }"
           label="响应状态"
         />
-        <ConditionInput v-model="queryConditions.appName" label="应用名称" />
+        <ConditionInput v-model="queryConditions.invokeBy" label="请求人" />
       </div>
       <div style="display: flex; justify-content: center">
         <el-button type="primary" :icon="Search" @click="query()">查 询</el-button>
@@ -53,7 +53,7 @@
             <el-tag type="info" style="font-size: 14px" disable-transitions>{{ row.elapsedTime }} ms</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="appName" label="应用名称" min-width="150" width="150" />
+        <el-table-column prop="invokeBy" label="请求人" min-width="150" width="150" />
         <el-table-column prop="invokeIp" label="请求IP" min-width="150" width="150" />
         <el-table-column prop="invokeTime" label="请求时间" min-width="180" width="180" />
         <el-table-column fixed="right" label="操作" min-width="80" width="80" align="center">
@@ -96,14 +96,14 @@ import useQueryConditions from '@/composables/useQueryConditions'
 
 // 查询条件
 const { queryConditions, resetQueryConditions } = useQueryConditions({
-  appName: '',
   method: '',
   path: '',
   request: '',
   response: '',
   success: '',
   startTime: '',
-  endTime: ''
+  endTime: '',
+  invokeBy: ''
 })
 const tableData = ref([])
 const page = ref(1)

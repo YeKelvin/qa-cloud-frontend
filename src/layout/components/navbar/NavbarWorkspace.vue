@@ -32,7 +32,7 @@
           <el-tag size="small" type="warning" style="margin-left: 5px" disable-transitions>团队</el-tag>
         </template>
         <template v-if="data.workspaceScope == 'PUBLIC'">
-          <el-tag size="small" type="success" style="margin-left: 5px" disable-transitions>公共</el-tag>
+          <el-tag size="small" type="primary" style="margin-left: 5px" disable-transitions>公共</el-tag>
         </template>
       </template>
     </el-tree>

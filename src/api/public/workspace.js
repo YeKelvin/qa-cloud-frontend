@@ -2,7 +2,10 @@ import request from '@/utils/request'
 
 export const queryWorkspaceList = params => request.get('/public/workspace/list', { params: params })
 
-export const queryWorkspaceAll = params => request.get('/public/workspace/all', { params: params })
+export const queryWorkspaceAll = params => request.get('/public/workspace/all', {
+  params,
+  paramsSerializer: { indexes: null }
+})
 
 export const queryWorkspaceInfo = params => request.get('/public/workspace/info', { params: params })
 

@@ -34,18 +34,34 @@
             </div>
           </template>
           <div>
-            <div style="margin-bottom: 20px">
+            <div style="display: flex; flex-direction: column; margin-bottom: 10px">
               <!-- 权限对象列表 -->
-              <el-tag
-                v-for="object in token.objects"
-                :key="object"
-                size="large"
-                style="margin-right: 10px"
-                disable-transitions
-              >
-                {{ object }}
-              </el-tag>
+              <div>
+                <el-tag
+                  v-for="object in token.objects"
+                  :key="object"
+                  size="large"
+                  style="margin-right: 10px; margin-bottom: 10px"
+                  disable-transitions
+                >
+                  {{ object }}
+                </el-tag>
+              </div>
+              <!-- 空间列表 -->
+              <div>
+                <el-tag
+                  v-for="workspace in token.workspaces"
+                  :key="workspace"
+                  size="large"
+                  type="warning"
+                  style="margin-right: 10px; margin-bottom: 10px"
+                  disable-transitions
+                >
+                  {{ workspace }}
+                </el-tag>
+              </div>
             </div>
+            <!-- 各种时间 -->
             <div style="display: flex; align-items: center; justify-content: space-between">
               <div>
                 <!-- 创建时间 -->
@@ -65,7 +81,7 @@
                 <el-tag type="info" disable-transitions>最后使用时间: {{ token.lastUsedTime }}</el-tag>
               </template>
               <template v-else>
-                <el-tag type="warning" disable-transitions>从未使用</el-tag>
+                <el-tag type="info" disable-transitions>从未使用</el-tag>
               </template>
             </div>
           </div>

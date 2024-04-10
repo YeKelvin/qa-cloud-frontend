@@ -34,6 +34,24 @@
               />
             </template>
           </el-form-item>
+          <!-- 空间列表 -->
+          <el-form-item label="空间列表：" prop="workspaces">
+            <el-select v-model="tokenData.workspaces" multiple clearable tag-type="danger" style="width: 100%">
+              <el-option
+                v-for="ws in workspaceList"
+                :key="ws.workspaceNo"
+                :label="ws.workspaceName"
+                :value="ws.workspaceNo"
+              >
+                <div style="display: flex; align-items: center; justify-content: space-between">
+                  <span>{{ ws.workspaceName }}</span>
+                  <el-tag :type="ws.workspaceScope === 'PROTECTED' ? 'warning' : 'primary'" disable-transitions>
+                    {{ WorkspaceScope[ws.workspaceScope] }}
+                  </el-tag>
+                </div>
+              </el-option>
+            </el-select>
+          </el-form-item>
           <!-- 权限列表 -->
           <el-form-item label="令牌权限：" prop="permissions">
             <el-table
@@ -81,8 +99,13 @@ import dayjs from 'dayjs'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { isEmpty } from 'lodash-es'
 
+import { WorkspaceScope } from '@/api/enum'
 import * as TokenService from '@/api/opencenter/token'
+import * as WorkspaceService from '@/api/public/workspace'
 import * as PermissionService from '@/api/usercenter/permission'
+import useClipboard from '@/composables/useClipboard'
+
+const { toClipboard } = useClipboard()
 
 const route = useRoute()
 const router = useRouter()
@@ -95,6 +118,7 @@ const tokenData = ref({
   tokenName: '',
   tokenDesc: '',
   expireTime: '',
+  workspaces: [],
   permissions: []
 })
 const tokenRules = {
@@ -104,7 +128,7 @@ const tokenRules = {
 const expiration = ref('')
 const expireDate = ref('')
 const noExpires = ref(false)
-
+const workspaceList = ref([])
 const moduleList = ref([])
 const tableData = computed(() => {
   const data = []
@@ -139,6 +163,7 @@ watch(expiration, (val) => {
 watch(expireDate, (val) => (tokenData.value.expireTime = dayjs(val).format('YYYY-MM-DD')))
 
 onMounted(() => {
+  queryWorkspaces()
   queryPermissions()
   if (!tokenNo.value) return
   query()
@@ -151,6 +176,15 @@ const query = () => {
   TokenService.queryToken({ tokenNo: tokenNo.value }).then((response) => {
     tokenData.value = response.data
     noExpires.value = isEmpty(tokenData.value.expireTime)
+  })
+}
+
+/**
+ * 查询空间列表
+ */
+const queryWorkspaces = () => {
+  WorkspaceService.queryWorkspaceAll({ scopes: ['PROTECTED', 'PUBLIC'] }).then((response) => {
+    workspaceList.value = response.data
   })
 }
 
@@ -219,6 +253,9 @@ const checkAll = (permissionList) => {
   tokenData.value.permissions = [...new Set(checkeds)]
 }
 
+/**
+ * 新增令牌
+ */
 const createToken = async () => {
   const response = await TokenService.createAppToken(tokenData.value)
   await ElMessageBox.alert(null, {
@@ -243,7 +280,15 @@ const createToken = async () => {
           {response.data.token}
         </span>
       </div>
-    )
+    ),
+    callback: async () => {
+      // 复制令牌
+      await toClipboard(response.data.token)
+      // 复制提示
+      ElMessage({ message: '复制成功，请妥善保管', type: 'info', duration: 2 * 1000 })
+      // 返回上一页
+      goback()
+    }
   })
 }
 
