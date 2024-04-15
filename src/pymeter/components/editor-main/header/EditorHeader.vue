@@ -13,23 +13,27 @@
       <!-- 右侧：操作区域 -->
       <div class="r-container">
         <!-- 元素历史按钮 -->
-        <el-button
-          v-show="showingChangelogBTN"
-          style="padding-right: 20px"
-          type="primary"
-          link
-          @click="showingChangelog = true"
-        >
-          <SvgIcon icon-name="common-changelog" style="font-size: 20px" />
-        </el-button>
+        <el-tooltip content="历史记录" placement="bottom">
+          <el-button
+            v-show="showingChangelogBTN"
+            style="margin-right: 20px"
+            type="primary"
+            link
+            @click="showingChangelog = true"
+          >
+            <SvgIcon icon-name="common-changelog" style="font-size: 20px" />
+          </el-button>
+        </el-tooltip>
         <!-- 变量集 -->
         <span class="dataset-container">
           <!-- 变量集选择器 -->
           <DatasetSelect :show="showing" />
           <!-- 查看变量按钮 -->
-          <el-button style="padding-right: 5px" type="primary" link @click="showingVariables = true">
-            <SvgIcon icon-name="pymeter-show-data" style="font-size: 20px" />
-          </el-button>
+          <el-tooltip content="查看变量" placement="bottom">
+            <el-button style="padding-right: 5px" type="primary" link @click="showingVariables = true">
+              <SvgIcon icon-name="pymeter-show-data" style="font-size: 20px" />
+            </el-button>
+          </el-tooltip>
         </span>
       </div>
     </div>

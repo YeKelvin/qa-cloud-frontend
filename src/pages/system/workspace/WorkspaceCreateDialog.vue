@@ -63,14 +63,14 @@ const submitForm = async () => {
   }
   // 创建空间
   await WorkspaceService.createWorkspace(formData.value)
+  // 重新查询工作空间列表
+  await workspaceStore.loadsWorkspaceList()
   // 成功提示
   ElMessage({ message: '新增成功', type: 'info', duration: 2 * 1000 })
-  // 关闭dialog
-  emit('update:model-value', false)
   // 重新查询列表
   emit('re-query')
-  // 重新查询工作空间列表
-  workspaceStore.loadsWorkspaceList()
+  // 关闭dialog
+  emit('update:model-value', false)
 }
 </script>
 

@@ -11,6 +11,13 @@
     collapse-tags-tooltip
     :max-collapse-tags="2"
   >
+    <!-- 是否使用变量当前值的按钮 -->
+    <template #header>
+      <div style="display: flex; align-items: center; justify-content: space-between">
+        <span style="font-size: 14px; font-weight: bold; color: var(--el-text-color-regular)">使用变量当前值</span>
+        <el-switch v-model="useCurrentValue" inline-prompt :active-icon="Check" :inactive-icon="Close" />
+      </div>
+    </template>
     <!-- 自定义变量 -->
     <el-option-group v-if="!isEmpty(filteredDatasetListAsCustom)" key="custom" label="自定义">
       <el-option
@@ -62,10 +69,13 @@
 </template>
 
 <script setup>
+import { Check, Close } from '@element-plus/icons-vue'
 import { isEmpty } from 'lodash-es'
 
 import useDataset from '@/pymeter/composables/useDataset'
+import { usePyMeterStore } from '@/store/pymeter'
 
+const pymeterStore = usePyMeterStore()
 const {
   selectedDatasets,
   datasetListAsGlobal,
@@ -76,6 +86,11 @@ const {
 } = useDataset()
 const props = defineProps({
   show: { type: Boolean, default: () => false }
+})
+
+const useCurrentValue = computed({
+  get: () => pymeterStore.useCurrentValue,
+  set: (val) => pymeterStore.setUseCurrentValue(val)
 })
 </script>
 

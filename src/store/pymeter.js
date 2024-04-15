@@ -4,6 +4,7 @@ import { defineStore } from 'pinia'
 import { confirmClose, removeCache } from './pymeter-tools'
 
 import { usePyMeterDB } from '@/store/pymeter-db'
+import { useWorkspaceStore } from '@/store/workspace'
 
 export const usePyMeterStore = defineStore('pymeter', {
   state: () => {
@@ -29,12 +30,10 @@ export const usePyMeterStore = defineStore('pymeter', {
       // 待展开节点的元素编号
       pendingExpandedElementNo: 0,
 
-      // 是否使用当前值（缓存）
-      useCurrentValue: true,
-      // 当前选中的变量集列表（缓存）
-      selectedDatasets: [],
-      // 当前选中的集合编号列表（缓存）
-      selectedScripts: [],
+      // 当前已选的脚本列表（缓存）
+      selectedScriptStore: {},
+      // 当前已选的变量列表（缓存）
+      selectedDatasetStore: {},
 
       // 显示底部抽屉窗口
       showingFooterDrawer: false,
@@ -42,9 +41,31 @@ export const usePyMeterStore = defineStore('pymeter', {
     }
   },
   persist: {
-    paths: ['selectedDatasets', 'useCurrentValue', 'selectedScripts']
+    paths: ['selectedScriptStore', 'selectedDatasetStore']
   },
-  getters: {},
+  getters: {
+    selectedScripts() {
+      const workspaceNo = useWorkspaceStore().workspaceNo
+      if (!(workspaceNo in this.selectedScriptStore)) {
+        this.selectedScriptStore[workspaceNo] = {}
+      }
+      return this.selectedScriptStore[workspaceNo]
+    },
+    useCurrentValue() {
+      const workspaceNo = useWorkspaceStore().workspaceNo
+      if (!(workspaceNo in this.selectedDatasetStore)) {
+        this.selectedDatasetStore[workspaceNo] = { useCurrentValue: true, selectedDatasets: [] }
+      }
+      return this.selectedDatasetStore[workspaceNo].useCurrentValue
+    },
+    selectedDatasets() {
+      const workspaceNo = useWorkspaceStore().workspaceNo
+      if (!(workspaceNo in this.selectedDatasetStore)) {
+        this.selectedDatasetStore[workspaceNo] = { useCurrentValue: true, selectedDatasets: [] }
+      }
+      return this.selectedDatasetStore[workspaceNo].selectedDatasets
+    }
+  },
   actions: {
     /**
      * 获取当前tab
@@ -279,12 +300,30 @@ export const usePyMeterStore = defineStore('pymeter', {
         this.showingFooterDrawer = true
       }
     },
-
-    /**
-     * 清空已选择的变量集列表
-     */
-    clearSelectedDataset() {
-      this.selectedDatasets = []
+    setSelectedScripts(value) {
+      const workspaceNo = useWorkspaceStore().workspaceNo
+      if (!(workspaceNo in this.selectedScriptStore)) {
+        this.selectedScriptStore[workspaceNo] = {}
+      }
+      this.selectedScriptStore[workspaceNo] = value
+    },
+    setUseCurrentValue(value) {
+      const workspaceNo = useWorkspaceStore().workspaceNo
+      if (!(workspaceNo in this.selectedDatasetStore)) {
+        this.selectedDatasetStore[workspaceNo] = { useCurrentValue: true, selectedDatasets: [] }
+      }
+      this.selectedDatasetStore[workspaceNo].useCurrentValue = value
+    },
+    setSelectedDatasets(value) {
+      const workspaceNo = useWorkspaceStore().workspaceNo
+      if (!(workspaceNo in this.selectedDatasetStore)) {
+        this.selectedDatasetStore[workspaceNo] = { useCurrentValue: true, selectedDatasets: [] }
+      }
+      this.selectedDatasetStore[workspaceNo].selectedDatasets = value
+    },
+    clearWorkspaceCache(workspaceNo) {
+      if (workspaceNo in this.selectedScriptStore) delete this.selectedScriptStore[workspaceNo]
+      if (workspaceNo in this.selectedDatasetStore) delete this.selectedDatasetStore[workspaceNo]
     }
   }
 })

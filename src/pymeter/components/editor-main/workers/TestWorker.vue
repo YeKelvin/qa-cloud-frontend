@@ -15,10 +15,10 @@
       <el-form-item label="失败处理：" prop="elementProps.TestWorker__on_sample_error">
         <el-select v-model="elementData.elementProps.TestWorker__on_sample_error" style="width: 100%">
           <el-option label="继续" value="continue" />
-          <el-option label="开始下一个主控制器的循环" value="start_next_thread" />
+          <el-option label="开始下一个用例的循环" value="start_next_thread" />
           <el-option label="开始下一个当前控制器的循环" value="start_next_current_loop" />
           <el-option label="中断当前控制器的循环" value="break_current_loop" />
-          <el-option label="停止主控制器" value="stop_worker" />
+          <el-option label="停止用例" value="stop_worker" />
           <el-option label="停止测试" value="stop_test" />
           <el-option label="立即停止测试" value="stop_now" />
         </el-select>

@@ -137,7 +137,7 @@ const elScrollbarRef = ref()
 const selectedScripts = computed({
   get: () => pymeterStore.selectedScripts,
   set: (val) => {
-    if (!loading.value) pymeterStore.selectedScripts = val
+    if (!loading.value) pymeterStore.setSelectedScripts(val)
   }
 })
 

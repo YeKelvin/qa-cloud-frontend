@@ -24,16 +24,26 @@
       <template #default="{ node, data }">
         <!-- 空间名称 -->
         <span class="workspace-name">{{ node.label }}</span>
-        <!-- 标签 -->
-        <template v-if="data.workspaceScope == 'PRIVATE'">
-          <el-tag size="small" type="danger" style="margin-left: 5px" disable-transitions>个人</el-tag>
-        </template>
-        <template v-if="data.workspaceScope == 'PROTECTED'">
-          <el-tag size="small" type="warning" style="margin-left: 5px" disable-transitions>团队</el-tag>
-        </template>
-        <template v-if="data.workspaceScope == 'PUBLIC'">
-          <el-tag size="small" type="primary" style="margin-left: 5px" disable-transitions>公共</el-tag>
-        </template>
+        <span style="display: flex; align-items: center">
+          <!-- 空间类型 -->
+          <template v-if="data.workspaceScope == 'PRIVATE'">
+            <el-tag size="small" type="danger" style="margin-right: 10px" disable-transitions>个人</el-tag>
+          </template>
+          <template v-if="data.workspaceScope == 'PROTECTED'">
+            <el-tag size="small" type="warning" style="margin-right: 10px" disable-transitions>团队</el-tag>
+          </template>
+          <template v-if="data.workspaceScope == 'PUBLIC'">
+            <el-tag size="small" type="primary" style="margin-right: 10px" disable-transitions>公共</el-tag>
+          </template>
+          <!-- 打开新页面按钮 -->
+          <el-tooltip content="通过新页面打开" placement="right">
+            <el-button link @click.stop="elpopoverRef.hide()">
+              <router-link target="_blank" :to="{ path: '/script/editor', query: { workspaceNo: data.workspaceNo } }">
+                <SvgIcon icon-name="common-new-blank" style="font-size: 18px" />
+              </router-link>
+            </el-button>
+          </el-tooltip>
+        </span>
       </template>
     </el-tree>
   </el-popover>
@@ -53,7 +63,7 @@ const filterText = ref('')
 // eslint-disable-next-line unicorn/no-array-callback-reference
 watch(filterText, (val) => eltreeRef.value.filter(val))
 
-onMounted(() => workspaceStore.loadsWorkspaceList())
+onMounted(async () => await workspaceStore.loadsWorkspaceList())
 
 const handleNodeClick = (node) => {
   workspaceStore.changeWorkspace(node)

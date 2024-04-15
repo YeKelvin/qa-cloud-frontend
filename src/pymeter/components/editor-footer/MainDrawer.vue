@@ -15,10 +15,7 @@
           </el-button>
           <el-divider direction="vertical" style="margin-right: 20px" />
           <!-- 清空所有按钮 -->
-          <el-tooltip placement="top" effect="light" :hide-after="0">
-            <template #content>
-              <div style="color: var(--el-text-color-regular)">清空所有</div>
-            </template>
+          <el-tooltip content="清空所有" placement="bottom" :hide-after="0">
             <el-button type="danger" plain circle @click="clearAll">
               <SvgIcon icon-name="pymeter-broom-all" style="font-size: 16px" />
             </el-button>
@@ -26,10 +23,7 @@
         </div>
         <div class="r-container">
           <!-- 清空当前面板数据按钮 -->
-          <el-tooltip placement="top" effect="light" :hide-after="0">
-            <template #content>
-              <div style="color: var(--el-text-color-regular)">清空当前面板数据</div>
-            </template>
+          <el-tooltip content="清空所有" placement="bottom" :hide-after="0">
             <el-button type="danger" plain circle @click="clearCurrent">
               <SvgIcon icon-name="pymeter-broom" style="font-size: 16px" />
             </el-button>

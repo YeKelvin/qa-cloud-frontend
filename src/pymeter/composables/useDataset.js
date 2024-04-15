@@ -20,7 +20,7 @@ export default function useDataset() {
       if ('modelValue' in instance.props) {
         instance.emit('update:modelValue', value)
       } else {
-        pymeterStore.selectedDatasets = value
+        pymeterStore.setSelectedDatasets(value)
       }
     }
   })

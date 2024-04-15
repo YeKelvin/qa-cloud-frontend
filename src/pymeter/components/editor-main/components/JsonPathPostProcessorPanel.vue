@@ -24,7 +24,7 @@
 
     <!-- JsonPath表达式 -->
     <el-form-item label="JsonPath：" prop="JsonPathPostProcessor__jsonpath">
-      <FxInput v-model="elementProperty.JsonPathPostProcessor__jsonpath" placeholder="$.aa.bb[0].cc" />
+      <FxInput v-model="elementProperty.JsonPathPostProcessor__jsonpath" placeholder="$.data.key / $.data.list[0]" />
     </el-form-item>
 
     <!-- 列表随机 -->

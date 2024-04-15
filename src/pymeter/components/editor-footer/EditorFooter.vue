@@ -13,10 +13,7 @@
       </el-button>
       <el-divider direction="vertical" style="margin-right: 20px" />
       <!-- 清空所有按钮 -->
-      <el-tooltip placement="top" effect="light" :hide-after="0">
-        <template #content>
-          <div style="color: var(--el-text-color-regular)">清空所有</div>
-        </template>
+      <el-tooltip content="清空所有" placement="top" :hide-after="0">
         <el-button type="danger" plain circle @click="clearAll()">
           <SvgIcon icon-name="pymeter-broom-all" style="font-size: 16px" />
         </el-button>

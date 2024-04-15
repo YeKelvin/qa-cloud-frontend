@@ -73,20 +73,6 @@
 
           <!-- 当前值 -->
           <el-table-column label="当前值" width="auto">
-            <!-- 表头 -->
-            <template #header="{}">
-              <span class="current-value-header">
-                <span>当前值</span>
-                <el-switch
-                  v-model="pymeterStore.useCurrentValue"
-                  size="small"
-                  inline-prompt
-                  :active-icon="Check"
-                  :inactive-icon="Close"
-                />
-              </span>
-            </template>
-            <!-- 单元格 -->
             <template #default="{ row }">
               <div
                 class="variable-item-wrapper"
@@ -122,7 +108,7 @@
 </template>
 
 <script setup>
-import { Check, Close, CopyDocument, Edit } from '@element-plus/icons-vue'
+import { CopyDocument, Edit } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { isEmpty } from 'lodash-es'
 

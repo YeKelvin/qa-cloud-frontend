@@ -8,7 +8,7 @@
   >
     <!-- JsonPath表达式 -->
     <el-form-item label="JsonPath：" prop="JsonPathAssertion__jsonpath">
-      <FxInput v-model="elementProperty.JsonPathAssertion__jsonpath" placeholder="$.aa.bb[0].cc" />
+      <FxInput v-model="elementProperty.JsonPathAssertion__jsonpath" placeholder="$.data.key / $.data.list[0]" />
     </el-form-item>
 
     <!-- 判断类型 -->

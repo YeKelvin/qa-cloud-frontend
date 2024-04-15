@@ -20,7 +20,7 @@ const nanoid = customAlphabet('1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ', 26)
 let loading
 
 // 当前正在请求的数量
-let needLoadingRequestCount = 0
+let loadingCount = 0
 
 // 初始化axios
 const service = axios.create({
@@ -36,21 +36,21 @@ const service = axios.create({
 function showLoading() {
   // 后面这个判断很重要，因为关闭时加了抖动，此时 loading 对象可能还存在，
   // 但 needLoadingRequestCount 已经变成0，避免这种情况下会重新创建个 loading
-  if (needLoadingRequestCount === 0 && !loading) {
+  if (loadingCount === 0 && !loading) {
     loading = ElLoading.service({
       lock: true,
       text: 'Loading',
       background: 'rgba(0, 0, 0, 0.5)'
     })
   }
-  needLoadingRequestCount++
+  loadingCount++
 }
 
 // 隐藏loading
 function hideLoading() {
-  needLoadingRequestCount--
-  needLoadingRequestCount = Math.max(needLoadingRequestCount, 0) // 做个保护
-  if (needLoadingRequestCount === 0) {
+  loadingCount--
+  loadingCount = Math.max(loadingCount, 0) // 做个保护
+  if (loadingCount === 0) {
     // 关闭loading
     toHideLoading()
   }
@@ -65,13 +65,9 @@ const toHideLoading = _.debounce(() => {
 // 请求拦截器
 service.interceptors.request.use(
   (config) => {
+    config.headers['access-token'] = getToken()
     config.headers['x-trace-id'] = nanoid()
-    if (useWorkspaceStore().workspaceNo) {
-      config.headers['x-workspace-no'] = useWorkspaceStore().workspaceNo
-    }
-    if (useUserStore().token) {
-      config.headers['access-token'] = getToken()
-    }
+    config.headers['x-workspace-no'] = useWorkspaceStore().workspaceNo
     // 判断当前请求是否设置了不显示Loading
     if (config.method !== 'get') {
       showLoading()
@@ -79,10 +75,7 @@ service.interceptors.request.use(
     return config
   },
   (error) => {
-    // 判断当前请求是否设置了不显示Loading
-    if (error.config.method !== 'get') {
-      hideLoading()
-    }
+    hideLoading()
     ElMessage.error({ message: error.message, duration: 2 * 1000 })
     return Promise.reject(error)
   }
@@ -127,10 +120,7 @@ service.interceptors.response.use(
     }
   },
   (error) => {
-    // 判断当前请求是否设置了不显示 Loading（不显示自然无需隐藏）
-    if (error.config.method !== 'get') {
-      hideLoading()
-    }
+    hideLoading()
     ElMessage.error({ message: error.message, duration: 2 * 1000 })
     return Promise.reject(error)
   }

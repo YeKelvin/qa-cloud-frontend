@@ -128,15 +128,12 @@ const loginHandler = async () => {
   // 登录
   try {
     loading.value = true
-    await userStore.login({
-      ...loginForm.value,
-      accountType: accountType.value
-    })
+    await userStore.login({ ...loginForm.value, accountType: accountType.value })
     router.push({ path: redirect.value || '/' }, () => {})
     loading.value = false
   } catch (error) {
     loading.value = false
-    console.error(error.toString())
+    console.error(error)
   }
 }
 </script>
