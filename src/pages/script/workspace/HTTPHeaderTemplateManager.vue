@@ -42,7 +42,7 @@
           <el-button type="primary" link @click="duplicateTemplate(row)">复制</el-button>
           <el-button type="primary" link @click="cloneTemplate(row)">克隆</el-button>
           <el-button type="primary" link @click="moveTemplate(row)">移动</el-button>
-          <el-button type="primary" link @click="removeTemplate(row)">删除</el-button>
+          <el-button type="danger" link @click="removeTemplate(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>

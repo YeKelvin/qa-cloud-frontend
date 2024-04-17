@@ -19,7 +19,7 @@ const REQUIRED_WORKSPACE_PAGES = new Set([
   '/script/testplan',
   '/script/workspace/setting',
   '/system/workspace',
-  '/system/notice/robot',
+  '/system/notice/bot',
   '/schedule/job',
   '/schedule/job/log'
 ])

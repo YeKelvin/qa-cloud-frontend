@@ -42,7 +42,7 @@
           <el-button type="primary" link @click="duplicateDatabase(row)">复制</el-button>
           <el-button type="primary" link @click="cloneDatabase(row)">克隆</el-button>
           <el-button type="primary" link @click="moveDatabase(row)">移动</el-button>
-          <el-button type="primary" link @click="removeDatabase(row)">删除</el-button>
+          <el-button type="danger" link @click="removeDatabase(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>

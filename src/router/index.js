@@ -137,6 +137,23 @@ export const constantRoutes = [
         meta: { title: '作业日志', icon: 'sidebar-schedule-job-log' }
       }
     ]
+  },
+
+  {
+    path: '/messaging',
+    name: 'Messaging',
+    alwaysShow: true,
+    component: Layout,
+    redirect: 'noRedirect',
+    meta: { title: '消息中心', icon: 'sidebar-messaging' },
+    children: [
+      {
+        component: () => import('@/pages/messaging/notice/NoticeBot.vue'),
+        path: 'notice/bot',
+        name: 'NoticeBot',
+        meta: { title: '通知BOT', icon: 'sidebar-notice' }
+      }
+    ]
   }
   // 注意!!!不要把 404 放在这里，因为 asyncRoutes 中的路由是接在这后面的
 ]
@@ -191,12 +208,6 @@ export const asyncRoutes = [
         meta: { title: '空间管理', activeMenu: '/system/workspace' },
         component: () => import('@/pages/system/workspace/WorkspaceRestrictions.vue'),
         hidden: true
-      },
-      {
-        component: () => import('@/pages/system/message/NoticeRobot.vue'),
-        path: 'notice/robot',
-        name: 'NoticeRobot',
-        meta: { title: '消息管理', icon: 'sidebar-notification' }
       }
     ]
   },
@@ -230,7 +241,7 @@ export const asyncRoutes = [
     alwaysShow: true,
     component: Layout,
     redirect: 'noRedirect',
-    meta: { title: '开放平台', icon: 'sidebar-opencenter', roles: ['SYSTEM'] },
+    meta: { title: '开放中心', icon: 'sidebar-opencenter', roles: ['SYSTEM'] },
     children: [
       {
         component: () => import('@/pages/opencenter/application/Application.vue'),

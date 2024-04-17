@@ -101,7 +101,7 @@ import { isEmpty } from 'lodash-es'
 
 import { WorkspaceScope } from '@/api/enum'
 import * as TokenService from '@/api/opencenter/token'
-import * as WorkspaceService from '@/api/public/workspace'
+import * as WorkspaceService from '@/api/system/workspace'
 import * as PermissionService from '@/api/usercenter/permission'
 import useClipboard from '@/composables/useClipboard'
 

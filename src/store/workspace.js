@@ -2,7 +2,7 @@ import { isEmpty } from 'lodash-es'
 import { defineStore } from 'pinia'
 import { useRoute, useRouter } from 'vue-router'
 
-import * as WorkspaceService from '@/api/public/workspace'
+import * as WorkspaceService from '@/api/system/workspace'
 import { usePyMeterStore } from '@/store/pymeter'
 import { useUserStore } from '@/store/user'
 

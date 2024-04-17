@@ -78,17 +78,12 @@
             </el-form-item>
 
             <!-- 通知机器人 -->
-            <el-form-item label="结果通知：" prop="noticeRobots">
-              <el-select v-model="formData.noticeRobots" filterable multiple style="width: 100%" tag-type="danger">
-                <el-option
-                  v-for="item in noticeRobotList"
-                  :key="item.robotNo"
-                  :label="item.robotName"
-                  :value="item.robotNo"
-                >
-                  <span class="robot-type-option">
-                    <span>{{ item.robotName }}</span>
-                    <el-tag type="danger" size="small" disable-transitions>{{ RobotType[item.robotType] }}</el-tag>
+            <el-form-item label="结果通知：" prop="noticeBots">
+              <el-select v-model="formData.noticeBots" filterable multiple style="width: 100%" tag-type="danger">
+                <el-option v-for="item in noticeBotList" :key="item.botNo" :label="item.botName" :value="item.botNo">
+                  <span class="bot-type-option">
+                    <span>{{ item.botName }}</span>
+                    <el-tag type="danger" size="small" disable-transitions>{{ NoticeBotType[item.botType] }}</el-tag>
                   </span>
                 </el-option>
               </el-select>
@@ -117,8 +112,8 @@ import { assign, isEmpty } from 'lodash-es'
 
 import TestplanCollectionTree from './TestplanCollectionTree.vue'
 
-import { RobotType } from '@/api/enum'
-import * as MessageService from '@/api/public/message'
+import { NoticeBotType } from '@/api/enum'
+import * as NoticeService from '@/api/messaging/notice'
 import * as TestplanService from '@/api/script/testplan'
 import { useWorkspaceStore } from '@/store/workspace'
 
@@ -141,7 +136,7 @@ const workspaceStore = useWorkspaceStore()
 const elformRef = ref()
 const collectionTreeRef = ref()
 
-const noticeRobotList = ref([])
+const noticeBotList = ref([])
 const planNo = ref(route.query.planNo)
 const creation = computed(() => isEmpty(route.query.planNo))
 const formData = reactive({
@@ -151,10 +146,10 @@ const formData = reactive({
   scrumVersion: '',
   concurrency: '1',
   iterations: '1',
+  noticeBots: [],
   delay: '0',
   save: true,
   saveOnError: false,
-  noticeRobots: [],
   stopOnErrorCount: '3'
 })
 const formRules = {
@@ -183,7 +178,7 @@ watch(
 )
 
 onMounted(() => {
-  queryNoticeRobotAll()
+  queryNoticeBotAll()
   if (creation.value) return
   queryTestplan()
 })
@@ -201,9 +196,9 @@ const queryTestplan = () => {
 /**
  * 查询所有通知机器人
  */
-const queryNoticeRobotAll = () => {
-  MessageService.queryNoticeRobotAll({ workspaceNo: workspaceStore.workspaceNo }).then((response) => {
-    noticeRobotList.value = response.data
+const queryNoticeBotAll = () => {
+  NoticeService.queryNoticeBotAll({ workspaceNo: workspaceStore.workspaceNo }).then((response) => {
+    noticeBotList.value = response.data
   })
 }
 
@@ -311,7 +306,7 @@ const goBack = () => {
   padding: 20px;
 }
 
-.robot-type-option {
+.bot-type-option {
   display: flex;
   align-items: center;
   justify-content: space-between;

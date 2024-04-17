@@ -75,7 +75,7 @@ import MemberDialog from './WorkspaceMemberDialog.vue'
 import ModifyDialog from './WorkspaceModifyDialog.vue'
 
 import { WorkspaceScope } from '@/api/enum'
-import * as WorkspaceService from '@/api/public/workspace'
+import * as WorkspaceService from '@/api/system/workspace'
 import ConditionInput from '@/components/query-condition/ConditionInput.vue'
 import useQueryConditions from '@/composables/useQueryConditions'
 

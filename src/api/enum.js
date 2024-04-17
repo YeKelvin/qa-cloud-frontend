@@ -101,14 +101,15 @@ export const RestrictionState = {
   DISABLE: '禁用'
 }
 
-export const RobotState = {
+export const NoticeBotState = {
   ENABLE: '启用',
   DISABLE: '禁用'
 }
 
-export const RobotType = {
+export const NoticeBotType = {
   WECOM: '企业微信',
-  DINGTALK: '钉钉'
+  DINGTALK: '钉钉',
+  FEISHU: '飞书'
 }
 
 export const JobState = {

@@ -1,27 +1,24 @@
 <template>
   <el-dialog title="编辑通知机器人" width="50%" center @close="$emit('update:model-value', false)">
-    <el-form
-      ref="elformRef"
-      label-width="140px"
-      style="width: 100%; padding-right: 30px"
-      inline-message
-      :model="formData"
-      :rules="formRules"
-    >
-      <el-form-item label="机器人类型：" prop="robotType">
-        <el-radio-group v-model="formData.robotType" disabled>
+    <el-form ref="elformRef" label-width="120px" :model="formData" :rules="formRules">
+      <el-form-item label="机器人类型：" prop="botType">
+        <el-radio-group v-model="formData.botType">
           <el-radio value="WECOM">企业微信</el-radio>
-          <el-radio value="DINGTALK">钉钉</el-radio>
+          <el-radio value="DINGTALK" disabled>钉钉</el-radio>
+          <el-radio value="FEISHU" disabled>飞书</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="机器人名称：" prop="robotName">
-        <el-input v-model="formData.robotName" clearable />
+      <el-form-item label="机器人名称：" prop="botName">
+        <el-input v-model="formData.botName" clearable />
       </el-form-item>
-      <el-form-item label="机器人描述：" prop="robotDesc">
-        <el-input v-model="formData.robotDesc" clearable />
+      <el-form-item label="机器人描述：" prop="botDesc">
+        <el-input v-model="formData.botDesc" type="textarea" />
       </el-form-item>
-      <el-form-item label="Webhook Key：" prop="robotConfig.key">
-        <el-input v-model="formData.robotConfig.key" class="no-autofill-pwd" clearable />
+      <el-form-item label="Webhook：" prop="botWebhook">
+        <el-input v-model="formData.botWebhook" type="textarea" />
+      </el-form-item>
+      <el-form-item v-if="formData.botType !== 'WECOM'" label="加签密钥：" prop="botSecret">
+        <el-input v-model="formData.botSecret" clearable />
       </el-form-item>
       <el-form-item>
         <el-button type="danger" @click="submitForm()">保 存</el-button>
@@ -34,28 +31,27 @@
 <script setup>
 import { ElMessage, ElMessageBox } from 'element-plus'
 
-import * as MessageService from '@/api/public/message'
+import * as NoticeService from '@/api/messaging/notice'
 
 const emit = defineEmits(['update:model-value', 're-query'])
 const currentRow = inject('currentRow', null)
 const elformRef = ref()
 const formData = ref({
-  robotNo: '',
-  robotName: '',
-  robotDesc: '',
-  robotType: 'WECOM',
-  robotConfig: {
-    key: ''
-  }
+  botNo: '',
+  botName: '',
+  botDesc: '',
+  botType: '',
+  botSecret: '',
+  botWebhook: ''
 })
 const formRules = reactive({
-  robotName: [{ required: true, message: '机器人名称不能为空', trigger: 'blur' }],
-  robotType: [{ required: true, message: '机器人类型不能为空', trigger: 'blur' }],
-  'robotConfig.key': [{ required: true, message: '机器人配置不能为空', trigger: 'blur' }]
+  botName: [{ required: true, message: '机器人名称不能为空', trigger: 'blur' }],
+  botType: [{ required: true, message: '机器人类型不能为空', trigger: 'blur' }],
+  botWebhook: [{ required: true, message: '机器人Webhook地址不能为空', trigger: 'blur' }]
 })
 
 onMounted(() => {
-  MessageService.queryNoticeRobot({ robotNo: currentRow.value.robotNo }).then((response) => {
+  NoticeService.queryNoticeBot({ botNo: currentRow.value.botNo }).then((response) => {
     formData.value = response.data
   })
 })
@@ -84,7 +80,7 @@ const submitForm = async () => {
     .catch(() => true)
   if (error) return
   // 修改机器人
-  await MessageService.modifyNoticeRobot(formData.value)
+  await NoticeService.modifyNoticeBot(formData.value)
   // 成功提示
   ElMessage({ message: '编辑成功', type: 'info', duration: 2 * 1000 })
   // 关闭dialog
@@ -94,10 +90,4 @@ const submitForm = async () => {
 }
 </script>
 
-<style lang="scss" scoped>
-.no-autofill-pwd {
-  :deep(.el-input__inner) {
-    -webkit-text-security: disc !important;
-  }
-}
-</style>
+<style lang="scss" scoped></style>

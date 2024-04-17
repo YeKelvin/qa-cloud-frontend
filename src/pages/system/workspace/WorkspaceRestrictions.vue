@@ -43,7 +43,7 @@ import { ElMessage } from 'element-plus'
 
 import PermissionTable from './PermissionTable.vue'
 
-import * as WorkspaceService from '@/api/public/workspace'
+import * as WorkspaceService from '@/api/system/workspace'
 import * as GroupService from '@/api/usercenter/group'
 import * as UserService from '@/api/usercenter/user'
 
