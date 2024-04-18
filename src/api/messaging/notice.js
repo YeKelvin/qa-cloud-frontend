@@ -13,3 +13,5 @@ export const modifyNoticeBot = (data) => request.put('/messaging/notice/bot', da
 export const modifyNoticeBotState = (data) => request.put('/messaging/notice/bot/state', data)
 
 export const removeNoticeBot = (data) => request.delete('/messaging/notice/bot', { data: data })
+
+export const queryNoticeLogList = (params) => request.get('/messaging/notice/log/list', { params: params })

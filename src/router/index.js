@@ -152,6 +152,12 @@ export const constantRoutes = [
         path: 'notice/bot',
         name: 'NoticeBot',
         meta: { title: '通知BOT', icon: 'sidebar-notice' }
+      },
+      {
+        component: () => import('@/pages/messaging/notice/NoticeLog.vue'),
+        path: 'notice/log',
+        name: 'NoticeLog',
+        meta: { title: '通知日志', icon: 'sidebar-log' }
       }
     ]
   }

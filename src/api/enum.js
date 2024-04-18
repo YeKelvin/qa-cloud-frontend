@@ -101,6 +101,16 @@ export const RestrictionState = {
   DISABLE: '禁用'
 }
 
+export const NoticeEvent = {
+  TESTPLAN_EXECUTION_COMPLETED: '测试计划执行完成'
+}
+
+export const NoticeChannel = {
+  WECOM: '企业微信',
+  DINGTALK: '钉钉',
+  FEISHU: '飞书'
+}
+
 export const NoticeBotState = {
   ENABLE: '启用',
   DISABLE: '禁用'
