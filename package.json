@@ -52,7 +52,7 @@
     "ulid": "2.3.0",
     "vue": "3.4.23",
     "vue-hooks-plus": "1.8.9",
-    "vue-router": "4.3.1",
+    "vue-router": "4.3.2",
     "vuedraggable": "4.1.0"
   },
   "devDependencies": {
