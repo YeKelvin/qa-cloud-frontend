@@ -47,7 +47,7 @@ export const usePyMeterStore = defineStore('pymeter', {
     selectedScripts() {
       const workspaceNo = useWorkspaceStore().workspaceNo
       if (!(workspaceNo in this.selectedScriptStore)) {
-        this.selectedScriptStore[workspaceNo] = {}
+        this.selectedScriptStore[workspaceNo] = []
       }
       return this.selectedScriptStore[workspaceNo]
     },
@@ -251,7 +251,7 @@ export const usePyMeterStore = defineStore('pymeter', {
      * 移除已选择的集合元素
      */
     closeScript(rootNo) {
-      this.selectedScripts = this.selectedScripts.filter((item) => item !== rootNo)
+      this.setSelectedScripts(this.selectedScripts.filter((item) => item !== rootNo))
     },
 
     /**
@@ -303,7 +303,7 @@ export const usePyMeterStore = defineStore('pymeter', {
     setSelectedScripts(value) {
       const workspaceNo = useWorkspaceStore().workspaceNo
       if (!(workspaceNo in this.selectedScriptStore)) {
-        this.selectedScriptStore[workspaceNo] = {}
+        this.selectedScriptStore[workspaceNo] = []
       }
       this.selectedScriptStore[workspaceNo] = value
     },

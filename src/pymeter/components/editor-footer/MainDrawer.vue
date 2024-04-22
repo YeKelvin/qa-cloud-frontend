@@ -23,7 +23,7 @@
         </div>
         <div class="r-container">
           <!-- 清空当前面板数据按钮 -->
-          <el-tooltip content="清空所有" placement="bottom" :hide-after="0">
+          <el-tooltip content="清空面板数据" placement="bottom" :hide-after="0">
             <el-button type="danger" plain circle @click="clearCurrent">
               <SvgIcon icon-name="pymeter-broom" style="font-size: 16px" />
             </el-button>
