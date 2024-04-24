@@ -28,16 +28,28 @@
         <el-table-column prop="jobNo" label="作业编号" min-width="200" width="200" />
         <el-table-column prop="jobName" label="作业名称" min-width="150" />
         <el-table-column prop="jobType" label="作业对象" min-width="200">
-          <template #default="{ row }">{{ JobType[row.jobType] }}（{{ row.jobArgs.name }}）</template>
+          <template #default="{ row }">
+            <el-tag type="warning" style="font-size: 14px" disable-transitions>
+              {{ JobType[row.jobType] }}（{{ row.jobArgs.name }}）
+            </el-tag>
+          </template>
         </el-table-column>
         <el-table-column prop="triggerType" label="触发类型" min-width="100" width="100">
           <template #default="{ row }">{{ TriggerType[row.triggerType] }}</template>
         </el-table-column>
         <el-table-column prop="jobState" label="作业状态" min-width="100" width="100">
-          <template #default="{ row }">{{ JobState[row.jobState] }}</template>
+          <template #default="{ row }">
+            <el-tag :type="row.jobState === 'CLOSED' ? 'info' : 'primary'" style="font-size: 14px" disable-transitions>
+              {{ JobState[row.jobState] }}
+            </el-tag>
+          </template>
         </el-table-column>
         <el-table-column prop="createdTime" label="创建时间" min-width="180" width="180" />
-        <el-table-column prop="nextRunTime" label="下次运行时间" min-width="180" width="180" />
+        <el-table-column prop="nextRunTime" label="下次运行时间" min-width="180" width="180">
+          <template #default="{ row }">
+            <el-tag type="danger" style="font-size: 14px" disable-transitions>{{ row.nextRunTime }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column fixed="right" label="操作" min-width="200" width="200">
           <template #default="{ row }">
             <el-button type="primary" link @click="openJobDetails(row)">详情</el-button>

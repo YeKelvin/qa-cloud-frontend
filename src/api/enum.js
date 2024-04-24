@@ -149,6 +149,15 @@ export const JobEvent = {
   CLOSE: '关闭作业'
 }
 
+export const JobEventColor = {
+  ADD: 'success',
+  MODIFY: 'primary',
+  EXECUTE: 'danger',
+  PAUSE: 'warning',
+  RESUME: 'warning',
+  CLOSE: 'info'
+}
+
 export const ElementType = {
   COLLECTION: '测试集合',
   CONFIG: '配置器',

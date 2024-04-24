@@ -29,11 +29,15 @@
         <el-table-column prop="botName" label="机器人名称" min-width="150" />
         <el-table-column prop="botDesc" label="机器人描述" min-width="150" />
         <el-table-column prop="botType" label="机器人类型" min-width="100" width="100">
-          <template #default="{ row }">{{ NoticeBotType[row.botType] }}</template>
+          <template #default="{ row }">
+            <el-tag type="primary" style="font-size: 14px" disable-transitions>
+              {{ NoticeBotType[row.botType] }}
+            </el-tag>
+          </template>
         </el-table-column>
         <el-table-column prop="state" label="状态" min-width="80" width="80">
           <template #default="{ row }">
-            <el-tag :type="row.state === 'ENABLE' ? 'primary' : 'warning'" disable-transitions>
+            <el-tag :type="row.state === 'ENABLE' ? 'primary' : 'warning'" style="font-size: 14px" disable-transitions>
               {{ NoticeBotState[row.state] }}
             </el-tag>
           </template>

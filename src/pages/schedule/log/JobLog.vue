@@ -25,10 +25,18 @@
         <el-table-column prop="jobNo" label="作业编号" min-width="200" width="200" />
         <el-table-column prop="jobName" label="作业名称" min-width="100" />
         <el-table-column prop="jobType" label="作业对象" min-width="200">
-          <template #default="{ row }">{{ JobType[row.jobType] }}（{{ row.jobArgs.name }}）</template>
+          <template #default="{ row }">
+            <el-tag type="warning" style="font-size: 14px" disable-transitions>
+              {{ JobType[row.jobType] }}（{{ row.jobArgs.name }}）
+            </el-tag>
+          </template>
         </el-table-column>
         <el-table-column prop="jobEvent" label="操作类型" min-width="100" width="100">
-          <template #default="{ row }">{{ JobEvent[row.jobEvent] }}</template>
+          <template #default="{ row }">
+            <el-tag :type="JobEventColor[row.jobEvent]" style="font-size: 14px" disable-transitions>
+              {{ JobEvent[row.jobEvent] }}
+            </el-tag>
+          </template>
         </el-table-column>
         <el-table-column prop="operationBy" label="操作人" min-width="100" />
         <el-table-column prop="operationTime" label="操作时间" min-width="180" width="180">
@@ -57,7 +65,7 @@
 import { Search, Refresh } from '@element-plus/icons-vue'
 import dayjs from 'dayjs'
 
-import { JobEvent, JobType } from '@/api/enum'
+import { JobType, JobEvent, JobEventColor } from '@/api/enum'
 import * as ScheduleService from '@/api/schedule/job'
 import ConditionInput from '@/components/query-condition/ConditionInput.vue'
 import ConditionSelect from '@/components/query-condition/ConditionSelect.vue'
