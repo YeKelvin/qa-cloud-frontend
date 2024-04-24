@@ -33,7 +33,7 @@
         <el-table-column prop="roleType" label="角色类型" min-width="150">
           <template #default="{ row }">{{ RoleType[row.roleType] }}</template>
         </el-table-column>
-        <el-table-column prop="state" label="状态" min-width="70" width="70">
+        <el-table-column prop="state" label="状态" min-width="80" width="80">
           <template #default="{ row }">
             <el-tag :type="row.state === 'ENABLE' ? 'primary' : 'warning'" disable-transitions>
               {{ RoleState[row.state] }}

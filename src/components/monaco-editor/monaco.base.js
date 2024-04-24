@@ -5,15 +5,15 @@ import 'monaco-editor/esm/vs/editor/editor.all.js'
 import 'monaco-editor/esm/vs/language/css/monaco.contribution.js'
 import 'monaco-editor/esm/vs/language/html/monaco.contribution.js'
 import 'monaco-editor/esm/vs/language/json/monaco.contribution.js'
-import 'monaco-editor/esm/vs/language/typescript/monaco.contribution.js'
+// import 'monaco-editor/esm/vs/language/typescript/monaco.contribution.js'
 import 'monaco-editor/esm/vs/basic-languages/python/python.contribution.js'
 import 'monaco-editor/esm/vs/basic-languages/sql/sql.contribution.js'
 
 // import 'monaco-editor/esm/vs/editor/standalone/browser/inspectTokens/inspectTokens.js'
-import 'monaco-editor/esm/vs/editor/standalone/browser/quickAccess/standaloneHelpQuickAccess.js'
-import 'monaco-editor/esm/vs/editor/standalone/browser/quickAccess/standaloneGotoLineQuickAccess.js'
-import 'monaco-editor/esm/vs/editor/standalone/browser/quickAccess/standaloneGotoSymbolQuickAccess.js'
-import 'monaco-editor/esm/vs/editor/standalone/browser/quickAccess/standaloneCommandsQuickAccess.js'
+// import 'monaco-editor/esm/vs/editor/standalone/browser/quickAccess/standaloneHelpQuickAccess.js'
+// import 'monaco-editor/esm/vs/editor/standalone/browser/quickAccess/standaloneGotoLineQuickAccess.js'
+// import 'monaco-editor/esm/vs/editor/standalone/browser/quickAccess/standaloneGotoSymbolQuickAccess.js'
+// import 'monaco-editor/esm/vs/editor/standalone/browser/quickAccess/standaloneCommandsQuickAccess.js'
 import 'monaco-editor/esm/vs/editor/standalone/browser/referenceSearch/standaloneReferenceSearch.js'
 import 'monaco-editor/esm/vs/editor/standalone/browser/toggleHighContrast/toggleHighContrast.js'
 
@@ -26,26 +26,31 @@ import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
 
 import { JSON5_LANG_DEFINE, JSON5_LANG_CONFIG } from './language/json5'
 import { LOG_LANG_DEFINE, LOG_LANG_COLORS } from './language/log'
-import { PYMETER_COMPLETIONS, PYMETER_FUNCTION_COMPLETIONS } from './language/pymeter'
-import { PYTHON_LANG_DEFINE, PYTHON_LANG_COLORS, PYTHON_KEYWORDS_COMPLETIONS } from './language/python'
+import { PYMETER_KEYWORD_COMPLETIONS, PYMETER_FUNCTION_COMPLETIONS } from './language/pymeter'
+import { PYTHON_LANG_DEFINE, PYTHON_LANG_COLORS, PYTHON_KEYWORD_COMPLETIONS } from './language/python'
 
 self.MonacoEnvironment = {
   getWorker(_, label) {
     if (label === 'json') {
+      // eslint-disable-next-line new-cap
       return new jsonWorker()
     }
     // if (label === 'css' || label === 'scss' || label === 'less') {
     //   return new cssWorker()
     // }
     if (label === 'html' || label === 'handlebars' || label === 'razor') {
+      // eslint-disable-next-line new-cap
       return new htmlWorker()
     }
     // if (label === 'typescript' || label === 'javascript') {
     //   return new tsWorker()
     // }
+    // eslint-disable-next-line new-cap
     return new editorWorker()
   }
 }
+
+const COMPLETION_PROVIDERS = []
 
 /**
  * 注册代码提示
@@ -54,14 +59,14 @@ const registerCompletion = (language, provider, triggerCharacters = null) => {
   monaco.languages.registerCompletionItemProvider(language, {
     triggerCharacters: triggerCharacters,
     provideCompletionItems: (model, position) => {
-      const word = model.getWordUntilPosition(position)
+      const wordPos = model.getWordUntilPosition(position)
       const range = {
         startLineNumber: position.lineNumber,
         endLineNumber: position.lineNumber,
-        startColumn: word.startColumn,
-        endColumn: word.endColumn
+        startColumn: wordPos.startColumn - 1,
+        endColumn: wordPos.endColumn
       }
-      return { suggestions: provider(range) }
+      return { suggestions: provider(range, wordPos.word) }
     }
   })
 }
@@ -82,9 +87,9 @@ monaco.languages.setMonarchTokensProvider('log', LOG_LANG_DEFINE)
 // * python
 // *************************************************************************
 monaco.languages.setMonarchTokensProvider('python', PYTHON_LANG_DEFINE)
-registerCompletion('python', PYTHON_KEYWORDS_COMPLETIONS)
-registerCompletion('python', PYMETER_COMPLETIONS)
-registerCompletion('python', PYMETER_FUNCTION_COMPLETIONS)
+registerCompletion('python', PYTHON_KEYWORD_COMPLETIONS)
+registerCompletion('python', PYMETER_KEYWORD_COMPLETIONS)
+registerCompletion('python', PYMETER_FUNCTION_COMPLETIONS, '$')
 
 // *************************************************************************
 // * theme

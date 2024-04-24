@@ -49,7 +49,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="state" label="状态" min-width="70" width="70">
+        <el-table-column prop="state" label="状态" min-width="80" width="80">
           <template #default="{ row }">
             <el-tag :type="row.state === 'ENABLE' ? 'primary' : 'warning'" disable-transitions>
               {{ UserState[row.state] }}

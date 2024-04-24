@@ -29,7 +29,7 @@
         <el-table-column prop="appName" label="应用名称" min-width="150" />
         <el-table-column prop="appCode" label="应用代码" min-width="150" />
         <el-table-column prop="appDesc" label="应用描述" min-width="150" />
-        <el-table-column prop="state" label="状态" min-width="70" width="70">
+        <el-table-column prop="state" label="状态" min-width="80" width="80">
           <template #default="{ row }">
             <el-tag :type="row.state === 'ENABLE' ? 'primary' : 'warning'" disable-transitions>
               {{ ApplicationState[row.state] }}

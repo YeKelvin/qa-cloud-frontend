@@ -1,6 +1,6 @@
 import monaco from '../monaco.base.js'
 
-const PYMETER_COMPLETIONS = (range) => {
+const PYMETER_KEYWORD_COMPLETIONS = (range, word) => {
   return [
     {
       label: 'vars.put',
@@ -37,7 +37,7 @@ const PYMETER_COMPLETIONS = (range) => {
   ]
 }
 
-const PYMETER_FUNCTION_COMPLETIONS = (range) => {
+const PYMETER_FUNCTION_COMPLETIONS = (range, word) => {
   return [
     {
       label: '${__fake()}',
@@ -122,4 +122,4 @@ const PYMETER_FUNCTION_COMPLETIONS = (range) => {
   ]
 }
 
-export { PYMETER_COMPLETIONS, PYMETER_FUNCTION_COMPLETIONS }
+export { PYMETER_KEYWORD_COMPLETIONS, PYMETER_FUNCTION_COMPLETIONS }

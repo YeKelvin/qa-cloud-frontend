@@ -31,7 +31,7 @@
         <el-table-column prop="botType" label="机器人类型" min-width="100" width="100">
           <template #default="{ row }">{{ NoticeBotType[row.botType] }}</template>
         </el-table-column>
-        <el-table-column prop="state" label="状态" min-width="70" width="70">
+        <el-table-column prop="state" label="状态" min-width="80" width="80">
           <template #default="{ row }">
             <el-tag :type="row.state === 'ENABLE' ? 'primary' : 'warning'" disable-transitions>
               {{ NoticeBotState[row.state] }}
