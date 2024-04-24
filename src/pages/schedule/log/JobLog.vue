@@ -31,7 +31,7 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="jobEvent" label="操作类型" min-width="100" width="100">
+        <el-table-column prop="jobEvent" label="操作类型" min-width="120" width="120">
           <template #default="{ row }">
             <el-tag :type="JobEventColor[row.jobEvent]" style="font-size: 14px" disable-transitions>
               {{ JobEvent[row.jobEvent] }}
@@ -75,7 +75,6 @@ import { useWorkspaceStore } from '@/store/workspace'
 const workspaceStore = useWorkspaceStore()
 
 const { queryConditions, resetQueryConditions } = useQueryConditions({
-  workspaceNo: workspaceStore.workspaceNo,
   logNo: '',
   jobNo: '',
   jobName: '',
@@ -88,7 +87,6 @@ const tableData = ref([])
 const page = ref(1)
 const pageSize = ref(10)
 const total = ref(0)
-const currentRow = ref(null)
 
 watch(
   () => workspaceStore.workspaceNo,
@@ -102,12 +100,15 @@ onMounted(() => {
 })
 
 const query = () => {
-  ScheduleService.queryJobLogList({ ...queryConditions, page: page.value, pageSize: pageSize.value }).then(
-    (response) => {
-      tableData.value = response.data.list
-      total.value = response.data.total
-    }
-  )
+  ScheduleService.queryJobLogList({
+    workspaceNo: workspaceStore.workspaceNo,
+    ...queryConditions,
+    page: page.value,
+    pageSize: pageSize.value
+  }).then((response) => {
+    tableData.value = response.data.list
+    total.value = response.data.total
+  })
 }
 
 const onSizeChange = (val) => {

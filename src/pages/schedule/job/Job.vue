@@ -27,7 +27,7 @@
         <!-- 列定义 -->
         <el-table-column prop="jobNo" label="作业编号" min-width="200" width="200" />
         <el-table-column prop="jobName" label="作业名称" min-width="150" />
-        <el-table-column prop="jobType" label="作业对象" min-width="200">
+        <el-table-column prop="jobType" label="作业对象" min-width="250">
           <template #default="{ row }">
             <el-tag type="warning" style="font-size: 14px" disable-transitions>
               {{ JobType[row.jobType] }}（{{ row.jobArgs.name }}）
@@ -45,7 +45,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="createdTime" label="创建时间" min-width="180" width="180" />
-        <el-table-column prop="nextRunTime" label="下次运行时间" min-width="180" width="180">
+        <el-table-column prop="nextRunTime" label="下次运行时间" min-width="200" width="200">
           <template #default="{ row }">
             <el-tag type="danger" style="font-size: 14px" disable-transitions>{{ row.nextRunTime }}</el-tag>
           </template>
@@ -100,7 +100,6 @@ import { useWorkspaceStore } from '@/store/workspace'
 const workspaceStore = useWorkspaceStore()
 
 const { queryConditions, resetQueryConditions } = useQueryConditions({
-  workspaceNo: workspaceStore.workspaceNo,
   jobNo: '',
   jobName: '',
   jobDesc: '',
@@ -132,7 +131,12 @@ onMounted(() => {
  * 查询
  */
 const query = () => {
-  ScheduleService.queryJobList({ ...queryConditions, page: page.value, pageSize: pageSize.value }).then((response) => {
+  ScheduleService.queryJobList({
+    workspaceNo: workspaceStore.workspaceNo,
+    ...queryConditions,
+    page: page.value,
+    pageSize: pageSize.value
+  }).then((response) => {
     tableData.value = response.data.list
     total.value = response.data.total
   })

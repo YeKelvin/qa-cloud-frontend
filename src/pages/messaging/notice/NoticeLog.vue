@@ -101,6 +101,13 @@ const page = ref(1)
 const pageSize = ref(10)
 const total = ref(0)
 
+watch(
+  () => workspaceStore.workspaceNo,
+  (val) => {
+    if (val) query()
+  }
+)
+
 onMounted(() => {
   query()
 })

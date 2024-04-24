@@ -28,7 +28,7 @@
         <el-table-column prop="botNo" label="机器人编号" min-width="200" width="200" />
         <el-table-column prop="botName" label="机器人名称" min-width="150" />
         <el-table-column prop="botDesc" label="机器人描述" min-width="150" />
-        <el-table-column prop="botType" label="机器人类型" min-width="100" width="100">
+        <el-table-column prop="botType" label="机器人类型" min-width="120" width="120">
           <template #default="{ row }">
             <el-tag type="primary" style="font-size: 14px" disable-transitions>
               {{ NoticeBotType[row.botType] }}
@@ -92,7 +92,6 @@ import { useWorkspaceStore } from '@/store/workspace'
 
 const workspaceStore = useWorkspaceStore()
 const { queryConditions, resetQueryConditions } = useQueryConditions({
-  workspaceNo: workspaceStore.workspaceNo,
   botNo: '',
   botName: '',
   botDesc: '',
@@ -125,6 +124,7 @@ onMounted(() => {
  */
 const query = () => {
   NoticeService.queryNoticeBotList({
+    workspaceNo: workspaceStore.workspaceNo,
     ...queryConditions,
     page: page.value,
     pageSize: pageSize.value
