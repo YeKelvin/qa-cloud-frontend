@@ -228,6 +228,9 @@ const jobCycleRange = ref([])
 const requestData = computed(() => {
   const data = { ...jobData.value }
   data.triggerArgs = triggerData.value
+  delete data.jobArgs.plan_no
+  delete data.jobArgs.worker_no
+  delete data.jobArgs.collection_no
   switch (jobData.value.jobType) {
     case 'TESTPLAN': {
       data.jobArgs.plan_no = funcData.value.plan_no
@@ -277,6 +280,19 @@ watch(
         queryCollectionAll()
         break
       }
+    }
+  }
+)
+
+watch(
+  () => jobData.value.triggerType,
+  () => {
+    if (jobData.value.triggerType === 'CRON') {
+      triggerData.value.run_date = ''
+    } else {
+      triggerData.value.start_date = ''
+      triggerData.value.end_date = ''
+      triggerData.value.crontab = ''
     }
   }
 )
