@@ -26,10 +26,13 @@
         <span class="workspace-name">{{ node.label }}</span>
         <span style="display: flex; align-items: center">
           <!-- 空间类型 -->
-          <template v-if="data.workspaceScope == 'PRIVATE'">
-            <el-tag size="small" type="danger" style="margin-right: 10px" disable-transitions>个人</el-tag>
+          <template v-if="data.workspaceScope == 'DEFAULT'">
+            <el-tag size="small" type="danger" style="margin-right: 10px" disable-transitions>默认</el-tag>
           </template>
-          <template v-if="data.workspaceScope == 'PROTECTED'">
+          <template v-if="data.workspaceScope == 'PERSONAL'">
+            <el-tag size="small" type="primary" style="margin-right: 10px" disable-transitions>个人</el-tag>
+          </template>
+          <template v-if="data.workspaceScope == 'TEAM'">
             <el-tag size="small" type="warning" style="margin-right: 10px" disable-transitions>团队</el-tag>
           </template>
           <template v-if="data.workspaceScope == 'PUBLIC'">

@@ -47,7 +47,9 @@
         <el-table-column prop="createdTime" label="创建时间" min-width="180" width="180" />
         <el-table-column prop="nextRunTime" label="下次运行时间" min-width="200" width="200">
           <template #default="{ row }">
-            <el-tag type="danger" style="font-size: 14px" disable-transitions>{{ row.nextRunTime }}</el-tag>
+            <el-tag v-if="row.nextRunTime" type="danger" style="font-size: 14px" disable-transitions>
+              {{ row.nextRunTime }}
+            </el-tag>
           </template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" min-width="200" width="200">

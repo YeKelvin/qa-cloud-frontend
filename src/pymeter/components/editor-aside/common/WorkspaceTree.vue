@@ -4,10 +4,13 @@
       <!-- 空间名称 -->
       <span class="workspace-name">{{ node.label }}</span>
       <!-- 标签 -->
-      <template v-if="data.workspaceScope == 'PRIVATE'">
-        <el-tag size="small" type="danger" style="margin-left: 5px" disable-transitions>个人</el-tag>
+      <template v-if="data.workspaceScope == 'DEFAULT'">
+        <el-tag size="small" type="danger" style="margin-left: 5px" disable-transitions>默认</el-tag>
       </template>
-      <template v-if="data.workspaceScope == 'PROTECTED'">
+      <template v-if="data.workspaceScope == 'PERSONAL'">
+        <el-tag size="small" type="primary" style="margin-left: 5px" disable-transitions>个人</el-tag>
+      </template>
+      <template v-if="data.workspaceScope == 'TEAM'">
         <el-tag size="small" type="warning" style="margin-left: 5px" disable-transitions>团队</el-tag>
       </template>
       <template v-if="data.workspaceScope == 'PUBLIC'">

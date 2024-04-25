@@ -13,8 +13,7 @@
       </el-form-item>
       <el-form-item label="空间作用域：" prop="workspaceScope">
         <el-select v-model="formData.workspaceScope" style="width: 100%">
-          <el-option label="个人" value="PRIVATE" />
-          <el-option label="团队" value="PROTECTED" />
+          <el-option label="团队" value="TEAM" />
           <el-option label="公共" value="PUBLIC" />
         </el-select>
       </el-form-item>

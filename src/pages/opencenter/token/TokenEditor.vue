@@ -45,7 +45,7 @@
               >
                 <div style="display: flex; align-items: center; justify-content: space-between">
                   <span>{{ ws.workspaceName }}</span>
-                  <el-tag :type="ws.workspaceScope === 'PROTECTED' ? 'warning' : 'primary'" disable-transitions>
+                  <el-tag :type="ws.workspaceScope === 'TEAM' ? 'warning' : 'primary'" disable-transitions>
                     {{ WorkspaceScope[ws.workspaceScope] }}
                   </el-tag>
                 </div>
@@ -183,7 +183,7 @@ const query = () => {
  * 查询空间列表
  */
 const queryWorkspaces = () => {
-  WorkspaceService.queryWorkspaceAll({ scopes: ['PROTECTED', 'PUBLIC'] }).then((response) => {
+  WorkspaceService.queryWorkspaceAll({ scopes: ['TEAM', 'PUBLIC'] }).then((response) => {
     workspaceList.value = response.data
   })
 }

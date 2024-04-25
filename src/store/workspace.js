@@ -59,18 +59,23 @@ export const useWorkspaceStore = defineStore('workspace', {
     async loadsWorkspaceList() {
       // 查询空间列表
       const response = await WorkspaceService.queryWorkspaceAll({ userNo: useUserStore().number })
-      const privateList = []
-      const protectedList = []
+      const defaultList = []
+      const personalList = []
+      const teamList = []
       const publicList = []
       // 分类存储
       response.data.forEach((item) => {
         switch (item.workspaceScope) {
-          case 'PRIVATE': {
-            privateList.push(item)
+          case 'DEFAULT': {
+            defaultList.push(item)
             break
           }
-          case 'PROTECTED': {
-            protectedList.push(item)
+          case 'PERSONAL': {
+            personalList.push(item)
+            break
+          }
+          case 'TEAM': {
+            teamList.push(item)
             break
           }
           case 'PUBLIC': {
@@ -80,9 +85,9 @@ export const useWorkspaceStore = defineStore('workspace', {
         }
       })
       // 存储默认空间编号
-      this.defaultNo = privateList[0].workspaceNo
+      this.defaultNo = defaultList[0].workspaceNo
       // 存储所有空间，置顶个人空间
-      this.workspaceList = [...privateList, ...protectedList, ...publicList]
+      this.workspaceList = [...defaultList, ...personalList, ...teamList, ...publicList]
       // 检验当前空间是否有效
       this.validateCurrent()
     },

@@ -26,34 +26,34 @@
         <!-- 空数据提示 -->
         <template #empty><el-empty /></template>
         <!-- 列定义 -->
-        <el-table-column prop="logNo" label="日志编号" min-width="260" width="260" />
-        <el-table-column prop="event" label="触发事件" min-width="100">
+        <el-table-column prop="logNo" label="日志编号" min-width="280" width="280" />
+        <el-table-column prop="event" label="触发事件" min-width="150">
           <template #default="{ row }">
             <el-tag type="warning" style="font-size: 14px" disable-transitions>
               {{ NoticeEvent[row.event] }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="channel" label="通知渠道" min-width="100">
+        <el-table-column prop="channel" label="通知渠道" min-width="80">
           <template #default="{ row }">
             <el-tag type="primary" style="font-size: 14px" disable-transitions>
               {{ NoticeChannel[row.channel] }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="content" label="通知内容" min-width="200">
+        <el-table-column prop="content" label="通知内容" min-width="250">
           <template #default="{ row }">
             <el-text truncated line-clam="2">{{ row.content }}</el-text>
           </template>
         </el-table-column>
-        <el-table-column prop="success" label="发送状态" min-width="50">
+        <el-table-column prop="success" label="发送状态" min-width="80">
           <template #default="{ row }">
             <el-tag :type="row.success == true ? 'success' : 'danger'" style="font-size: 14px" disable-transitions>
               {{ row.success == true ? '成功' : '失败' }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="notifiedTime" label="发送时间" min-width="90">
+        <el-table-column prop="notifiedTime" label="发送时间" min-width="120">
           <template #default="{ row }">{{ row.notifiedTime }}</template>
         </el-table-column>
       </el-table>

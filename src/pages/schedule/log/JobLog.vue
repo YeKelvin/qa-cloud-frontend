@@ -23,8 +23,8 @@
         <!-- 列定义 -->
         <el-table-column prop="logNo" label="日志编号" min-width="280" width="280" />
         <el-table-column prop="jobNo" label="作业编号" min-width="200" width="200" />
-        <el-table-column prop="jobName" label="作业名称" min-width="100" />
-        <el-table-column prop="jobType" label="作业对象" min-width="200">
+        <el-table-column prop="jobName" label="作业名称" min-width="150" />
+        <el-table-column prop="jobType" label="作业对象" min-width="250">
           <template #default="{ row }">
             <el-tag type="warning" style="font-size: 14px" disable-transitions>
               {{ JobType[row.jobType] }}（{{ row.jobArgs.name }}）

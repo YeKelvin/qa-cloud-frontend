@@ -75,8 +75,9 @@ export const DatabaseType = {
 }
 
 export const WorkspaceScope = {
-  PRIVATE: '个人',
-  PROTECTED: '团队',
+  DEFAULT: '默认',
+  PERSONAL: '个人',
+  TEAM: '团队',
   PUBLIC: '公共'
 }
 

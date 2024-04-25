@@ -32,10 +32,10 @@
         <el-table-column prop="workspaceDesc" label="空间描述" min-width="200" />
         <el-table-column fixed="right" label="操作" min-width="280" width="280">
           <template #default="{ row }">
-            <template v-if="row.workspaceScope == 'PROTECTED'">
+            <template v-if="row.workspaceScope == 'TEAM'">
               <el-button type="primary" link @click="openMemberDialog(row)">成员管理</el-button>
             </template>
-            <template v-if="row.workspaceScope != 'PRIVATE'">
+            <template v-if="row.workspaceScope != 'DEFAULT'">
               <el-button type="primary" link @click="gotoRestrictionManager(row)">限制管理</el-button>
               <el-button type="primary" link @click="openModifyDialog(row)">编辑</el-button>
               <el-button type="danger" link @click="deleteWorkspace(row)">删除</el-button>

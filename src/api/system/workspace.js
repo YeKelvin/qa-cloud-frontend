@@ -14,6 +14,8 @@ export const createWorkspace = (data) => request.post('/system/workspace', data)
 
 export const modifyWorkspace = (data) => request.put('/system/workspace', data)
 
+export const modifyWorkspaceState = (data) => request.put('/system/workspace/state', data)
+
 export const deleteWorkspace = (data) => request.delete('/system/workspace', { data: data })
 
 export const queryWorkspaceMemberAll = (params) => request.get('/system/workspace/member/all', { params: params })
