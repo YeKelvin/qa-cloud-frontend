@@ -69,11 +69,11 @@
     "object-shorthand": "off",
     "space-before-function-paren": 0,
 
-    "vue/no-v-html": "off",
     "vue/require-default-prop": "off",
     "vue/require-explicit-emits": "off",
-    "vue/prefer-import-from-vue": "off",
+    "vue/no-v-html": "off",
     "vue/no-v-text-v-html-on-component": "off",
+    "vue/prefer-import-from-vue": "off",
     "vue/singleline-html-element-content-newline": "off",
     "vue/multi-word-component-names": "off",
     "vue/max-attributes-per-line": [
@@ -101,6 +101,7 @@
 
     "import/first": "error",
     "import/extensions": "off",
+    "import/newline-after-import": ["error", { "count": 1 }],
     "import/no-duplicates": "error",
     "import/no-unresolved": [0],
     "import/no-absolute-path": "off",
@@ -109,14 +110,12 @@
     "import/order": [
       "error",
       {
-        // 对导入模块进行分组
-        "groups": ["builtin", "external", "internal", "parent", "sibling", "index", "object", "type", "unknown"],
-        // newlines-between 不同组之间是否进行换行
+        "groups": ["builtin", "external", "internal", ["parent", "sibling"], "index", "object", "type", "unknown"],
         "newlines-between": "always",
-        // alphabetize 根据字母顺序对每个组内的顺序进行排序
         "alphabetize": {
           "order": "asc",
-          "caseInsensitive": true
+          "orderImportKind": "asc",
+          "caseInsensitive": false
         }
       }
     ],

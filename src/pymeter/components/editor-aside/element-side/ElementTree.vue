@@ -109,7 +109,7 @@ watch(
 )
 watch(
   () => pymeterStore.pendingExpandedElementNo,
-  (val) => {
+  val => {
     const node = eltreeRef.value.getNode(val)
     if (!node) return
     node.expanded = true
@@ -118,7 +118,7 @@ watch(
 )
 watch(
   () => props.scripts,
-  (val) => {
+  val => {
     if (!val) return
     queryElementsTree()
   },
@@ -159,13 +159,13 @@ const queryElementsTree = (expandtop = false) => {
     return
   }
   // 根据列表查询元素及其子代
-  ElementService.queryElementTreeByRoots({ roots: props.scripts }).then((response) => {
+  ElementService.queryElementTreeByRoots({ roots: props.scripts }).then(response => {
     // 存储列表
     elementList.value = response.data
     nextTick(() => {
       // 选中的节点保持高亮
       currentKey.value && eltreeRef.value && eltreeRef.value.setCurrentKey(currentKey.value)
-      elementList.value.forEach((item) => {
+      elementList.value.forEach(item => {
         // 顶级节点添加 padding-bottom: 10px
         addTreeNodePaddingBottom(item.elementNo)
         // 自动展开顶级节点
@@ -178,7 +178,7 @@ const queryElementsTree = (expandtop = false) => {
   })
 }
 
-const addTreeNodePaddingBottom = (collectionNo) => {
+const addTreeNodePaddingBottom = collectionNo => {
   if (!eltreeRef.value) return
   const treenode = eltreeRef.value.$el.querySelector(`.el-tree-node[data-key="${collectionNo}"]`)
   if (!treenode) return
@@ -213,7 +213,7 @@ const handleNodeClick = (data, node) => {
 /**
  * el-tree handler
  */
-const handleNodeDBClick = (node) => {
+const handleNodeDBClick = node => {
   clearTimeout(clickTimer) // 清除计时器
   toggleNodeExpanded(node)
 }
@@ -265,9 +265,9 @@ const handleNodeDrop = (draggingNode, dropNode, dropType) => {
  * 判断节点能否被拖拽
  * @param {*} draggingNode 拖曳的节点
  */
-const allowDrag = (draggingNode) => {
+const allowDrag = draggingNode => {
   // Collection 不允许拖拽
-  if (draggingNode.data.elementType === 'COLLECTION') return false
+  if (['COLLECTION', 'SNIPPET'].includes(draggingNode.data.elementType)) return false
   // 记录拖拽节点的父元素编号，因为拖拽的时候拿不到
   draggingParentNo.value = draggingNode.parent.data.elementNo
   return true
@@ -336,7 +336,7 @@ const allowDrop = (draggingNode, dropNode, type) => {
 /**
  * 通过快捷键剪切元素至剪贴板
  */
-const cutByShortcut = (e) => {
+const cutByShortcut = e => {
   if (e.repeat) return
   if (e.key === 'x' && (isMacOS.value ? e.metaKey : e.ctrlKey)) {
     e.preventDefault() // 阻止浏览器默认快捷键
@@ -351,7 +351,7 @@ const cutByShortcut = (e) => {
 /**
  * 通过快捷键复制元素至剪贴板
  */
-const copyByShortcut = (e) => {
+const copyByShortcut = e => {
   if (e.repeat) return
   if (e.key === 'c' && (isMacOS.value ? e.metaKey : e.ctrlKey)) {
     e.preventDefault() // 阻止浏览器默认快捷键
@@ -397,7 +397,7 @@ const debouncedPasteElement = debounce(
 /**
  * 通过快捷键粘贴元素
  */
-const pasteByShortcut = (e) => {
+const pasteByShortcut = e => {
   if (e.repeat) return
   if (e.key === 'v' && (isMacOS.value ? e.metaKey : e.ctrlKey)) {
     e.preventDefault()
@@ -453,7 +453,7 @@ const debouncedDuplicateElement = debounce(
 /**
  * 通过快捷键复制元素
  */
-const duplicateByShortcut = async (e) => {
+const duplicateByShortcut = async e => {
   if (e.repeat) return
   if (e.key === 'd' && (isMacOS.value ? e.metaKey : e.ctrlKey)) {
     e.preventDefault()
@@ -482,7 +482,7 @@ const debouncedToggleElementState = debounce(
 /**
  * 通过快捷键切换元素状态
  */
-const toggleStateByShortcut = (e) => {
+const toggleStateByShortcut = e => {
   if (e.repeat) return
   if (e.key === '/' && (isMacOS.value ? e.metaKey : e.ctrlKey)) {
     e.preventDefault()
@@ -535,7 +535,7 @@ const deleteElement = debounce(
 /**
  * 通过快捷键删除元素
  */
-const deleteByShortcut = async (e) => {
+const deleteByShortcut = async e => {
   if (e.repeat) return
   if (isMacOS.value ? e.key === 'Backspace' : e.key === 'Delete') {
     e.preventDefault()
@@ -543,7 +543,7 @@ const deleteByShortcut = async (e) => {
   }
 }
 
-const getElementPath = (node) => {
+const getElementPath = node => {
   if (!node) return
   if (node.level === 1) return
 
