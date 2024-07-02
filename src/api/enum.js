@@ -267,8 +267,8 @@ export const PropertyDefinition = {
 
   // ForeachController
   ForeachController__target: '遍历项目',
-  ForeachController__iter: '遍历对象',
-  ForeachController__type: '遍历对象类型',
+  ForeachController__iterable: '遍历对象',
+  ForeachController__source: '遍历对象类型',
   ForeachController__delay: '遍历延迟时间',
 
   // TransactionController

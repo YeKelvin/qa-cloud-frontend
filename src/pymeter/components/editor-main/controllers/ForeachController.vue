@@ -18,19 +18,22 @@
 
       <!-- 变量名称 -->
       <el-form-item label="变量名称：" prop="elementProps.ForeachController__target">
-        <FxInput v-model="elementData.elementProps.ForeachController__target" placeholder="目标变量名称" />
+        <FxInput
+          v-model="elementData.elementProps.ForeachController__target"
+          placeholder="当前迭代项的变量名称，多个时用逗号分隔"
+        />
       </el-form-item>
 
       <!-- 遍历数组 -->
-      <el-form-item label="遍历数组：" prop="elementProps.ForeachController__iter">
+      <el-form-item label="遍历数组：" prop="elementProps.ForeachController__iterable">
         <div style="width: 100%; margin-bottom: 20px">
-          <el-radio-group v-model="elementData.elementProps.ForeachController__type">
-            <el-radio value="OBJECT">从变量中读取数组</el-radio>
+          <el-radio-group v-model="elementData.elementProps.ForeachController__source">
+            <el-radio value="VARIABLE">从变量中读取数组</el-radio>
             <el-radio value="CUSTOM">自定义数组</el-radio>
           </el-radio-group>
-          <template v-if="elementData.elementProps.ForeachController__type == 'OBJECT'">
+          <template v-if="elementData.elementProps.ForeachController__source == 'VARIABLE'">
             <FxInput
-              v-model="elementData.elementProps.ForeachController__iter"
+              v-model="elementData.elementProps.ForeachController__iterable"
               placeholder="对象名称"
               style="width: 100%"
             >
@@ -41,7 +44,7 @@
           <template v-else>
             <FxEditor
               ref="editorRef"
-              v-model="elementData.elementProps.ForeachController__iter"
+              v-model="elementData.elementProps.ForeachController__iterable"
               language="python"
               line-numbers="off"
               style="height: 100px"
@@ -88,22 +91,22 @@ const elementData = ref({
   elementAttrs: {},
   elementProps: {
     ForeachController__target: '',
-    ForeachController__iter: '',
-    ForeachController__type: 'OBJECT',
+    ForeachController__iterable: '',
+    ForeachController__source: 'VARIABLE',
     ForeachController__delay: ''
   }
 })
 const elementRules = {
   elementName: [{ required: true, message: '元素名称不能为空', trigger: 'blur' }],
   'elementProps.ForeachController__target': [{ required: true, message: '变量名称不能为空', trigger: 'blur' }],
-  'elementProps.ForeachController__iter': [{ required: true, message: '遍历数组不能为空', trigger: 'blur' }]
+  'elementProps.ForeachController__iterable': [{ required: true, message: '遍历数组不能为空', trigger: 'blur' }]
 }
 const elformRef = ref()
 const editorRef = ref()
 
 watch(
   elementData,
-  debounce((localdata) => {
+  debounce(localdata => {
     // 如果前后端数据一致则代表数据未更改
     if (metadata.value.hashcode === toHashCode(localdata)) {
       // 数据一致则表示数据未变更
@@ -154,11 +157,11 @@ const queryBackendData = async () => {
 }
 
 watch(
-  () => elementData.value.elementProps.ForeachController__type,
-  (val) => {
-    if (val === 'OBJECT') return
+  () => elementData.value.elementProps.ForeachController__source,
+  val => {
+    if (val === 'VARIABLE') return
     nextTick(() => {
-      editorRef.value.setValue(elementData.value.elementProps.ForeachController__iter)
+      editorRef.value.setValue(elementData.value.elementProps.ForeachController__iterable)
     })
   }
 )
