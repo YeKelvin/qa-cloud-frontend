@@ -12,9 +12,9 @@
       </el-form-item>
 
       <!-- 串行执行 -->
-      <!-- <el-form-item label="串行执行：" prop="elementProps.TestCollection__serialize_workers">
+      <!-- <el-form-item label="串行执行：" prop="elementProps.TestCollection__sequential">
         <el-switch
-          v-model="elementData.elementProps.TestCollection__serialize_workers"
+          v-model="elementData.elementProps.TestCollection__sequential"
           active-value="true"
           inactive-value="false"
           inline-prompt
@@ -219,7 +219,7 @@ const elementData = ref({
     TestCollection__exclude_workspace: false
   },
   elementProps: {
-    TestCollection__serialize_workers: 'true',
+    TestCollection__sequential: 'true',
     TestCollection__delay: '0',
     TestCollection__running_strategy: {
       reverse: []

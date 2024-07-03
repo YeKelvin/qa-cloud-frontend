@@ -223,7 +223,7 @@ export const PropertyDefinition = {
   TestElement__desc: '元素描述',
 
   // TestCollection
-  TestCollection__serialize_workers: '顺序执行用例',
+  TestCollection__sequential: '顺序执行用例',
   TestCollection__delay: '延迟执行时间',
   TestCollection__running_strategy: '运行策略',
 
