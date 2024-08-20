@@ -116,7 +116,7 @@ const edited = computed(() => hashcode.value !== toHashCode(elementData.value))
 const elformRef = ref()
 const headerList = computed({
   get: () => elementData.value.elementAttrs.HTTPHeaderTemplate__headers,
-  set: (val) => (elementData.value.elementAttrs.HTTPHeaderTemplate__headers = val)
+  set: val => (elementData.value.elementAttrs.HTTPHeaderTemplate__headers = val)
 })
 
 onMounted(async () => {
@@ -142,7 +142,7 @@ watch(
  * 查询
  */
 const query = () => {
-  ElementService.queryElementInfo({ elementNo: elementData.value.elementNo }).then((response) => {
+  ElementService.queryElementInfo({ elementNo: elementData.value.elementNo }).then(response => {
     elementData.value = response.data
     autoNewRow()
     hashcode.value = toHashCode(elementData.value)
@@ -171,14 +171,14 @@ const newRow = () => {
 /**
  * 判断是否为空行
  */
-const isBlankRow = (row) => {
+const isBlankRow = row => {
   return isEmpty(row.name) && isEmpty(row.value) && isEmpty(row.desc)
 }
 
 /**
  * 删除请求头
  */
-const removeHeader = (index) => {
+const removeHeader = index => {
   headerList.value.splice(index, 1)
 }
 
@@ -194,7 +194,7 @@ const goback = () => {
  */
 const modifyElement = async () => {
   // 过滤空行
-  headerList.value = headerList.value.filter((row) => !isBlankRow(row))
+  headerList.value = headerList.value.filter(row => !isBlankRow(row))
   // 修改元素
   await ElementService.modifyElement(elementData.value)
 }
@@ -209,7 +209,7 @@ const createElement = async () => {
     return
   }
   // 过滤空行
-  headerList.value = headerList.value.filter((row) => !isBlankRow(row))
+  headerList.value = headerList.value.filter(row => !isBlankRow(row))
   // 新增元素
   await ElementService.createElement(elementData.value)
 }

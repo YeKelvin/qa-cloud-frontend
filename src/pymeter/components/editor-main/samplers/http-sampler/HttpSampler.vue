@@ -214,7 +214,10 @@
                   <template #content>
                     <div style="font-size: 16px; line-height: 2; color: var(--el-text-color-regular)">
                       <!-- eslint-disable-next-line prettier/prettier -->
-                      <div><b>- 说明: </b>仅执行符合条件的组件</div>
+                      <div>
+                        <b>- 说明:</b>
+                        仅执行符合条件的组件
+                      </div>
                     </div>
                   </template>
                   <el-button :icon="Warning" style="font-size: 16px" link />
@@ -237,11 +240,20 @@
                   <template #content>
                     <div style="font-size: 16px; line-height: 2; color: var(--el-text-color-regular)">
                       <!-- eslint-disable-next-line prettier/prettier -->
-                      <div><b>- 说明: </b>指定组件的运行顺序，默认顺序执行</div>
+                      <div>
+                        <b>- 说明:</b>
+                        指定组件的运行顺序，默认顺序执行
+                      </div>
                       <!-- eslint-disable-next-line prettier/prettier -->
-                      <div><b>- 顺序: </b>空间 → 集合 → 线程 → 控制器 → 取样器</div>
+                      <div>
+                        <b>- 顺序:</b>
+                        空间 → 集合 → 线程 → 控制器 → 取样器
+                      </div>
                       <!-- eslint-disable-next-line prettier/prettier -->
-                      <div><b>- 倒序: </b>取样器 → 控制器 → 线程 → 集合 → 空间</div>
+                      <div>
+                        <b>- 倒序:</b>
+                        取样器 → 控制器 → 线程 → 集合 → 空间
+                      </div>
                     </div>
                   </template>
                   <el-button :icon="Warning" style="font-size: 16px" link />
@@ -346,27 +358,27 @@ const elementRules = {
 }
 const headerTemplateRefs = computed({
   get: () => elementData.value.elementAttrs.HTTPSampler__header_templates,
-  set: (val) => (elementData.value.elementAttrs.HTTPSampler__header_templates = val)
+  set: val => (elementData.value.elementAttrs.HTTPSampler__header_templates = val)
 })
 const headerData = computed({
   get: () => elementData.value.elementAttrs.HTTPSampler__headers,
-  set: (val) => (elementData.value.elementAttrs.HTTPSampler__headers = val)
+  set: val => (elementData.value.elementAttrs.HTTPSampler__headers = val)
 })
 const queryData = computed({
   get: () => elementData.value.elementAttrs.HTTPSampler__querys,
-  set: (val) => (elementData.value.elementAttrs.HTTPSampler__querys = val)
+  set: val => (elementData.value.elementAttrs.HTTPSampler__querys = val)
 })
 const formData = computed({
   get: () => elementData.value.elementAttrs.HTTPSampler__forms,
-  set: (val) => (elementData.value.elementAttrs.HTTPSampler__forms = val)
+  set: val => (elementData.value.elementAttrs.HTTPSampler__forms = val)
 })
 const fileData = computed({
   get: () => elementData.value.elementAttrs.HTTPSampler__files,
-  set: (val) => (elementData.value.elementAttrs.HTTPSampler__files = val)
+  set: val => (elementData.value.elementAttrs.HTTPSampler__files = val)
 })
 const bodyData = computed({
   get: () => elementData.value.elementProps.HTTPSampler__data,
-  set: (val) => (elementData.value.elementProps.HTTPSampler__data = val)
+  set: val => (elementData.value.elementProps.HTTPSampler__data = val)
 })
 const {
   bodyMode,
@@ -394,7 +406,7 @@ const showCompoSettingsTab = computed(() => activeTabName.value === 'COMPO_SETTI
 
 watch(
   elementData,
-  debounce((localdata) => {
+  debounce(localdata => {
     // 添加组件索引
     localdata.elementCompos.prevList.forEach((item, index) => (item.elementIndex = index + 1))
     localdata.elementCompos.postList.forEach((item, index) => (item.elementIndex = index + 1))
@@ -514,16 +526,16 @@ const isBlankAll = (...args) => {
  */
 const removeBlankData = () => {
   if (!isEmpty(headerData.value)) {
-    headerData.value = headerData.value.filter((row) => !isBlankAll(row.name, row.value, row.desc))
+    headerData.value = headerData.value.filter(row => !isBlankAll(row.name, row.value, row.desc))
   }
   if (!isEmpty(queryData.value)) {
-    queryData.value = queryData.value.filter((row) => !isBlankAll(row.name, row.value, row.desc))
+    queryData.value = queryData.value.filter(row => !isBlankAll(row.name, row.value, row.desc))
   }
   if (!isEmpty(formData.value)) {
-    formData.value = formData.value.filter((row) => !isBlankAll(row.name, row.value, row.desc))
+    formData.value = formData.value.filter(row => !isBlankAll(row.name, row.value, row.desc))
   }
   if (!isEmpty(fileData.value)) {
-    fileData.value = fileData.value.filter((row) => !isBlankAll(row.name, row.value, row.desc))
+    fileData.value = fileData.value.filter(row => !isBlankAll(row.name, row.value, row.desc))
   }
 }
 

@@ -165,7 +165,7 @@ const queryElementsTree = (expandtop = false) => {
     nextTick(() => {
       // 选中的节点保持高亮
       currentKey.value && eltreeRef.value && eltreeRef.value.setCurrentKey(currentKey.value)
-      elementList.value.forEach(item => {
+      for (const item of elementList.value) {
         // 顶级节点添加 padding-bottom: 10px
         addTreeNodePaddingBottom(item.elementNo)
         // 自动展开顶级节点
@@ -173,7 +173,7 @@ const queryElementsTree = (expandtop = false) => {
           eltreeRef.value.getNode(item.elementNo).expanded = true
           addExpandedList(item.elementNo)
         }
-      })
+      }
     })
   })
 }
@@ -234,20 +234,24 @@ const handleNodeDrop = (draggingNode, dropNode, dropType) => {
   }
   // 计算排序索引
   switch (dropType) {
-    case 'inner':
+    case 'inner': {
       targetParentNo = dropNode.data.elementNo
       targetIndex = dropNode.childNodes.length
       break
-    case 'before':
+    }
+    case 'before': {
       targetParentNo = dropNode.parent.data.elementNo
       targetIndex = moveDirection === 'UP' ? dropNode.data.elementIndex : dropNode.data.elementIndex - 1
       break
-    case 'after':
+    }
+    case 'after': {
       targetParentNo = dropNode.parent.data.elementNo
       targetIndex = moveDirection === 'UP' ? dropNode.data.elementIndex + 1 : dropNode.data.elementIndex
       break
-    default:
+    }
+    default: {
       return
+    }
   }
   // 提交后端
   ElementService.moveElement({

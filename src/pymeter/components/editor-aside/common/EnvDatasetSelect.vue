@@ -22,5 +22,5 @@ const props = defineProps({ modelValue: { type: String } })
 
 const localvalue = ref(props.modelValue)
 
-watch(localvalue, (val) => emit('update:modelValue', val))
+watch(localvalue, val => emit('update:modelValue', val))
 </script>

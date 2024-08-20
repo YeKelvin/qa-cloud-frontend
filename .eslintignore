@@ -1,7 +1,0 @@
-public
-dist
-node_modules
-.history
-.husky
-*.d.ts
-src/assets

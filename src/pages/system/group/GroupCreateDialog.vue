@@ -46,7 +46,7 @@ const formRules = reactive({
 const roleList = ref([])
 
 onMounted(() => {
-  RoleService.queryRoleAll().then((response) => {
+  RoleService.queryRoleAll().then(response => {
     roleList.value = response.data
   })
 })

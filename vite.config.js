@@ -1,17 +1,17 @@
 import path from 'path'
 
-import { vitePluginForArco } from '@arco-plugins/vite-vue'
-import vue from '@vitejs/plugin-vue'
-import jsx from '@vitejs/plugin-vue-jsx'
-import AutoImport from 'unplugin-auto-import/vite'
-import IconsResolver from 'unplugin-icons/resolver'
-import Icons from 'unplugin-icons/vite'
-import { ElementPlusResolver, ArcoResolver } from 'unplugin-vue-components/resolvers'
-import Components from 'unplugin-vue-components/vite'
-import { VueRouterAutoImports } from 'unplugin-vue-router'
+import pluginVue from '@vitejs/plugin-vue'
+import pluginVueJsx from '@vitejs/plugin-vue-jsx'
+import unpluginAutoImport from 'unplugin-auto-import/vite'
+import unpluginComponents from 'unplugin-vue-components/vite'
+import unpluginIcons from 'unplugin-icons/vite'
+import unpluginIconsResolver from 'unplugin-icons/resolver'
 import { defineConfig, loadEnv } from 'vite'
-import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
-import VueDevTools from 'vite-plugin-vue-devtools'
+import { ElementPlusResolver, ArcoResolver } from 'unplugin-vue-components/resolvers'
+import { vitePluginForArco as pluginArco } from '@arco-plugins/vite-vue'
+import { VueRouterAutoImports as unpluginVueRouter } from 'unplugin-vue-router'
+import { createSvgIconsPlugin as pluginSvgIcons } from 'vite-plugin-svg-icons'
+import pluginDevTools from 'vite-plugin-vue-devtools'
 
 export default ({ mode }) =>
   defineConfig({
@@ -22,39 +22,68 @@ export default ({ mode }) =>
     },
     clearScreen: false,
     plugins: [
-      // VueDevTools(),
-      vue(),
-      jsx(),
-      vitePluginForArco({ style: 'css' }),
-      Icons({ autoInstall: true }),
-      AutoImport({
-        imports: ['vue', /** 'vue-router', */ 'pinia', VueRouterAutoImports],
+      pluginVue(),
+      pluginVueJsx(),
+      pluginDevTools(),
+      pluginArco({ style: 'css' }),
+      unpluginIcons({ autoInstall: true }),
+      unpluginAutoImport({
+        include: [
+          /\.[tj]sx?$/, // .ts, .tsx, .js, .jsx
+          /\.vue$/,
+          /\.vue\?vue/, // .vue
+          /\.md$/, // .md
+        ],
+        imports: [
+          'vue',
+          /** 'vue-router', */
+          'pinia',
+          unpluginVueRouter,
+          {
+            'axios': [
+              // default imports
+              ['default', 'axios'], // import { default as axios } from 'axios',
+            ],
+              '[package-name]': [
+                '[import-names]',
+                // alias
+                ['[from]', '[alias]'],
+              ]
+          },
+          {
+            from: 'vue-router',
+            imports: ['RouteLocationRaw'],
+            type: true,
+          }
+        ],
         resolvers: [
           // 按需加载 Arco
           ArcoResolver(),
           // 按需加载 Icons
-          IconsResolver({ prefix: 'Icon' }),
+          unpluginIconsResolver({ prefix: 'Icon' }),
           // 按需加载 ElementPlus
           ElementPlusResolver()
         ],
         eslintrc: {
           enabled: true,
-          filepath: './.eslintrc-auto-import.json',
+          filepath: './eslint-auto-import.json',
           globalsPropValue: true
-        }
+        },
+        vueTemplate: true,
+        viteOptimizeDeps: true
       }),
-      Components({
+      unpluginComponents({
         dts: false,
         resolvers: [
           // 按需加载 Arco
           ArcoResolver({ sideEffect: true }),
           // 按需加载 Icons
-          IconsResolver({ enabledCollections: ['ep'] }),
+          unpluginIconsResolver({ enabledCollections: ['ep'] }),
           // 按需加载 ElementPlus
           ElementPlusResolver()
         ]
       }),
-      createSvgIconsPlugin({
+      pluginSvgIcons({
         iconDirs: [path.resolve(process.cwd(), 'src/assets/icons')],
         symbolId: 'icon-[dir]-[name]'
       })

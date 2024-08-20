@@ -36,9 +36,10 @@ const members = ref([])
 const userList = ref([])
 const data = computed(() => {
   const options = []
-  userList.value.forEach((item) =>
+  for (const item of userList.value) {
     options.push({ key: item.userNo, label: item.userName, disabled: item.state !== 'ENABLE' })
-  )
+  }
+
   return options
 })
 
@@ -51,7 +52,7 @@ onMounted(() => {
  * 查询所有用户
  */
 const queryMemberAll = () => {
-  UserService.queryUserAll().then((response) => {
+  UserService.queryUserAll().then(response => {
     userList.value = response.data
   })
 }
@@ -60,8 +61,8 @@ const queryMemberAll = () => {
  * 查询所有空间
  */
 const queryWorkspaceMemberAll = () => {
-  WorkspaceService.queryWorkspaceMemberAll({ workspaceNo: currentRow.value.workspaceNo }).then((response) => {
-    members.value = response.data.map((item) => item.userNo)
+  WorkspaceService.queryWorkspaceMemberAll({ workspaceNo: currentRow.value.workspaceNo }).then(response => {
+    members.value = response.data.map(item => item.userNo)
   })
 }
 

@@ -52,54 +52,54 @@ provide('results', results)
 provide('logs', logs)
 
 onBeforeMount(() => {
-  socket.on('pymeter:start', (data) => {
+  socket.on('pymeter:start', data => {
     ElNotification.success({ message: '开始执行脚本', duration: 2 * 1000 })
     results.value.push(data)
   })
-  socket.on('pymeter:result_summary', (data) => {
-    const result = results.value.find((result) => result.id === data.resultId)
+  socket.on('pymeter:result_summary', data => {
+    const result = results.value.find(result => result.id === data.resultId)
     if (result) {
       assign(result, data.result)
     } else {
       results.value.push(data.result)
     }
   })
-  socket.on('pymeter:worker_result', (data) => {
-    const result = results.value.find((result) => result.id === data.resultId)
+  socket.on('pymeter:worker_result', data => {
+    const result = results.value.find(result => result.id === data.resultId)
     if (!result) return
 
-    const worker = result.details.find((worker) => worker.id === data.workerId)
+    const worker = result.details.find(worker => worker.id === data.workerId)
     if (worker) {
       assign(worker, data.worker)
     } else {
       result.details.push(data.worker)
     }
   })
-  socket.on('pymeter:sampler_result', (data) => {
-    const result = results.value.find((result) => result.id === data.resultId)
+  socket.on('pymeter:sampler_result', data => {
+    const result = results.value.find(result => result.id === data.resultId)
     if (!result) return
 
-    const worker = result.details.find((worker) => worker.id === data.workerId)
+    const worker = result.details.find(worker => worker.id === data.workerId)
     if (!worker) return
 
     worker.children.push(data.sampler)
   })
-  socket.on('pymeter:message', (data) => {
+  socket.on('pymeter:message', data => {
     ElNotification.info({ message: data, duration: 2 * 1000 })
   })
-  socket.on('pymeter:log', (data) => {
+  socket.on('pymeter:log', data => {
     logs.value.push(data)
   })
   socket.on('pymeter:completed', () => {
     socketio.disconnect()
     ElNotification.success({ message: '脚本执行完成', duration: 2 * 1000 })
   })
-  socket.on('pymeter:error', (data) => {
+  socket.on('pymeter:error', data => {
     socketio.disconnect()
     ElNotification.error({ message: data, duration: 2 * 1000 })
   })
-  socket.on('pymeter:user_interrupted', (data) => {
-    const result = results.value.find((result) => result.id === data.resultId)
+  socket.on('pymeter:user_interrupted', data => {
+    const result = results.value.find(result => result.id === data.resultId)
     if (result) {
       assign(result, data.result)
     }
