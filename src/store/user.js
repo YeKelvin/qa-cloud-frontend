@@ -60,7 +60,7 @@ export const useUserStore = defineStore('user', {
     queryInfo() {
       return new Promise((resolve, reject) => {
         UserService.queryInfo()
-          .then((response) => {
+          .then(response => {
             if (!response) {
               reject(new Error('身份认证失败或失效，请重新登录'))
               return
@@ -78,7 +78,7 @@ export const useUserStore = defineStore('user', {
             this.settings = response.data.settings
             resolve(response.data)
           })
-          .catch((error) => {
+          .catch(error => {
             reject(error)
           })
       })
@@ -92,14 +92,14 @@ export const useUserStore = defineStore('user', {
             this.resetState()
             resolve()
           })
-          .catch((error) => {
+          .catch(error => {
             reject(error)
           })
       })
     },
 
     resetToken() {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         removeToken() // must remove token first
         this.resetState()
         resolve()

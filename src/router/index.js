@@ -8,40 +8,43 @@ import Layout from '@/layout'
  */
 export const constantRoutes = [
   {
+    component: () => import('@/pages/login/Login.vue'),
+    path: '/login',
+    name: 'Login',
+    hidden: true
+  },
+
+  {
     path: '/redirect',
-    component: Layout,
     hidden: true,
+    component: Layout,
     children: [
       {
-        component: () => import('@/pages/redirect'),
-        path: '/redirect/:path(.*)'
+        component: () => import('@/pages/redirect/Redirect.vue'),
+        path: '/redirect/:path(.*)',
+        name: 'Redirect'
       }
     ]
   },
 
   {
-    path: '/login',
-    component: () => import('@/pages/login/Login.vue'),
-    hidden: true
-  },
-
-  {
-    path: '/401',
     component: () => import('@/pages/error/401.vue'),
+    path: '/401',
     hidden: true
   },
 
   {
-    path: '/404',
     component: () => import('@/pages/error/404.vue'),
+    path: '/404',
+    name: 'NoFound',
     hidden: true
   },
 
   {
     path: '/',
     name: 'Index',
-    component: Layout,
     redirect: '/dashboard',
+    component: Layout,
     children: [
       {
         component: () => import('@/pages/dashboard'),
@@ -54,6 +57,7 @@ export const constantRoutes = [
 
   {
     path: '/mine',
+    name: 'Mine',
     component: Layout,
     children: [
       {
@@ -69,9 +73,9 @@ export const constantRoutes = [
   {
     path: '/script',
     name: 'Script',
-    alwaysShow: true,
-    component: Layout,
     redirect: 'noRedirect',
+    component: Layout,
+    alwaysshow: true,
     meta: { title: '接口测试', icon: 'sidebar-api' },
     children: [
       {
@@ -119,9 +123,9 @@ export const constantRoutes = [
   {
     path: '/schedule',
     name: 'Schedule',
-    alwaysShow: true,
-    component: Layout,
     redirect: 'noRedirect',
+    component: Layout,
+    alwaysshow: true,
     meta: { title: '定时任务', icon: 'sidebar-schedule' },
     children: [
       {
@@ -142,9 +146,9 @@ export const constantRoutes = [
   {
     path: '/messaging',
     name: 'Messaging',
-    alwaysShow: true,
-    component: Layout,
     redirect: 'noRedirect',
+    component: Layout,
+    alwaysshow: true,
     meta: { title: '消息中心', icon: 'sidebar-messaging' },
     children: [
       {
@@ -172,9 +176,9 @@ export const asyncRoutes = [
   {
     path: '/system',
     name: 'System',
-    alwaysShow: true,
-    component: Layout,
     redirect: 'noRedirect',
+    component: Layout,
+    alwaysshow: true,
     meta: { title: '系统管理', icon: 'sidebar-setting', roles: ['SYSTEM'] },
     children: [
       {
@@ -221,9 +225,9 @@ export const asyncRoutes = [
   {
     path: '/log',
     name: 'Log',
-    alwaysShow: true,
-    component: Layout,
     redirect: 'noRedirect',
+    component: Layout,
+    alwaysshow: true,
     meta: { title: '日志管理', icon: 'sidebar-log', roles: ['SYSTEM'] },
     children: [
       {
@@ -244,9 +248,9 @@ export const asyncRoutes = [
   {
     path: '/opencenter',
     name: 'OpenCenter',
-    alwaysShow: true,
-    component: Layout,
     redirect: 'noRedirect',
+    component: Layout,
+    alwaysshow: true,
     meta: { title: '开放中心', icon: 'sidebar-opencenter', roles: ['SYSTEM'] },
     children: [
       {
@@ -279,16 +283,25 @@ export const asyncRoutes = [
   },
 
   // 404 page must be placed at the end !!!
-  { path: '/:pathMatch(.*)', redirect: '/404', hidden: true }
+  { path: '/:pathMatch(.*)*', redirect: '/404', hidden: true }
 ]
 
-const createVueRouter = () =>
-  createRouter({
-    history: createWebHistory(),
-    scrollBehavior: () => ({ top: 0 }),
-    routes: constantRoutes
-  })
+const router = createRouter({
+  strict: true,
+  routes: constantRoutes,
+  history: createWebHistory(),
+  scrollBehavior: () => ({ top: 0, left: 0 })
+})
 
-const router = createVueRouter()
+const resetWhitelist = new Set(['Redirect', 'Login', 'NoFind'])
+
+export const resetRouter = () => {
+  for (const route of router.getRoutes()) {
+    const { name } = route
+    if (name && !resetWhitelist.has(name)) {
+      router.hasRoute(name) && router.removeRoute(name)
+    }
+  }
+}
 
 export default router

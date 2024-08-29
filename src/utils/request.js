@@ -25,7 +25,7 @@ let loadingCount = 0
 // 初始化axios
 const service = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_URL, // 请求的 base url
-  timeout: 10000, // 超时时长
+  timeout: 10_000, // 超时时长
   headers: {
     'Content-Type': 'application/json; charset=utf-8',
     'Access-Control-Allow-Origin': import.meta.env.VITE_APP_BASE_URL
@@ -64,7 +64,7 @@ const toHideLoading = _.debounce(() => {
 
 // 请求拦截器
 service.interceptors.request.use(
-  (config) => {
+  config => {
     config.headers['access-token'] = getToken()
     config.headers['x-trace-id'] = nanoid()
     config.headers['x-workspace-no'] = useWorkspaceStore().workspaceNo
@@ -74,7 +74,7 @@ service.interceptors.request.use(
     }
     return config
   },
-  (error) => {
+  error => {
     hideLoading()
     ElMessage.error({ message: error.message, duration: 2 * 1000 })
     return Promise.reject(error)
@@ -83,21 +83,17 @@ service.interceptors.request.use(
 
 // 响应拦截器
 service.interceptors.response.use(
-  (response) => {
+  response => {
     const { data } = response
     // 判断当前请求是否设置了不显示 Loading（不显示自然无需隐藏）
     if (response.config.method !== 'get') {
       hideLoading()
     }
-    if (response.status !== 200) {
-      const message = response.statusText || '网络异常'
-      ElMessage.error({ message: message, duration: 2 * 1000 })
-      return Promise.reject(new Error(message))
-    } else {
+    if (response.status === 200) {
       // 判断用户 token 是否有效，无效或失效则转跳至登录页
       if (data.code === 401) {
         ElMessageBox.confirm('登录失效，请重新登录', '警告', {
-          confirmButtonText: '重新登录',
+          confirmButtonText: '登 录',
           cancelButtonText: '取 消',
           type: 'warning'
         }).then(() => {
@@ -106,7 +102,7 @@ service.interceptors.response.use(
             .then(() => {
               // 如果已经在登录页就不用再刷新了
               if (window.location.pathname === '/login') return
-              // 刷新页面
+              // 刷新页面，干掉token后再走一次路由让它过router.beforeEach的校验
               location.reload()
             })
         })
@@ -117,9 +113,13 @@ service.interceptors.response.use(
         return Promise.reject(new Error(data.message || '服务开小差'))
       }
       return data
+    } else {
+      const message = response.statusText || '网络异常'
+      ElMessage.error({ message: message, duration: 2 * 1000 })
+      return Promise.reject(new Error(message))
     }
   },
-  (error) => {
+  error => {
     hideLoading()
     ElMessage.error({ message: error.message, duration: 2 * 1000 })
     return Promise.reject(error)

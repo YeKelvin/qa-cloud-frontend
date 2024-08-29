@@ -98,7 +98,8 @@ const loginForm = ref({
 })
 const accountType = ref('default')
 const loading = ref(false)
-const redirect = ref(undefined)
+const querys = ref({})
+const redirect = ref(false)
 const loginFormRef = ref()
 const loginNameRef = ref()
 const passwordRef = ref()
@@ -109,8 +110,10 @@ const loginNamePlaceholder = computed(() => {
 
 watch(
   route,
-  (route) => {
-    redirect.value = route.query && route.query.redirect
+  route => {
+    const { redirect: _redirect_, ..._querys_ } = route.query
+    querys.value = _querys_
+    redirect.value = route.query && _redirect_
   },
   { immediate: true }
 )
@@ -127,9 +130,13 @@ const loginHandler = async () => {
   }
   // 登录
   try {
+    // 开启 loading
     loading.value = true
+    // 登录
     await userStore.login({ ...loginForm.value, accountType: accountType.value })
-    router.push({ path: redirect.value || '/' }, () => {})
+    // 重定向
+    router.push({ path: redirect.value || '/', query: querys.value })
+    // 关闭 loading
     loading.value = false
   } catch (error) {
     loading.value = false

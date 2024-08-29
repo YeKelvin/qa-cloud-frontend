@@ -31,14 +31,14 @@ export default {
   methods: {
     getBreadcrumb() {
       // only show routes with meta.title
-      let matched = this.$route.matched.filter((item) => item.meta && item.meta.title)
+      let matched = this.$route.matched.filter(item => item.meta && item.meta.title)
       const first = matched[0]
 
       if (!this.isDashboard(first)) {
         matched = [{ path: '/dashboard', meta: { title: '首页' } }].concat(matched)
       }
 
-      this.levelList = matched.filter((item) => item.meta && item.meta.title && item.meta.breadcrumb !== false)
+      this.levelList = matched.filter(item => item.meta && item.meta.title && item.meta.breadcrumb !== false)
     },
     isDashboard(route) {
       const name = route && route.name
@@ -67,9 +67,9 @@ export default {
 <style lang="scss" scoped>
 .app-breadcrumb.el-breadcrumb {
   display: inline-block;
+  margin-left: 8px;
   font-size: 14px;
   line-height: 50px;
-  margin-left: 8px;
 
   .no-redirect {
     color: #97a8be;

@@ -1,20 +1,20 @@
 import { isArray as _isArray, isObject as _isObject } from 'lodash-es'
 
 export default function useEditor() {
-  const isObject = (obj) => {
+  const isObject = obj => {
     return !_isArray(obj) && _isObject(obj)
   }
 
   const deepAssign = (target, source) => {
-    Object.keys(source).forEach((key) => {
+    for (const key of Object.keys(source)) {
       const value = source[key]
-      if (key in target && (value === undefined || value === null)) return
+      if (key in target && (value === undefined || value === null)) continue
       if (isObject(value)) {
         deepAssign(target[key], value)
       } else {
         target[key] = value
       }
-    })
+    }
   }
 
   /**

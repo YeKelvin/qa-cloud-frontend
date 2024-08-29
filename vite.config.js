@@ -1,17 +1,18 @@
 import path from 'path'
+import { defineConfig, loadEnv } from 'vite'
 
 import pluginVue from '@vitejs/plugin-vue'
 import pluginVueJsx from '@vitejs/plugin-vue-jsx'
+import pluginDevTools from 'vite-plugin-vue-devtools'
+import { vitePluginForArco as pluginArco } from '@arco-plugins/vite-vue'
+import { createSvgIconsPlugin as pluginSvgIcons } from 'vite-plugin-svg-icons'
+
 import unpluginAutoImport from 'unplugin-auto-import/vite'
 import unpluginComponents from 'unplugin-vue-components/vite'
 import unpluginIcons from 'unplugin-icons/vite'
 import unpluginIconsResolver from 'unplugin-icons/resolver'
-import { defineConfig, loadEnv } from 'vite'
-import { ElementPlusResolver, ArcoResolver } from 'unplugin-vue-components/resolvers'
-import { vitePluginForArco as pluginArco } from '@arco-plugins/vite-vue'
 import { VueRouterAutoImports as unpluginVueRouter } from 'unplugin-vue-router'
-import { createSvgIconsPlugin as pluginSvgIcons } from 'vite-plugin-svg-icons'
-import pluginDevTools from 'vite-plugin-vue-devtools'
+import { ElementPlusResolver, ArcoResolver } from 'unplugin-vue-components/resolvers'
 
 export default ({ mode }) =>
   defineConfig({
@@ -32,7 +33,7 @@ export default ({ mode }) =>
           /\.[tj]sx?$/, // .ts, .tsx, .js, .jsx
           /\.vue$/,
           /\.vue\?vue/, // .vue
-          /\.md$/, // .md
+          /\.md$/ // .md
         ],
         imports: [
           'vue',
@@ -40,20 +41,20 @@ export default ({ mode }) =>
           'pinia',
           unpluginVueRouter,
           {
-            'axios': [
+            axios: [
               // default imports
-              ['default', 'axios'], // import { default as axios } from 'axios',
+              ['default', 'axios'] // import { default as axios } from 'axios',
             ],
-              '[package-name]': [
-                '[import-names]',
-                // alias
-                ['[from]', '[alias]'],
-              ]
+            '[package-name]': [
+              '[import-names]',
+              // alias
+              ['[from]', '[alias]']
+            ]
           },
           {
             from: 'vue-router',
             imports: ['RouteLocationRaw'],
-            type: true,
+            type: true
           }
         ],
         resolvers: [

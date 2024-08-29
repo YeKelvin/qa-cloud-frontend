@@ -40,25 +40,25 @@ export default function useHTTP(elementData) {
       bodyMode.value = 'none'
       return
     }
-    if (contenttype.indexOf('multipart/form-data') > -1) {
+    if (contenttype.includes('multipart/form-data')) {
       bodyMode.value = 'form-data'
       return
     }
-    if (contenttype.indexOf('application/x-www-form-urlencoded') > -1) {
+    if (contenttype.includes('application/x-www-form-urlencoded')) {
       bodyMode.value = 'x-www-form-urlencoded'
       return
     }
-    if (contenttype.indexOf('application/json') > -1) {
+    if (contenttype.includes('application/json')) {
       bodyMode.value = 'raw'
       bodyRawType.value = 'json'
       return
     }
-    if (contenttype.indexOf('application/xml') > -1) {
+    if (contenttype.includes('application/xml')) {
       bodyMode.value = 'raw'
       bodyRawType.value = 'xml'
       return
     }
-    if (contenttype.indexOf('text/plain') > -1) {
+    if (contenttype.includes('text/plain')) {
       bodyMode.value = 'raw'
       bodyRawType.value = 'text'
       return
@@ -69,16 +69,16 @@ export default function useHTTP(elementData) {
   /**
    * 设置 Content-Type
    */
-  const setContentType = (val) => {
+  const setContentType = val => {
     const header = elementData.value.elementAttrs.HTTPSampler__headers.find(
-      (item) => item.name.toLowerCase() === 'content-type'
+      item => item.name.toLowerCase() === 'content-type'
     )
     if (header) {
       header.value = val
     } else {
       elementData.value.elementAttrs.HTTPSampler__headers.push({ enabled: true, name: 'content-type', value: val })
       elementData.value.elementAttrs.HTTPSampler__headers = elementData.value.elementAttrs.HTTPSampler__headers.filter(
-        (row) => !isEmpty(row.name) || !isEmpty(row.value) || !isEmpty(row.desc)
+        row => !isEmpty(row.name) || !isEmpty(row.value) || !isEmpty(row.desc)
       )
     }
   }
@@ -88,7 +88,7 @@ export default function useHTTP(elementData) {
    */
   const getContentType = () => {
     const header = elementData.value.elementAttrs.HTTPSampler__headers.find(
-      (item) => item.name.toLowerCase() === 'content-type'
+      item => item.name.toLowerCase() === 'content-type'
     )
     return header ? header.value : ''
   }
@@ -98,7 +98,7 @@ export default function useHTTP(elementData) {
    */
   const removeContentType = () => {
     const index = elementData.value.elementAttrs.HTTPSampler__headers.findIndex(
-      (item) => item.name.toLowerCase() === 'content-type'
+      item => item.name.toLowerCase() === 'content-type'
     )
     elementData.value.elementAttrs.HTTPSampler__headers.splice(index, 1)
   }
@@ -113,7 +113,7 @@ export default function useHTTP(elementData) {
   /**
    * 校验逻辑条件
    */
-  const checkFilter = (filterRule) => {
+  const checkFilter = filterRule => {
     let error = false
     // 过滤空白的逻辑条件
     if (isEmpty(filterRule)) return
@@ -130,7 +130,7 @@ export default function useHTTP(elementData) {
   /**
    * 校验条件的关键字是否为空
    */
-  const checkLogicalCondition = (grouprule) => {
+  const checkLogicalCondition = grouprule => {
     const rules = grouprule.rules
     for (const rule of rules) {
       if ('logic' in rule) {

@@ -110,6 +110,7 @@ export default [
   {
     files: ['**/*.{js,mjs,cjs,vue}'],
     rules: {
+      'unicorn/no-null': 'off',
       'unicorn/filename-case': 'off',
       'unicorn/prefer-ternary': ['error', 'only-single-line'],
       'unicorn/prevent-abbreviations': 'off'
@@ -122,9 +123,11 @@ export default [
   {
     files: ['**/*.{js,mjs,cjs,vue}'],
     rules: {
-      '@stylistic/arrow-parens': 'off',
       '@stylistic/brace-style': 'off',
-      '@stylistic/comma-dangle': 'off'
+      '@stylistic/quote-props': 'off',
+      '@stylistic/comma-dangle': 'off',
+      '@stylistic/arrow-parens': 'off',
+      '@stylistic/operator-linebreak': 'off'
     }
   },
 

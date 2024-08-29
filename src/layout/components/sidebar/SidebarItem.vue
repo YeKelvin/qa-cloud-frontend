@@ -51,7 +51,7 @@ export default {
   },
   methods: {
     showSidebarItem(children = [], parent) {
-      const showingChildren = children.filter((item) => {
+      const showingChildren = children.filter(item => {
         if (item.hidden) {
           return false
         } else {
@@ -60,7 +60,7 @@ export default {
           return true
         }
       })
-      if (showingChildren.length === 1 && !parent?.alwaysShow) {
+      if (showingChildren.length === 1 && !parent?.alwaysshow) {
         return true
       }
       if (showingChildren.length === 0) {

@@ -71,7 +71,7 @@ export const usePyMeterStore = defineStore('pymeter', {
      * 获取当前tab
      */
     currentTab() {
-      const tab = this.tabs.filter((tab) => tab.editorNo === this.activeTabNo)
+      const tab = this.tabs.filter(tab => tab.editorNo === this.activeTabNo)
       return tab ? tab[0] : null
     },
 
@@ -164,7 +164,7 @@ export const usePyMeterStore = defineStore('pymeter', {
         }
       }
       // 删除tab
-      this.tabs = this.tabs.filter((tab) => tab.editorNo !== editorNo)
+      this.tabs = this.tabs.filter(tab => tab.editorNo !== editorNo)
       // 手动移除 keep-alive 缓存
       removeCache(this.keepAlive, editorNo)
     },
@@ -251,7 +251,7 @@ export const usePyMeterStore = defineStore('pymeter', {
      * 移除已选择的集合元素
      */
     closeScript(rootNo) {
-      this.setSelectedScripts(this.selectedScripts.filter((item) => item !== rootNo))
+      this.setSelectedScripts(this.selectedScripts.filter(item => item !== rootNo))
     },
 
     /**

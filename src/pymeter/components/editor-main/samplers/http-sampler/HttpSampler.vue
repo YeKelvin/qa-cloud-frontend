@@ -111,7 +111,7 @@
             <el-radio value="form-data">form-data</el-radio>
             <el-radio value="x-www-form-urlencoded">form-urlencoded</el-radio>
             <el-radio value="raw">raw</el-radio>
-            <el-radio value="custom">自定义</el-radio>
+            <el-radio value="custom">custom</el-radio>
           </el-radio-group>
           <!-- raw data type -->
           <el-select v-if="bodyMode == 'raw'" v-model="bodyRawType" class="raw-type">
@@ -408,9 +408,9 @@ watch(
   elementData,
   debounce(localdata => {
     // 添加组件索引
-    localdata.elementCompos.prevList.forEach((item, index) => (item.elementIndex = index + 1))
-    localdata.elementCompos.postList.forEach((item, index) => (item.elementIndex = index + 1))
-    localdata.elementCompos.testList.forEach((item, index) => (item.elementIndex = index + 1))
+    for (const [index, item] of localdata.elementCompos.prevList.entries()) item.elementIndex = index + 1
+    for (const [index, item] of localdata.elementCompos.postList.entries()) item.elementIndex = index + 1
+    for (const [index, item] of localdata.elementCompos.testList.entries()) item.elementIndex = index + 1
     // 如果前后端数据一致则代表数据未更改
     if (metadata.value.hashcode === toHashCode(localdata)) {
       // 数据一致则表示数据未变更
@@ -505,7 +505,7 @@ const setBodyData = () => {
   // 设置主体模式
   setBodyMode()
   // 激活Tab
-  activeTabName.value = bodyMode.value !== 'none' ? 'HTTP_BODY' : 'HTTP_QUERYS'
+  activeTabName.value = bodyMode.value === 'none' ? 'HTTP_QUERYS' : 'HTTP_BODY'
   // 初始化主体数据
   if (!['form-data', 'x-www-form-urlencoded'].includes(bodyMode.value)) {
     nextTick(

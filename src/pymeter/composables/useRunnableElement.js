@@ -11,7 +11,7 @@ export default function useRunnableElement() {
   const pymeterDB = usePyMeterDB()
   const pymeterStore = usePyMeterStore()
 
-  const getOfflineData = async (rootNo) => {
+  const getOfflineData = async rootNo => {
     const offlines = new Map()
     await pymeterDB.offlineDB.iterate((offline, key) => {
       if ('rootNo' in offline.meta) {
@@ -39,7 +39,7 @@ export default function useRunnableElement() {
   /**
    * 运行集合
    */
-  const runTestCollection = async (collectionNo) => {
+  const runTestCollection = async collectionNo => {
     try {
       // 没有选择变量集时给出提示
       await confirmWithoutDataset()
