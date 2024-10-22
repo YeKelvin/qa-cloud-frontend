@@ -72,7 +72,7 @@ const pieChartOption = reactive({
       },
       animationType: 'scale',
       animationEasing: 'elasticOut',
-      animationDelay: (idx) => Math.random() * 200
+      animationDelay: idx => Math.random() * 200
     }
   ]
 })
@@ -108,7 +108,7 @@ const totalData = computed(() => {
 
 watch(
   () => props.details,
-  (val) => {
+  val => {
     if (!val) return
     setPieChartData([
       { value: val.successfulWorkerTotal, name: '成功', itemStyle: { color: '#44B197' } },
@@ -138,7 +138,7 @@ onUnmounted(() => {
   pieChart.value.dispose()
 })
 
-const setPieChartData = (data) => {
+const setPieChartData = data => {
   const option = pieChart.value.getOption()
   option.series[0].data = data.sort((a, b) => {
     return a.value - b.value
@@ -149,7 +149,7 @@ const setPieChartData = (data) => {
 
 const successRate = (successfulTotal, failedTotal) => {
   const total = successfulTotal + failedTotal
-  return `${Math.round((successfulTotal / total) * 10000) / 100}%`
+  return `${Math.round((successfulTotal / total) * 10_000) / 100}%`
 }
 </script>
 

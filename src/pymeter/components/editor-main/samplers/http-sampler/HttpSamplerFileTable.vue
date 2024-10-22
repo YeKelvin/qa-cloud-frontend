@@ -101,7 +101,7 @@ const props = defineProps({ modelValue: Array })
 const emit = defineEmits(['update:modelValue'])
 const rows = computed({
   get: () => props.modelValue,
-  set: (val) => emit('update:modelValue', val)
+  set: val => emit('update:modelValue', val)
 })
 const showDesc = ref(false)
 const showMimeType = ref(false)
@@ -131,10 +131,10 @@ const autoNewRow = () => {
 const newRow = () => {
   rows.value.push({ enabled: true, name: '', desc: '', value: '', argtype: 'text', mimetype: '' })
 }
-const delRow = (index) => {
+const delRow = index => {
   rows.value.splice(index, 1)
 }
-const isBlankRow = (row) => {
+const isBlankRow = row => {
   return isEmpty(row.name) && isEmpty(row.value) && isEmpty(row.desc)
 }
 

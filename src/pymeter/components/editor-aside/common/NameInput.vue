@@ -11,5 +11,5 @@ const emit = defineEmits(['update:modelValue'])
 
 const localvalue = ref(props.modelValue)
 
-watch(localvalue, (val) => emit('update:modelValue', val))
+watch(localvalue, val => emit('update:modelValue', val))
 </script>

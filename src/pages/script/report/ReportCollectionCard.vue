@@ -6,7 +6,7 @@
       :body-style="{ padding: '10px' }"
       :class="{ active: activeId == collection.id }"
       shadow="hover"
-      style="cursor: pointer; margin-bottom: 6px"
+      style="margin-bottom: 6px; cursor: pointer"
       @click="handleCardClick(collection)"
     >
       <div class="collection-card">
@@ -39,7 +39,7 @@ const emit = defineEmits(['click'])
 /**
  * el-card handler
  */
-const handleCardClick = (collection) => {
+const handleCardClick = collection => {
   emit('click', collection)
   activeId.value = collection.id
 }
@@ -50,14 +50,14 @@ const handleCardClick = (collection) => {
   display: flex;
   flex: 1;
   align-items: center;
-  height: 100%;
   width: 100%;
+  height: 100%;
 }
 
 .collection-name-wrapper {
   display: flex;
-  flex-direction: column;
   flex: 1;
+  flex-direction: column;
 }
 
 .collection-result-time-wrapper {
@@ -69,9 +69,10 @@ const handleCardClick = (collection) => {
     margin-right: 5px;
   }
 }
+
 .stauts-icon {
-  height: 2em !important;
   width: 2em !important;
+  height: 2em !important;
 }
 
 .active {

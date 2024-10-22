@@ -47,10 +47,10 @@ const moduleList = ref([])
 const rows = computed(() => {
   const data = []
   const modules = moduleList.value
-  modules.forEach((module) => {
+  for (const module of modules) {
     const objects = module.objectList
     let rowspan = objects.length
-    objects.forEach((obj) => {
+    for (const obj of objects) {
       data.push({
         rowspan: rowspan,
         moduleName: module.moduleName,
@@ -60,8 +60,8 @@ const rows = computed(() => {
       if (rowspan !== 0) {
         rowspan = 0
       }
-    })
-  })
+    }
+  }
   return data
 })
 
@@ -70,11 +70,11 @@ onMounted(() => {
 })
 
 const query = () => {
-  PermissionService.queryPermissionAll().then((response) => {
+  PermissionService.queryPermissionAll().then(response => {
     const modules = moduleList.value
     const moduleIndexStore = {}
     const objectIndexStore = {}
-    response.data.forEach((item) => {
+    for (const item of response.data) {
       if (!has(moduleIndexStore, item.moduleCode)) {
         modules.push({
           moduleNo: item.moduleNo,
@@ -103,31 +103,31 @@ const query = () => {
         permissionCode: item.permissionCode,
         state: item.state
       })
-    })
+    }
   })
 }
 
 const spanMethod = ({ row, column, rowIndex, columnIndex }) => {
   if (columnIndex === 0) {
-    if (row.rowspan !== 0) {
-      return {
-        rowspan: row.rowspan,
-        colspan: 1
-      }
-    } else {
+    if (row.rowspan === 0) {
       return {
         rowspan: 0,
         colspan: 0
+      }
+    } else {
+      return {
+        rowspan: row.rowspan,
+        colspan: 1
       }
     }
   }
 }
 
-const checkAll = (permissionList) => {
+const checkAll = permissionList => {
   const checked = checkeds.value
-  permissionList.forEach((item) => {
+  for (const item of permissionList) {
     checked.push(item.permissionNo)
-  })
+  }
   checkeds.value = [...new Set(checked)]
 }
 </script>

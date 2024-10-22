@@ -90,7 +90,7 @@ const props = defineProps({
 
 const useCurrentValue = computed({
   get: () => pymeterStore.useCurrentValue,
-  set: (val) => pymeterStore.setUseCurrentValue(val)
+  set: val => pymeterStore.setUseCurrentValue(val)
 })
 </script>
 

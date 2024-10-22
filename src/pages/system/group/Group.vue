@@ -79,7 +79,7 @@
 </template>
 
 <script setup>
-import { Search, Refresh, Plus } from '@element-plus/icons-vue'
+import { Plus, Refresh, Search } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 import CreateDialog from './GroupCreateDialog.vue'
@@ -116,7 +116,7 @@ onMounted(() => {
  * 查询
  */
 const query = () => {
-  GroupService.queryGroupList({ ...queryConditions, page: page.value, pageSize: pageSize.value }).then((response) => {
+  GroupService.queryGroupList({ ...queryConditions, page: page.value, pageSize: pageSize.value }).then(response => {
     tableData.value = response.data.list
     total.value = response.data.total
   })
@@ -147,7 +147,7 @@ const modifyGroupState = async (row, state) => {
 /**
  * 删除分组
  */
-const deleteGroup = async (row) => {
+const deleteGroup = async row => {
   // 二次确认
   const cancelled = await ElMessageBox.confirm('是否确定删除？', '警告', {
     type: 'error',
@@ -168,7 +168,7 @@ const deleteGroup = async (row) => {
 /**
  * 打开编辑对话框
  */
-const openModifyDialog = (row) => {
+const openModifyDialog = row => {
   showModifyDialog.value = true
   currentRow.value = row
 }
@@ -176,7 +176,7 @@ const openModifyDialog = (row) => {
 /**
  * pagination handler
  */
-const handleSizeChange = (val) => {
+const handleSizeChange = val => {
   pageSize.value = val
   query()
 }
@@ -184,7 +184,7 @@ const handleSizeChange = (val) => {
 /**
  * pagination handler
  */
-const handleCurrentChange = (val) => {
+const handleCurrentChange = val => {
   page.value = val
   query()
 }

@@ -93,7 +93,7 @@
 </template>
 
 <script setup>
-import { Search, Refresh, Plus } from '@element-plus/icons-vue'
+import { Plus, Refresh, Search } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 import CreateDialog from './UserCreateDialog.vue'
@@ -133,7 +133,7 @@ onMounted(() => {
  * 查询
  */
 const query = () => {
-  UserService.queryUserList({ ...queryConditions, page: page.value, pageSize: pageSize.value }).then((response) => {
+  UserService.queryUserList({ ...queryConditions, page: page.value, pageSize: pageSize.value }).then(response => {
     tableData.value = response.data.list
     total.value = response.data.total
   })
@@ -164,7 +164,7 @@ const modifyUserState = async (row, state) => {
 /**
  * 重置用户密码
  */
-const resetPassword = async (row) => {
+const resetPassword = async row => {
   // 二次确认
   const cancelled = await ElMessageBox.confirm('是否确定重置密码？', '提示', {
     confirmButtonText: '确 定',
@@ -183,7 +183,7 @@ const resetPassword = async (row) => {
 /**
  * 删除用户
  */
-const deleteUser = async (row) => {
+const deleteUser = async row => {
   // 二次确认
   const cancelled = await ElMessageBox.confirm('是否确定删除？', '警告', {
     type: 'error',
@@ -204,7 +204,7 @@ const deleteUser = async (row) => {
 /**
  * 打开编辑对话框
  */
-const openModifyDialog = (row) => {
+const openModifyDialog = row => {
   showModifyDialog.value = true
   currentRow.value = row
 }
@@ -212,7 +212,7 @@ const openModifyDialog = (row) => {
 /**
  * pagination handler
  */
-const handleSizeChange = (val) => {
+const handleSizeChange = val => {
   pageSize.value = val
   query()
 }
@@ -220,7 +220,7 @@ const handleSizeChange = (val) => {
 /**
  * pagination handler
  */
-const handleCurrentChange = (val) => {
+const handleCurrentChange = val => {
   page.value = val
   query()
 }

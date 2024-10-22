@@ -2,6 +2,7 @@ import globals from 'globals'
 import autoImports from './eslint-auto-import.json' with { type: 'json' }
 import pluginJs from '@eslint/js'
 import pluginVue from 'eslint-plugin-vue'
+import pluginImport from 'eslint-plugin-import'
 import pluginOxlint from 'eslint-plugin-oxlint'
 import pluginUnicorn from 'eslint-plugin-unicorn'
 import pluginPromise from 'eslint-plugin-promise'
@@ -12,6 +13,8 @@ import pluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
 export default [
   /** js 推荐配置 */
   pluginJs.configs.recommended,
+  /** import 推荐配置 */
+  pluginImport.flatConfigs.recommended,
   /** prettier 配置 */
   pluginPrettierRecommended,
   /** stylistic 推荐配置 */
@@ -127,38 +130,41 @@ export default [
       '@stylistic/quote-props': 'off',
       '@stylistic/comma-dangle': 'off',
       '@stylistic/arrow-parens': 'off',
-      '@stylistic/operator-linebreak': 'off'
+      '@stylistic/operator-linebreak': 'off',
+      '@stylistic/jsx-one-expression-per-line': 'off'
     }
   },
 
   /**
    * import 规则
    */
-  // {
-  //   files: ['**/*.{js,mjs,cjs,vue}'],
-  //   rules: {
-  //     'import/first': 'error',
-  //     'import/extensions': 'off',
-  //     'import/newline-after-import': ['error', { 'count': 1 }],
-  //     'import/no-duplicates': 'error',
-  //     'import/no-unresolved': [0],
-  //     'import/no-absolute-path': 'off',
-  //     'import/no-named-as-default': 'off',
-  //     'import/no-extraneous-dependencies': 'off',
-  //     'import/order': [
-  //       'error',
-  //       {
-  //         'groups': ['builtin', 'external', 'internal', ['parent', 'sibling'], 'index', 'object', 'type', 'unknown'],
-  //         'newlines-between': 'always',
-  //         'alphabetize': {
-  //           'order': 'asc',
-  //           'orderImportKind': 'asc',
-  //           'caseInsensitive': false
-  //         }
-  //       }
-  //     ],
-  //   }
-  // },
+  {
+    files: ['**/*.{js,mjs,cjs,vue}'],
+    rules: {
+      'import/first': 'error',
+      'import/extensions': 'off',
+      'import/newline-after-import': ['error', { count: 1 }],
+      'import/no-deprecated': 'error',
+      'import/no-duplicates': 'error',
+      'import/no-unresolved': [0],
+      'import/no-absolute-path': 'off',
+      'import/no-named-as-default': 'off',
+      'import/no-extraneous-dependencies': 'off',
+      'import/order': [
+        'error',
+        {
+          'newlines-between': 'always-and-inside-groups',
+          named: true,
+          groups: ['builtin', 'external', 'internal', ['parent', 'sibling'], 'index', 'object', 'type', 'unknown'],
+          alphabetize: {
+            order: 'asc',
+            orderImportKind: 'asc',
+            caseInsensitive: false
+          }
+        }
+      ]
+    }
+  },
 
   /**
    * vue 规则

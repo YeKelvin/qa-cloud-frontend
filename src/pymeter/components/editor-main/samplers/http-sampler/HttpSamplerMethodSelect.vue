@@ -18,7 +18,7 @@ const emit = defineEmits(['update:modelValue'])
 const props = defineProps({ modelValue: String })
 const localValue = computed({
   get: () => props.modelValue,
-  set: (val) => emit('update:modelValue', val)
+  set: val => emit('update:modelValue', val)
 })
 </script>
 

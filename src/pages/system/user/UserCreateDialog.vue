@@ -89,11 +89,11 @@ const roleList = ref([])
 
 onMounted(() => {
   // 查询所有角色
-  RoleService.queryRoleAll().then((response) => {
+  RoleService.queryRoleAll().then(response => {
     roleList.value = response.data
   })
   // 查询所有分组
-  GroupService.queryGroupAll().then((response) => {
+  GroupService.queryGroupAll().then(response => {
     groupList.value = response.data
   })
 })

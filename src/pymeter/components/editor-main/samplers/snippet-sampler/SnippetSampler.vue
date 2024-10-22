@@ -138,11 +138,11 @@ const elementRules = {
 }
 const snippetNo = computed({
   get: () => elementData.value.elementAttrs.SnippetSampler__snippet_no,
-  set: (val) => (elementData.value.elementAttrs.SnippetSampler__snippet_no = val)
+  set: val => (elementData.value.elementAttrs.SnippetSampler__snippet_no = val)
 })
 const argumentData = computed({
   get: () => elementData.value.elementAttrs.SnippetSampler__arguments,
-  set: (val) => (elementData.value.elementAttrs.SnippetSampler__arguments = val)
+  set: val => (elementData.value.elementAttrs.SnippetSampler__arguments = val)
 })
 const elformRef = ref()
 const snippetList = ref([])
@@ -151,7 +151,7 @@ const showParams = computed(() => activeTabName.value === 'PARAMS')
 
 watch(
   elementData,
-  debounce((localdata) => {
+  debounce(localdata => {
     // 如果前后端数据一致则代表数据未更改
     if (metadata.value.hashcode === toHashCode(localdata)) {
       // 数据一致则表示数据未变更
@@ -226,25 +226,25 @@ const querySnippetInfo = async () => {
   const response = await ElementService.queryElementInfo({ elementNo: snippetNo })
   const parameters = response.data.elementAttrs.TestSnippet__parameters
   if (creation.value) {
-    parameters.forEach((item) => {
+    for (const item of parameters) {
       argumentData.value.push({
         name: item.name,
         value: item.default,
         desc: item.desc,
         default: item.default
       })
-    })
+    }
   } else {
     const argumentList = elementData.value.elementAttrs.SnippetSampler__arguments
-    parameters.forEach((item) => {
-      const arg = argumentList.find((i) => i.name === item.name)
+    for (const item of parameters) {
+      const arg = argumentList.find(i => i.name === item.name)
       argumentData.value.push({
         name: item.name,
         value: arg ? arg.value : item.default,
         desc: item.desc,
         default: item.default
       })
-    })
+    }
   }
 }
 
@@ -253,7 +253,7 @@ const querySnippetInfo = async () => {
  */
 const openTestSnippet = () => {
   const snippet = snippetList.value.filter(
-    (item) => item.elementNo === elementData.value.elementAttrs.SnippetSampler__snippet_no
+    item => item.elementNo === elementData.value.elementAttrs.SnippetSampler__snippet_no
   )
   // 判断所选片段是否属于当前空间
   if (snippet.workspaceNo && snippet.workspaceNo !== workspaceStore.workspaceNo) {
@@ -310,7 +310,7 @@ const checkArguments = () => {
 
 const getSubmitData = () => {
   const submitData = { ...elementData.value }
-  submitData.elementAttrs.SnippetSampler__arguments = argumentData.value.map((arg) => ({
+  submitData.elementAttrs.SnippetSampler__arguments = argumentData.value.map(arg => ({
     name: arg.name,
     value: arg.value
   }))

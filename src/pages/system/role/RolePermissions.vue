@@ -7,7 +7,7 @@
 
     <!-- 权限表格 -->
     <div class="permission-table-container">
-      <PermissionTable v-model:checkedList="checkedPermissions" />
+      <PermissionTable v-model:checked-list="checkedPermissions" />
     </div>
 
     <!-- 操作按钮 -->
@@ -40,8 +40,8 @@ onMounted(() => {
  * 查询
  */
 const query = () => {
-  RoleService.queryRolePermissions({ roleNo: roleNo.value }).then((response) => {
-    checkedPermissions.value = response.data.map((item) => item.permissionNo)
+  RoleService.queryRolePermissions({ roleNo: roleNo.value }).then(response => {
+    checkedPermissions.value = response.data.map(item => item.permissionNo)
   })
 }
 
@@ -62,7 +62,7 @@ const save = () => {
  * 返回上一页
  */
 const goBack = () => {
-  window.history.length > 1 ? router.go(-1) : router.push('/')
+  globalThis.history.length > 1 ? router.go(-1) : router.push('/')
 }
 </script>
 

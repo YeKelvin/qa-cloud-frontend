@@ -101,16 +101,16 @@ const filteredData = computed(() => {
   const filterKey = filteredText.value
   if (isEmpty(filterKey)) return configData.value.variableList
   return configData.value.variableList.filter(
-    (item) =>
-      (item.variableName && item.variableName.indexOf(filterKey.trim()) !== -1) ||
-      (item.initialValue && item.initialValue.indexOf(filterKey.trim()) !== -1) ||
-      (item.currentValue && item.currentValue.indexOf(filterKey.trim()) !== -1)
+    item =>
+      (item.variableName && item.variableName.includes(filterKey.trim())) ||
+      (item.initialValue && item.initialValue.includes(filterKey.trim())) ||
+      (item.currentValue && item.currentValue.includes(filterKey.trim()))
   )
 })
 
 watch(
   configData,
-  debounce((localdata) => {
+  debounce(localdata => {
     // 底部自动新加一行
     autoNewRow()
     // 如果前后端数据一致则代表数据未更改
@@ -189,7 +189,7 @@ const newRow = () => {
 /**
  * 判断是否为空行
  */
-const isBlankRow = (row) => {
+const isBlankRow = row => {
   return isEmpty(row.variableName) && isEmpty(row.initialValue) && isEmpty(row.currentValue)
 }
 
@@ -212,7 +212,7 @@ const removeVariable = (row, index) => {
  */
 const comfirmDeleteVariables = async (...args) => {
   const msgList = [h('p', null, '是否确定删除以下变量?')]
-  args.forEach((item) => msgList.push(h('p', null, h('b', null, item))))
+  for (const item of args) msgList.push(h('p', null, h('b', null, item)))
   return await ElMessageBox.confirm(null, {
     type: 'error',
     title: '警告',
@@ -229,26 +229,25 @@ const comfirmDeleteVariables = async (...args) => {
  */
 const save = async () => {
   // 手动清空的空行如果存在 variableNo 则加入待删除列表
-  configData.value.variableList
-    .filter((row) => isBlankRow(row))
-    .forEach((row) => has(row, 'variableNo') && configData.value.deletionList.push(row))
+  for (const row of configData.value.variableList.filter(row => isBlankRow(row)))
+    has(row, 'variableNo') && configData.value.deletionList.push(row)
 
   // 删除变量
   if (!isEmpty(configData.value.deletionList)) {
     // 二次确认
-    const cancelled = await comfirmDeleteVariables(...configData.value.deletionList.map((item) => item.variableName))
+    const cancelled = await comfirmDeleteVariables(...configData.value.deletionList.map(item => item.variableName))
     if (cancelled) return
     // 提交删除
     await VariablesService.deleteVariables({
       datasetNo: configData.value.datasetNo,
-      variables: configData.value.deletionList.map((item) => item.variableNo)
+      variables: configData.value.deletionList.map(item => item.variableNo)
     })
     // 清空待删除列表
     configData.value.deletionList = []
   }
 
   // 过滤空行
-  const vars = configData.value.variableList.filter((row) => !isBlankRow(row))
+  const vars = configData.value.variableList.filter(row => !isBlankRow(row))
   // 提交修改
   !isEmpty(vars) &&
     (await VariablesService.modifyVariables({ datasetNo: configData.value.datasetNo, variableList: vars }))

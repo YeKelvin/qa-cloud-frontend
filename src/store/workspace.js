@@ -32,7 +32,7 @@ export const useWorkspaceStore = defineStore('workspace', {
     }
   },
   persist: {
-    paths: ['wsno']
+    pick: ['wsno']
   },
   getters: {
     workspaceNo() {
@@ -41,13 +41,13 @@ export const useWorkspaceStore = defineStore('workspace', {
     },
     workspaceName() {
       if (isEmpty(this.workspaceNo)) return '请选择工作空间'
-      const ws = this.workspaceList.find((item) => item.workspaceNo === this.workspaceNo)
+      const ws = this.workspaceList.find(item => item.workspaceNo === this.workspaceNo)
       if (!ws) return ''
       return ws.workspaceName
     },
     workspaceScope() {
       if (isEmpty(this.workspaceNo)) return
-      const ws = this.workspaceList.find((item) => item.workspaceNo === this.workspaceNo)
+      const ws = this.workspaceList.find(item => item.workspaceNo === this.workspaceNo)
       if (!ws) return
       return ws.workspaceScope
     }
@@ -64,7 +64,7 @@ export const useWorkspaceStore = defineStore('workspace', {
       const teamList = []
       const publicList = []
       // 分类存储
-      response.data.forEach((item) => {
+      for (const item of response.data) {
         switch (item.workspaceScope) {
           case 'DEFAULT': {
             defaultList.push(item)
@@ -83,7 +83,7 @@ export const useWorkspaceStore = defineStore('workspace', {
             break
           }
         }
-      })
+      }
       // 存储默认空间编号
       this.defaultNo = defaultList[0].workspaceNo
       // 存储所有空间，置顶个人空间
@@ -140,7 +140,7 @@ export const useWorkspaceStore = defineStore('workspace', {
      * 判断是否为有效的工作空间
      */
     isValidWorkspace(number) {
-      return this.workspaceList.some((item) => item.workspaceNo === number)
+      return this.workspaceList.some(item => item.workspaceNo === number)
     }
   }
 })

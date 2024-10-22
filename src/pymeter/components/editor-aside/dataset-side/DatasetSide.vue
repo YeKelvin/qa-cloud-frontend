@@ -48,7 +48,7 @@ const workspaceStore = useWorkspaceStore()
 const filterText = ref('')
 const datasetTreeRef = ref()
 
-watch(filterText, (val) => {
+watch(filterText, val => {
   // eslint-disable-next-line unicorn/no-array-callback-reference
   datasetTreeRef.value.filter(val)
 })
@@ -78,7 +78,7 @@ const createEnvironmentDataset = async () => {
   // 弹出名称对话框
   const cancelled = await ElMessageBox.confirm(null, {
     title: '新增环境变量集',
-    message: <NameInput onUpdate:modelValue={(val) => (datasetName = val)} />,
+    message: <NameInput onUpdate:modelValue={val => (datasetName = val)} />,
     confirmButtonText: '确 定',
     cancelButtonText: '取 消'
   })
@@ -114,8 +114,8 @@ const createCustomDataset = async () => {
     title: '新增自定义变量集',
     message: (
       <div>
-        <NameInput onUpdate:modelValue={(val) => (datasetName = val)} />
-        <EnvDatasetSelect onUpdate:modelValue={(val) => (datasetBinding = val)} />
+        <NameInput onUpdate:modelValue={val => (datasetName = val)} />
+        <EnvDatasetSelect onUpdate:modelValue={val => (datasetBinding = val)} />
       </div>
     ),
     confirmButtonText: '确 定',

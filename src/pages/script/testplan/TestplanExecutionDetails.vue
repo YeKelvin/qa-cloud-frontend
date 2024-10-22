@@ -105,19 +105,19 @@ const percentage = computed(() => {
     // 统计迭代的进度
     const percentage = details.value.iterationCount / details.value.iterations
     if (!percentage) return 0
-    return parseInt(percentage * 100)
+    return Number.parseInt(percentage * 100)
   } else {
     // 统计执行进度（需要保存测试报告的计划）
     const total = tableData.value.length
     let completedTotal = 0
-    tableData.value.forEach((item) => {
+    for (const item of tableData.value) {
       if (item.runningState === 'COMPLETED' || item.runningState === 'ERROR') {
         completedTotal += 1
       }
-    })
+    }
     const percentage = completedTotal / total
     if (!percentage) return 0
-    return parseInt(percentage * 100)
+    return Number.parseInt(percentage * 100)
   }
 })
 
@@ -130,7 +130,7 @@ onMounted(() => {
 })
 
 const queryTestplanExecutionDetails = () => {
-  TestplanService.queryTestplanExecutionDetails({ executionNo: executionNo.value }).then((response) => {
+  TestplanService.queryTestplanExecutionDetails({ executionNo: executionNo.value }).then(response => {
     details.value = response.data
     tableData.value = response.data.collectionList
   })
@@ -147,7 +147,7 @@ const openReport = () => {
  * 返回上一页
  */
 const goBack = () => {
-  window.history.length > 1 ? router.go(-1) : router.push('/')
+  globalThis.history.length > 1 ? router.go(-1) : router.push('/')
 }
 </script>
 

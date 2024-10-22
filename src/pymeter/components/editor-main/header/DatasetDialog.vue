@@ -135,22 +135,22 @@ const filteredData = computed(() => {
     return rows.value
   } else {
     return rows.value.filter(
-      (item) =>
-        (item.variableName && item.variableName.indexOf(text) !== -1) ||
-        (item.initialValue && item.initialValue.indexOf(text) !== -1) ||
-        (item.currentValue && item.currentValue.indexOf(text) !== -1)
+      item =>
+        (item.variableName && item.variableName.includes(text)) ||
+        (item.initialValue && item.initialValue.includes(text)) ||
+        (item.currentValue && item.currentValue.includes(text))
     )
   }
 })
 const selectedDatasetList = computed(() =>
-  datasetList.value.filter((item) => pymeterStore.selectedDatasets.indexOf(item.datasetNo) > -1)
+  datasetList.value.filter(item => pymeterStore.selectedDatasets.includes(item.datasetNo))
 )
 const backtop = reactive({
   right: 40,
   bottom: 40
 })
 
-watch(cellInputRef, (input) => {
+watch(cellInputRef, input => {
   if (!input) return
   input.focus()
 })
@@ -185,7 +185,7 @@ const closeDialog = () => {
 /**
  * 判断是否为空行
  */
-const isBlankRow = (row) => {
+const isBlankRow = row => {
   return isEmpty(row.variableName) && isEmpty(row.initialValue) && isEmpty(row.currentValue)
 }
 
@@ -197,7 +197,7 @@ const queryVariables = async () => {
   // 查询离线数据
   const offline = await offlineDB.getItem(activeTabNo.value)
   if (offline) {
-    rows.value = offline.data.variableList.filter((row) => !isBlankRow(row))
+    rows.value = offline.data.variableList.filter(row => !isBlankRow(row))
   } else {
     // 查询后端数据
     const response = await VariablesService.queryVariablesByDataset({ datasetNo: activeTabNo.value })
@@ -209,7 +209,7 @@ const queryVariables = async () => {
  * 打开变量集组件
  */
 const openDatasetEditor = () => {
-  const dataset = datasetList.value.find((item) => item.datasetNo === activeTabNo.value)
+  const dataset = datasetList.value.find(item => item.datasetNo === activeTabNo.value)
   if (!dataset) return
 
   emit('update:model-value', false)

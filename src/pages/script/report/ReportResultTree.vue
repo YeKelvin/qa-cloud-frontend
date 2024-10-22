@@ -58,11 +58,11 @@ const props = defineProps({
 const eltreeRef = ref()
 watch(
   () => props.filterText,
-  (val) => eltreeRef.value.filter(val)
+  val => eltreeRef.value.filter(val)
 )
 const filterNode = (value, data) => {
   if (!value) return true
-  return data.name.indexOf(value) !== -1
+  return data.name.includes(value)
 }
 const handleNodeClick = (data, node) => {
   emit('node-click', data, node)

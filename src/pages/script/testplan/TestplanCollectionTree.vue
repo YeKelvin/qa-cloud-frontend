@@ -27,7 +27,7 @@
           <template #default="{ node, data }">
             <span style="display: inline-flex; align-items: center">
               <el-tag type="info" size="small" style="width: 30px; margin-right: 10px" disable-transitions round>
-                {{ node.parent.childNodes.findIndex((item) => item.key == data.elementNo) + 1 }}
+                {{ node.parent.childNodes.findIndex(item => item.key == data.elementNo) + 1 }}
               </el-tag>
               <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ node.label }}</span>
             </span>
@@ -55,10 +55,10 @@ const workspaceStore = useWorkspaceStore()
 
 const filterText = ref('')
 // eslint-disable-next-line unicorn/no-array-callback-reference
-watch(filterText, (val) => eltreeRef.value.filter(val))
+watch(filterText, val => eltreeRef.value.filter(val))
 watch(
   () => workspaceStore.workspaceNo,
-  (val) => {
+  val => {
     if (!val) return
     queryCollections()
   }
@@ -75,7 +75,7 @@ const queryCollections = () => {
     workspaceNo: workspaceStore.workspaceNo,
     elementType: 'COLLECTION',
     elementClass: 'TestCollection'
-  }).then((response) => {
+  }).then(response => {
     collections.value = response.data
   })
 }
@@ -98,26 +98,26 @@ const handleNodeClick = (data, node) => {
 
 const filterNode = (value, data) => {
   if (!value) return true
-  return data.elementName.toLowerCase().indexOf(value.toLowerCase()) !== -1
+  return data.elementName.toLowerCase().includes(value.toLowerCase())
 }
 
 const setAllChecked = () => {
   if (!isEmpty(filterText.value)) {
-    const filteredCollections = collections.value.filter((item) => filterNode(filterText.value, item))
-    eltreeRef.value.setCheckedKeys(filteredCollections.map((item) => item.elementNo))
+    const filteredCollections = collections.value.filter(item => filterNode(filterText.value, item))
+    eltreeRef.value.setCheckedKeys(filteredCollections.map(item => item.elementNo))
     return
   }
-  eltreeRef.value.setCheckedKeys(collections.value.map((item) => item.elementNo))
+  eltreeRef.value.setCheckedKeys(collections.value.map(item => item.elementNo))
 }
 
-const setCheckedKeys = (keys) => {
+const setCheckedKeys = keys => {
   // 设置选中的脚本
   eltreeRef.value.setCheckedKeys(keys)
   // 调整脚本顺序
   const indexs = []
   const list = [...collections.value]
   for (const key of keys) {
-    const index = collections.value.findIndex((item) => item.elementNo === key)
+    const index = collections.value.findIndex(item => item.elementNo === key)
     if (index === -1) return
     indexs.push(index)
   }

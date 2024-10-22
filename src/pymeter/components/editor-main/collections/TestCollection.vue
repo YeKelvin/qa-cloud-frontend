@@ -72,7 +72,10 @@
                   <template #content>
                     <div style="font-size: 16px; line-height: 2; color: var(--el-text-color-regular)">
                       <!-- eslint-disable-next-line prettier/prettier -->
-                      <div><b>- 说明: </b>解析脚本时不加载空间组件</div>
+                      <div>
+                        <b>- 说明:</b>
+                        解析脚本时不加载空间组件
+                      </div>
                     </div>
                   </template>
                   <el-button :icon="Warning" style="font-size: 16px" link />
@@ -99,11 +102,20 @@
                   <template #content>
                     <div style="font-size: 16px; line-height: 2; color: var(--el-text-color-regular)">
                       <!-- eslint-disable-next-line prettier/prettier -->
-                      <div><b>- 说明: </b>指定组件的运行顺序，默认顺序执行</div>
+                      <div>
+                        <b>- 说明:</b>
+                        指定组件的运行顺序，默认顺序执行
+                      </div>
                       <!-- eslint-disable-next-line prettier/prettier -->
-                      <div><b>- 顺序: </b>空间 → 集合 → 线程 → 控制器 → 取样器</div>
+                      <div>
+                        <b>- 顺序:</b>
+                        空间 → 集合 → 线程 → 控制器 → 取样器
+                      </div>
                       <!-- eslint-disable-next-line prettier/prettier -->
-                      <div><b>- 倒序: </b>取样器 → 控制器 → 线程 → 集合 → 空间</div>
+                      <div>
+                        <b>- 倒序:</b>
+                        取样器 → 控制器 → 线程 → 集合 → 空间
+                      </div>
                     </div>
                   </template>
                   <el-button :icon="Warning" style="font-size: 16px" link />
@@ -251,11 +263,11 @@ const showJsonScriptDialog = ref(false)
 
 watch(
   elementData,
-  debounce((localdata) => {
+  debounce(localdata => {
     // 添加组件索引
-    localdata.elementCompos.prevList.forEach((item, index) => (item.elementIndex = index + 1))
-    localdata.elementCompos.postList.forEach((item, index) => (item.elementIndex = index + 1))
-    localdata.elementCompos.testList.forEach((item, index) => (item.elementIndex = index + 1))
+    for (const [index, item] of localdata.elementCompos.prevList.entries()) item.elementIndex = index + 1
+    for (const [index, item] of localdata.elementCompos.postList.entries()) item.elementIndex = index + 1
+    for (const [index, item] of localdata.elementCompos.testList.entries()) item.elementIndex = index + 1
     // 如果前后端数据一致则代表数据未更改
     if (metadata.value.hashcode === toHashCode(localdata)) {
       // 数据一致则表示数据未变更
@@ -360,7 +372,7 @@ const queryCollectionScript = () => {
     collectionNo: elementData.value.elementNo,
     datasets: pymeterStore.selectedDatasets,
     useCurrentValue: pymeterStore.useCurrentValue
-  }).then((response) => {
+  }).then(response => {
     showJsonScriptDialog.value = true
     nextTick(() => {
       jsonEditorRef.value.setValue(JSON.stringify(response.data))

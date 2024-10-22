@@ -38,7 +38,7 @@
               <span>{{ TestPhase[row.testPhase] }}</span>
               <el-popover
                 :ref="
-                  (el) => {
+                  el => {
                     if (el) testphasePopoverRefs[row.planNo] = el
                   }
                 "
@@ -77,7 +77,7 @@
               <span>{{ TestplanState[row.planState] }}</span>
               <el-popover
                 :ref="
-                  (el) => {
+                  el => {
                     if (el) statePopoverRefs[row.planNo] = el
                   }
                 "
@@ -157,14 +157,14 @@
 </template>
 
 <script lang="jsx" setup>
-import { Edit, Search, Refresh, Plus } from '@element-plus/icons-vue'
+import { Edit, Plus, Refresh, Search } from '@element-plus/icons-vue'
 import dayjs from 'dayjs'
 import { ElMessage, ElMessageBox, ElNotification } from 'element-plus'
 
 import DatasetSelect from './TestplanDatasetSelect.vue'
 import ExecutionRecordDialog from './TestplanExecutionRecordDialog.vue'
 
-import { TestplanState, TestPhase } from '@/api/enum'
+import { TestPhase, TestplanState } from '@/api/enum'
 import * as ExecutionService from '@/api/script/execution'
 import * as TestplanService from '@/api/script/testplan'
 import ConditionInput from '@/components/query-condition/ConditionInput.vue'
@@ -217,7 +217,7 @@ const queryList = () => {
     workspaceNo: workspaceStore.workspaceNo,
     page: page.value,
     pageSize: pageSize.value
-  }).then((response) => {
+  }).then(response => {
     tableData.value = response.data.list
     total.value = response.data.total
   })
@@ -235,8 +235,8 @@ const executeTestplan = async ({ planNo, planName }) => {
     message: (
       <DatasetSelect
         planName={planName}
-        onUpdate:selectedDatasets={(val) => (datasets = val)}
-        onUpdate:useCurrentValue={(val) => (useCurrvalue = val)}
+        onUpdate:selectedDatasets={val => (datasets = val)}
+        onUpdate:useCurrentValue={val => (useCurrvalue = val)}
       />
     ),
     confirmButtonText: '确 定',
@@ -307,7 +307,7 @@ const modifyTestplanState = ({ planNo, tobeModifiedState }) => {
 /**
  * 跳转至测试计划 新增/编辑 页
  */
-const gotoTestplanEditor = (planNo) => {
+const gotoTestplanEditor = planNo => {
   router.push({
     name: 'TestplanEditor',
     path: 'testplan/editor',
@@ -328,7 +328,7 @@ const openExecutionRecordDialog = ({ planNo }) => {
 /**
  * pagination handler
  */
-const handleSizeChange = (val) => {
+const handleSizeChange = val => {
   pageSize.value = val
   queryList()
 }
@@ -336,7 +336,7 @@ const handleSizeChange = (val) => {
 /**
  * pagination handler
  */
-const handleCurrentChange = (val) => {
+const handleCurrentChange = val => {
   page.value = val
   queryList()
 }

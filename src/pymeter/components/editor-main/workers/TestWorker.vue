@@ -128,11 +128,11 @@ const checkLoops = (_, value, callback) => {
   if (!value) {
     return callback(new Error('循环次数不能为空'))
   }
-  const val = parseInt(value)
-  if (!Number.isInteger(val)) {
-    return callback(new Error('循环次数必须为整数'))
-  } else {
+  const val = Number.parseInt(value)
+  if (Number.isInteger(val)) {
     return val < 1 || val > 100 ? callback(new Error('循环次数仅支持[1-100]')) : callback()
+  } else {
+    return callback(new Error('循环次数必须为整数'))
   }
 }
 
@@ -187,7 +187,7 @@ const showJsonScriptDialog = ref(false)
 // 联动编辑
 watch(
   () => elementData.value.elementAttrs.Worker__use_http_session,
-  (val) => {
+  val => {
     const clearEachIteration = elementData.value.elementAttrs.Worker__clear_http_session_each_iteration
     if (!val && clearEachIteration === true) {
       elementData.value.elementAttrs.Worker__clear_http_session_each_iteration = false
@@ -198,7 +198,7 @@ watch(
 // 联动编辑
 watch(
   () => elementData.value.elementAttrs.Worker__clear_http_session_each_iteration,
-  (val) => {
+  val => {
     const enableHTTPSession = elementData.value.elementAttrs.Worker__use_http_session
     if (val && enableHTTPSession === false) {
       elementData.value.elementAttrs.Worker__use_http_session = true
@@ -208,7 +208,7 @@ watch(
 
 watch(
   elementData,
-  debounce((localdata) => {
+  debounce(localdata => {
     // 如果前后端数据一致则代表数据未更改
     if (metadata.value.hashcode === toHashCode(localdata)) {
       // 数据一致则表示数据未变更
@@ -296,7 +296,7 @@ const queryWorkerScript = () => {
     workerNo: elementData.value.elementNo,
     datasets: pymeterStore.selectedDatasets,
     useCurrentValue: pymeterStore.useCurrentValue
-  }).then((response) => {
+  }).then(response => {
     showJsonScriptDialog.value = true
     nextTick(() => {
       jsonEditorRef.value.setValue(JSON.stringify(response.data))

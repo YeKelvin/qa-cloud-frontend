@@ -47,7 +47,7 @@
 </template>
 
 <script setup>
-import { Plus, CloseBold } from '@element-plus/icons-vue'
+import { CloseBold, Plus } from '@element-plus/icons-vue'
 
 import LogicalCondition from '@/pymeter/components/editor-main/others/LogicalCondition.vue'
 
@@ -58,11 +58,11 @@ const props = defineProps({
 })
 const logic = computed({
   get: () => props.logic,
-  set: (val) => emit('update:logic', val)
+  set: val => emit('update:logic', val)
 })
 const rules = computed({
   get: () => props.rules,
-  set: (val) => emit('update:rules', val)
+  set: val => emit('update:rules', val)
 })
 
 const addRule = () => {
@@ -72,7 +72,7 @@ const addRule = () => {
 // 监听条件组，如果小于2个条件时删除条件组
 watch(
   () => rules.value.length,
-  (length) => {
+  length => {
     if (length < 2) emit('auto-adjust')
   },
   { deep: true }

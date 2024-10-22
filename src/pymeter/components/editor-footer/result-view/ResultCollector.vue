@@ -272,24 +272,24 @@ const requestHeaders = computed(() => {
   if (!current.sampler.requestHeaders) return []
 
   const data = []
-  Object.keys(current.sampler.requestHeaders).forEach((key) => {
+  for (const key of Object.keys(current.sampler.requestHeaders)) {
     data.push({
       name: key,
       value: current.sampler.requestHeaders[key]
     })
-  })
+  }
   return data
 })
 const responseHeaders = computed(() => {
   if (!current.sampler.responseHeaders) return []
 
   const data = []
-  Object.keys(current.sampler.responseHeaders).forEach((key) => {
+  for (const key of Object.keys(current.sampler.responseHeaders)) {
     data.push({
       name: key,
       value: current.sampler.responseHeaders[key]
     })
-  })
+  }
   return data
 })
 const requestDataType = ref('source')
@@ -298,7 +298,7 @@ const responseDisplayType = ref('pretty')
 const responseContentType = ref('json')
 const responseWordWrap = ref('on')
 
-watch(requestDataType, (val) => {
+watch(requestDataType, val => {
   if (val === 'source') {
     setRequestContent(current.sampler.requestData)
   } else {
@@ -306,7 +306,7 @@ watch(requestDataType, (val) => {
   }
 })
 
-watch(responseDataType, (val) => {
+watch(responseDataType, val => {
   if (val === 'source') {
     setRequestContent(current.sampler.responseData)
   } else {
@@ -346,7 +346,7 @@ const handleNodeClick = (data, node) => {
   }
 }
 
-const handleTabClick = (tab) => {
+const handleTabClick = tab => {
   if (tab.paneName === 'REQUEST_DATA') {
     setRequestContent(currentRequestData.value)
     return
@@ -361,13 +361,13 @@ const handleTabClick = (tab) => {
   }
 }
 
-const setRequestContent = (code) => {
+const setRequestContent = code => {
   nextTick(() => {
     requestEditorRef.value && requestEditorRef.value.setValue(code)
   })
 }
 
-const setResponseContent = (code) => {
+const setResponseContent = code => {
   nextTick(() => {
     if (!responseEditorRef.value) return
     responseEditorRef.value.setValue(code)
@@ -375,7 +375,7 @@ const setResponseContent = (code) => {
   })
 }
 
-const setAssertionContent = (code) => {
+const setAssertionContent = code => {
   nextTick(() => {
     if (isEmpty(code)) return
     assertionEditorRef.value && assertionEditorRef.value.setValue(code)

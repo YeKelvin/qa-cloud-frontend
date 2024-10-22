@@ -68,7 +68,7 @@ const filteredText = ref('')
 const filteredData = computed(() => {
   const filterKey = filteredText.value
   if (isEmpty(filterKey)) return templateList.value
-  return templateList.value.filter((item) => item.templateName && item.templateName.indexOf(filterKey.trim()) !== -1)
+  return templateList.value.filter(item => item.templateName && item.templateName.includes(filterKey.trim()))
 })
 
 onMounted(() => {
@@ -143,8 +143,8 @@ const cloneTemplate = async ({ templateNo }) => {
     message: (
       <WorkspaceTree
         key={templateNo}
-        data={workspaceStore.workspaceList.filter((item) => item.workspaceNo !== workspaceStore.workspaceNo)}
-        onNodeClick={(data) => (workspaceNo = data.workspaceNo)}
+        data={workspaceStore.workspaceList.filter(item => item.workspaceNo !== workspaceStore.workspaceNo)}
+        onNodeClick={data => (workspaceNo = data.workspaceNo)}
       />
     ),
     confirmButtonText: '确 定',
@@ -176,8 +176,8 @@ const moveTemplate = async ({ templateNo }) => {
     message: (
       <WorkspaceTree
         key={templateNo}
-        data={workspaceStore.workspaceList.filter((item) => item.workspaceNo !== workspaceStore.workspaceNo)}
-        onNodeClick={(data) => (workspaceNo = data.workspaceNo)}
+        data={workspaceStore.workspaceList.filter(item => item.workspaceNo !== workspaceStore.workspaceNo)}
+        onNodeClick={data => (workspaceNo = data.workspaceNo)}
       />
     ),
     confirmButtonText: '确 定',

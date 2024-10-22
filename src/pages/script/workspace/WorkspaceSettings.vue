@@ -84,7 +84,7 @@ onMounted(() => {
 
 watch(
   () => route.query.item,
-  (item) => {
+  item => {
     if (!item) return
     mainComponent.value = item
   }

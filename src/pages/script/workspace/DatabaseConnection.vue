@@ -82,7 +82,7 @@
 <script setup>
 import { Check, Close } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
-import { isEmpty, debounce } from 'lodash-es'
+import { debounce, isEmpty } from 'lodash-es'
 
 import * as ElementService from '@/api/script/element'
 import { useWorkspaceStore } from '@/store/workspace'
@@ -128,7 +128,7 @@ const elementRules = {
 }
 const databaseType = computed({
   get: () => elementData.value.elementAttrs.DatabaseEngine__database_type,
-  set: (val) => (elementData.value.elementAttrs.DatabaseEngine__database_type = val)
+  set: val => (elementData.value.elementAttrs.DatabaseEngine__database_type = val)
 })
 
 onMounted(async () => {
@@ -151,7 +151,7 @@ watch(
 
 watch(
   () => databaseType.value,
-  (val) => {
+  val => {
     if (!['', '1521', '3306', '5432', '1433'].includes(elementData.value.elementProps.DatabaseEngine__port)) return
     if (val === 'ORACLE') {
       elementData.value.elementProps.DatabaseEngine__port = '1521'
@@ -176,7 +176,7 @@ watch(
  * 查询
  */
 const query = () => {
-  ElementService.queryElementInfo({ elementNo: elementData.value.elementNo }).then((response) => {
+  ElementService.queryElementInfo({ elementNo: elementData.value.elementNo }).then(response => {
     elementData.value = response.data
     hashcode.value = toHashCode(elementData.value)
   })

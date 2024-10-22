@@ -58,25 +58,25 @@ const props = defineProps({
 })
 const tabs = computed({
   get: () => props.data,
-  set: (val) => emit('update:data', val)
+  set: val => emit('update:data', val)
 })
 
 const collectorRef = ref()
 const activeTabNo = ref(null)
 const activeTabData = ref(null)
-const activeTabDetails = computed(() => (!isEmpty(activeTabData.value) ? activeTabData.value.details || [] : []))
-const activeTabLoading = computed(() => (!isEmpty(activeTabData.value) ? activeTabData.value.loading : false))
-const activeTabRunning = computed(() => (!isEmpty(activeTabData.value) ? activeTabData.value.running : false))
+const activeTabDetails = computed(() => (isEmpty(activeTabData.value) ? [] : activeTabData.value.details || []))
+const activeTabLoading = computed(() => (isEmpty(activeTabData.value) ? false : activeTabData.value.loading))
+const activeTabRunning = computed(() => (isEmpty(activeTabData.value) ? false : activeTabData.value.running))
 
 watch(
   () => tabs.value.length,
-  (length) => {
+  length => {
     if (length === 0) {
       activeTabNo.value = null
       activeTabData.value = null
       return
     }
-    const tab = !isEmpty(tabs.value) ? tabs.value[length - 1] : null
+    const tab = isEmpty(tabs.value) ? null : tabs.value[length - 1]
     activeTabNo.value = tab ? tab.id : ''
     activeTabData.value = tab
     collectorRef.value && collectorRef.value.clear()
@@ -89,8 +89,8 @@ watch(
 /**
  * el-tab handler
  */
-const handleTabClick = (tab) => {
-  const result = tabs.value.find((result) => result.id === tab.paneName)
+const handleTabClick = tab => {
+  const result = tabs.value.find(result => result.id === tab.paneName)
   if (!result) return
   activeTabData.value = result
 }
@@ -98,7 +98,7 @@ const handleTabClick = (tab) => {
 /**
  * el-tab handler
  */
-const handleTabRemove = (tabName) => {
+const handleTabRemove = tabName => {
   if (activeTabNo.value === tabName) {
     for (let i = 0; i < tabs.value.length; i++) {
       const tab = tabs.value[i]
@@ -111,8 +111,8 @@ const handleTabRemove = (tabName) => {
       }
     }
   }
-  const index = tabs.value.findIndex((result) => result.id === tabName)
-  if (index > -1) tabs.value.splice(index, 1)
+  const index = tabs.value.findIndex(result => result.id === tabName)
+  if (index !== -1) tabs.value.splice(index, 1)
 }
 </script>
 

@@ -121,11 +121,11 @@ const checkIterations = (_, value, callback) => {
   if (!value) {
     return callback(new Error('迭代次数不能为空'))
   }
-  const val = parseInt(value)
-  if (!Number.isInteger(val)) {
-    return callback(new Error('迭代次数必须为整数'))
-  } else {
+  const val = Number.parseInt(value)
+  if (Number.isInteger(val)) {
     return val < 1 || val > 999 ? callback(new Error('迭代次数仅支持[1-999]')) : callback()
+  } else {
+    return callback(new Error('迭代次数必须为整数'))
   }
 }
 
@@ -160,7 +160,7 @@ const formRules = {
 
 watch(
   () => formData.iterations,
-  (val) => {
+  val => {
     if (val && val > 1) {
       formData.save = false
       formData.saveOnError = false
@@ -169,7 +169,7 @@ watch(
 )
 watch(
   () => formData.save,
-  (val) => {
+  val => {
     if (val) {
       formData.iterations = '1'
       formData.delay = '0'
@@ -187,7 +187,7 @@ onMounted(() => {
  * 查询测试计划
  */
 const queryTestplan = () => {
-  TestplanService.queryTestplan({ planNo: planNo.value }).then((response) => {
+  TestplanService.queryTestplan({ planNo: planNo.value }).then(response => {
     assign(formData, response.data)
     collectionTreeRef.value.setCheckedKeys(response.data.collections)
   })
@@ -197,7 +197,7 @@ const queryTestplan = () => {
  * 查询所有通知机器人
  */
 const queryNoticeBotAll = () => {
-  NoticeService.queryNoticeBotAll({ workspaceNo: workspaceStore.workspaceNo }).then((response) => {
+  NoticeService.queryNoticeBotAll({ workspaceNo: workspaceStore.workspaceNo }).then(response => {
     noticeBotList.value = response.data
   })
 }
@@ -268,7 +268,7 @@ const modifyTestplan = async () => {
  * 返回上一页
  */
 const goBack = () => {
-  window.history.length > 1 ? router.go(-1) : router.push('/script/testplan')
+  globalThis.history.length > 1 ? router.go(-1) : router.push('/script/testplan')
 }
 </script>
 

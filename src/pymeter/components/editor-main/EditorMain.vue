@@ -80,7 +80,7 @@ const components = reactive({
 
 const pymeterStore = usePyMeterStore()
 const activeTab = computed(() => {
-  let tab = pymeterStore.tabs.find((tab) => tab.editorNo === pymeterStore.activeTabNo)
+  let tab = pymeterStore.tabs.find(tab => tab.editorNo === pymeterStore.activeTabNo)
   if (!tab) tab = { editorComponent: '' }
   return tab
 })
@@ -89,11 +89,11 @@ const keepAliveRef = ref()
 /**
  * el-tab handler
  */
-const handleTabRemove = (tabNo) => {
+const handleTabRemove = tabNo => {
   pymeterStore.removeTab({ editorNo: tabNo })
 }
 
-watch(keepAliveRef, (val) => {
+watch(keepAliveRef, val => {
   // 将 keepalive 实例存储至 store
   pymeterStore.keepAlive = val
 })

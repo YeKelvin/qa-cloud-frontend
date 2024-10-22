@@ -46,7 +46,7 @@ const props = defineProps({
 })
 const useDefault = computed({
   get: () => props.useDefault,
-  set: (val) => emit('update:useDefault', val)
+  set: val => emit('update:useDefault', val)
 })
 </script>
 

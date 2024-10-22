@@ -11,7 +11,7 @@ export const useAppStore = defineStore('app', {
     }
   },
   persist: {
-    paths: ['sidebar.opened']
+    pick: ['sidebar.opened']
   },
   getters: {},
   actions: {

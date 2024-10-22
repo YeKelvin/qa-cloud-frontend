@@ -164,7 +164,7 @@ const showJsonScriptDialog = ref(false)
 
 watch(
   () => elementData.value.elementAttrs.Worker__use_http_session,
-  (val) => {
+  val => {
     const clearEachIteration = elementData.value.elementAttrs.Worker__clear_http_session_each_iteration
     if (!val && clearEachIteration === true) {
       elementData.value.elementAttrs.Worker__clear_http_session_each_iteration = false
@@ -174,7 +174,7 @@ watch(
 
 watch(
   () => elementData.value.elementAttrs.Worker__clear_http_session_each_iteration,
-  (val) => {
+  val => {
     const enableHTTPSession = elementData.value.elementAttrs.Worker__use_http_session
     if (val && enableHTTPSession === false) {
       elementData.value.elementAttrs.Worker__use_http_session = true
@@ -184,7 +184,7 @@ watch(
 
 watch(
   elementData,
-  debounce((localdata) => {
+  debounce(localdata => {
     // 如果前后端数据一致则代表数据未更改
     if (metadata.value.hashcode === toHashCode(localdata)) {
       // 数据一致则表示数据未变更
@@ -272,7 +272,7 @@ const queryWorkerScript = () => {
     workerNo: elementData.value.elementNo,
     datasets: pymeterStore.selectedDatasets,
     useCurrentValue: pymeterStore.useCurrentValue
-  }).then((response) => {
+  }).then(response => {
     showJsonScriptDialog.value = true
     nextTick(() => {
       jsonEditorRef.value.setValue(JSON.stringify(response.data))

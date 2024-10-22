@@ -126,8 +126,8 @@ const renameAndRebindDataset = async () => {
     title: '编辑变量集',
     message: (
       <div>
-        <NameInput modelValue={newName} onUpdate:modelValue={(val) => (newName = val)} />
-        <EnvDatasetSelect modelValue={newBinding} onUpdate:modelValue={(val) => (newBinding = val)} />
+        <NameInput modelValue={newName} onUpdate:modelValue={val => (newName = val)} />
+        <EnvDatasetSelect modelValue={newBinding} onUpdate:modelValue={val => (newBinding = val)} />
       </div>
     ),
     confirmButtonText: '确 定',
@@ -166,7 +166,7 @@ const renameDataset = async () => {
   // 弹出名称对话框
   const cancelled = await ElMessageBox.confirm(null, {
     title: '重命名变量集',
-    message: <NameInput modelValue={newName} onUpdate:modelValue={(val) => (newName = val)} />,
+    message: <NameInput modelValue={newName} onUpdate:modelValue={val => (newName = val)} />,
     confirmButtonText: '确 定',
     cancelButtonText: '取 消'
   })
@@ -235,7 +235,7 @@ const copyDatasetToWorkspace = async () => {
       <WorkspaceTree
         key={data.datasetNo}
         data={workspaceStore.workspaceList}
-        onNodeClick={(data) => (workspaceNo = data.workspaceNo)}
+        onNodeClick={data => (workspaceNo = data.workspaceNo)}
       />
     ),
     confirmButtonText: '确 定',
@@ -264,7 +264,7 @@ const moveDatasetToWorkspace = async () => {
       <WorkspaceTree
         key={data.datasetNo}
         data={workspaceStore.workspaceList}
-        onNodeClick={(data) => (workspaceNo = data.workspaceNo)}
+        onNodeClick={data => (workspaceNo = data.workspaceNo)}
       />
     ),
     confirmButtonText: '确 定',
@@ -317,7 +317,7 @@ const deleteDataset = async () => {
 /**
  * el-tree handler
  */
-const handleNodeClick = (data) => {
+const handleNodeClick = data => {
   pymeterStore.addTab({
     editorNo: data.datasetNo,
     editorName: data.datasetName,
@@ -336,13 +336,13 @@ const handleNodeClick = (data) => {
  */
 const filterNode = (value, data) => {
   if (!value) return true
-  return data.datasetName.indexOf(value) !== -1
+  return data.datasetName.includes(value)
 }
 
 /**
  * el-tree 文本过滤
  */
-const filter = (val) => {
+const filter = val => {
   // eslint-disable-next-line unicorn/no-array-callback-reference
   eltreeRef.value.filter(val)
 }

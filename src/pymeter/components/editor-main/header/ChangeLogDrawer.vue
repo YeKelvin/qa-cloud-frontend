@@ -212,7 +212,7 @@ const pymeterStore = usePyMeterStore()
 
 const currentElementNo = computed(() => currentTab.value?.metadata?.sn)
 const currentTab = computed(() => {
-  const result = pymeterStore.tabs.filter((tab) => tab.editorNo === pymeterStore.activeTabNo)
+  const result = pymeterStore.tabs.filter(tab => tab.editorNo === pymeterStore.activeTabNo)
   if (!result) return
   return result[0]
 })
@@ -234,7 +234,7 @@ const showOnlyselfButton = computed(() => {
 const onlyself = ref(true)
 watch(onlyself, () => query())
 
-const getModifiedPreDesc = (val) => {
+const getModifiedPreDesc = val => {
   if (val === null || val === undefined) return '修改了'
   if (isBoolean(val)) {
     return val ? '开启了' : '关闭了'
@@ -245,7 +245,7 @@ const getModifiedPreDesc = (val) => {
   }
 }
 
-const getPropertyName = (activity) => {
+const getPropertyName = activity => {
   const code = activity.propName || activity.attrName
   return PropertyDefinition[code] || AttributeDefinition[code] || code
 }
@@ -267,14 +267,14 @@ const query = () => {
     order: desc.value ? 'desc' : 'asc',
     page: page.value,
     pageSize: pageSize.value
-  }).then((response) => {
+  }).then(response => {
     activities.value = response.data.list
     total.value = response.data.total
     loading.value = false
   })
 }
 
-const openDiff = (activity) => {
+const openDiff = activity => {
   showDiffDialog.value = true
   nextTick(() => {
     diffEditorRef.value.setOldValue(activity.oldValue)
@@ -282,7 +282,7 @@ const openDiff = (activity) => {
   })
 }
 
-const onPageChange = (val) => {
+const onPageChange = val => {
   page.value = val
   query()
 }

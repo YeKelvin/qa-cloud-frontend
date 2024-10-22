@@ -72,7 +72,7 @@ const editorRef = ref()
 
 watch(
   elementData,
-  debounce((localdata) => {
+  debounce(localdata => {
     // 如果前后端数据一致则代表数据未更改
     if (metadata.value.hashcode === toHashCode(localdata)) {
       // 数据一致则表示数据未变更

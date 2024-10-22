@@ -116,7 +116,7 @@ const totalData = computed(() => {
 
 watch(
   () => props.overview,
-  (val) => {
+  val => {
     setPieChartData([
       { value: val.successfulCollectionTotal, name: '成功', itemStyle: { color: '#44B197' } },
       { value: val.failedCollectionTotal, name: '失败', itemStyle: { color: '#FF7676' } }
@@ -144,7 +144,7 @@ onUnmounted(() => {
   pieChart.value.dispose()
 })
 
-const setPieChartData = (data) => {
+const setPieChartData = data => {
   const option = pieChart.value.getOption()
   option.series[0].data = data.sort((a, b) => {
     return a.value - b.value
@@ -155,7 +155,7 @@ const setPieChartData = (data) => {
 
 const successRate = (successfulTotal, failedTotal) => {
   const total = successfulTotal + failedTotal
-  return `${Math.round((successfulTotal / total) * 10000) / 100}%`
+  return `${Math.round((successfulTotal / total) * 10_000) / 100}%`
 }
 </script>
 

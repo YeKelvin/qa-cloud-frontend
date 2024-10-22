@@ -121,7 +121,7 @@
 
 <script lang="jsx" setup>
 import { ArrowRight } from '@element-plus/icons-vue'
-import { ElMessageBox, ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 import * as ElementService from '@/api/script/element'
 import WorkspaceTree from '@/pymeter/components/editor-aside/common/WorkspaceTree.vue'
@@ -175,7 +175,7 @@ const closeMenu = () => {
   visible.value = false
 }
 
-const getElementPath = (node) => {
+const getElementPath = node => {
   if (!node) return
   if (node.level === 1) return node.label
 
@@ -499,8 +499,8 @@ const copyElementToWorkspace = async () => {
     message: (
       <WorkspaceTree
         key={data.elementNo}
-        data={workspaceStore.workspaceList.filter((item) => item.workspaceNo !== workspaceStore.workspaceNo)}
-        onNodeClick={(data) => (workspaceNo = data.workspaceNo)}
+        data={workspaceStore.workspaceList.filter(item => item.workspaceNo !== workspaceStore.workspaceNo)}
+        onNodeClick={data => (workspaceNo = data.workspaceNo)}
       />
     ),
     confirmButtonText: '确 定',
@@ -528,8 +528,8 @@ const moveElementToWorkspace = async () => {
     message: (
       <WorkspaceTree
         key={data.elementNo}
-        data={workspaceStore.workspaceList.filter((item) => item.workspaceNo !== workspaceStore.workspaceNo)}
-        onNodeClick={(data) => (workspaceNo = data.workspaceNo)}
+        data={workspaceStore.workspaceList.filter(item => item.workspaceNo !== workspaceStore.workspaceNo)}
+        onNodeClick={data => (workspaceNo = data.workspaceNo)}
       />
     ),
     confirmButtonText: '确 定',

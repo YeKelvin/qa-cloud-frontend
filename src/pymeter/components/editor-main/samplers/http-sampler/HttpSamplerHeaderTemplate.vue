@@ -58,7 +58,7 @@ const emit = defineEmits(['update:modelValue'])
 const props = defineProps({ modelValue: Array })
 const localModel = computed({
   get: () => props.modelValue,
-  set: (val) => emit('update:modelValue', val)
+  set: val => emit('update:modelValue', val)
 })
 
 const workspaceStore = useWorkspaceStore()
@@ -73,7 +73,7 @@ const { data: templateList } = useQuery({
 })
 
 const rows = ref([])
-const templates = computed(() => templateList.value.map((item) => item.templateNo))
+const templates = computed(() => templateList.value.map(item => item.templateNo))
 const showDetails = ref(false)
 const showWarning = computed(() => {
   const selectedList = localModel.value
@@ -89,7 +89,7 @@ const showWarning = computed(() => {
  * 查询请求头模板下的所有请求头
  */
 const queryHTTPHeaders = () => {
-  ElementService.queryHTTPHeaderAllByTemplate({ templates: [...localModel.value] }).then((response) => {
+  ElementService.queryHTTPHeaderAllByTemplate({ templates: [...localModel.value] }).then(response => {
     rows.value = response.data
   })
 }

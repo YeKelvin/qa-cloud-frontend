@@ -13,7 +13,7 @@
 </template>
 
 <script setup>
-import { Navbar, Sidebar, AppMain } from './components'
+import { AppMain, Navbar, Sidebar } from './components'
 import useResizeHandler from './composables/useResizeHandler'
 
 import { useAppStore } from '@/store/app'

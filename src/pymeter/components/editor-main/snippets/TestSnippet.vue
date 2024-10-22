@@ -180,9 +180,9 @@ const showHttpSettingsTab = computed(() => activeTabName.value === 'HTTP_SETTING
 const additionalVariables = computed(() => {
   if (argumentData.value.length === 0) return {}
   const vars = {}
-  argumentData.value.forEach((item) => {
+  for (const item of argumentData.value) {
     vars[item.name] = item.default
-  })
+  }
   return vars
 })
 
@@ -191,7 +191,7 @@ const jsonEditorRef = ref()
 
 watch(
   elementData,
-  debounce((localdata) => {
+  debounce(localdata => {
     // 更新实参数据
     argumentData.value = parameterData.value
     // 如果前后端数据一致则代表数据未更改
@@ -251,7 +251,7 @@ const queryBackendData = async () => {
 const removeBlankParameter = () => {
   if (isEmpty(parameterData.value)) return
   elementData.value.elementAttrs.TestSnippet__parameters = parameterData.value.filter(
-    (param) => !isEmpty(param.name) || !isEmpty(param.default) || !isEmpty(param.desc)
+    param => !isEmpty(param.name) || !isEmpty(param.default) || !isEmpty(param.desc)
   )
 }
 
@@ -339,7 +339,7 @@ const querySnippetJson = () => {
     datasets: pymeterStore.selectedDatasets,
     useCurrentValue: pymeterStore.useCurrentValue,
     variables: additionalVariables.value
-  }).then((response) => {
+  }).then(response => {
     showJsonScriptDialog.value = true
     nextTick(() => {
       jsonEditorRef.value.setValue(JSON.stringify(response.data))

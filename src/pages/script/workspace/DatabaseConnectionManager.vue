@@ -68,7 +68,7 @@ const filteredText = ref('')
 const filteredData = computed(() => {
   const filterKey = filteredText.value
   if (isEmpty(filterKey)) return databaseList.value
-  return databaseList.value.filter((item) => item.databaseName && item.databaseName.indexOf(filterKey.trim()) !== -1)
+  return databaseList.value.filter(item => item.databaseName && item.databaseName.includes(filterKey.trim()))
 })
 
 onMounted(() => {
@@ -84,7 +84,7 @@ watch(
  * 查询数据库连接列表
  */
 const query = () => {
-  ElementService.queryDatabaseEngineAll({ workspaceNo: workspaceStore.workspaceNo }).then((response) => {
+  ElementService.queryDatabaseEngineAll({ workspaceNo: workspaceStore.workspaceNo }).then(response => {
     databaseList.value = response.data
   })
 }
@@ -144,8 +144,8 @@ const cloneDatabase = async ({ databaseNo }) => {
     message: (
       <WorkspaceTree
         key={databaseNo}
-        data={workspaceStore.workspaceList.filter((item) => item.workspaceNo !== workspaceStore.workspaceNo)}
-        onNodeClick={(data) => (workspaceNo = data.workspaceNo)}
+        data={workspaceStore.workspaceList.filter(item => item.workspaceNo !== workspaceStore.workspaceNo)}
+        onNodeClick={data => (workspaceNo = data.workspaceNo)}
       />
     ),
     confirmButtonText: '确 定',
@@ -177,8 +177,8 @@ const moveDatabase = async ({ databaseNo }) => {
     message: (
       <WorkspaceTree
         key={databaseNo}
-        data={workspaceStore.workspaceList.filter((item) => item.workspaceNo !== workspaceStore.workspaceNo)}
-        onNodeClick={(data) => (workspaceNo = data.workspaceNo)}
+        data={workspaceStore.workspaceList.filter(item => item.workspaceNo !== workspaceStore.workspaceNo)}
+        onNodeClick={data => (workspaceNo = data.workspaceNo)}
       />
     ),
     confirmButtonText: '确 定',

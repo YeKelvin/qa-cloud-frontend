@@ -119,7 +119,7 @@ const samplerResultRef = ref()
 const filteredCollections = computed(() => {
   return isBlank(collectionsFilterText.value)
     ? collections.value
-    : collections.value.filter((item) => item.name.indexOf(collectionsFilterText.value.trim()) !== -1)
+    : collections.value.filter(item => item.name.includes(collectionsFilterText.value.trim()))
 })
 
 onMounted(() => {
@@ -134,7 +134,7 @@ onMounted(() => {
  * 查询报告
  */
 const queryReport = () => {
-  ReportService.queryReport({ reportNo: reportNo.value }).then((response) => {
+  ReportService.queryReport({ reportNo: reportNo.value }).then(response => {
     overview.value = response.data.details
     collections.value = response.data.collections
   })
@@ -144,7 +144,7 @@ const queryReport = () => {
  * 查询集合结果
  */
 const queryCollectionResult = () => {
-  ReportService.queryCollectionResult({ collectionId: collectionId.value }).then((response) => {
+  ReportService.queryCollectionResult({ collectionId: collectionId.value }).then(response => {
     collectionDetails.value = response.data.details
     workers.value = response.data.children
   })
@@ -164,7 +164,7 @@ const openOverview = () => {
 /**
  * el-card handler
  */
-const handleCollectionCardClick = (collection) => {
+const handleCollectionCardClick = collection => {
   // 记录当前点击的 CollectionId
   collectionId.value = collection.id
   // 查询集合结果
@@ -202,7 +202,7 @@ const handleNodeClick = (data, node) => {
  * 返回上一页
  */
 const goBack = () => {
-  window.history.length > 1 ? router.go(-1) : router.push('/')
+  globalThis.history.length > 1 ? router.go(-1) : router.push('/')
 }
 </script>
 

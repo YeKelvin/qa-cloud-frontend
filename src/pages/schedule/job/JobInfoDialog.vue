@@ -110,7 +110,7 @@
                 type="datetime"
                 value-format="YYYY-MM-DD HH:mm:ss"
                 :disabled="readonly"
-                :disabled-date="(time) => time.getTime() < Date.now() - 1 * 24 * 3600 * 1000"
+                :disabled-date="time => time.getTime() < Date.now() - 1 * 24 * 3600 * 1000"
                 :disabled-hours="disabledHours"
                 :disabled-minutes="disabledMinutes"
                 :disabled-seconds="disabledSeconds"
@@ -128,7 +128,7 @@
                 range-separator="-"
                 :disabled="readonly"
                 :default-time="[new Date(0, 0, 0, 0, 0, 0), new Date(0, 0, 0, 23, 59, 59)]"
-                :disabled-date="(time) => time.getTime() < Date.now() - 1 * 24 * 3600 * 1000"
+                :disabled-date="time => time.getTime() < Date.now() - 1 * 24 * 3600 * 1000"
                 :disabled-hours="disabledHours"
                 :disabled-minutes="disabledMinutes"
                 :disabled-seconds="disabledSeconds"
@@ -253,20 +253,21 @@ const nextRunTimes = computed(() => {
   if (currentRow.value && !['PENDING', 'RUNNING'].includes(currentRow.value.jobState)) return []
   try {
     const nexts = []
-    Cron(expression)
+    new Cron(expression)
       .nextRuns(5)
-      .forEach((time) => {
+      // eslint-disable-next-line unicorn/no-array-for-each
+      .forEach(time => {
         nexts.push(dayjs(time).format('YYYY-MM-DD HH:mm:ss'))
       })
     return nexts
-  } catch (error) {
+  } catch {
     return []
   }
 })
 
 watch(
   () => jobData.value.jobType,
-  (val) => {
+  val => {
     switch (val) {
       case 'TESTPLAN': {
         queryTestplanAll()
@@ -316,7 +317,7 @@ onMounted(() => {
   // 新增模式时无需查询定时任务信息
   if (creation.value) return
   // 查询定时任务信息
-  ScheduleService.queryJobInfo({ jobNo: currentRow.value.jobNo }).then((response) => {
+  ScheduleService.queryJobInfo({ jobNo: currentRow.value.jobNo }).then(response => {
     // 初始化作业信息
     jobData.value = response.data
     Object.assign(funcData.value, response.data.jobArgs)
@@ -330,7 +331,7 @@ const queryTestplanAll = () => {
   TestplanService.queryTestplanAll({
     workspaceNo: workspaceStore.workspaceNo,
     stateList: ['INITIAL', 'TESTING']
-  }).then((response) => {
+  }).then(response => {
     testplanList.value = response.data
   })
 }
@@ -341,7 +342,7 @@ const queryCollectionAll = () => {
     elementType: 'COLLECTION',
     elementClass: 'TestCollection',
     enabled: true
-  }).then((response) => {
+  }).then(response => {
     collectionList.value = response.data
   })
 }
@@ -354,18 +355,18 @@ const queryTestcaseAll = () => {
     childType: 'WORKER',
     childClass: 'TestWorker',
     enabled: true
-  }).then((response) => {
+  }).then(response => {
     testcaseList.value = response.data
   })
 }
 
-const isValidCrontab = (expression) => {
+const isValidCrontab = expression => {
   try {
     // 尝试解析CRON表达式
-    // eslint-disable-next-line no-new
+
     new Cron(expression)
     return true // 没有抛出异常，认为表达式有效
-  } catch (error) {
+  } catch {
     return false // 如果抛出异常，认为表达式无效
   }
 }
@@ -445,7 +446,7 @@ const disabledHours = () => {
   return []
 }
 
-const disabledMinutes = (hour) => {
+const disabledMinutes = hour => {
   const current = dayjs()
   if (hour === current.hour()) {
     return makeRange(0, current.minute() - 1)

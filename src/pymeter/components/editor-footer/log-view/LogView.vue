@@ -42,9 +42,9 @@ watch(
 
 <style lang="scss" scoped>
 .log-view {
-  overflow: hidden;
-  height: 100%;
   display: flex;
   flex-direction: column;
+  height: 100%;
+  overflow: hidden;
 }
 </style>

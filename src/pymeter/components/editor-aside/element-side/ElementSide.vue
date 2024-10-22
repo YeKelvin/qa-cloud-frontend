@@ -116,7 +116,7 @@
 </template>
 
 <script setup>
-import { Plus, Open } from '@element-plus/icons-vue'
+import { Open, Plus } from '@element-plus/icons-vue'
 import { isEmpty } from 'lodash-es'
 
 import ElementTree from './ElementTree.vue'
@@ -136,14 +136,14 @@ const elementTreeRef = ref()
 const elScrollbarRef = ref()
 const selectedScripts = computed({
   get: () => pymeterStore.selectedScripts,
-  set: (val) => {
+  set: val => {
     if (!loading.value) pymeterStore.setSelectedScripts(val)
   }
 })
 
 watch(
   () => workspaceStore.workspaceNo,
-  (val) => {
+  val => {
     if (!val) return
     // 重新查询集合列表
     queryCollections()
@@ -211,7 +211,7 @@ const queryCollections = async () => {
   // 加载完成
   loading.value = false
   // 提取集合编号
-  const collections = new Set([...collectionList.value, ...snippetList.value].map((item) => item.elementNo))
+  const collections = new Set([...collectionList.value, ...snippetList.value].map(item => item.elementNo))
   // 遍历取消选择无效的集合
   const selecteds = selectedScripts.value
   for (let i = selecteds.length - 1; i >= 0; i--) {
@@ -269,7 +269,7 @@ const openNewSnippetTab = () => {
 /**
  * 展开或收起所有节点
  */
-const expandAll = (expand) => {
+const expandAll = expand => {
   elementTreeRef.value.expandAll(expand)
 }
 </script>

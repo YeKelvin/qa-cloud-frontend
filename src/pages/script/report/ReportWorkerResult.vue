@@ -75,7 +75,7 @@ const pieChartOption = reactive({
       },
       animationType: 'scale',
       animationEasing: 'elasticOut',
-      animationDelay: (idx) => Math.random() * 200
+      animationDelay: idx => Math.random() * 200
     }
   ]
 })
@@ -106,7 +106,7 @@ const totalData = computed(() => {
 
 watch(
   () => props.workerId,
-  (val) => {
+  val => {
     if (!val) return
     queryWorkerResult()
   }
@@ -131,7 +131,7 @@ onUnmounted(() => {
 })
 
 const queryWorkerResult = () => {
-  ReportService.queryWorkerResult({ workerId: props.workerId }).then((response) => {
+  ReportService.queryWorkerResult({ workerId: props.workerId }).then(response => {
     details.value = response.data
     setPieChartData([
       { value: details.value.successfulSamplerTotal, name: '成功', itemStyle: { color: '#44B197' } },
@@ -140,7 +140,7 @@ const queryWorkerResult = () => {
   })
 }
 
-const setPieChartData = (data) => {
+const setPieChartData = data => {
   const option = pieChart.value.getOption()
   option.series[0].data = data.sort((a, b) => {
     return a.value - b.value
@@ -151,7 +151,7 @@ const setPieChartData = (data) => {
 
 const successRate = (successfulTotal, failedTotal) => {
   const total = successfulTotal + failedTotal
-  return `${Math.round((successfulTotal / total) * 10000) / 100}%`
+  return `${Math.round((successfulTotal / total) * 10_000) / 100}%`
 }
 </script>
 

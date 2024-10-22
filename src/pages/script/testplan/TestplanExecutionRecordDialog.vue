@@ -60,7 +60,7 @@ onMounted(() => {
 })
 
 const queryTestplanExecutionAll = () => {
-  TestplanService.queryTestplanExecutionAll({ planNo: props.planNo }).then((response) => {
+  TestplanService.queryTestplanExecutionAll({ planNo: props.planNo }).then(response => {
     tableData.value = response.data
   })
 }
@@ -68,7 +68,7 @@ const queryTestplanExecutionAll = () => {
 /**
  * 中断运行
  */
-const interrupt = (executionNo) => {
+const interrupt = executionNo => {
   ElMessageBox.confirm('是否确定中断运行？', '提示', {
     confirmButtonText: '确 定',
     cancelButtonText: '取 消',
@@ -83,21 +83,21 @@ const interrupt = (executionNo) => {
 /**
  * 判断是否展示中断按钮
  */
-const isShowInterruptBtn = (row) => {
+const isShowInterruptBtn = row => {
   return row.executionState === 'WAITING' || row.executionState === 'RUNNING' || row.executionState === 'ITERATING'
 }
 
 /**
  * 跳转至计划执行详情页
  */
-const openDetails = (executionNo) => {
+const openDetails = executionNo => {
   router.push({ path: 'testplan/execution/details', query: { executionNo: executionNo } })
 }
 
 /**
  * 跳转至测试报告页
  */
-const openReport = (reportNo) => {
+const openReport = reportNo => {
   router.push({ path: 'report', query: { reportNo: reportNo } })
 }
 </script>

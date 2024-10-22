@@ -137,13 +137,13 @@ const responseDataType = ref('source')
 
 watch(
   () => props.samplerId,
-  (val) => {
+  val => {
     if (!val) return
     querySamplerResult()
   }
 )
 
-watch(requestDataType, (val) => {
+watch(requestDataType, val => {
   if (val === 'source') {
     setRequestContent(sampler.value.requestData)
   } else {
@@ -151,7 +151,7 @@ watch(requestDataType, (val) => {
   }
 })
 
-watch(responseDataType, (val) => {
+watch(responseDataType, val => {
   if (val === 'source') {
     setResponseContent(sampler.value.responseData)
   } else {
@@ -172,13 +172,13 @@ const hasResponseDecoded = () => {
   return !isEmpty(sampler.value.responseDecoded)
 }
 
-const setRequestContent = (code) => {
+const setRequestContent = code => {
   nextTick(() => {
     requestEditorRef.value && requestEditorRef.value.setValue(code)
   })
 }
 
-const setResponseContent = (code) => {
+const setResponseContent = code => {
   nextTick(() => {
     if (!responseEditorRef.value) return
     responseEditorRef.value.setValue(code)
@@ -190,7 +190,7 @@ const setResponseContent = (code) => {
  * 查询取样器结果
  */
 const querySamplerResult = () => {
-  ReportService.querySamplerResult({ samplerId: props.samplerId }).then((response) => {
+  ReportService.querySamplerResult({ samplerId: props.samplerId }).then(response => {
     sampler.value = response.data
     handleRequestTabClick({ paneName: requestActiveTabName.value })
     handleResponseTabClick({ paneName: responseActiveTabName.value })
@@ -203,7 +203,7 @@ const querySamplerResult = () => {
 /**
  * el-tab handler
  */
-const handleRequestTabClick = (tab) => {
+const handleRequestTabClick = tab => {
   if (tab.paneName === 'REQUEST_DATA') {
     setRequestContent(sampler.value.requestData)
   }
@@ -212,7 +212,7 @@ const handleRequestTabClick = (tab) => {
 /**
  * el-tab handler
  */
-const handleResponseTabClick = (tab) => {
+const handleResponseTabClick = tab => {
   if (tab.paneName === 'RESPONSE_DATA') {
     responseEditorRef.value.setValue(sampler.value.responseData)
     responseEditorRef.value.formatDocument()
@@ -227,14 +227,14 @@ const handleResponseTabClick = (tab) => {
 /**
  * 反序列化 Headers
  */
-const getHeadersFromJson = (val) => {
+const getHeadersFromJson = val => {
   if (!val || (val.charAt(0) !== '{' && val.at(-1) !== '}')) return []
   const data = []
   try {
     const headers = JSON.parse(val)
-    Object.keys(headers).forEach((key) => {
+    for (const key of Object.keys(headers)) {
       data.push({ name: key, value: headers[key] })
-    })
+    }
   } catch (error) {
     console.error(error)
   }
@@ -253,9 +253,9 @@ const copyRequestData = async () => {
 
 const copyRequestHeaders = async () => {
   let text = ''
-  requestHeaders.value.forEach((item) => {
+  for (const item of requestHeaders.value) {
     text += `${item.name}: ${item.value}\n`
-  })
+  }
   await toClipboard(text)
   ElMessage({ message: '复制成功', type: 'info', duration: 1 * 1000 })
 }
@@ -271,9 +271,9 @@ const copyResponseData = async () => {
 
 const copyResponseHeaders = async () => {
   let text = ''
-  responseHeaders.value.forEach((item) => {
+  for (const item of responseHeaders.value) {
     text += `${item.name}: ${item.value}\n`
-  })
+  }
   await toClipboard(text)
   ElMessage({ message: '复制成功', type: 'info', duration: 1 * 1000 })
 }

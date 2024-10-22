@@ -54,7 +54,7 @@ const props = defineProps({ modelValue: Array })
 const emit = defineEmits(['update:modelValue'])
 const rows = computed({
   get: () => props.modelValue,
-  set: (val) => emit('update:modelValue', val)
+  set: val => emit('update:modelValue', val)
 })
 watch(rows, () => autoNewRow(), { deep: true })
 
@@ -79,10 +79,10 @@ const autoNewRow = () => {
 const newRow = () => {
   rows.value.push({ name: '', default: '', desc: '' })
 }
-const delRow = (index) => {
+const delRow = index => {
   rows.value.splice(index, 1)
 }
-const isBlankRow = (param) => {
+const isBlankRow = param => {
   return isEmpty(param.name) && isEmpty(param.default) && isEmpty(param.desc)
 }
 

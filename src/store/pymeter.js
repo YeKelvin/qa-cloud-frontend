@@ -41,7 +41,7 @@ export const usePyMeterStore = defineStore('pymeter', {
     }
   },
   persist: {
-    paths: ['selectedScriptStore', 'selectedDatasetStore']
+    pick: ['selectedScriptStore', 'selectedDatasetStore']
   },
   getters: {
     selectedScripts() {

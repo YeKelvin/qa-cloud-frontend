@@ -83,15 +83,15 @@ onMounted(() => {
   // 除 roles, groups 属性外其余赋值给 form
   formData.value = omit(rowData, ['roles', 'groups'])
   // 提取 roleNo
-  formData.value.roles = rowData.roles ? rowData.roles.map((item) => item.roleNo) : []
+  formData.value.roles = rowData.roles ? rowData.roles.map(item => item.roleNo) : []
   // 提取 groupNo
-  formData.value.groups = rowData.groups ? rowData.groups.map((item) => item.groupNo) : []
+  formData.value.groups = rowData.groups ? rowData.groups.map(item => item.groupNo) : []
   // 查询所有角色
-  RoleService.queryRoleAll().then((response) => {
+  RoleService.queryRoleAll().then(response => {
     roleList.value = response.data
   })
   // 查询所有分组
-  GroupService.queryGroupAll().then((response) => {
+  GroupService.queryGroupAll().then(response => {
     groupList.value = response.data
   })
 })
