@@ -42,8 +42,6 @@ useResizeHandler()
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/variables';
-
 .app-wrapper {
   position: relative;
   width: 100%;
@@ -55,7 +53,7 @@ useResizeHandler()
   top: 0;
   right: 0;
   z-index: 9;
-  width: calc(100% - #{$sideBarWidth});
+  width: calc(100% - #{$sidebar-width});
   transition: width 0.28s;
 }
 
