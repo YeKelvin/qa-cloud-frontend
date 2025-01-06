@@ -50,7 +50,7 @@ export default {
     /**
      * 连接错误时触发
      */
-    socket.on('connect_error', (error) => {
+    socket.on('connect_error', error => {
       console.error(`event:[ connect_error ]\n${error}`)
       socket.close()
     })
@@ -58,7 +58,7 @@ export default {
     /**
      * 发生错误时触发
      */
-    socket.on('error', (error) => {
+    socket.on('error', error => {
       console.error(`event:[ error ] sid:[ ${socket.id} ]\n${error}`)
       socket.close()
     })

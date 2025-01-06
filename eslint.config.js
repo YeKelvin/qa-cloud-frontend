@@ -50,9 +50,11 @@ export default [
    */
   {
     languageOptions: {
-      globals: {
+      parserOptions: {
+        ecmaVersion: 'latest'
         // sourceType: 'module',
-
+      },
+      globals: {
         ...globals.browser,
         ...autoImports.globals,
 
